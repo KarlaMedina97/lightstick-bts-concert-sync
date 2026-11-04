@@ -1,7 +1,7 @@
 // Configuración del proyecto. Edita estos enlaces con los tuyos.
 export const PROJECT = {
   name: "Purple Wave Sync",
-  repo: "https://github.com/KarlaMedina97/purple-wave-sync",
+  repo: "https://github.com/KarlaMedina97/lightstick-bts-concert-sync",
 };
 
 // Enlaces de donación. Deja vacío "url" para ocultar una opción.

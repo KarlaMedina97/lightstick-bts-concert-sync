@@ -1,5 +1,7 @@
 # 💜 Purple Wave Sync
 
+> **Lightstick BTS concert sync** · Página web no oficial para sincronizar tu lightstick (ARMY Bomb) con canciones de BTS en modo concierto.
+
 App web progresiva (PWA), gratuita y de código abierto, para sincronizar tu lightstick con canciones,
 **álbum por álbum**, desde el navegador. Sin instalar nada y sin cuentas.
 
