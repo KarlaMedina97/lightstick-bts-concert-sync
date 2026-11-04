@@ -142,3 +142,40 @@ export function generatePattern(song, album, duration, opts = {}) {
 
   return { sections, colorAt, sectionAt, beat };
 }
+
+/**
+ * Patrón para videos largos (conciertos o presentaciones en vivo): divide el video en bloques del
+ * largo de una canción y a cada bloque le da su propia energía y paleta, como un setlist.
+ * @param {number} duration segundos
+ * @param {{bpm?:number, palettes:string[][], styleOverride?:string|null, safeMode?:boolean}} opts
+ */
+export function generateConcertPattern(duration, opts) {
+  const BLOCK = 210; // ~3.5 min por canción
+  const energies = ["high", "high", "mid", "high", "ballad", "mid", "high"];
+  const blocks = [];
+  for (let start = 0, i = 0; start < duration; start += BLOCK, i++) {
+    const len = Math.min(BLOCK, duration - start);
+    const p = generatePattern(
+      { bpm: opts.bpm || 110, energy: energies[i % energies.length] },
+      { palette: opts.palettes[i % opts.palettes.length] },
+      len,
+      opts,
+    );
+    blocks.push({ start, len, p, n: i + 1 });
+  }
+  const blockAt = (t) => blocks[Math.min(blocks.length - 1, Math.max(0, Math.floor(t / BLOCK)))];
+  const sections = blocks.flatMap((b) => b.p.sections.map((s) => ({ ...s, start: s.start + b.start, end: s.end + b.start, label: `bloque ${b.n} · ${s.label}` })));
+  return {
+    sections,
+    beat: 60 / (opts.bpm || 110),
+    colorAt(t, i = 0, n = 1) {
+      const b = blockAt(t);
+      return b.p.colorAt(t - b.start, i, n);
+    },
+    sectionAt(t) {
+      const b = blockAt(t);
+      const s = b.p.sectionAt(t - b.start);
+      return { ...s, label: `bloque ${b.n} · ${s.label}` };
+    },
+  };
+}

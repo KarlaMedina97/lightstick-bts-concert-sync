@@ -1,11 +1,18 @@
 // Service worker: guarda la app para abrirla sin conexión (los videos sí necesitan internet).
-const CACHE = "pws-v2";
+const CACHE = "pws-v3";
 const SHELL = [
   "./",
   "index.html",
+  "app.html",
+  "landing.css",
+  "src/landing.js",
+  "src/guide.js",
+  "src/mic.js",
+  "src/youtube.js",
   "styles.css",
   "manifest.webmanifest",
   "icons/icon.svg",
+  "icons/apple-touch-icon.png",
   "src/app.js",
   "src/ble.js",
   "src/catalog.js",

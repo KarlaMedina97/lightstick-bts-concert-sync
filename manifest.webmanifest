@@ -3,12 +3,14 @@
   "short_name": "PurpleWave",
   "description": "Sincroniza tu lightstick con canciones, álbum por álbum. Proyecto de fans, abierto y no oficial.",
   "lang": "es",
-  "start_url": "./",
+  "start_url": "app.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#12081d",
-  "theme_color": "#1b0b2e",
+  "background_color": "#060818",
+  "theme_color": "#070a1a",
   "icons": [
-    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
   ]
 }
