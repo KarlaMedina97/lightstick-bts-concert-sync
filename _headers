@@ -1,0 +1,9 @@
+# Cabeceras para hosts que las admiten (Netlify, Cloudflare Pages). GitHub Pages las ignora;
+# allí la CSP va en <meta> dentro de cada página.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), geolocation=(), payment=(), usb=(), microphone=(self), bluetooth=(self)
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: frame-ancestors 'none'

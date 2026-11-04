@@ -32,12 +32,41 @@ export function saveProfile(p) {
   try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch {}
 }
 
+const NETWORK_IDS = new Set(["x", "instagram", "tiktok", "weverse", "youtube"]);
+const ID_RE = /^[a-z0-9-]{1,60}$/;
+const int = (v, min, max) => (Number.isInteger(v) && v >= min && v <= max ? v : null);
+
+/**
+ * Valida una fila de puntuación (venga del servidor o del almacenamiento local).
+ * Cualquier dato con forma inesperada se descarta en vez de mostrarse.
+ */
+export function sanitizeRow(r) {
+  if (!r || typeof r !== "object") return null;
+  const handle = normalizeHandle(r.handle);
+  const network = NETWORK_IDS.has(r.network) ? r.network : null;
+  const songId = typeof r.songId === "string" && ID_RE.test(r.songId) ? r.songId : null;
+  const albumId = typeof r.albumId === "string" && ID_RE.test(r.albumId) ? r.albumId : null;
+  const score = int(r.score, 0, 200000);
+  const accuracy = int(r.accuracy, 0, 100);
+  const maxCombo = int(r.maxCombo, 0, 2000);
+  if (!handle || !network || !songId || !albumId || score === null || accuracy === null || maxCombo === null) return null;
+  return { handle, network, songId, albumId, score, accuracy, maxCombo };
+}
+
 function loadLocal() {
   try {
-    return JSON.parse(localStorage.getItem(KEY) || "[]");
+    const rows = JSON.parse(localStorage.getItem(KEY) || "[]");
+    return Array.isArray(rows) ? rows.map(sanitizeRow).filter(Boolean) : [];
   } catch {
     return [];
   }
+}
+
+/** Borra todos los datos que la app guardó en este dispositivo. */
+export function clearAllLocalData() {
+  try {
+    Object.keys(localStorage).filter((k) => k.startsWith("pws.")).forEach((k) => localStorage.removeItem(k));
+  } catch {}
 }
 function saveLocal(rows) {
   try { localStorage.setItem(KEY, JSON.stringify(rows.slice(-500))); } catch {}
@@ -54,12 +83,16 @@ const headers = () => ({
  * Guarda una puntuación.
  * @param {{handle:string, network:string, songId:string, albumId:string, score:number, accuracy:number, maxCombo:number}} entry
  */
+let lastRemoteSubmit = 0;
 export async function submitScore(entry) {
-  const row = { ...entry, at: new Date().toISOString() };
+  const row = sanitizeRow(entry);
+  if (!row) return { remote: false };
   const rows = loadLocal();
   rows.push(row);
   saveLocal(rows);
-  if (!remoteEnabled()) return { remote: false };
+  // Solo HTTPS y como máximo un envío cada 30 s por dispositivo (el servidor debe limitar también).
+  if (!remoteEnabled() || !LEADERBOARD.supabaseUrl.startsWith("https://") || Date.now() - lastRemoteSubmit < 30000) return { remote: false };
+  lastRemoteSubmit = Date.now();
   try {
     const res = await fetch(`${LEADERBOARD.supabaseUrl}/rest/v1/${LEADERBOARD.table}`, {
       method: "POST",
@@ -111,10 +144,13 @@ export async function topScores(songId) {
         { headers: headers() },
       );
       if (res.ok) {
-        const rows = (await res.json()).map((r) => ({
-          handle: r.handle, network: r.network, songId: r.song_id, albumId: r.album_id,
-          score: r.score, accuracy: r.accuracy, maxCombo: r.max_combo,
-        }));
+        const data = await res.json();
+        const rows = (Array.isArray(data) ? data : [])
+          .map((r) => sanitizeRow({
+            handle: r?.handle, network: r?.network, songId: r?.song_id, albumId: r?.album_id,
+            score: r?.score, accuracy: r?.accuracy, maxCombo: r?.max_combo,
+          }))
+          .filter(Boolean);
         return { rows: aggregate(rows, songId), source: "global" };
       }
     } catch {}

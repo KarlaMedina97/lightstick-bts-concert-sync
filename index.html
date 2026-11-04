@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; worker-src 'self'; manifest-src 'self'; media-src 'self'; font-src 'self'; upgrade-insecure-requests; connect-src 'self'; form-action 'none'; script-src 'self' 'sha256-gB2Jox7UETAA0hIUyDydweE3XiP47xsOcFmb+wcMIIo=' https://www.youtube.com https://s.ytimg.com">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Purple Wave Sync</title>
   <meta name="description" content="Página web no oficial para sincronizar tu lightstick (ARMY Bomb) con videos de canciones y conciertos de BTS. Gratis y de código abierto.">
@@ -17,12 +19,12 @@
   <script type="importmap">
     {
       "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        "three": "./vendor/three/build/three.module.js",
+        "three/addons/": "./vendor/three/examples/jsm/"
       }
     }
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="vendor/gsap/gsap.min.js" defer></script>
 </head>
 <body>
   <canvas id="scene" aria-hidden="true"></canvas>
@@ -32,7 +34,7 @@
     <a class="brand" href="./"><img src="icons/icon.svg" alt="" width="28" height="28"> Purple Wave Sync</a>
     <nav aria-label="Principal">
       <a href="app.html?guia=1">Cómo conectar</a>
-      <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync" target="_blank" rel="noopener noreferrer">GitHub</a>
     </nav>
   </header>
 
@@ -66,7 +68,7 @@
   </section>
 
   <footer class="foot">
-    <p>Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS. La lightstick 3D es una ilustración inspirada, no el diseño oficial.
+    <p><a href="privacidad.html">Privacidad</a> · Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS. La lightstick 3D es una ilustración inspirada, no el diseño oficial.
       La música se reproduce desde YouTube.</p>
   </footer>
 

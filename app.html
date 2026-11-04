@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; worker-src 'self'; manifest-src 'self'; media-src 'self'; font-src 'self'; upgrade-insecure-requests; connect-src 'self' https://www.youtube.com https://*.supabase.co; form-action 'self'; script-src 'self' https://www.youtube.com https://s.ytimg.com">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Purple Wave Sync</title>
   <meta name="description" content="Página web no oficial para sincronizar tu lightstick con videos de canciones y conciertos de BTS, álbum por álbum.">
@@ -28,6 +30,9 @@
     <symbol id="i-list" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-bt" viewBox="0 0 24 24"><path d="M7 7l10 10-5 5V2l5 5L7 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5h3v5h5V9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 9.5h8M8 12.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-lyrics" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11h4M13 11h4M7 15h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   </svg>
 
@@ -35,14 +40,18 @@
 
   <div id="app" class="app">
     <div class="ambient" aria-hidden="true"></div>
-    <div class="crowd" aria-hidden="true"><div class="crowd-plane"></div></div>
+    <canvas id="crowd" class="crowd-canvas" aria-hidden="true"></canvas>
 
     <header class="hud-top">
+      <nav class="menu" aria-label="Menú principal">
+        <a class="menu-item" href="./" title="Inicio"><svg aria-hidden="true"><use href="#i-home"/></svg><span>Inicio</span></a>
+        <button id="btn-side" class="menu-item" type="button" aria-expanded="false" aria-controls="side" title="Canciones"><svg aria-hidden="true"><use href="#i-list"/></svg><span>Canciones</span></button>
+        <button id="btn-feedback" class="menu-item" type="button" aria-haspopup="dialog" aria-controls="panel-feedback" title="Tu opinión"><svg aria-hidden="true"><use href="#i-chat"/></svg><span>Opinar</span></button>
+      </nav>
       <div class="seg" role="tablist" aria-label="Vista">
         <button id="view-video" role="tab" type="button" aria-selected="true" aria-controls="video-view">Video</button>
         <button id="view-lights" role="tab" type="button" aria-selected="false" aria-controls="lights-view">Luces</button>
       </div>
-      <a class="brandmini" href="./" aria-label="Inicio"><img src="icons/icon.svg" alt="" width="22" height="22"><span>Purple Wave Sync</span><small>no oficial</small></a>
       <div class="top-actions">
         <button id="btn-bt" class="pill" type="button" aria-haspopup="dialog" aria-controls="panel-bt">
           <svg aria-hidden="true"><use href="#i-bt"/></svg><span id="conn-label">Conectar</span>
@@ -50,6 +59,15 @@
         <button id="btn-fs" class="round" type="button" aria-label="Pantalla completa"><svg aria-hidden="true"><use href="#i-expand"/></svg></button>
       </div>
     </header>
+
+    <!-- Lista lateral de canciones (pantallas anchas) -->
+    <aside id="side" class="side" aria-label="Canciones por álbum" hidden>
+      <div class="side-head">
+        <h2>Canciones</h2>
+        <button id="side-close" class="ibtn sm" type="button" aria-label="Ocultar lista de canciones"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div id="side-list" class="albums side-list"></div>
+    </aside>
 
     <main id="main" class="stage">
       <p id="style-chip" class="style-chip" aria-live="polite">Luces listas</p>
@@ -61,6 +79,13 @@
           <p class="empty-title">Elige una canción o un concierto</p>
           <button id="btn-start" class="btn primary" type="button">Ver canciones</button>
         </div>
+      </div>
+
+      <div id="chant" class="chant" aria-live="assertive" hidden>
+        <p class="chant-label">Fanchant</p>
+        <p id="chant-name" class="chant-name"></p>
+        <p id="chant-roman" class="chant-roman"></p>
+        <button id="chant-skip" class="btn small" type="button">Saltar</button>
       </div>
 
       <div id="lights-view" class="lights-view" role="tabpanel" aria-label="Luces" hidden>
@@ -92,6 +117,7 @@
       </div>
       <div class="dock-actions">
         <button id="btn-auto" class="ibtn sm" type="button" aria-pressed="true" aria-label="Pasar a la siguiente al terminar" title="Pasar a la siguiente al terminar"><svg aria-hidden="true"><use href="#i-repeat"/></svg></button>
+        <button id="btn-lyrics" class="ibtn sm" type="button" aria-pressed="false" aria-label="Letra (subtítulos oficiales)" title="Letra (subtítulos oficiales del video)"><svg aria-hidden="true"><use href="#i-lyrics"/></svg></button>
         <button id="btn-mic" class="ibtn sm" type="button" aria-pressed="false" aria-label="Modo micrófono" title="Modo micrófono (para conciertos en la TV)"><svg aria-hidden="true"><use href="#i-mic"/></svg></button>
         <button id="btn-game" class="ibtn sm" type="button" aria-haspopup="dialog" aria-controls="panel-game" aria-label="Reto de ritmo" title="Reto de ritmo"><svg aria-hidden="true"><use href="#i-trophy"/></svg></button>
         <button id="btn-settings" class="ibtn sm" type="button" aria-haspopup="dialog" aria-controls="panel-settings" aria-label="Ajustes" title="Ajustes"><svg aria-hidden="true"><use href="#i-gear"/></svg></button>
@@ -182,6 +208,19 @@
           </div>
           <p class="hint">Toca "Marcar tempo" al ritmo 4 veces o más para calcularlo.</p>
         </div>
+        <div class="field">
+          <label for="sel-lyrics">Idioma de la letra</label>
+          <select id="sel-lyrics">
+            <option value="ko">Coreano (hangul)</option>
+            <option value="es">Español</option>
+            <option value="en">Inglés</option>
+            <option value="ja">Japonés</option>
+            <option value="pt">Portugués</option>
+          </select>
+          <p class="hint">La letra son los subtítulos oficiales del video en YouTube. Si un video no los tiene en ese idioma, no aparecerán.</p>
+        </div>
+        <label class="check"><input id="chk-chant" type="checkbox" checked> Fanchant entre canciones (los nombres de los integrantes, como en los conciertos)</label>
+        <label class="check"><input id="chk-chant-voice" type="checkbox" checked> Con voz y ovación</label>
         <label class="select">Al terminar el álbum
           <select id="sel-album-end">
             <option value="next">seguir con el siguiente</option>
@@ -193,10 +232,16 @@
         <label class="check"><input id="chk-wake" type="checkbox" checked> Mantener la pantalla encendida</label>
 
         <hr>
+        <h3>Privacidad</h3>
+        <p class="hint">Tus ajustes, nickname y puntajes se guardan solo en este dispositivo. El micrófono se procesa aquí y nunca se envía.
+          <a href="privacidad.html">Lee la política de privacidad</a>.</p>
+        <button id="btn-clear-data" class="btn" type="button">Borrar mis datos de este dispositivo</button>
+
+        <hr>
         <h3>Apoya el proyecto 💜</h3>
         <p class="hint">Es gratis y de código abierto. Si te gusta, ayuda a mantenerlo.</p>
         <div id="donations" class="row wrap"></div>
-        <p class="hint"><a id="repo-link" href="#" target="_blank" rel="noopener">Código en GitHub</a> ·
+        <p class="hint"><a id="repo-link" href="#" target="_blank" rel="noopener noreferrer">Código en GitHub</a> ·
           Atajos: <kbd>Espacio</kbd> reproducir · <kbd>N</kbd>/<kbd>P</kbd> siguiente/anterior · <kbd>B</kbd> reto · <kbd>F</kbd> pantalla completa</p>
         <p class="hint small">Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS. Los videos se reproducen desde YouTube.
           Los patrones de luz se generan en tu navegador e imitan estilos de concierto; no son shows oficiales.</p>
@@ -238,6 +283,54 @@
         </table>
         <p class="hint">Los nicknames no se verifican. <span id="rank-source"></span></p>
       </div>
+    </section>
+
+    <!-- Panel: opinión -->
+    <section id="panel-feedback" class="panel" role="dialog" aria-labelledby="pf-title" hidden>
+      <header class="panel-head">
+        <h2 id="pf-title">Tu opinión</h2>
+        <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </header>
+      <form id="form-feedback" class="panel-body" novalidate>
+        <p class="hint">Ayúdanos a mejorar. Es anónimo: no pongas datos personales.</p>
+        <fieldset class="stars">
+          <legend>¿Qué tan agradable fue la experiencia?</legend>
+          <div class="star-row">
+            <input type="radio" id="fb-r5" name="rating" value="5"><label for="fb-r5" title="5 de 5">★<span class="sr">5 de 5</span></label>
+            <input type="radio" id="fb-r4" name="rating" value="4"><label for="fb-r4" title="4 de 5">★<span class="sr">4 de 5</span></label>
+            <input type="radio" id="fb-r3" name="rating" value="3"><label for="fb-r3" title="3 de 5">★<span class="sr">3 de 5</span></label>
+            <input type="radio" id="fb-r2" name="rating" value="2"><label for="fb-r2" title="2 de 5">★<span class="sr">2 de 5</span></label>
+            <input type="radio" id="fb-r1" name="rating" value="1"><label for="fb-r1" title="1 de 5">★<span class="sr">1 de 5</span></label>
+          </div>
+        </fieldset>
+        <label class="select">¿Qué tan fácil fue conectar tu lightstick?
+          <select name="ease">
+            <option value="">Elige una opción</option>
+            <option value="5">Muy fácil</option>
+            <option value="4">Fácil</option>
+            <option value="3">Normal</option>
+            <option value="2">Difícil</option>
+            <option value="1">No pude conectarla</option>
+            <option value="0">No lo intenté</option>
+          </select>
+        </label>
+        <label class="select">¿La usarías en un concierto o fiesta?
+          <select name="would_use">
+            <option value="">Elige una opción</option>
+            <option value="yes">Sí</option>
+            <option value="maybe">Tal vez</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+        <div class="field">
+          <label for="fb-comment">Comentario <output id="fb-count">0/1000</output></label>
+          <textarea id="fb-comment" name="comment" rows="4" maxlength="1000" placeholder="¿Qué te gustó? ¿Qué mejorarías? ¿Algo falló?"></textarea>
+        </div>
+        <label class="check"><input type="checkbox" name="device" checked> Incluir mi tipo de dispositivo y navegador (sin datos personales)</label>
+        <button class="btn primary" type="submit">Enviar opinión</button>
+        <p id="fb-status" class="hint" role="status"></p>
+        <p class="hint"><a id="fb-community" href="#" target="_blank" rel="noopener noreferrer">Ver y comentar en la comunidad (GitHub)</a></p>
+      </form>
     </section>
 
     <!-- Guía de conexión -->
