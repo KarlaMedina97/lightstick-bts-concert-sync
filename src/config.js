@@ -29,4 +29,5 @@ export const LEADERBOARD = {
   supabaseUrl: "",
   supabaseAnonKey: "",
   table: "scores",
+  feedbackTable: "feedback",
 };

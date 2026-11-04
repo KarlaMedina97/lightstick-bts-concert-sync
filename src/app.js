@@ -4,10 +4,13 @@ import { bluetoothSupport, requestStick } from "./ble.js";
 import { Player } from "./player.js";
 import { DONATIONS, PROJECT } from "./config.js";
 import { RhythmChallenge, MIN_TAPS_FOR_RANKING } from "./rhythm.js";
-import { NETWORKS, loadProfile, normalizeHandle, profileUrl, saveProfile, submitScore, topScores } from "./leaderboard.js";
+import { NETWORKS, clearAllLocalData, loadProfile, normalizeHandle, profileUrl, saveProfile, submitScore, topScores } from "./leaderboard.js";
+import { buildFeedback, sendFeedback } from "./feedback.js";
 import { MicSync } from "./mic.js";
 import { fetchTitle, parseYouTubeId } from "./youtube.js";
 import { Guide } from "./guide.js";
+import { Crowd } from "./crowd.js";
+import { Fanchant } from "./fanchant.js";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app");
@@ -26,7 +29,7 @@ const store = {
 };
 
 const SETTINGS_KEY = "pws.settings.v1";
-const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, bpm: {} };
+const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, lyrics: false, lyricsLang: "ko", chant: true, chantVoice: true, bpm: {} };
 const settings = { ...defaults, ...store.get(SETTINGS_KEY, {}) };
 if (matchMedia("(prefers-reduced-motion: reduce)").matches) settings.safeMode = true;
 const saveSettings = () => store.set(SETTINGS_KEY, settings);
@@ -51,6 +54,9 @@ let patternDuration = 0;
 let player;
 let mic = null;
 let view = "video";
+let crowd = null;
+let fanchant = null;
+let chantFlashAt = -1e9;
 const sticks = [];
 
 // ---------- Utilidades ----------
@@ -169,7 +175,7 @@ function showBtWarning(reason) {
   const w = $("bt-warning");
   w.hidden = false;
   if (reason === "ios") {
-    w.innerHTML = `Safari en iPhone y iPad no permite Bluetooth web. Abre esta página en <a href="${BLUEFY_URL}" target="_blank" rel="noopener">Bluefy</a> (gratis) para conectar tu lightstick. Mientras, puedes ver los videos y usar tu pantalla como lightstick.`;
+    w.innerHTML = `Safari en iPhone y iPad no permite Bluetooth web. Abre esta página en <a href="${BLUEFY_URL}" target="_blank" rel="noopener noreferrer">Bluefy</a> (gratis) para conectar tu lightstick. Mientras, puedes ver los videos y usar tu pantalla como lightstick.`;
   } else if (reason === "insecure") {
     w.textContent = "Abre la app desde https:// para usar Bluetooth.";
   } else {
@@ -232,10 +238,17 @@ function songButton(item, index) {
 }
 
 function renderAlbums() {
-  const root = $("albums");
+  $("albums").replaceChildren(...albumNodes(false));
+  $("side-list").replaceChildren(...albumNodes(true));
+  renderMine();
+  markCurrent();
+}
+
+/** Encabezados de álbum + botones con miniatura, para el panel y la lista lateral. */
+function albumNodes(includeMine) {
   const groups = new Map();
   queue.forEach((item, i) => {
-    if (item.album.id === "mine") return;
+    if (item.album.id === "mine" && !includeMine) return;
     if (!groups.has(item.album.id)) groups.set(item.album.id, { album: item.album, items: [] });
     groups.get(item.album.id).items.push([item, i]);
   });
@@ -247,12 +260,63 @@ function renderAlbums() {
     sw.className = "swatches";
     sw.setAttribute("aria-hidden", "true");
     album.palette.slice(0, 3).forEach((c) => { const i = document.createElement("i"); i.style.background = c; sw.append(i); });
-    h.append(sw, document.createTextNode(`${album.title} · ${album.year}`));
+    h.append(sw, document.createTextNode(album.year ? `${album.title} · ${album.year}` : album.title));
     nodes.push(h, ...items.map(([item, i]) => songButton(item, i)));
   }
-  root.replaceChildren(...nodes);
-  renderMine();
-  markCurrent();
+  return nodes;
+}
+
+// ---------- Menú y lista lateral ----------
+const SIDE_KEY = "pws.side.v1";
+const wide = () => matchMedia("(min-width: 1100px)").matches;
+function setSide(open) {
+  if (!wide()) {
+    // En pantallas pequeñas la lista se abre como panel.
+    $("side").hidden = true;
+    app.classList.remove("with-side");
+    $("btn-side").setAttribute("aria-expanded", "false");
+    if (open) showPanel("panel-queue", $("btn-side"));
+    return;
+  }
+  $("side").hidden = !open;
+  app.classList.toggle("with-side", open);
+  $("btn-side").setAttribute("aria-expanded", String(open));
+  store.set(SIDE_KEY, open);
+  if (open) $("side-list").querySelector(".song.playing")?.scrollIntoView({ block: "nearest" });
+}
+function bindMenu() {
+  $("btn-side").onclick = () => (wide() ? setSide($("side").hidden) : setSide(true));
+  $("side-close").onclick = () => { setSide(false); $("btn-side").focus(); };
+  $("btn-feedback").onclick = (e) => showPanel("panel-feedback", e.currentTarget);
+  setSide(wide() && store.get(SIDE_KEY, true));
+  matchMedia("(min-width: 1100px)").addEventListener("change", () => setSide(wide() && store.get(SIDE_KEY, true)));
+}
+
+// ---------- Opiniones ----------
+function bindFeedback() {
+  const form = $("form-feedback");
+  const comment = $("fb-comment");
+  $("fb-community").href = `${PROJECT.repo}/issues?q=label%3Aopinion`;
+  comment.oninput = () => ($("fb-count").textContent = `${comment.value.length}/1000`);
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    const entry = buildFeedback(data, { includeDevice: Boolean(data.device), songId: queue[current]?.song.id ?? null });
+    const status = $("fb-status");
+    if (!entry) {
+      status.textContent = "Elige una calificación o escribe un comentario.";
+      return;
+    }
+    const btn = form.querySelector("[type=submit]");
+    btn.disabled = true;
+    const r = await sendFeedback(entry);
+    btn.disabled = false;
+    status.textContent = r.message;
+    if (r.ok) {
+      form.reset();
+      $("fb-count").textContent = "0/1000";
+    }
+  };
 }
 
 function renderMine() {
@@ -304,7 +368,7 @@ function renderFilms() {
       a.className = "btn small";
       a.href = f.url;
       a.target = "_blank";
-      a.rel = "noopener";
+      a.rel = "noopener noreferrer";
       a.textContent = "Abrir";
       a.setAttribute("aria-label", `Abrir ${f.title} en ${f.platform}`);
       li.append(info, a);
@@ -402,6 +466,29 @@ function next(fromEnd = false) {
   }
   playIndex(nextItem ? current + 1 : 0);
 }
+/** ¿Habrá otra canción después de esta según los ajustes? */
+function willContinue() {
+  if (current < 0) return false;
+  const nextItem = queue[current + 1];
+  const albumEnds = !nextItem || nextItem.album.id !== queue[current].album.id;
+  return !(albumEnds && settings.albumEnd === "stop");
+}
+
+const LYRIC_NAMES = { ko: "coreano", es: "español", en: "inglés", ja: "japonés", pt: "portugués" };
+function applyLyrics(announce) {
+  $("btn-lyrics").setAttribute("aria-pressed", settings.lyrics);
+  player?.setCaptions(settings.lyrics ? settings.lyricsLang : null);
+  if (!announce) return;
+  if (!settings.lyrics) return toast("Letra desactivada.");
+  toast(`Letra en ${LYRIC_NAMES[settings.lyricsLang]} activada (subtítulos oficiales del video).`);
+  setTimeout(() => {
+    const info = player?.captionInfo();
+    if (info && player.state === "playing" && !info.langs.some((l) => l.startsWith(settings.lyricsLang))) {
+      toast(info.available ? "Este video no tiene letra en ese idioma. Prueba con otro en Ajustes." : "Este video no tiene subtítulos oficiales.");
+    }
+  }, 2500);
+}
+
 function prev() {
   if (player.time() > 5) return player.seek(0);
   playIndex(current > 0 ? current - 1 : queue.length - 1);
@@ -479,7 +566,11 @@ function frame(now) {
   const total = Math.max(SIM_COUNT, sticks.length);
   let colors;
 
-  if (mic) {
+  if (fanchant?.running) {
+    const kf = 0.25 + 0.75 * Math.exp(-(now - chantFlashAt) / 260);
+    const c = hexToRgb(PURPLE).map((v) => v * kf);
+    colors = Array.from({ length: total }, () => c);
+  } else if (mic) {
     const c = mic.sample(now);
     colors = Array.from({ length: total }, () => c);
   } else {
@@ -492,6 +583,7 @@ function frame(now) {
   }
 
   sticks.forEach((s, i) => s.setColor(colors[i].map((v) => v * k)));
+  if (crowd) { crowd.setColor(colors[0].map((v) => Math.max(40, v * k))); crowd.draw(now); }
 
   // La interfaz se actualiza a ~20 fps para ahorrar batería.
   if (now - lastUi < 50) return;
@@ -524,6 +616,7 @@ function frame(now) {
     energy = Math.min(1, energy + (dur ? (t / dur) * 0.15 : 0)); // sube poco a poco a lo largo del video
   }
   app.style.setProperty("--energy", energy.toFixed(2));
+  crowd?.setEnergy(energy);
 
   let label;
   if (mic) label = "🎙 Luces siguiendo el micrófono";
@@ -603,6 +696,12 @@ function bindSettings() {
   style.value = settings.style;
   $("chk-safe").checked = settings.safeMode;
   $("chk-wake").checked = settings.wake;
+  $("sel-lyrics").value = settings.lyricsLang;
+  $("chk-chant").checked = settings.chant;
+  $("chk-chant-voice").checked = settings.chantVoice;
+  $("sel-lyrics").onchange = (e) => { settings.lyricsLang = e.target.value; saveSettings(); applyLyrics(settings.lyrics); };
+  $("chk-chant").onchange = (e) => { settings.chant = e.target.checked; saveSettings(); };
+  $("chk-chant-voice").onchange = (e) => { settings.chantVoice = e.target.checked; saveSettings(); };
   $("sel-album-end").value = settings.albumEnd;
   sync();
 
@@ -646,7 +745,7 @@ function renderDonations() {
       a.className = "btn";
       a.href = d.url;
       a.target = "_blank";
-      a.rel = "noopener";
+      a.rel = "noopener noreferrer";
       a.textContent = d.label;
       a.title = d.note;
       return a;
@@ -734,7 +833,7 @@ async function renderRanking() {
       const url = profileUrl(r.network, r.handle);
       const name = document.createElement(url ? "a" : "span");
       name.textContent = `@${r.handle}`;
-      if (url) { name.href = url; name.target = "_blank"; name.rel = "noopener nofollow"; }
+      if (url) { name.href = url; name.target = "_blank"; name.rel = "noopener noreferrer nofollow ugc"; }
       const net = document.createElement("span");
       net.className = "net";
       const extra = rankTab === "all" ? ` · ${r.songs} canción${r.songs > 1 ? "es" : ""}` : ` · ${r.accuracy}%`;
@@ -795,6 +894,7 @@ function selectViewTab(id) {
 
 async function init() {
   setupSim();
+  crowd = new Crowd($("crowd"), { reduceMotion: matchMedia("(prefers-reduced-motion: reduce)").matches });
   renderAlbums();
   renderFilms();
   renderSticks();
@@ -810,8 +910,20 @@ async function init() {
   if (!support.ok) showBtWarning(IS_IOS ? "ios" : support.reason);
 
   $("btn-connect").onclick = onConnect;
-  $("btn-next").onclick = () => next(false);
-  $("btn-prev").onclick = prev;
+  $("btn-next").onclick = () => { fanchant?.stop(); next(false); };
+  $("btn-prev").onclick = () => { fanchant?.stop(); prev(); };
+  fanchant = new Fanchant({
+    onBeat: () => {
+      chantFlashAt = performance.now();
+      crowd?.flash();
+    },
+  });
+  $("btn-lyrics").onclick = () => {
+    settings.lyrics = !settings.lyrics;
+    saveSettings();
+    applyLyrics(true);
+  };
+  applyLyrics(false);
   $("btn-play").onclick = togglePlay;
   $("btn-mic").onclick = toggleMic;
   $("btn-mic-2").onclick = toggleMic;
@@ -850,6 +962,17 @@ async function init() {
     hasSticks: () => sticks.length > 0,
   });
   $("btn-guide").onclick = () => { closePanel(false); guide.open(); };
+  bindMenu();
+  bindFeedback();
+  $("btn-clear-data").onclick = () => {
+    if (!confirm("¿Borrar tus ajustes, nickname, puntajes y videos guardados en este dispositivo?")) return;
+    clearAllLocalData();
+    toast("Datos borrados. La página se recargará.");
+    setTimeout(() => location.reload(), 1200);
+  };
+  // El micrófono se apaga al salir de la página o al ocultarla.
+  addEventListener("pagehide", () => mic?.stop());
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && mic) toggleMic(); });
   const params = new URLSearchParams(location.search);
   let seen = false;
   try { seen = localStorage.getItem("pws.guide.seen") === "1"; } catch {}
@@ -859,7 +982,13 @@ async function init() {
     onState: onPlayerState,
     onEnded: async () => {
       await finishChallenge();
-      if (settings.autoNext) next(true);
+      if (!settings.autoNext) return;
+      const endedAt = current;
+      if (settings.chant && willContinue()) {
+        await fanchant.run({ voice: settings.chantVoice });
+        if (current !== endedAt) return; // la persona eligió otra canción durante el fanchant
+      }
+      next(true);
     },
     onError: () => {
       toast("Este video no se puede reproducir aquí. Pasando al siguiente.");
@@ -868,6 +997,7 @@ async function init() {
   });
   requestAnimationFrame(frame);
   await player.init();
+  applyLyrics(false);
 
   if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
 }

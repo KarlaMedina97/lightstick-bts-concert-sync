@@ -29,10 +29,24 @@ App web progresiva (PWA), gratuita y de código abierto, para sincronizar tu lig
 - **Guía de conexión narrada**, como los anuncios antes de un concierto: pasos animados, subtítulos y voz.
 - **Landing 3D** (three.js + GSAP): una lightstick gigante que cambia de color, reacciona al toque y gira al ritmo
   de la intro de la canción del grupo más escuchada del momento (configurable en `src/config.js`).
+- **Multitud de fans** con lightsticks detrás del video, que se ilumina con el color y la energía de la canción.
+- **Letra opcional** con los subtítulos oficiales del video en YouTube (hangul, español, inglés, japonés o portugués).
+  El proyecto no incluye letras: se muestran solo si el video tiene esa pista.
+- **Fanchant entre canciones:** como en los conciertos, aparecen los nombres de los integrantes (hangul y romanización)
+  con ovación y destellos antes de la siguiente canción. Se puede saltar o desactivar.
+- **Menú fijo y lista lateral** con miniaturas de las canciones por álbum, y sección **Opinar** (calificación,
+  facilidad para conectar y comentario anónimo) para medir si la experiencia gusta.
 - **Tu pantalla como lightstick** cuando no hay Bluetooth, con la pantalla siempre encendida (Wake Lock).
 - **Accesible:** navegación con teclado, lector de pantalla, alto contraste y
   **modo seguro** (máx. 3 destellos/segundo, WCAG 2.3.1).
 - **Funciona como app instalable** y abre sin conexión (los videos sí necesitan internet).
+
+## Seguridad y privacidad
+
+- Sin cuentas ni servidor propio: los datos de cada persona quedan en su dispositivo y se pueden borrar desde Ajustes.
+- Content-Security-Policy en cada página (`npm run csp`), librerías servidas desde `vendor/` (sin CDNs),
+  YouTube en modo de privacidad mejorada y validación de todo lo que llega del almacenamiento o del servidor.
+- Micrófono procesado solo en el dispositivo. Ver [privacidad.html](privacidad.html) y [SECURITY.md](SECURITY.md).
 
 ## Compatibilidad
 

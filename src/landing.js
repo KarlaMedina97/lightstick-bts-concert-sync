@@ -43,10 +43,11 @@ if (renderer) {
   scene.add(rim);
 
   // ---------- Lightstick (ilustración inspirada, no el diseño oficial) ----------
-  // Proporciones aproximadas de un lightstick de globo (≈ 9,3 cm de globo y 21,8 cm de largo):
-  // 1 unidad ≈ 3 cm → globo r = 1.55, largo total ≈ 7.3. Globo transparente, cuerpo negro
-  // brillante, aro plateado fino y dos botones en el mango. Dentro del globo va una forma
-  // abstracta (no se reproduce ningún logo ni emblema).
+  // Proporciones de un lightstick de globo (globo ≈ 2,2× el ancho del mango; largo ≈ 2,4× el globo):
+  // 1 unidad ≈ 3 cm → globo r = 1.55, mango r = 0.7, largo total ≈ 7.4. Globo transparente sobre
+  // un collar negro corto, mango negro satinado recto, botón tipo píldora y remate con gema roja.
+  // Dentro del globo hay un emblema ORIGINAL (una ola, identidad de "Purple Wave"): no se
+  // reproduce ningún logo ni emblema registrado.
   const stick = new THREE.Group();
   const color = PALETTE[0].clone();
   // Revoluciona un perfil [radio, y] alrededor del eje Y.
@@ -57,80 +58,112 @@ if (renderer) {
   };
 
   const R = 1.55; // radio del globo
-  // Volumen de luz difusa dentro del globo (lo que "pinta" el color).
+  const BASE_Y = -1.16; // cara superior del disco interior
+  // Resplandor suave dentro del globo (tiñe el globo con el color actual).
   const core = new THREE.Mesh(
-    new THREE.SphereGeometry(0.98, 40, 28),
-    new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.45, depthWrite: false }),
+    new THREE.SphereGeometry(R - 0.04, 40, 28),
+    new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.1, depthWrite: false }),
   );
-  core.position.y = 0.05;
   core.renderOrder = 1;
-  // Halo esmerilado alrededor: degrada la luz hacia el borde del globo.
-  const haze = new THREE.Mesh(new THREE.SphereGeometry(1.4, 40, 28), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.2, depthWrite: false }));
-  haze.position.y = 0.02;
-  haze.renderOrder = 1;
-  // Forma abstracta flotando en el centro: gema facetada (no es un logo).
-  const crystalGeo = new THREE.OctahedronGeometry(0.5, 0);
-  crystalGeo.scale(0.8, 1.25, 0.8);
+
+  // Emblema: una sola pieza vertical de acrílico esmerilado con forma de ola que rompe.
+  const wave = new THREE.Shape();
+  wave.moveTo(-0.5, 0);
+  wave.lineTo(0.56, 0);
+  wave.bezierCurveTo(0.34, 0.12, 0.04, 0.55, 0.1, 1.0); // cara de la ola
+  wave.bezierCurveTo(0.14, 1.26, 0.34, 1.34, 0.46, 1.22); // hueco bajo el labio
+  wave.bezierCurveTo(0.57, 1.11, 0.64, 1.3, 0.54, 1.46); // punta del rizo
+  wave.bezierCurveTo(0.38, 1.8, -0.1, 1.92, -0.37, 1.64); // cresta
+  wave.bezierCurveTo(-0.62, 1.3, -0.64, 0.5, -0.5, 0); // lomo
+  const emblemGeo = new THREE.ExtrudeGeometry(wave, { depth: 0.08, bevelEnabled: true, bevelThickness: 0.035, bevelSize: 0.035, bevelSegments: 2, curveSegments: 14 });
+  emblemGeo.translate(0, 0, -0.04);
   const crystal = new THREE.Mesh(
-    crystalGeo,
-    new THREE.MeshStandardMaterial({ color: "#ffffff", emissive: color, emissiveIntensity: 1.3, flatShading: true, metalness: 0.1, roughness: 0.25 }),
+    emblemGeo,
+    new THREE.MeshPhysicalMaterial({ color: "#2a2836", emissive: color, emissiveIntensity: 1.8, roughness: 0.5, metalness: 0, clearcoat: 0.5, transparent: true, opacity: 0.93 }),
   );
-  crystal.position.y = 0.1;
+  crystal.position.y = BASE_Y + 0.02;
   crystal.renderOrder = 2;
-  // Globo de policarbonato transparente.
+  // Bordes biselados que brillan más (el bloom los resalta).
+  const emblemEdges = new THREE.LineSegments(new THREE.EdgesGeometry(emblemGeo, 35), new THREE.LineBasicMaterial({ color }));
+  emblemEdges.position.copy(crystal.position);
+
+  // Disco base con anillo iluminado y 24 marcas blancas como la esfera de un reloj.
+  const baseDisc = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.93, 0.9, 0.08, 64),
+    new THREE.MeshPhysicalMaterial({ color: "#e9e6f2", roughness: 0.55, transparent: true, opacity: 0.55, depthWrite: false }),
+  );
+  baseDisc.position.y = BASE_Y - 0.04;
+  const ledRing = new THREE.Mesh(new THREE.TorusGeometry(0.84, 0.028, 6, 72), new THREE.MeshBasicMaterial({ color }));
+  ledRing.rotation.x = Math.PI / 2;
+  ledRing.position.y = BASE_Y + 0.005;
+  const ticks = new THREE.Mesh(
+    mergeGeometries(Array.from({ length: 24 }, (_, i) => {
+      const g = new THREE.BoxGeometry(0.025, 0.012, 0.11);
+      g.translate(0, 0, 0.7);
+      g.rotateY((i / 24) * Math.PI * 2);
+      return g;
+    })),
+    new THREE.MeshBasicMaterial({ color: "#ffffff" }),
+  );
+  ticks.position.y = BASE_Y + 0.008;
+
+  // Globo de policarbonato perfectamente transparente.
   const shellMat = new THREE.MeshPhysicalMaterial({
-    color: "#ffffff", roughness: 0.04, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03,
-    transparent: true, opacity: 0.2, emissive: color, emissiveIntensity: 0.3, depthWrite: false,
+    color: "#ffffff", roughness: 0.02, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.02,
+    transparent: true, opacity: 0.12, emissive: color, emissiveIntensity: 0.12, depthWrite: false,
   });
   const shell = new THREE.Mesh(new THREE.SphereGeometry(R, 64, 48), shellMat);
   shell.renderOrder = 3;
   const coreLight = new THREE.PointLight(color, 30, 12, 2);
-  coreLight.position.y = 0.1;
-  // Anillo de LEDs en la base interior del globo.
-  const ledRing = new THREE.Mesh(new THREE.TorusGeometry(0.95, 0.05, 8, 64), new THREE.MeshBasicMaterial({ color }));
-  ledRing.rotation.x = Math.PI / 2;
-  ledRing.position.y = -0.94;
+  coreLight.position.y = -0.2;
 
-  const dark = new THREE.MeshPhysicalMaterial({ color: "#0d0c12", metalness: 0.35, roughness: 0.28, clearcoat: 0.8, clearcoatRoughness: 0.2 });
-  const chrome = new THREE.MeshStandardMaterial({ color: "#dcd9e8", metalness: 1, roughness: 0.15 });
-  // Copa negra que abraza la parte baja del globo y baja hasta el mango.
+  const gloss = new THREE.MeshPhysicalMaterial({ color: "#0b0a10", metalness: 0.3, roughness: 0.3, clearcoat: 0.9, clearcoatRoughness: 0.15 });
+  const satin = new THREE.MeshStandardMaterial({ color: "#121117", metalness: 0.25, roughness: 0.55 });
+  const chrome = new THREE.MeshStandardMaterial({ color: "#e4e2ee", metalness: 1, roughness: 0.15 });
+  // Collar corto, algo más ancho que el mango, donde se apoya el globo.
+  const collarTop = -Math.sqrt(R * R - 0.78 * 0.78); // altura donde el globo mide r = 0.78
   const collar = new THREE.Mesh(
-    lathe([[1.04, -1.0], [1.17, -1.0], [1.2, -1.04], [1.16, -1.16], [1.0, -1.32], [0.76, -1.46], [0.58, -1.56], [0.53, -1.66]]),
-    dark,
+    lathe([[0.7, collarTop + 0.04], [0.8, collarTop], [0.81, collarTop - 0.06], [0.81, -1.62], [0.75, -1.67], [0.7, -1.69]]),
+    gloss,
   );
-  // Aro plateado fino en el borde de la copa.
-  const rimRing = new THREE.Mesh(new THREE.TorusGeometry(1.175, 0.03, 10, 72), chrome);
+  // Borde fino y brillante del collar.
+  const rimRing = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.018, 8, 64), chrome);
   rimRing.rotation.x = Math.PI / 2;
-  rimRing.position.y = -1.01;
-  // Mango largo, ligeramente entallado, con extremo redondeado.
+  rimRing.position.y = collarTop;
+  // Mango recto, negro satinado, con el extremo inferior redondeado.
   const handle = new THREE.Mesh(
-    lathe([[0.53, -1.66], [0.515, -2.1], [0.485, -3.0], [0.46, -3.8], [0.455, -4.5], [0.47, -5.0], [0.5, -5.35], [0.5, -5.5], [0.46, -5.62], [0.32, -5.69], [0, -5.71]]),
-    dark,
+    lathe([[0.7, -1.69], [0.7, -5.62], [0.68, -5.74], [0.6, -5.83], [0.42, -5.88], [0, -5.9]]),
+    satin,
   );
-  // Junta plateada fina entre copa y mango.
-  const neck = new THREE.Mesh(new THREE.TorusGeometry(0.535, 0.022, 8, 48), chrome);
-  neck.rotation.x = Math.PI / 2;
-  neck.position.y = -1.67;
-  const grips = [-5.2].map((y) => {
-    const g = new THREE.Mesh(new THREE.TorusGeometry(0.49, 0.018, 8, 48), chrome);
-    g.rotation.x = Math.PI / 2;
-    g.position.y = y;
-    return g;
-  });
-  // Dos botones en el frente del mango (el de arriba muestra el color actual).
-  const button = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.08, 24), new THREE.MeshBasicMaterial({ color }));
-  button.rotation.x = Math.PI / 2;
-  button.position.set(0, -2.25, 0.5);
-  const button2 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.07, 24), chrome);
-  button2.rotation.x = Math.PI / 2;
-  button2.position.set(0, -2.62, 0.49);
-  // Remate superior negro (donde se encajan los accesorios).
-  const cap = new THREE.Mesh(lathe([[0.36, 1.44], [0.34, 1.56], [0.28, 1.66], [0.16, 1.72], [0, 1.735]], 40), dark);
-  const capRing = new THREE.Mesh(new THREE.TorusGeometry(0.36, 0.014, 6, 40), dark);
-  capRing.rotation.x = Math.PI / 2;
-  capRing.position.y = 1.5;
+  // Botón tipo píldora vertical en el tercio superior, con contorno plateado.
+  const pill = (r, len, mat) => {
+    const m = new THREE.Mesh(new THREE.CapsuleGeometry(r, len, 4, 16), mat);
+    m.scale.z = 0.35;
+    return m;
+  };
+  const buttonRim = pill(0.12, 0.42, chrome);
+  buttonRim.position.set(0, -2.55, 0.69);
+  const button = pill(0.095, 0.4, new THREE.MeshStandardMaterial({ color: "#16141c", emissive: color, emissiveIntensity: 0.25, roughness: 0.4 }));
+  button.position.set(0, -2.55, 0.705);
+  // Remate superior: tapa negra cilíndrica inclinada ~20° hacia el frente con una gema roja facetada.
+  const capGroup = new THREE.Group();
+  const capBody = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.48, 0.24, 40), gloss);
+  capBody.position.y = 0.12;
+  const capEdge = new THREE.Mesh(new THREE.TorusGeometry(0.46, 0.012, 6, 40), chrome);
+  capEdge.rotation.x = Math.PI / 2;
+  capEdge.position.y = 0.24;
+  const gem = new THREE.Mesh(
+    lathe([[0.28, 0.24], [0.33, 0.3], [0.2, 0.47], [0, 0.5]], 8),
+    new THREE.MeshPhysicalMaterial({ color: "#b0122c", emissive: "#4a0010", roughness: 0.08, metalness: 0.1, clearcoat: 1, flatShading: true }),
+  );
+  const capMount = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.2, 24), gloss); // se hunde en el globo
+  capMount.position.y = -0.08;
+  capGroup.add(capMount, capBody, capEdge, gem);
+  const tilt = THREE.MathUtils.degToRad(20);
+  capGroup.rotation.x = tilt;
+  capGroup.position.set(0, Math.cos(tilt) * (R - 0.17), Math.sin(tilt) * (R - 0.17));
 
-  stick.add(core, haze, crystal, shell, coreLight, ledRing, collar, rimRing, neck, handle, ...grips, button, button2, cap, capRing);
+  stick.add(core, baseDisc, ledRing, ticks, crystal, emblemEdges, shell, coreLight, collar, rimRing, handle, buttonRim, button, capGroup);
   const pivot = new THREE.Group(); // inclinación por puntero
   pivot.add(stick);
   const STICK_Y = 1.65;
@@ -228,8 +261,8 @@ if (renderer) {
     camera.aspect = w / h;
     const mobile = w < 720;
     // El lightstick completo (≈7.4 de alto) cabe en el encuadre.
-    pivot.position.set(mobile ? 0 : Math.min(3.4, w / 420), mobile ? 1.6 : 0.35, 0);
-    pivot.scale.setScalar(mobile ? Math.max(0.42, Math.min(0.55, w / 720)) : 0.78);
+    pivot.position.set(mobile ? 0 : Math.min(3.4, w / 420), mobile ? 1.45 : 0.35, 0);
+    pivot.scale.setScalar(mobile ? Math.max(0.4, Math.min(0.48, w / 810)) : 0.74);
     camera.updateProjectionMatrix();
   }
   addEventListener("resize", resize);
@@ -318,6 +351,7 @@ if (renderer) {
     }
     await loadYT();
     player = new window.YT.Player("yt", {
+      host: "https://www.youtube-nocookie.com",
       width: 200,
       height: 200,
       videoId: FEATURED.yt,
@@ -377,17 +411,16 @@ if (renderer) {
     // Giro con inercia.
     if (!dragging) spinVel += (0.004 - spinVel) * Math.min(1, dt * 1.6);
     if (!reduceMotion) stick.rotation.y += spinVel;
-    crystal.rotation.x += dt * 0.6;
-    crystal.rotation.y -= dt * 0.9;
     stick.position.y = STICK_Y + (reduceMotion ? 0 : Math.sin(t * 1.2) * 0.08);
 
     // Color y brillo.
     core.material.color.copy(color).multiplyScalar(0.55 + 0.3 * glow.intensity);
-    haze.material.color.copy(core.material.color);
     crystal.material.emissive.copy(color);
     shellMat.emissive.copy(color);
-    shellMat.emissiveIntensity = 0.25 + 0.25 * glow.intensity;
-    button.material.color.copy(color);
+    shellMat.emissiveIntensity = 0.08 + 0.1 * glow.intensity;
+    crystal.material.emissiveIntensity = 1.3 + 0.6 * glow.intensity;
+    emblemEdges.material.color.copy(color).multiplyScalar(1.1 + 0.5 * glow.intensity);
+    button.material.emissive.copy(color);
     ledRing.material.color.copy(color).multiplyScalar(0.8 + 0.4 * glow.intensity);
     coreLight.color.copy(color);
     coreLight.intensity = 12 + 10 * glow.intensity;

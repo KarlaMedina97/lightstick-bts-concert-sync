@@ -34,6 +34,7 @@ export class Player {
     const YT = await loadYouTubeApi();
     await new Promise((resolve) => {
       this.yt = new YT.Player(this.mount, {
+        host: "https://www.youtube-nocookie.com", // modo de privacidad mejorada: sin cookies de seguimiento hasta reproducir
         width: "100%",
         height: "100%",
         playerVars: { playsinline: 1, rel: 0, modestbranding: 1 },
@@ -44,9 +45,45 @@ export class Player {
           },
           onStateChange: (e) => this.#onState(e.data),
           onError: (e) => this.cb.onError?.(e.data),
+          // El módulo de subtítulos se carga después de empezar a reproducir.
+          onApiChange: () => this.#applyCaptions(),
         },
       });
     });
+  }
+
+  /**
+   * Letra: activa los subtítulos oficiales del video (los que publica el canal) en el idioma pedido.
+   * No incluimos letras en el proyecto; dependen de que el video tenga esa pista.
+   * @param {string|null} lang "ko", "es", "en"… o null para apagar.
+   */
+  setCaptions(lang) {
+    this.captionLang = lang;
+    this.#applyCaptions();
+  }
+
+  /** @returns {{available:boolean, langs:string[]}} */
+  captionInfo() {
+    try {
+      const list = this.yt?.getOption?.("captions", "tracklist") ?? [];
+      return { available: list.length > 0, langs: list.map((t) => t.languageCode) };
+    } catch {
+      return { available: false, langs: [] };
+    }
+  }
+
+  #applyCaptions() {
+    if (!this.ready) return;
+    try {
+      if (this.captionLang) {
+        this.yt.loadModule("captions");
+        this.yt.setOption("captions", "track", { languageCode: this.captionLang });
+        this.yt.setOption("captions", "fontSize", 1);
+      } else {
+        this.yt.setOption("captions", "track", {});
+        this.yt.unloadModule("captions");
+      }
+    } catch {}
   }
 
   #onState(code) {
@@ -62,6 +99,7 @@ export class Player {
     this.lastRawAt = performance.now();
     if (autoplay) this.yt.loadVideoById(videoId);
     else this.yt.cueVideoById(videoId);
+    if (this.captionLang) setTimeout(() => this.#applyCaptions(), 1500);
   }
 
   play() { this.yt?.playVideo(); }
