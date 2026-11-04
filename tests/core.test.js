@@ -1,0 +1,45 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { buildPacket } from "../src/ble.js";
+import { generatePattern, hexToRgb } from "../src/patterns.js";
+import { ALBUMS, flatQueue } from "../src/catalog.js";
+
+test("paquete V4: RGB + modo", () => {
+  assert.deepEqual([...buildPacket("v4", [255, 0, 128])], [255, 0, 128, 1]);
+});
+
+test("paquete SE: 11 bytes con suma de control", () => {
+  const p = [...buildPacket("se", [10, 20, 30])];
+  assert.equal(p.length, 11);
+  assert.equal(p[10], (1 + 1 + 11 + 10 + 20 + 30 - 2) & 0xff);
+});
+
+test("la cola recorre los álbumes en orden", () => {
+  const q = flatQueue();
+  assert.equal(q.length, ALBUMS.reduce((n, a) => n + a.songs.length, 0));
+  assert.equal(q[0].album.id, ALBUMS[0].id);
+});
+
+test("los patrones dan colores válidos en toda la canción", () => {
+  for (const album of ALBUMS) for (const song of album.songs) {
+    const p = generatePattern(song, album, 200, { safeMode: true });
+    for (let t = 0; t < 200; t += 0.37) {
+      for (const v of p.colorAt(t, 2, 5)) assert.ok(v >= 0 && v <= 255 && Number.isFinite(v));
+    }
+  }
+});
+
+test("modo seguro: como máximo 3 destellos por segundo", () => {
+  const album = { palette: ["#ffffff"] };
+  const song = { bpm: 200, energy: "high" };
+  const p = generatePattern(song, album, 100, { styleOverride: "flash", safeMode: true });
+  let changes = 0, prev = null;
+  for (let t = 10; t < 20; t += 0.01) {
+    const on = p.colorAt(t)[0] > 128;
+    if (prev !== null && on && !prev) changes++;
+    prev = on;
+  }
+  assert.ok(changes / 10 <= 3, `destellos/s = ${changes / 10}`);
+});
+
+test("hexToRgb", () => assert.deepEqual(hexToRgb("#8a2be2"), [138, 43, 226]));

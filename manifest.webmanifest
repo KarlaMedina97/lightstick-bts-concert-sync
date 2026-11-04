@@ -1,0 +1,14 @@
+{
+  "name": "Purple Wave Sync",
+  "short_name": "PurpleWave",
+  "description": "Sincroniza tu lightstick con canciones, álbum por álbum. Proyecto de fans, abierto y no oficial.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#12081d",
+  "theme_color": "#1b0b2e",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
