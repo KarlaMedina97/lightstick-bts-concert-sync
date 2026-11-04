@@ -2,172 +2,74 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Purple Wave Sync</title>
-  <meta name="description" content="App web abierta para sincronizar tu lightstick con canciones, álbum por álbum.">
-  <meta name="theme-color" content="#1b0b2e">
+  <meta name="description" content="Página web no oficial para sincronizar tu lightstick (ARMY Bomb) con videos de canciones y conciertos de BTS. Gratis y de código abierto.">
+  <meta name="theme-color" content="#060818">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta property="og:title" content="Purple Wave Sync · Lightstick BTS concert sync">
+  <meta property="og:description" content="Sincroniza tu lightstick con canciones y conciertos de BTS desde el navegador.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="landing.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 </head>
 <body>
-  <a class="skip" href="#main">Saltar al contenido</a>
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
 
-  <header class="topbar">
-    <div class="brand">
-      <img src="icons/icon.svg" alt="" width="36" height="36">
-      <div>
-        <h1>Purple Wave Sync</h1>
-        <p class="tag">Proyecto de fans · no oficial</p>
-      </div>
-    </div>
-    <div id="conn-chip" class="chip" role="status" aria-live="polite">Sin lightstick</div>
+  <header class="nav">
+    <a class="brand" href="./"><img src="icons/icon.svg" alt="" width="28" height="28"> Purple Wave Sync</a>
+    <nav aria-label="Principal">
+      <a href="app.html?guia=1">Cómo conectar</a>
+      <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync" target="_blank" rel="noopener">GitHub</a>
+    </nav>
   </header>
 
-  <main id="main" class="layout">
-    <!-- Paso 1 -->
-    <section class="card step" aria-labelledby="s1-title">
-      <h2 id="s1-title"><span class="num" aria-hidden="true">1</span> Conecta tu lightstick</h2>
-      <p class="hint">Enciende la lightstick y el Bluetooth. Puedes conectar varias para hacer olas.</p>
-      <div class="row">
-        <button id="btn-connect" class="btn primary" type="button">Conectar lightstick</button>
-        <label class="check"><input id="chk-all" type="checkbox"> Mostrar todos los dispositivos</label>
-      </div>
-      <p id="bt-warning" class="warning" hidden></p>
-      <ul id="stick-list" class="sticks" aria-label="Lightsticks conectadas"></ul>
-    </section>
-
-    <!-- Paso 2 -->
-    <section class="card step albums-card" aria-labelledby="s2-title">
-      <h2 id="s2-title"><span class="num" aria-hidden="true">2</span> Elige la música</h2>
-      <p class="hint">Las canciones están agrupadas por álbum. Al terminar una, empieza la siguiente.</p>
-      <div id="albums" class="albums"></div>
-    </section>
-
-    <!-- Paso 3 -->
-    <section class="card now" aria-labelledby="s3-title">
-      <h2 id="s3-title"><span class="num" aria-hidden="true">3</span> Ahora suena</h2>
-      <div class="now-head">
-        <div>
-          <p id="now-title" class="now-title">Elige una canción</p>
-          <p id="now-album" class="now-album">—</p>
-        </div>
-        <div class="style-badge" aria-live="polite">
-          <span class="label">Luces</span>
-          <span id="now-style">—</span>
-        </div>
-      </div>
-
-      <div class="stage" aria-label="Vista previa de las luces">
-        <div id="sim" class="sim" aria-hidden="true"></div>
-        <p id="now-section" class="section-label">—</p>
-      </div>
-
-      <div class="timeline-wrap">
-        <div id="timeline" class="timeline" aria-hidden="true"><div id="playhead" class="playhead"></div></div>
-        <div class="times"><span id="t-cur">0:00</span><span id="t-dur">0:00</span></div>
-      </div>
-
-      <div class="controls" role="group" aria-label="Controles de reproducción">
-        <button id="btn-prev" class="btn icon" type="button" aria-label="Canción anterior">⏮</button>
-        <button id="btn-play" class="btn primary icon big" type="button" aria-label="Reproducir">▶</button>
-        <button id="btn-next" class="btn icon" type="button" aria-label="Siguiente canción">⏭</button>
-      </div>
-
-      <div class="row wrap">
-        <label class="check"><input id="chk-auto" type="checkbox" checked> Pasar a la siguiente al terminar</label>
-        <label class="select">Al terminar el álbum
-          <select id="sel-album-end">
-            <option value="next">seguir con el siguiente álbum</option>
-            <option value="repeat">repetir el álbum</option>
-            <option value="stop">detener</option>
-          </select>
-        </label>
-      </div>
-
-      <details class="video">
-        <summary>Mostrar video</summary>
-        <div class="video-box"><div id="yt"></div></div>
-      </details>
-    </section>
-
-    <!-- Reto de ritmo -->
-    <section class="card game" aria-labelledby="game-title">
-      <h2 id="game-title">🏆 Reto de ritmo</h2>
-      <p class="hint">Toca al compás mientras suena la canción y entra al ranking. Sin cuentas: solo tu nickname de redes.</p>
-      <div class="row wrap">
-        <label class="select">Red
-          <select id="sel-network"></select>
-        </label>
-        <label class="select">Nickname
-          <input id="inp-handle" type="text" placeholder="@tu_nick" autocomplete="nickname" maxlength="31" spellcheck="false" aria-describedby="handle-help">
-        </label>
-      </div>
-      <p id="handle-help" class="hint">Letras, números, punto o guion bajo (2 a 30).</p>
-      <label class="check"><input id="chk-game" type="checkbox"> Jugar en cada canción</label>
-
-      <button id="tap-pad" class="tap-pad" type="button" aria-describedby="tap-help" disabled>Toca al ritmo</button>
-      <p id="tap-help" class="hint">También con la tecla <kbd>B</kbd>. Los primeros 4 toques calibran; necesitas 16 toques para puntuar.</p>
-      <div class="score-row">
-        <span>Puntos <strong id="g-score">0</strong></span>
-        <span>Combo <strong id="g-combo">0</strong></span>
-        <span>Precisión <strong id="g-acc">—</strong></span>
-      </div>
-      <p id="g-judge" class="judge" aria-hidden="true">&nbsp;</p>
-
-      <div class="tabs" role="tablist" aria-label="Tipo de ranking">
-        <button id="tab-song" role="tab" type="button" aria-selected="true" aria-controls="rank-table">Esta canción</button>
-        <button id="tab-all" role="tab" type="button" aria-selected="false" aria-controls="rank-table">Puntos de fan</button>
-      </div>
-      <table id="rank-table" class="rank" role="tabpanel">
-        <caption id="rank-caption">Ranking</caption>
-        <thead><tr><th scope="col">#</th><th scope="col">Fan</th><th scope="col">Puntos</th></tr></thead>
-        <tbody id="rank-body"></tbody>
-      </table>
-      <p class="hint">Los nicknames no se verifican. <span id="rank-source"></span></p>
-    </section>
-
-    <!-- Ajustes -->
-    <section class="card settings" aria-labelledby="set-title">
-      <h2 id="set-title">Ajustes de luces</h2>
-      <div class="field">
-        <label for="rng-bright">Brillo <output id="out-bright">100%</output></label>
-        <input id="rng-bright" type="range" min="10" max="100" value="100">
-      </div>
-      <div class="field">
-        <label for="rng-latency">Ajuste de sincronía <output id="out-latency">+60 ms</output></label>
-        <input id="rng-latency" type="range" min="-300" max="300" step="10" value="60" aria-describedby="lat-help">
-        <p id="lat-help" class="hint">Si las luces llegan tarde, súbelo. Si se adelantan, bájalo.</p>
-      </div>
-      <div class="field">
-        <label for="sel-style">Estilo de luces</label>
-        <select id="sel-style"></select>
-        <p id="style-help" class="hint"></p>
-      </div>
-      <div class="field">
-        <label for="num-bpm">BPM de la canción actual</label>
-        <input id="num-bpm" type="number" min="40" max="220" step="1" inputmode="numeric">
-      </div>
-      <label class="check"><input id="chk-safe" type="checkbox" checked> Modo seguro: máximo 3 destellos por segundo</label>
-    </section>
-
-    <!-- Donaciones -->
-    <section class="card donate" aria-labelledby="don-title">
-      <h2 id="don-title">Apoya el proyecto 💜</h2>
-      <p class="hint">Purple Wave Sync es gratis y de código abierto. Si te gusta, puedes ayudar a mantenerlo.</p>
-      <div id="donations" class="row wrap"></div>
-      <p class="hint">¿Programas? <a id="repo-link" href="#">Contribuye en GitHub</a>.</p>
-    </section>
+  <main class="hero">
+    <p class="eyebrow reveal">Proyecto de fans · no oficial · gratis</p>
+    <h1 class="reveal">Tu lightstick,<br><span class="grad">al ritmo del concierto</span></h1>
+    <p class="lead reveal">Conecta tu ARMY Bomb por Bluetooth y míralo brillar con los videos de BTS, canción por canción y álbum por álbum.
+      En iPhone, Android o tu computador.</p>
+    <div class="ctas reveal">
+      <a class="btn primary" href="app.html">Entrar a la experiencia</a>
+      <button id="btn-intro" class="btn" type="button" aria-pressed="false">▶ Escuchar la intro</button>
+    </div>
+    <p class="hint reveal">Toca o arrastra la lightstick 💜</p>
   </main>
 
-  <footer class="footer">
-    <p>Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS. Los videos se reproducen desde YouTube.
-      Los patrones de luz se generan en tu navegador y están inspirados en estilos de concierto; no son shows oficiales.</p>
-    <p class="shortcuts">Atajos: <kbd>Espacio</kbd> reproducir/pausar · <kbd>N</kbd> siguiente · <kbd>P</kbd> anterior · <kbd>B</kbd> tocar al ritmo</p>
+  <aside id="mini" class="mini" aria-label="Canción destacada" hidden>
+    <div class="mini-video"><div id="yt"></div></div>
+    <div class="mini-info">
+      <p class="mini-label">Ahora girando con</p>
+      <p id="mini-title" class="mini-title">—</p>
+      <p id="mini-note" class="mini-note"></p>
+    </div>
+    <button id="mini-close" class="mini-close" type="button" aria-label="Detener la intro">✕</button>
+  </aside>
+
+  <section class="features" aria-label="Qué puedes hacer">
+    <article class="feat reveal-up"><h2>Videos + luces</h2><p>Mira los videos oficiales mientras tu lightstick cambia de color con cada parte de la canción.</p></article>
+    <article class="feat reveal-up"><h2>Conciertos</h2><p>¿Ves un concierto en la TV? El modo micrófono hace que tus luces sigan la música.</p></article>
+    <article class="feat reveal-up"><h2>Reto de ritmo</h2><p>Toca al compás y entra al ranking solo con tu nickname de redes. Sin cuentas.</p></article>
+    <article class="feat reveal-up"><h2>Para todas las personas</h2><p>Controles con teclado y lector de pantalla, y modo seguro con máximo 3 destellos por segundo.</p></article>
+  </section>
+
+  <footer class="foot">
+    <p>Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS. La lightstick 3D es una ilustración inspirada, no el diseño oficial.
+      La música se reproduce desde YouTube.</p>
   </footer>
 
-  <div id="toast" class="toast" role="alert" hidden></div>
-
-  <script type="module" src="src/app.js"></script>
+  <script type="module" src="src/landing.js"></script>
 </body>
 </html>

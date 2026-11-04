@@ -21,16 +21,27 @@ App web progresiva (PWA), gratuita y de código abierto, para sincronizar tu lig
 - **Reto de ritmo con rankings sin cuentas:** toca al compás, suma combos y compite solo con tu nickname de
   X, Instagram, TikTok, Weverse o YouTube. Ranking por canción y "puntos de fan" globales
   (local por defecto; global opcional con Supabase, ver [docs/ranking-global.md](docs/ranking-global.md)).
-- **Accesible:** navegación con teclado, lector de pantalla, contraste alto, tema claro/oscuro y
+- **Reproductor de video a pantalla completa** con barra flotante, vista *Video* o *Luces*, y un fondo que
+  brilla con el color actual y un océano de lightsticks que crece con la energía de la canción.
+- **Conciertos:** los conciertos completos oficiales están en Prime Video, Disney+ o Weverse (con DRM, no se
+  pueden incrustar). Ponlos en la TV y activa el **modo micrófono**: las luces siguen la música de la habitación.
+  También puedes agregar presentaciones en vivo oficiales de YouTube en *Mis videos*.
+- **Guía de conexión narrada**, como los anuncios antes de un concierto: pasos animados, subtítulos y voz.
+- **Landing 3D** (three.js + GSAP): una lightstick gigante que cambia de color, reacciona al toque y gira al ritmo
+  de la intro de la canción del grupo más escuchada del momento (configurable en `src/config.js`).
+- **Tu pantalla como lightstick** cuando no hay Bluetooth, con la pantalla siempre encendida (Wake Lock).
+- **Accesible:** navegación con teclado, lector de pantalla, alto contraste y
   **modo seguro** (máx. 3 destellos/segundo, WCAG 2.3.1).
 - **Funciona como app instalable** y abre sin conexión (los videos sí necesitan internet).
 
 ## Compatibilidad
 
-| Plataforma | Navegador |
-| --- | --- |
-| Android, Windows, macOS, ChromeOS, Linux | Chrome, Edge, Opera |
-| iPhone / iPad | Bluefy (Safari no soporta Web Bluetooth) |
+| Plataforma | Videos y luces en pantalla | Lightstick por Bluetooth |
+| --- | --- | --- |
+| Android (Chrome, Edge) | ✅ | ✅ |
+| Windows, macOS, ChromeOS, Linux (Chrome, Edge) | ✅ | ✅ |
+| iPhone / iPad (Safari) | ✅ | ❌ (Apple no permite Bluetooth web) |
+| iPhone / iPad ([Bluefy](https://apps.apple.com/app/id1492822055)) | ✅ | ✅ |
 
 ## Ejecutar en local
 
@@ -50,14 +61,22 @@ El repositorio incluye un flujo de GitHub Actions que publica la app en **GitHub
 ## Estructura
 
 ```
-index.html            Panel principal
-styles.css            Estilos (claro/oscuro)
+index.html            Landing 3D (three.js + GSAP)
+app.html              Reproductor y panel principal
+landing.css           Estilos de la landing
+src/landing.js        Escena 3D de la lightstick
+src/guide.js          Guía de conexión narrada
+src/mic.js            Modo micrófono
+src/youtube.js        Enlaces de YouTube
+styles.css            Estilos del reproductor
 src/app.js            Interfaz, cola de reproducción y bucle de sincronía
 src/ble.js            Conexión Bluetooth y envío de colores
 src/player.js         Reproductor de YouTube con reloj de alta precisión
 src/patterns.js       Generador de patrones de luz
 src/catalog.js        Álbumes y canciones
-src/config.js         Enlaces del proyecto y de donación
+src/rhythm.js         Reto de ritmo (puntuación)
+src/leaderboard.js    Rankings por nickname (local u online)
+src/config.js         Enlaces, donación, canción destacada y ranking global
 docs/protocolo-ble.md Notas del protocolo Bluetooth
 ```
 

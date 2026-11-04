@@ -103,6 +103,36 @@ export const ALBUMS = [
     palette: ["#7b1fa2", "#e1bee7", "#ffffff"],
     songs: [{ id: "yet-to-come", title: "Yet To Come", yt: "kXpOEzNZ8hQ", bpm: 87, energy: "ballad" }],
   },
+  {
+    id: "arirang",
+    title: "ARIRANG",
+    year: 2026,
+    palette: ["#0d3b66", "#4fc3f7", "#e0f7fa"],
+    songs: [{ id: "swim", title: "SWIM", yt: "b4iVv91Z6lY", bpm: 100, energy: "mid" }],
+  },
+];
+
+// Conciertos oficiales completos: están en plataformas de pago con DRM, así que no se pueden
+// incrustar. Se ven allí y la app sincroniza las luces con el modo micrófono.
+export const CONCERT_FILMS = [
+  {
+    id: "ytc-busan",
+    title: "BTS: Yet to Come (Busan 2022)",
+    platform: "Prime Video",
+    url: "https://www.primevideo.com/detail/0K11DW0KILODWF5T5CMO4VW98M",
+  },
+  {
+    id: "ptd-la",
+    title: "Permission to Dance on Stage – LA",
+    platform: "Disney+",
+    url: "https://www.disneyplus.com/",
+  },
+  {
+    id: "weverse",
+    title: "Conciertos y VODs en Weverse",
+    platform: "Weverse",
+    url: "https://weverse.io/bts",
+  },
 ];
 
 /** Lista plana en orden de reproducción: álbum por álbum. */
