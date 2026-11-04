@@ -28,7 +28,7 @@ jobs:
       - run: npm test
       - name: Verificar que la CSP está al día
         run: npm run csp && git diff --exit-code -- index.html app.html
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
