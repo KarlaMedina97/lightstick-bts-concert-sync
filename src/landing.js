@@ -12,6 +12,7 @@ import { FEATURED } from "./config.js";
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
 import { MEMBERS } from "./fanchant.js";
 import { MicSync } from "./mic.js";
+import { spanishClone, localize } from "./i18n.js";
 import { createMaterials, glowTexture, contactShadow } from "./models/shared.js";
 import { createArmyBombV4 } from "./models/armybomb-v4.js";
 
@@ -1492,7 +1493,15 @@ function splitHeading(el) {
   el.replaceChildren(sr, visual);
   return visual;
 }
-const kts = [...document.querySelectorAll(".kt")].map((el) => ({ el, visual: splitHeading(el) }));
+const kts = [...document.querySelectorAll(".kt")].map((el) => ({ el, es: spanishClone(el), visual: splitHeading(el) }));
+// Al cambiar de idioma, las letras sueltas se rehacen desde el original en español (la capa de idioma no las ve).
+addEventListener("pws:lang", () => {
+  for (const k of kts) {
+    k.el.replaceChildren(...localize(k.es.cloneNode(true)).childNodes);
+    k.visual = splitHeading(k.el);
+  }
+  layoutGradients();
+});
 // Degradado continuo sobre letras sueltas: cada letra recibe su desplazamiento dentro del bloque .grad.
 function layoutGradients() {
   for (const g of document.querySelectorAll(".kt .grad")) {

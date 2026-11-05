@@ -388,6 +388,13 @@ body.doc { overflow-x: hidden; }
 /* Barra en teléfonos: marca y botón en una línea. */
 .brand { white-space: nowrap; }
 .nav-cta { white-space: nowrap; }
+.nav-lang {
+  min-width: 44px; min-height: 44px; padding: 0 .7rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .35);
+  background: rgba(10, 8, 28, .45); color: #f4f1fa; font: inherit; font-weight: 700; font-size: .85rem; letter-spacing: .04em; cursor: pointer;
+}
+.nav-lang:hover { background: rgba(255, 255, 255, .14); }
+.nav-lang:focus-visible { outline: 2px solid #c9a6ff; outline-offset: 2px; }
+.nav nav { align-items: center; }
 @media (max-width: 719px) {
   .brand { font-size: .84rem; gap: 8px; }
   .nav-cta { font-size: .8rem; padding: 0 14px; }

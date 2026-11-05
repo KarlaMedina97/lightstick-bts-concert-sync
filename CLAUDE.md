@@ -10,7 +10,7 @@ el lightstick ARMY Bomb por **Web Bluetooth** con videos de YouTube de canciones
 Se publica en GitHub Pages: https://karlamedina97.github.io/lightstick-bts-concert-sync/
 
 - Sin build, sin dependencias de npm, sin backend propio. JavaScript moderno con módulos ES nativos.
-- Interfaz y textos en **español**, cortos y directos.
+- Interfaz y textos en **español** (fuente), cortos y directos; opción de **inglés** con `src/i18n.js`.
 - Node ≥ 22 solo para desarrollo (servidor local, pruebas, scripts).
 
 ## Comandos
@@ -42,6 +42,7 @@ Antes de dar algo por terminado: `npm run check` y probar en el navegador (escri
 | `src/fanchant.js`, `src/crowd.js`, `src/mic.js` | Fanchant entre canciones, multitud en canvas, modo micrófono |
 | `src/rhythm.js`, `src/leaderboard.js`, `src/feedback.js` | Reto de ritmo, rankings por nickname, opiniones |
 | `src/config.js` | Enlaces, donaciones, canción destacada, Supabase opcional |
+| `src/i18n.js`, `src/i18n/en-*.js` | Idioma español/inglés: traduce textos y atributos accesibles con diccionarios (también los que el JS cambia después) |
 | `sw.js` | Service worker (lista `SHELL`: añade ahí cada archivo nuevo y sube la versión de `CACHE`) |
 | `vendor/` | three.js 0.160.0 y GSAP 3.13.0 copiados de npm (ver `vendor/README.md`) |
 | `fonts/` | Unbounded y Plus Jakarta Sans (OFL) servidas localmente |
@@ -57,7 +58,9 @@ Las páginas dentro de carpetas usan rutas relativas con `../`. No uses `<base>`
 
 ### Legal y contenido
 - **No incluir letras de canciones**, audio, video ni imágenes con derechos de autor. La "letra" son los subtítulos
-  oficiales del video de YouTube o un enlace externo (Genius).
+  oficiales del video de YouTube o un enlace externo (Genius). Tampoco **pronunciaciones/romanizaciones** propias
+  (son una copia de la letra): la opción Pronunciación usa la pista romanizada oficial del video o enlaza a Genius.
+  Ver `docs/pronunciacion.md`.
 - **No reproducir el logo de BTS** (dos paneles tipo "puertas") ni marcas de HYBE/BIGHIT. El lightstick 3D usa un
   emblema original en forma de ola. Mantener siempre el aviso "no oficial".
 - **No copiar código** de apps o sitios de terceros. El protocolo BLE está documentado para interoperabilidad;
@@ -72,6 +75,12 @@ Las páginas dentro de carpetas usan rutas relativas con `../`. No uses `<base>`
 - Muestra datos del usuario o del servidor con `textContent`, nunca `innerHTML`. Valida con `sanitizeRow`
   (`src/leaderboard.js`) o equivalentes.
 - Nunca pongas claves `service_role` ni secretos en el repo. La clave `anon` de Supabase es pública por diseño.
+
+### Idioma
+- El HTML y el JS se escriben en español. **Todo texto visible nuevo** (o aria-label, title, data-tip, placeholder) necesita su
+  entrada en `src/i18n/en-landing.js`, `en-player.js` o `en-app.js`; si lleva variables, un patrón `[/^…$/, "…$1"]`.
+- No compares ni leas texto del DOM para decidir lógica (en inglés cambia): usa `data-*` o estado en JS.
+- Para valores que el JS necesita ya traducidos (narración, `confirm()`), usa `t()` de `src/i18n.js`.
 
 ### Accesibilidad y UX
 - Todo control con nombre accesible y usable con teclado; foco visible.
