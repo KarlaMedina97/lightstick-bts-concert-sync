@@ -19,6 +19,8 @@ export const ALBUMS = [
     songs: [
       { id: "no-more-dream", title: "No More Dream", yt: "rBG5L7UsUxA", bpm: 84, energy: "high" },
       { id: "we-are-bulletproof-pt2", title: "We Are Bulletproof Pt.2", yt: "lE9lkSdtZeQ", bpm: 95, energy: "high" },
+      { id: "wab2-dance-practice", title: "We Are Bulletproof Pt.2 (Dance Practice)", yt: "bV9Svms-LYY", bpm: 95, energy: "high" },
+      { id: "wab2-nmd-practice-record", title: "We Are Bulletproof Pt.2 + No More Dream (Practice Record)", yt: "_vJIzDBvPKU", bpm: 95, energy: "high" },
     ],
   },
   {
@@ -38,6 +40,7 @@ export const ALBUMS = [
     songs: [
       { id: "boy-in-luv", title: "Boy In Luv", yt: "LHHjp3IMjMk", bpm: 122, energy: "high", officialCaptions: true },
       { id: "just-one-day", title: "Just One Day", yt: "DTcKkcyS410", bpm: 88, energy: "mid", officialCaptions: true },
+      { id: "come-over", title: "Come Over (Lyric Video)", yt: "MEoxtFRfPoc", bpm: 100, energy: "mid" },
     ],
   },
   {
@@ -49,6 +52,9 @@ export const ALBUMS = [
     songs: [
       { id: "danger", title: "Danger", yt: "bagj78IQ3l0", bpm: 123, energy: "high", officialCaptions: true },
       { id: "war-of-hormone", title: "War of Hormone", yt: "XQmpVHUi-0A", bpm: 122, energy: "high", officialCaptions: true },
+      { id: "danger-dance-practice", title: "Danger (Dance Practice)", yt: "vJwHIpEogEY", bpm: 123, energy: "high" },
+      { id: "war-of-hormone-dance-practice", title: "War of Hormone (Dance Practice)", yt: "JumcC5jFcQc", bpm: 122, energy: "high" },
+      { id: "danger-practice-record", title: "Danger (Practice Record)", yt: "bs8SfZdb4us", bpm: 123, energy: "high" },
     ],
   },
   {
@@ -85,6 +91,9 @@ export const ALBUMS = [
       { id: "i-need-u", title: "I NEED U", yt: "jjskoRh8GTE", bpm: 79, energy: "mid", officialCaptions: true },
       { id: "dope", title: "DOPE", yt: "BVwAVbKYYeM", bpm: 125, energy: "high", officialCaptions: true },
       { id: "dope-dance-practice", title: "DOPE (Dance Practice)", yt: "NnbIIXNPtPU", bpm: 125, energy: "high" },
+      { id: "i-need-u-dance-practice", title: "I NEED U (Dance Practice)", yt: "hvUZb9NT7EY", bpm: 79, energy: "mid" },
+      { id: "i-need-u-practice-record", title: "I NEED U (Practice Record)", yt: "1uVwfEl63xo", bpm: 79, energy: "mid" },
+      { id: "boyz-with-fun-practice-record", title: "Boyz with Fun (Practice Record)", yt: "8I9d5ZFKMCM", bpm: 118, energy: "high" },
     ],
   },
   {
@@ -93,7 +102,11 @@ export const ALBUMS = [
     artist: "BTS",
     year: 2015,
     palette: ["#ff8a65", "#4fc3f7", "#ffffff"],
-    songs: [{ id: "run", title: "RUN", yt: "wKysONrSmew", bpm: 128, energy: "high", officialCaptions: true }],
+    songs: [
+      { id: "run", title: "RUN", yt: "wKysONrSmew", bpm: 128, energy: "high", officialCaptions: true },
+      { id: "run-dance-practice", title: "RUN (Dance Practice)", yt: "9S3ZhJGv8JM", bpm: 128, energy: "high" },
+      { id: "butterfly-practice-record", title: "Butterfly (Practice Record)", yt: "jucstn9Uonk", bpm: 75, energy: "ballad" },
+    ],
   },
   {
     id: "jp-singles-2015",
@@ -159,6 +172,7 @@ export const ALBUMS = [
     songs: [
       { id: "bst", title: "Blood Sweat & Tears", yt: "hmE9f-TEutc", bpm: 93, energy: "mid", officialCaptions: true },
       { id: "boy-meets-evil", title: "Boy Meets Evil (Comeback Trailer)", yt: "iJJSh-eEdRk", bpm: 90, energy: "high", officialCaptions: true },
+      { id: "bst-dance-practice", title: "Blood Sweat & Tears (Dance Practice)", yt: "v8z1TtlY1no", bpm: 93, energy: "mid" },
     ],
   },
   {
@@ -180,6 +194,8 @@ export const ALBUMS = [
       { id: "not-today", title: "Not Today", yt: "9DwzBICPhdM", bpm: 110, energy: "high", officialCaptions: true },
       { id: "spring-day-mcountdown", title: "Spring Day (M COUNTDOWN)", yt: "cMqmnhgNLXY", bpm: 107, energy: "ballad", kind: "concert" },
       { id: "not-today-dance-practice", title: "Not Today (Dance Practice)", yt: "_PwYjNh1bww", bpm: 110, energy: "high" },
+      { id: "spring-day-dance-practice", title: "Spring Day (Dance Practice)", yt: "_AlODdAInRY", bpm: 107, energy: "ballad" },
+      { id: "spring-day-dance-practice-lovely", title: "Spring Day (Dance Practice, Lovely ver.)", yt: "8ZbPyzh3pio", bpm: 107, energy: "ballad" },
     ],
   },
   {
@@ -195,6 +211,7 @@ export const ALBUMS = [
       { id: "dna-mcountdown", title: "DNA (M COUNTDOWN)", yt: "XPTx4BjdyV4", bpm: 130, energy: "high", kind: "concert" },
       { id: "dna-dance-practice", title: "DNA (Dance Practice)", yt: "GEIU_7v40Dw", bpm: 130, energy: "high" },
       { id: "mic-drop-dance-practice", title: "MIC Drop (Dance Practice, MAMA ver.)", yt: "eRkpkveBWyo", bpm: 85, energy: "high" },
+      { id: "best-of-me-practice-record", title: "Best Of Me (Practice Record)", yt: "kFP1jqnibKQ", bpm: 125, energy: "high" },
     ],
   },
   {
@@ -256,6 +273,10 @@ export const ALBUMS = [
       { id: "singularity", title: "Singularity (Comeback Trailer)", yt: "p8npDG2ulKQ", bpm: 78, energy: "ballad", officialCaptions: true },
       { id: "fake-love-inkigayo", title: "FAKE LOVE (Inkigayo)", yt: "eqMd15DLttY", bpm: 78, energy: "mid", kind: "concert", officialCaptions: true },
       { id: "fake-love-dance-practice", title: "FAKE LOVE (Dance Practice)", yt: "nQySbNGu4g0", bpm: 78, energy: "mid" },
+      { id: "airplane-pt2-practice-record", title: "Airplane pt.2 (Practice Record)", yt: "U2cgZLs-3Ag", bpm: 104, energy: "mid" },
+      { id: "airplane-pt2-summer", title: "Airplane pt.2 (Summer ver., Saipan)", yt: "uxzxFPvUJAM", bpm: 104, energy: "mid", kind: "concert" },
+      { id: "anpanman-practice-record", title: "Anpanman (Practice Record)", yt: "gEzOk284TDg", bpm: 140, energy: "high" },
+      { id: "anpanman-today", title: "Anpanman (TODAY Citi Music Series)", yt: "EFHeeRIDAsg", bpm: 140, energy: "high", kind: "concert" },
     ],
   },
   {
@@ -324,6 +345,11 @@ export const ALBUMS = [
       { id: "bwl-music-bank", title: "Boy With Luv (Music Bank)", yt: "S9WAPGF3jJk", bpm: 120, energy: "high", kind: "concert" },
       { id: "home-fallon", title: "HOME (The Tonight Show)", yt: "2rcKpY-4QBI", bpm: 113, energy: "high", kind: "concert", officialCaptions: true },
       { id: "bwl-dance-practice", title: "Boy With Luv (Dance Practice)", yt: "CzvfbRbEjww", bpm: 120, energy: "high" },
+      { id: "dionysus-dance-practice", title: "Dionysus (Dance Practice)", yt: "QmgcyLozkbQ", bpm: 176, energy: "high" },
+      { id: "dionysus-mma-dance-practice", title: "Dionysus (2019 MMA, Dance Practice)", yt: "bccr1BwNI0Y", bpm: 176, energy: "high" },
+      { id: "dionysus-mma-intro-dance-practice", title: "Dionysus (2019 MMA Intro, Dance Practice)", yt: "GYs4bRYZxIA", bpm: 176, energy: "high" },
+      { id: "mma-2019-medley", title: "Persona + Boy In Luv + Boy With Luv + Mikrokosmos + Dionysus (2019 MMA)", yt: "k-0v1fNVdas", bpm: 120, energy: "high", kind: "concert" },
+      { id: "mikrokosmos-sy-in-seoul", title: "Mikrokosmos (Special Clip @ SY IN SEOUL)", yt: "Iq6RdCTLBd8", bpm: 102, energy: "mid", kind: "concert" },
     ],
   },
   {
@@ -348,7 +374,10 @@ export const ALBUMS = [
     artist: "j-hope",
     year: 2019,
     palette: ["#ffeb3b", "#ff7043", "#212121"],
-    songs: [{ id: "chicken-noodle-soup", title: "Chicken Noodle Soup (feat. Becky G)", yt: "i23NEQEFpgQ", bpm: 95, energy: "high", officialCaptions: true }],
+    songs: [
+      { id: "chicken-noodle-soup", title: "Chicken Noodle Soup (feat. Becky G)", yt: "i23NEQEFpgQ", bpm: 95, energy: "high", officialCaptions: true },
+      { id: "cns-sowoozoo", title: "Chicken Noodle Soup (2021 MUSTER SOWOOZOO)", yt: "OHUsPiXfcfM", bpm: 95, energy: "high", kind: "concert" },
+    ],
   },
   {
     id: "winter-bear",
@@ -375,6 +404,8 @@ export const ALBUMS = [
       { id: "on-fallon", title: "ON (Grand Central, The Tonight Show)", yt: "MZh-w2nysuI", bpm: 106, energy: "high", kind: "concert", officialCaptions: true },
       { id: "on-dance-practice", title: "ON (Dance Practice)", yt: "VkuEzN8IS_o", bpm: 106, energy: "high" },
       { id: "black-swan-dance-practice", title: "Black Swan (Dance Practice)", yt: "fTS1jAhWPbw", bpm: 93, energy: "mid" },
+      { id: "on-mama-dance-practice", title: "ON (2020 MAMA, Dance Practice)", yt: "81sNq45I48s", bpm: 106, energy: "high" },
+      { id: "mma-2020-medley", title: "Black Swan + ON + Life Goes On + Dynamite (2020 MMA)", yt: "PtaP4UkZKyc", bpm: 106, energy: "high", kind: "concert" },
     ],
   },
   {
@@ -440,6 +471,15 @@ export const ALBUMS = [
       { id: "dynamite-grammys", title: "Dynamite (63rd GRAMMY Awards)", yt: "jWRMXiHhDjc", bpm: 114, energy: "high", kind: "concert" },
       { id: "life-goes-on-corden", title: "Life Goes On + Dynamite (The Late Late Show)", yt: "IDIiFj_q1Sc", bpm: 81, energy: "mid", kind: "concert" },
       { id: "dynamite-dance-practice", title: "Dynamite (Dance Practice, Cute & Lovely ver.)", yt: "WhDsAW1ZzZ8", bpm: 114, energy: "high" },
+      { id: "dynamite-dance-practice-original", title: "Dynamite (Dance Practice)", yt: "CN4fffh7gmk", bpm: 114, energy: "high" },
+      { id: "dynamite-mma-dance-break", title: "Dynamite (2020 MMA Dance Break Practice)", yt: "uBZXCkwCKxw", bpm: 114, energy: "high" },
+      { id: "dynamite-agt", title: "Dynamite (America's Got Talent 2020)", yt: "e81ad5MpfQ0", bpm: 114, energy: "high", kind: "concert" },
+      { id: "dynamite-siriusxm", title: "Dynamite (SiriusXM Hits 1)", yt: "wdIwZnYuXu4", bpm: 114, energy: "high", kind: "concert" },
+      { id: "dynamite-sing-with-me", title: "Sing 'Dynamite' with me", yt: "JvjvbBDqdgw", bpm: 114, energy: "high" },
+      { id: "dynamite-sing-with-me-army", title: "Sing 'Dynamite' with me (feat. ARMY)", yt: "e07LQnuHKnI", bpm: 114, energy: "high" },
+      { id: "dynamite-sing-with-me-holiday", title: "Sing 'Dynamite' with me (Holiday Remix)", yt: "y8pTFwksO7s", bpm: 114, energy: "high" },
+      { id: "life-goes-on-video-call-rm", title: "Life Goes On (Video Call ver., RM)", yt: "oz9xoFyZnDo", bpm: 81, energy: "ballad" },
+      { id: "life-goes-on-forest", title: "Life Goes On (in the forest ver.)", yt: "yKJOiVU_q7A", bpm: 81, energy: "ballad", kind: "concert" },
     ],
   },
   {
@@ -466,6 +506,17 @@ export const ALBUMS = [
       { id: "ptd-un", title: "Permission to Dance (ONU, Asamblea General)", yt: "9SmQOZWNyWE", bpm: 125, energy: "high", kind: "concert", officialCaptions: true },
       { id: "butter-dance-practice", title: "Butter (Dance Practice)", yt: "ujf3iJoWgrM", bpm: 110, energy: "high" },
       { id: "ptd-dance-practice", title: "Permission to Dance (Dance Practice)", yt: "0xSFPome3Tc", bpm: 125, energy: "high" },
+      { id: "butter-spv", title: "Butter (Special Performance Video)", yt: "DbXMjAYSa68", bpm: 110, energy: "high" },
+      { id: "butter-megan-spv", title: "Butter (feat. Megan Thee Stallion) (Special Performance Video)", yt: "IkeZX2hnoOk", bpm: 110, energy: "high" },
+      { id: "butter-grammys-64", title: "Butter (64th GRAMMY Awards)", yt: "HbkBVxU5K5A", bpm: 110, energy: "high", kind: "concert" },
+      { id: "butter-siriusxm", title: "Butter (SiriusXM Hits 1)", yt: "DSEO6BAh3kw", bpm: 110, energy: "high", kind: "concert" },
+      { id: "butter-music-blood", title: "Butter (MUSIC BLOOD)", yt: "eMCTbqy-g4Q", bpm: 110, energy: "high", kind: "concert" },
+      { id: "butter-fns", title: "Butter (FNS MUSIC FESTIVAL)", yt: "oN8JeU3G4fM", bpm: 110, energy: "high", kind: "concert" },
+      { id: "butter-fallon-bangtantv", title: "Butter (The Tonight Show, BANGTANTV)", yt: "xPG0yUm2giQ", bpm: 110, energy: "high", kind: "concert" },
+      { id: "ptd-global-citizen", title: "Permission to Dance (Global Citizen Live)", yt: "DYvrG_X5l8k", bpm: 125, energy: "high", kind: "concert" },
+      { id: "ptd-unga-extended", title: "Permission to Dance (UNGA SDG Moment, Extended ver.)", yt: "U0gaYpGfKRo", bpm: 125, energy: "high", kind: "concert" },
+      { id: "ptd-fallon", title: "Permission to Dance (The Tonight Show)", yt: "fghFXQJQY2M", bpm: 125, energy: "high", kind: "concert" },
+      { id: "ptd-bbc-live-lounge", title: "Permission to Dance (BBC Radio 1 Live Lounge)", yt: "qXYfp5XKPoA", bpm: 125, energy: "high", kind: "concert" },
     ],
   },
   {
@@ -488,6 +539,9 @@ export const ALBUMS = [
     songs: [
       { id: "yet-to-come", title: "Yet To Come", yt: "kXpOEzNZ8hQ", bpm: 87, energy: "ballad", officialCaptions: true },
       { id: "run-bts-dance-practice", title: "Run BTS (Dance Practice)", yt: "aqW4xXUgmno", bpm: 128, energy: "high" },
+      { id: "yet-to-come-proof-live", title: "Yet To Come ('Proof' Live)", yt: "RS2zY3VedHc", bpm: 87, energy: "ballad", kind: "concert" },
+      { id: "run-bts-busan", title: "Run BTS (Yet To Come in BUSAN)", yt: "Cb70gcTVvYI", bpm: 128, energy: "high", kind: "concert" },
+      { id: "proof-live-full", title: "'Proof' Live (2022-06-13)", yt: "9sJ_I1lHpps", bpm: 110, energy: "high", kind: "concert" },
     ],
   },
   {
@@ -534,6 +588,7 @@ export const ALBUMS = [
       { id: "future-jhope", title: "Future (Visualizer)", yt: "Fh2PTrTaxv0", bpm: 105, energy: "high" },
       { id: "equal-sign", title: "= (Equal Sign) (Visualizer)", yt: "_hNuNiNhcI4", bpm: 90, energy: "mid" },
       { id: "future-lollapalooza", title: "Future (Lollapalooza 2022)", yt: "Rlcep6K2Ql0", bpm: 105, energy: "high", kind: "concert" },
+      { id: "trivia-just-dance-lolla-2022", title: "Trivia 起: Just Dance (Lollapalooza 2022)", yt: "K6VJb9aBMQk", bpm: 110, energy: "high", kind: "concert" },
     ],
   },
   {
@@ -561,7 +616,10 @@ export const ALBUMS = [
     artist: "Jin",
     year: 2022,
     palette: ["#1a237e", "#4fc3f7", "#ffffff"],
-    songs: [{ id: "the-astronaut", title: "The Astronaut", yt: "c6ASQOwKkhk", bpm: 120, energy: "mid", lyricVideo: "yAU7Fw8Sif0", officialCaptions: true }],
+    songs: [
+      { id: "the-astronaut", title: "The Astronaut", yt: "c6ASQOwKkhk", bpm: 120, energy: "mid", lyricVideo: "yAU7Fw8Sif0", officialCaptions: true },
+      { id: "the-astronaut-coldplay-live", title: "The Astronaut (with Coldplay, Buenos Aires)", yt: "FqmYc62HUec", bpm: 120, energy: "mid", kind: "concert" },
+    ],
   },
   {
     id: "indigo",
@@ -572,6 +630,7 @@ export const ALBUMS = [
     songs: [
       { id: "wild-flower", title: "Wild Flower (with youjeen)", yt: "u18be_kRmC0", bpm: 75, energy: "mid", officialCaptions: true },
       { id: "still-life", title: "Still Life (with Anderson .Paak)", yt: "2vfmL4q2koo", bpm: 105, energy: "high" },
+      { id: "rm-live-in-seoul", title: "RM Live in Seoul (Rolling Hall)", yt: "6ZIh3ZLbUv8", bpm: 90, energy: "mid", kind: "concert" },
     ],
   },
   {
@@ -613,6 +672,7 @@ export const ALBUMS = [
       { id: "amygdala", title: "AMYGDALA", yt: "IX1dkYoLHVs", bpm: 90, energy: "mid" },
       { id: "haegeum-fallon", title: "Haegeum (The Tonight Show)", yt: "4PU4ofbSZZU", bpm: 88, energy: "high", kind: "concert", officialCaptions: true },
       { id: "haegeum-dance-practice", title: "Haegeum (Dance Practice)", yt: "0zN2YxoPnD8", bpm: 88, energy: "high" },
+      { id: "haegeum-live-clip", title: "Haegeum (Live Clip, full ver.)", yt: "lBRuBQZc-70", bpm: 88, energy: "high", kind: "concert" },
     ],
   },
   {
@@ -635,6 +695,7 @@ export const ALBUMS = [
       { id: "rainy-days", title: "Rainy Days", yt: "yTsINmrAK4I", bpm: 80, energy: "ballad" },
       { id: "blue-v", title: "Blue", yt: "sIh9_cNCwPc", bpm: 86, energy: "mid" },
       { id: "love-me-again-band", title: "Love Me Again (Band Session)", yt: "r2rZXrsBAfE", bpm: 93, energy: "ballad", kind: "concert" },
+      { id: "slow-dancing-band", title: "Slow Dancing (Band Session)", yt: "gPo-G0cSy-0", bpm: 81, energy: "ballad", kind: "concert" },
     ],
   },
   {
@@ -649,6 +710,10 @@ export const ALBUMS = [
       { id: "standing-next-to-you", title: "Standing Next to You", yt: "UNo0TG9LwwI", bpm: 106, energy: "high", lyricVideo: "1ppY8E2wrWo", officialCaptions: true },
       { id: "hate-you", title: "Hate You (Visualizer)", yt: "tAcKfnf0zv4", bpm: 80, energy: "ballad" },
       { id: "seven-performance", title: "Seven (feat. Latto) (Performance Video)", yt: "1QYBiNRu1ok", bpm: 125, energy: "high" },
+      { id: "seven-iheart", title: "Seven (iHeartRadio LIVE)", yt: "6gefJSC0-p0", bpm: 125, energy: "high", kind: "concert" },
+      { id: "seven-bbc-live-lounge", title: "Seven (BBC Radio 1 Live Lounge)", yt: "f6-GWc6TeXI", bpm: 125, energy: "high", kind: "concert" },
+      { id: "3d-live-performance", title: "3D (feat. Jack Harlow) (Official Live Performance Video)", yt: "Z3x9i7njCCo", bpm: 108, energy: "high", kind: "concert" },
+      { id: "jung-kook-live-tsx", title: "Jung Kook Live at TSX, Times Square", yt: "geHuX7E3NX8", bpm: 115, energy: "high", kind: "concert" },
     ],
   },
   {
@@ -700,6 +765,8 @@ export const ALBUMS = [
       { id: "who-jimin", title: "Who", yt: "Av9DvtlJ9_M", bpm: 120, energy: "high" },
       { id: "be-mine-en", title: "Be Mine (English Version) (Visualizer)", yt: "MYrZ5T3jFmA", bpm: 105, energy: "mid" },
       { id: "rebirth-slow-dance-live", title: "Rebirth + Slow Dance (feat. Sofia Carson) (Live Clip)", yt: "pI9vHl-cyuI", bpm: 100, energy: "mid", kind: "concert" },
+      { id: "who-acoustic-remix", title: "Who (Acoustic Remix) (Visualizer)", yt: "BKRfGu7qWM4", bpm: 120, energy: "mid" },
+      { id: "who-fallon", title: "Who (The Tonight Show)", yt: "rXqu2gwO0T0", bpm: 120, energy: "high", kind: "concert" },
     ],
   },
   {
@@ -711,6 +778,7 @@ export const ALBUMS = [
     songs: [
       { id: "friends-v", title: "FRI(END)S", yt: "62peQdQv4uo", bpm: 92, energy: "mid", officialCaptions: true },
       { id: "winter-ahead", title: "Winter Ahead (with PARK HYO SHIN)", yt: "HAWYOuMGkK0", bpm: 72, energy: "ballad", officialCaptions: true },
+      { id: "friends-live-film", title: "FRI(END)S (Live Film)", yt: "8ZyYO8OmscI", bpm: 92, energy: "mid", kind: "concert" },
     ],
   },
   {
@@ -722,6 +790,8 @@ export const ALBUMS = [
     songs: [
       { id: "ill-be-there", title: "I'll Be There", yt: "PWjZ3p1jNho", bpm: 130, energy: "high", lyricVideo: "WxXcgnIfV0U" },
       { id: "running-wild", title: "Running Wild", yt: "uoHol5Dr_go", bpm: 118, energy: "mid" },
+      { id: "ill-be-there-live-clip", title: "I'll Be There (Live Clip)", yt: "1RlXJJKpMSo", bpm: 130, energy: "high", kind: "concert" },
+      { id: "running-wild-live-clip", title: "Running Wild (Live Clip)", yt: "buaBdxY0H5E", bpm: 118, energy: "mid", kind: "concert" },
     ],
   },
   {
@@ -735,6 +805,10 @@ export const ALBUMS = [
       { id: "mona-lisa", title: "MONA LISA", yt: "ECqGCH1TfLY", bpm: 105, energy: "high", officialCaptions: true },
       { id: "killin-it-girl", title: "Killin' It Girl (feat. GloRilla)", yt: "q9leDzlNEaY", bpm: 115, energy: "high", officialCaptions: true },
       { id: "lock-unlock-lolla", title: "lock / unlock + i wonder… (Lollapalooza Berlin 2025)", yt: "WrFpJ_1wMJU", bpm: 100, energy: "high", kind: "concert" },
+      { id: "killin-it-girl-stage-cam", title: "Killin' It Girl (Stage CAM, HOPE ON THE STAGE)", yt: "g_jMGL39ElQ", bpm: 115, energy: "high", kind: "concert" },
+      { id: "killin-it-girl-solo-lolla", title: "Killin' It Girl (Solo Version) (Lollapalooza Berlin 2025)", yt: "yAmX8ahRIPs", bpm: 115, energy: "high", kind: "concert" },
+      { id: "trivia-just-dance-lolla-2025", title: "Trivia 起: Just Dance (Lollapalooza Berlin 2025)", yt: "WwKJc_z_GUY", bpm: 110, energy: "high", kind: "concert" },
+      { id: "jhope-lolla-berlin-full", title: "j-hope Live @ Lollapalooza Berlin 2025 (Full Performance)", yt: "-YCex08v-UQ", bpm: 105, energy: "high", kind: "concert" },
     ],
   },
   {
@@ -770,6 +844,15 @@ export const ALBUMS = [
       { id: "merry-go-round", title: "Merry Go Round", yt: "eJXL4-4m5nY", bpm: 105, energy: "mid" },
       { id: "swim-performance", title: "SWIM (Performance Video)", yt: "h-Y97xErGL8", bpm: 100, energy: "mid", officialCaptions: true },
       { id: "two-point-o-dance-practice", title: "2.0 (Dance Practice)", yt: "A1nu9jg6ciY", bpm: 110, energy: "high" },
+      { id: "normal-live-clip", title: "NORMAL (Live Clip)", yt: "Hb06Iem3FWg", bpm: 100, energy: "mid", kind: "concert" },
+      { id: "swim-live-clip-1", title: "SWIM (Live Clip I, Sunhyewon ver.)", yt: "Ztbv7ChTQRM", bpm: 100, energy: "mid", kind: "concert" },
+      { id: "swim-live-clip-2", title: "SWIM (Live Clip II, Swimming Pool ver.)", yt: "om6HdemgTKQ", bpm: 100, energy: "mid", kind: "concert" },
+      { id: "two-point-o-iheart-2026", title: "2.0 (Stage CAM, iHeartRadio Music Festival 2026)", yt: "xnfSjN6bBg8", bpm: 110, energy: "high", kind: "concert" },
+      { id: "hooligan-dance-practice", title: "Hooligan (Dance Practice)", yt: "qWDNVP1pb48", bpm: 120, energy: "high" },
+      { id: "swim-dance-practice", title: "SWIM (Dance Practice)", yt: "uYcNZLJ3KmU", bpm: 100, energy: "mid" },
+      { id: "swim-jin-remix", title: "SWIM with Jin (Alternative Rock Remix) (Visualizer)", yt: "o7V0iD8cAaI", bpm: 100, energy: "mid" },
+      { id: "swim-jhope-remix", title: "SWIM with j-hope (Afrobeat Remix) (Visualizer)", yt: "OzMc0PAA5HQ", bpm: 105, energy: "high" },
+      { id: "swim-jimin-remix", title: "SWIM with Jimin (Slow Jam R&B Remix) (Visualizer)", yt: "DfnDEzl2APE", bpm: 90, energy: "ballad" },
     ],
   },
 ];
