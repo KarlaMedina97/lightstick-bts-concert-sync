@@ -24,14 +24,6 @@ export const ALBUMS = [
     ],
   },
   {
-    id: "orul82",
-    title: "O!RUL8,2?",
-    artist: "BTS",
-    year: 2013,
-    palette: ["#1b1b1b", "#ff1744", "#ffd600"],
-    songs: [{ id: "n-o", title: "N.O", yt: "mmgxPLLLyVo", bpm: 97, energy: "high", officialCaptions: true }],
-  },
-  {
     id: "skool-luv-affair",
     title: "Skool Luv Affair",
     artist: "BTS",
@@ -39,7 +31,6 @@ export const ALBUMS = [
     palette: ["#c62828", "#212121", "#ffffff"],
     songs: [
       { id: "boy-in-luv", title: "Boy In Luv", yt: "LHHjp3IMjMk", bpm: 122, energy: "high", officialCaptions: true },
-      { id: "just-one-day", title: "Just One Day", yt: "DTcKkcyS410", bpm: 88, energy: "mid", officialCaptions: true },
       { id: "come-over", title: "Come Over (Lyric Video)", yt: "MEoxtFRfPoc", bpm: 100, energy: "mid" },
     ],
   },
@@ -77,7 +68,6 @@ export const ALBUMS = [
     palette: ["#4e342e", "#bcaaa4", "#90caf9"],
     songs: [
       { id: "hug-me-cover", title: "Hug me (cover de Jung Joon Il, con j-hope)", yt: "tv_HQ-0upns", bpm: 76, energy: "ballad", kind: "cover" },
-      { id: "someone-like-you-cover", title: "Someone Like You (cover de Adele)", yt: "56jN9-cMEBU", bpm: 68, energy: "ballad", kind: "cover" },
       { id: "look-like-christmas-cover", title: "It's Beginning to Look a Lot Like Christmas (cover de Michael Bublé)", yt: "QH4mCEanwKI", bpm: 96, energy: "mid", kind: "cover" },
     ],
   },
@@ -156,14 +146,6 @@ export const ALBUMS = [
     ],
   },
   {
-    id: "youth",
-    title: "YOUTH (Japón)",
-    artist: "BTS",
-    year: 2016,
-    palette: ["#80deea", "#ffffff", "#ff8a65"],
-    songs: [{ id: "run-jp", title: "RUN (Japanese ver.)", yt: "a16gTN7kOWU", bpm: 128, energy: "high" }],
-  },
-  {
     id: "wings",
     title: "WINGS",
     artist: "BTS",
@@ -211,7 +193,6 @@ export const ALBUMS = [
       { id: "dna-mcountdown", title: "DNA (M COUNTDOWN)", yt: "XPTx4BjdyV4", bpm: 130, energy: "high", kind: "concert" },
       { id: "dna-dance-practice", title: "DNA (Dance Practice)", yt: "GEIU_7v40Dw", bpm: 130, energy: "high" },
       { id: "mic-drop-dance-practice", title: "MIC Drop (Dance Practice, MAMA ver.)", yt: "eRkpkveBWyo", bpm: 85, energy: "high" },
-      { id: "best-of-me-practice-record", title: "Best Of Me (Practice Record)", yt: "kFP1jqnibKQ", bpm: 125, energy: "high" },
     ],
   },
   {
@@ -222,7 +203,6 @@ export const ALBUMS = [
     palette: ["#880e4f", "#e0e0e0", "#4fc3f7"],
     songs: [
       { id: "bst-jp", title: "Blood Sweat & Tears (Japanese ver.)", yt: "7OX7dIRReSA", bpm: 93, energy: "mid" },
-      { id: "mic-drop-jp", title: "MIC Drop (Japanese ver.)", yt: "8mBHDHIb-kM", bpm: 85, energy: "high" },
     ],
   },
   {
@@ -241,7 +221,6 @@ export const ALBUMS = [
     palette: ["#212121", "#e0e0e0", "#7c4dff"],
     songs: [
       { id: "lost-stars-cover", title: "Lost Stars (cover de Adam Levine)", yt: "VLzRQCIZrmE", bpm: 84, energy: "ballad", kind: "cover" },
-      { id: "falling-cover", title: "Falling (cover de Harry Styles)", yt: "22VOzqS_9ms", bpm: 110, energy: "ballad", kind: "cover" },
       { id: "christmas-song-cover", title: "The Christmas Song (cover de Nat King Cole)", yt: "fjTvhaDsRDg", bpm: 70, energy: "ballad", kind: "cover" },
       { id: "let-there-be-love-cover", title: "Let There Be Love (cover de Oasis, BBC Live Lounge)", yt: "2davNWu3mr4", bpm: 76, energy: "ballad", kind: "cover" },
     ],
@@ -349,7 +328,6 @@ export const ALBUMS = [
       { id: "dionysus-mma-dance-practice", title: "Dionysus (2019 MMA, Dance Practice)", yt: "bccr1BwNI0Y", bpm: 176, energy: "high" },
       { id: "dionysus-mma-intro-dance-practice", title: "Dionysus (2019 MMA Intro, Dance Practice)", yt: "GYs4bRYZxIA", bpm: 176, energy: "high" },
       { id: "mma-2019-medley", title: "Persona + Boy In Luv + Boy With Luv + Mikrokosmos + Dionysus (2019 MMA)", yt: "k-0v1fNVdas", bpm: 120, energy: "high", kind: "concert" },
-      { id: "mikrokosmos-sy-in-seoul", title: "Mikrokosmos (Special Clip @ SY IN SEOUL)", yt: "Iq6RdCTLBd8", bpm: 102, energy: "mid", kind: "concert" },
     ],
   },
   {
@@ -541,7 +519,6 @@ export const ALBUMS = [
       { id: "run-bts-dance-practice", title: "Run BTS (Dance Practice)", yt: "aqW4xXUgmno", bpm: 128, energy: "high" },
       { id: "yet-to-come-proof-live", title: "Yet To Come ('Proof' Live)", yt: "RS2zY3VedHc", bpm: 87, energy: "ballad", kind: "concert" },
       { id: "run-bts-busan", title: "Run BTS (Yet To Come in BUSAN)", yt: "Cb70gcTVvYI", bpm: 128, energy: "high", kind: "concert" },
-      { id: "proof-live-full", title: "'Proof' Live (2022-06-13)", yt: "9sJ_I1lHpps", bpm: 110, energy: "high", kind: "concert" },
     ],
   },
   {
@@ -669,7 +646,6 @@ export const ALBUMS = [
     songs: [
       { id: "haegeum", title: "Haegeum", yt: "iy9qZR_OGa0", bpm: 88, energy: "high", officialCaptions: true },
       { id: "people-pt2", title: "People Pt.2 (feat. IU)", yt: "uVD-YgzDzyY", bpm: 89, energy: "ballad", officialCaptions: true },
-      { id: "amygdala", title: "AMYGDALA", yt: "IX1dkYoLHVs", bpm: 90, energy: "mid" },
       { id: "haegeum-fallon", title: "Haegeum (The Tonight Show)", yt: "4PU4ofbSZZU", bpm: 88, energy: "high", kind: "concert", officialCaptions: true },
       { id: "haegeum-dance-practice", title: "Haegeum (Dance Practice)", yt: "0zN2YxoPnD8", bpm: 88, energy: "high" },
       { id: "haegeum-live-clip", title: "Haegeum (Live Clip, full ver.)", yt: "lBRuBQZc-70", bpm: 88, energy: "high", kind: "concert" },

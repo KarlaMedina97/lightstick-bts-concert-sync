@@ -22,6 +22,7 @@ Se publica en GitHub Pages: https://karlamedina97.github.io/lightstick-bts-conce
 | `npm run csp` | Regenera la Content-Security-Policy de `index.html` y `app.html` |
 | `npm run check` | Pruebas + verifica que la CSP esté al día (lo mismo que corre CI) |
 | `npm run check:commits` | Verifica mensajes de commit contra `origin/main` |
+| `npm run check:embeds` | Comprueba que cada video del catálogo se pueda ver dentro de la página (bloqueos por derechos, error 150) |
 
 Antes de dar algo por terminado: `npm run check` y probar en el navegador (escritorio y 390×844).
 
