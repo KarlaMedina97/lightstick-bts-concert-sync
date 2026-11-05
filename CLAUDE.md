@@ -58,10 +58,8 @@ Las páginas dentro de carpetas usan rutas relativas con `../`. No uses `<base>`
 ## Reglas obligatorias
 
 ### Legal y contenido
-- **No incluir letras de canciones**, audio, video ni imágenes con derechos de autor. La "letra" son los subtítulos
-  oficiales del video de YouTube o un enlace externo (Genius). Tampoco **pronunciaciones/romanizaciones** propias
-  (son una copia de la letra): la opción Pronunciación usa la pista romanizada oficial del video o enlaza a Genius.
-  Ver `docs/pronunciacion.md`.
+- **No incluir letras de canciones**, pronunciaciones ni romanizaciones, audio, video ni imágenes con derechos de autor.
+  La función de letra (subtítulos oficiales y pronunciación) se retiró el 2026-11-05: ver `docs/pronunciacion.md`.
 - **No reproducir el logo de BTS** (dos paneles tipo "puertas") ni marcas de HYBE/BIGHIT. El lightstick 3D usa un
   emblema original en forma de ola. Mantener siempre el aviso "no oficial".
 - **No copiar código** de apps o sitios de terceros. El protocolo BLE está documentado para interoperabilidad;

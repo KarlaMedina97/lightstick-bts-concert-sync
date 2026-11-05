@@ -115,3 +115,47 @@ test("la fase marcada mueve el latido al golpe de la música", () => {
   // El golpe que caía en t=70 s (mitad del coro) ahora cae en t=70,2 s.
   assert.deepEqual(b.colorAt(70.2).map(Math.round), a.colorAt(70).map(Math.round));
 });
+
+import { onConcept } from "../src/patterns.js";
+
+test("FIRE: solo fuego (rojo, amarillo, blanco), aunque el video traiga fucsia; y entre golpes casi apagado", () => {
+  assert.deepEqual(onConcept(["#ff00c8", "#ff3000", "#ffe000", "#00a0ff"], ["#ff1a00", "#ffd000", "#ffffff"]), ["#ff3000", "#ffe000"]);
+  const s = songs.find((x) => x.id === "fire");
+  const p = generatePattern(s, s.album, 200, { safeMode: true, video: { overall: ["#ff00c8", "#7a00ff"], frames: [["#ff00c8"], ["#00a0ff"], ["#ff00ff"]] } });
+  let dark = 0, n = 0;
+  for (let t = 0; t < 190; t += 0.05) {
+    const [r, g, b] = p.colorAt(t);
+    n++;
+    if (Math.max(r, g, b) < 40) dark++;
+    // Ni fucsia ni azul: el azul nunca supera al rojo salvo en blanco puro.
+    if (Math.max(r, g, b) > 60) assert.ok(b <= r + 1 && b <= g + 60, `t=${t.toFixed(2)} [${[r, g, b].map(Math.round)}]`);
+  }
+  assert.ok(dark / n > 0.1, "debe haber oscuridad entre golpes");
+});
+
+import { ledLevel, lightable } from "../src/patterns.js";
+
+test("colores aptos para luz: el negro se descarta y los oscuros saturados se aclaran", () => {
+  assert.equal(lightable("#111111"), null);
+  assert.equal(lightable("#212121"), null);
+  assert.equal(Math.max(...lightable("#0d3b66")), 255); // azul marino → azul brillante
+  assert.deepEqual(lightable("#ff5252"), [255, 82, 82]);
+});
+
+test("canciones intensas: el ARMY Bomb nunca se ve apagado salvo en el cierre, y el coro final supera a la intro", () => {
+  for (const s of songs.filter((x) => x.energy === "high" && x.kind !== "concert")) {
+    const p = generatePattern(s, s.album, 220, { safeMode: true });
+    const avg = {};
+    for (const sec of p.sections) {
+      if (sec.label === "final") continue;
+      let sum = 0, n = 0, off = 0;
+      for (let t = sec.start + 0.7; t < sec.end; t += 0.05) {
+        const l = Math.max(...ledLevel(p.colorAt(t), p.floorAt(t), 2)) / 255;
+        sum += l; n++; if (l < 0.08) off++;
+      }
+      avg[sec.label] = sum / n;
+      assert.ok(off / n < 0.02, `${s.id} · ${sec.label}: ${Math.round((100 * off) / n)} % apagado`);
+    }
+    assert.ok(avg["coro final"] > avg.intro, `${s.id}: coro final ${avg["coro final"].toFixed(2)} ≤ intro ${avg.intro.toFixed(2)}`);
+  }
+});

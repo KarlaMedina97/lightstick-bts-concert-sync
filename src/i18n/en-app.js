@@ -146,6 +146,7 @@ const dict = {
   // Estilos de luz (src/patterns.js; también en el selector de Ajustes)
   "Océano morado": "Purple ocean",
   "Llamas": "Flames",
+  "Golpes": "Hits",
   "Secciones": "Sections",
   "Chispas": "Sparkles",
   "Respiración": "Breathing",

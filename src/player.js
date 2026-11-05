@@ -19,13 +19,6 @@ function loadYouTubeApi() {
   return apiReady;
 }
 
-/** ¿Es una pista de pronunciación? @param {{languageCode?:string, languageName?:string, displayName?:string, name?:string}} t */
-export function isRomanTrack(t) {
-  const code = String(t?.languageCode ?? "");
-  const name = `${t?.languageName ?? ""} ${t?.displayName ?? ""} ${t?.name ?? ""}`;
-  return /-latn\b/i.test(code) || /romani[sz]|romaji|rōmaji|pronunci|발음/i.test(name);
-}
-
 export class Player {
   /** @param {HTMLElement} mount @param {{onEnded?:()=>void, onState?:(s:string)=>void, onError?:(e:number)=>void}} cb */
   constructor(mount, cb = {}) {
@@ -46,7 +39,7 @@ export class Player {
         width: "100%",
         height: "100%",
         // hl: idioma de la interfaz de YouTube; iv_load_policy 3: sin anotaciones encima del video.
-        playerVars: { playsinline: 1, rel: 0, iv_load_policy: 3, hl: lang, cc_lang_pref: lang === "en" ? "en" : "ko" },
+        playerVars: { playsinline: 1, rel: 0, iv_load_policy: 3, hl: lang },
         events: {
           onReady: () => {
             this.ready = true;
@@ -55,57 +48,9 @@ export class Player {
           },
           onStateChange: (e) => this.#onState(e.data),
           onError: (e) => this.cb.onError?.(e.data),
-          // El módulo de subtítulos se carga después de empezar a reproducir.
-          onApiChange: () => this.#applyCaptions(),
         },
       });
     });
-  }
-
-  /**
-   * Letra: activa los subtítulos oficiales del video (los que publica el canal) en el idioma pedido.
-   * No incluimos letras en el proyecto; dependen de que el video tenga esa pista.
-   * @param {string|null} lang "ko", "es", "en"… o null para apagar.
-   */
-  setCaptions(lang, { roman = false } = {}) {
-    this.captionLang = lang;
-    this.captionRoman = roman;
-    this.#applyCaptions();
-  }
-
-  /** Pista de pronunciación (romanización) que publica el canal, si existe: "ko-Latn", "Korean (Romanized)"… */
-  romanTrack() {
-    try {
-      const list = this.yt?.getOption?.("captions", "tracklist") ?? [];
-      return list.find((t) => isRomanTrack(t)) ?? null;
-    } catch {
-      return null;
-    }
-  }
-
-  /** @returns {{available:boolean, langs:string[]}} */
-  captionInfo() {
-    try {
-      const list = this.yt?.getOption?.("captions", "tracklist") ?? [];
-      return { available: list.length > 0, langs: list.map((t) => t.languageCode) };
-    } catch {
-      return { available: false, langs: [] };
-    }
-  }
-
-  #applyCaptions() {
-    if (!this.ready) return;
-    try {
-      if (this.captionLang) {
-        this.yt.loadModule("captions");
-        const roman = this.captionRoman ? this.romanTrack() : null;
-        this.yt.setOption("captions", "track", roman ?? { languageCode: this.captionLang });
-        this.yt.setOption("captions", "fontSize", 1);
-      } else {
-        this.yt.setOption("captions", "track", {});
-        this.yt.unloadModule("captions");
-      }
-    } catch {}
   }
 
   #onState(code) {
@@ -129,7 +74,6 @@ export class Player {
     this.lastRawAt = performance.now();
     if (autoplay) this.yt.loadVideoById(videoId);
     else this.yt.cueVideoById(videoId);
-    if (this.captionLang) setTimeout(() => this.#applyCaptions(), 1500);
   }
 
   play() { this.yt?.playVideo(); }

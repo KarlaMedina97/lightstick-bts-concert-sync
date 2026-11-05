@@ -35,7 +35,6 @@
     <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5h3v5h5V9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 9.5h8M8 12.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
-    <symbol id="i-lyrics" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11h4M13 11h4M7 15h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-9.2-9.4C1.6 7.3 3.8 4 7.2 4c2 0 3.6 1.1 4.8 2.8C13.2 5.1 14.8 4 16.8 4c3.4 0 5.6 3.3 4.4 6.6C19.5 15.4 12 20 12 20Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
@@ -185,6 +184,12 @@
             <p class="hero-sub">Elige una canción y tus luces la siguen.</p>
           </div>
         </div>
+        <!-- Por qué faltan algunos videos oficiales (bloqueos de inserción por derechos) -->
+        <details class="info-note">
+          <summary>¿Por qué no están todos los videos de BTS?</summary>
+          <p>Algunos videos oficiales no se pueden ver dentro de Purple Wave. Quien tiene los derechos de la música (una discográfica o una editora) puede bloquear que el video se reproduzca fuera de YouTube, a veces solo en algunos países.</p>
+          <p>Cuando eso pasa, YouTube muestra «El video no está disponible» y las luces no tienen con qué sincronizarse, así que lo quitamos de la lista. No es un error de tu ARMY Bomb ni de tu conexión: puedes verlo en YouTube.</p>
+        </details>
         <!-- Primera visita: conectar solo si la persona quiere (la guía no se abre sola) -->
         <div id="connect-card" class="connect-card" hidden>
           <span class="sp-stick" aria-hidden="true"></span>
@@ -257,14 +262,6 @@
         <ol id="upnext-list" class="un-list"></ol>
       </aside>
 
-      <div id="lyrics-bar" class="lyrics-bar" hidden>
-        <span class="lb-seg" role="group" aria-label="Qué mostrar">
-          <button id="lb-lyrics" class="lb-opt" type="button" aria-pressed="true">Letra</button>
-          <button id="lb-roman" class="lb-opt" type="button" aria-pressed="false">Pronunciación</button>
-        </span>
-        <span id="lb-text">Coreano (hangul) · subtítulos oficiales del video</span>
-        <a id="lb-link" href="#" target="_blank" rel="noopener noreferrer">Ver la letra en Genius ↗</a>
-      </div>
 
       <div id="chant" class="chant" hidden>
         <p class="chant-label">Fanchant · ¡A corear!</p>
@@ -312,7 +309,6 @@
       <!-- Acciones secundarias, siempre con etiqueta (en línea, o debajo del ícono si el dock es angosto). -->
       <div class="dock-actions">
         <button id="btn-cola" class="dbtn" type="button" title="Cola de reproducción" aria-haspopup="dialog" aria-controls="panel-cola"><svg aria-hidden="true"><use href="#i-queue"/></svg><span>Cola</span></button>
-        <button id="btn-lyrics" class="dbtn" type="button" aria-pressed="false" title="Muestra la letra (video o subtítulos oficiales)"><svg aria-hidden="true"><use href="#i-lyrics"/></svg><span>Letra</span></button>
         <button id="btn-live" class="dbtn" type="button" title="Concierto" aria-expanded="false" aria-controls="menu-live"><svg aria-hidden="true"><use href="#i-live"/></svg><span>Concierto</span></button>
         <button id="btn-fs" class="dbtn dbtn-icon" type="button" aria-label="Pantalla completa" data-tip="Pantalla completa (F)"><svg aria-hidden="true"><use href="#i-expand"/></svg><span>Pantalla</span></button>
         <button id="dock-bt" class="dbtn phone-only" type="button" aria-haspopup="dialog" aria-controls="panel-bt"><svg aria-hidden="true"><use href="#i-bt"/></svg><span id="dock-bt-label">Conectar</span></button>
@@ -521,17 +517,6 @@
 
         <section class="group" aria-labelledby="sg-play">
           <h3 id="sg-play" class="group-title"><svg aria-hidden="true"><use href="#i-play"/></svg>Reproducción</h3>
-          <div class="field">
-            <label for="sel-lyrics">Idioma de la letra</label>
-            <select id="sel-lyrics">
-              <option value="ko">Coreano (hangul)</option>
-              <option value="es">Español</option>
-              <option value="en">Inglés</option>
-              <option value="ja">Japonés</option>
-              <option value="pt">Portugués</option>
-            </select>
-            <p class="hint">Subtítulos oficiales del video, si existen.</p>
-          </div>
           <div class="field">
             <label for="sel-album-end">Al terminar el álbum</label>
             <select id="sel-album-end">

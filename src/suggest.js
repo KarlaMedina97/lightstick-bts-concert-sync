@@ -39,8 +39,6 @@ export function shelves(queue, { likes = [], recent = [], max = 8 } = {}) {
 
   out.push({ id: "start", items: STARTERS.map((id) => byId.get(id)).filter((i) => i !== undefined) });
 
-  const lyric = queue.map((q, i) => (q.song.lyricVideo ? i : -1)).filter((i) => i >= 0);
-  if (lyric.length) out.push({ id: "lyrics", items: lyric.slice(0, max) });
 
   // Solistas: la canción principal del álbum más reciente de cada integrante.
   const solo = [];

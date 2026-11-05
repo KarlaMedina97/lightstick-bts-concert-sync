@@ -22,13 +22,6 @@ test("ids de YouTube únicos y con formato válido", () => {
   assert.equal(new Set(yts).size, yts.length);
 });
 
-test("lyricVideo (si existe) tiene formato válido y es distinto de yt", () => {
-  for (const s of songs) {
-    if (!("lyricVideo" in s)) continue;
-    assert.match(s.lyricVideo, YT, s.id);
-    assert.notEqual(s.lyricVideo, s.yt, s.id);
-  }
-});
 
 test("officialCaptions (si existe) es booleano", () => {
   for (const s of songs) if ("officialCaptions" in s) assert.equal(typeof s.officialCaptions, "boolean", s.id);

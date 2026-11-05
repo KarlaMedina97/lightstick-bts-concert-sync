@@ -1,5 +1,5 @@
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
-import { PURPLE, STYLES, generateConcertPattern, generatePattern, hexToRgb, rgbToHex } from "./patterns.js";
+import { PURPLE, STYLES, generateConcertPattern, generatePattern, hexToRgb, rgbToHex, ledLevel } from "./patterns.js";
 import { bluetoothSupport, requestStick, LOW_BATTERY } from "./ble.js";
 import { Player } from "./player.js";
 import { DONATIONS, PROJECT } from "./config.js";
@@ -41,7 +41,7 @@ const store = {
 };
 
 const SETTINGS_KEY = "pws.settings.v1";
-const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, lyrics: false, lyricsLang: "ko", lyricsMode: "lyrics", chant: true, chantVoice: true, sounds: true, describe: false, keys: true, calm: false, bpm: {}, phase: {} };
+const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, chant: true, chantVoice: true, sounds: true, describe: false, keys: true, calm: false, bpm: {}, phase: {} };
 const settings = { ...defaults, ...store.get(SETTINGS_KEY, {}) };
 if (matchMedia("(prefers-reduced-motion: reduce)").matches) settings.safeMode = true;
 const saveSettings = () => store.set(SETTINGS_KEY, settings);
@@ -721,7 +721,6 @@ function loadIndex(i, { autoplay = true } = {}) {
   if (view === "video") $("home").hidden = true;
   setView(view);
   document.title = `${song.title} · Purple Wave Sync`;
-  updateLyricsBar();
   updateMediaSession();
   renderUpNext();
 }
@@ -757,77 +756,9 @@ function renderTimeline() {
   tl.prepend(frag);
 }
 
-/** Con "Letra" activada se usa el video oficial con la letra en pantalla, si existe. */
+/** Video que se reproduce (el MV oficial). */
 function videoFor(song) {
-  // En Pronunciación se usa el MV: la letra del video con letra taparía la pista romanizada.
-  return settings.lyrics && settings.lyricsMode !== "roman" && song.lyricVideo ? song.lyricVideo : song.yt;
-}
-
-const LYRIC_NAMES = { ko: "coreano", es: "español", en: "inglés", ja: "japonés", pt: "portugués" };
-const romanOn = () => settings.lyrics && settings.lyricsMode === "roman";
-const geniusQuery = (song, extra = "") => `https://genius.com/search?q=${encodeURIComponent(`BTS ${song.title.replace(/\s*\(.*?\)/g, "")}${extra}`)}`;
-function updateLyricsBar() {
-  const bar = $("lyrics-bar");
-  const item = queue[current];
-  bar.hidden = !settings.lyrics || !item;
-  if (bar.hidden) return;
-  const roman = romanOn();
-  $("lb-lyrics").setAttribute("aria-pressed", String(!roman));
-  $("lb-roman").setAttribute("aria-pressed", String(roman));
-  const cap = `${LYRIC_NAMES[settings.lyricsLang][0].toUpperCase()}${LYRIC_NAMES[settings.lyricsLang].slice(1)}${settings.lyricsLang === "ko" ? " (hangul)" : ""}`;
-  if (roman) {
-    const track = player?.romanTrack();
-    $("lb-text").textContent = track ? "Pronunciación · subtítulos oficiales del video" : "Este video no trae pronunciación oficial";
-    // Enlace externo a la romanización; no copiamos letras ni pronunciaciones en la app.
-    $("lb-link").textContent = "Ver pronunciación en Genius ↗";
-    $("lb-link").href = geniusQuery(item.song, " romanized");
-  } else {
-    $("lb-text").textContent = item.song.lyricVideo ? "Video oficial con la letra en pantalla" : `${cap} · subtítulos oficiales del video`;
-    $("lb-link").textContent = "Ver la letra en Genius ↗";
-    $("lb-link").href = geniusQuery(item.song);
-  }
-}
-
-/** Cambia de video (MV ⇄ video con letra) conservando el punto de la canción. */
-function reloadKeepingTime(song) {
-  const t = player.time();
-  const playing = player.state === "playing";
-  player.load(videoFor(song), playing);
-  if (t > 2) setTimeout(() => player.seek(t), 900);
-  pattern = null;
-}
-
-/** Letra ⇄ pronunciación (romanización oficial del video, si existe). */
-function setLyricsMode(mode) {
-  if (settings.lyricsMode === mode) return;
-  const song = queue[current]?.song;
-  const before = song && videoFor(song);
-  settings.lyricsMode = mode;
-  saveSettings();
-  if (song && player?.ready && videoFor(song) !== before) reloadKeepingTime(song);
-  player?.setCaptions(settings.lyrics ? settings.lyricsLang : null, { roman: romanOn() });
-  updateLyricsBar();
-  if (mode === "roman") setTimeout(updateLyricsBar, 2500); // la lista de pistas llega cuando el video ya suena
-}
-
-function applyLyrics(announce) {
-  $("btn-lyrics").setAttribute("aria-pressed", settings.lyrics);
-  updateLyricsBar();
-  const song = queue[current]?.song;
-  if (announce && song?.lyricVideo && player?.ready) reloadKeepingTime(song);
-  const usesCaptions = settings.lyrics && (romanOn() || !song?.lyricVideo);
-  player?.setCaptions(usesCaptions ? settings.lyricsLang : null, { roman: romanOn() });
-  if (!announce) return;
-  if (!settings.lyrics) return toast("Letra oculta.");
-  if (romanOn()) { setTimeout(updateLyricsBar, 2500); return toast("Pronunciación activada."); }
-  if (song?.lyricVideo) return toast("Letra activada: cambiamos al video oficial con letra.");
-  toast(`Letra en ${LYRIC_NAMES[settings.lyricsLang]} activada.`);
-  setTimeout(() => {
-    const info = player?.captionInfo();
-    if (info && player.state === "playing" && !info.langs.some((l) => l.startsWith(settings.lyricsLang))) {
-      toast(info.available ? `Sin letra en ${LYRIC_NAMES[settings.lyricsLang]}. Prueba otro idioma en Ajustes.` : "Este video no trae subtítulos oficiales.");
-    }
-  }, 2500);
+  return song.yt;
 }
 
 function togglePlay() {
@@ -1001,6 +932,7 @@ function setupSim() {
 }
 
 const LED_GAMMA = 2;
+let micGain = 1;
 let lastUi = 0;
 let lastLabel = "";
 let lastSave = 0;
@@ -1029,17 +961,21 @@ function frame(now) {
     const playing = player.state === "playing";
     // Se calcula un poco "adelante" para compensar la latencia del Bluetooth.
     const lt = player.time() + settings.latencyMs / 1000;
-    colors = Array.from({ length: total }, (_, i) => (pattern && playing ? pattern.colorAt(lt, i, total) : [45, 20, 90]));
+    // Con el sonido del video, el golpe real (graves del micrófono) dispara las explosiones de los estilos "Golpes".
+    const ext = mic?.hybrid && playing ? { hit: (micGain = mic.intensity(now), mic.flash) } : null;
+    colors = Array.from({ length: total }, (_, i) => (pattern && playing ? pattern.colorAt(lt, i, total, ext) : [45, 20, 90]));
   }
 
   // Con el sonido del video: el patrón da los colores y el micrófono, cuánto brillan.
   if (mic?.hybrid && pattern && player.state === "playing") {
-    const g = mic.intensity(now);
+    const g = 0.45 + 0.55 * micGain; // el volumen real sube o baja todo el patrón, sin apagarlo
     colors = colors.map((c) => c.map((v) => v * g));
   }
   // Los LED del ARMY Bomb responden lineal y el ojo no: sin esta curva, un 40 % se ve casi como un 100 %
   // y la diferencia entre lo suave y lo intenso se pierde.
-  sticks.forEach((s, i) => s.setColor(colors[i].map((v) => 255 * ((v * k) / 255) ** LED_GAMMA)));
+  // Piso de la sección: lo intenso nunca se ve apagado; solo el cierre de la canción puede llegar a negro.
+  const floor = pattern && player.state === "playing" && !cam && (!mic || mic.hybrid) ? pattern.floorAt(player.time()) : 0;
+  sticks.forEach((s, i) => s.setColor(ledLevel(colors[i].map((v) => v * k), floor * k, LED_GAMMA)));
   if (crowd) { crowd.setColor(colors[0].map((v) => Math.max(40, v * k))); crowd.draw(now); }
 
   // La interfaz se actualiza a ~20 fps para ahorrar batería.
@@ -1230,10 +1166,10 @@ const soloArtist = ({ album, song }) => (album.id === "mine" ? song.channel ?? "
 const lightLevel = ({ song }) => LIGHT_LEVEL[song.energy] ?? 2;
 function songLabel(item) {
   const type = videoType(item.song);
-  return [item.song.title, soloArtist(item), type === "MV" ? "video musical" : type.toLowerCase(), item.song.lyricVideo ? "con letra" : "", `luces ${LIGHT_NAME[lightLevel(item)]}`, playedHistory.includes(item.song.id) ? "escuchada" : ""]
+  return [item.song.title, soloArtist(item), type === "MV" ? "video musical" : type.toLowerCase(), `luces ${LIGHT_NAME[lightLevel(item)]}`, playedHistory.includes(item.song.id) ? "escuchada" : ""]
     .filter(Boolean).join(", ");
 }
-/** Línea 2 de una fila: artista (si es solista) + chips de tipo y letra. */
+/** Línea 2 de una fila: artista (si es solista) + chip de tipo. */
 function metaLine(item, { tag = "", fallback = "" } = {}) {
   const line = document.createElement("span");
   line.className = "s-meta meta-line";
@@ -1243,7 +1179,6 @@ function metaLine(item, { tag = "", fallback = "" } = {}) {
   if (artist) add(artist, "m-artist");
   const type = videoType(item.song);
   if (type !== "MV") add(type, "chip-type");
-  if (item.song.lyricVideo) add("Con letra", "badge-lyrics");
   if (!line.children.length && fallback) add(fallback, "m-artist");
   if (!line.children.length) line.hidden = true; // MV del grupo: no hace falta repetirlo
   return line;
@@ -1268,7 +1203,6 @@ const SHELF_COPY = {
   recent: { eyebrow: "Tu historial", title: "Seguir escuchando", sub: "", ko: "다시" },
   likes: { eyebrow: "Tu lista", title: "Tus Me gusta", sub: "", ko: "좋아요" },
   start: { eyebrow: "Clásicos", title: "Para empezar", sub: "¿Primera vez? Empieza por un clásico.", ko: "시작" },
-  lyrics: { eyebrow: "Letra", title: "Con letra en pantalla", sub: "Videos oficiales con la letra en el video.", ko: "가사" },
   solo: { eyebrow: "Integrantes", title: "Solistas", sub: "Lo más reciente de cada integrante.", ko: "솔로" },
   hype: { eyebrow: "Energía", title: "Para que brille tu ARMY Bomb", sub: "Rápidas y con mucha energía.", ko: "응원봉" },
 };
@@ -1654,7 +1588,7 @@ async function renderNowPanel() {
   $("nps-album-name").textContent = album.id === "mine" ? "Mis videos" : `${album.title}${album.year ? ` · ${album.year}` : ""}`;
   $("nps-album").disabled = album.id === "mine";
   $("nps-swatches").replaceChildren(...album.palette.slice(0, 3).map((c) => { const i = document.createElement("i"); i.style.background = c; return i; }));
-  // Solo datos que tenemos: tipo de video, letra, intensidad de luces y canal oficial.
+  // Solo datos que tenemos: tipo de video, intensidad de luces y canal oficial.
   const chips = metaLine(item);
   chips.hidden = false;
   [...chips.querySelectorAll(".m-artist")].forEach((n) => n.remove());
@@ -2357,10 +2291,8 @@ function bindSettings() {
   style.value = settings.style;
   $("chk-safe").checked = settings.safeMode;
   $("chk-wake").checked = settings.wake;
-  $("sel-lyrics").value = settings.lyricsLang;
   $("chk-chant").checked = settings.chant;
   $("chk-chant-voice").checked = settings.chantVoice;
-  $("sel-lyrics").onchange = (e) => { settings.lyricsLang = e.target.value; saveSettings(); applyLyrics(settings.lyrics); };
   $("chk-chant").onchange = (e) => { settings.chant = e.target.checked; saveSettings(); };
   $("chk-chant-voice").onchange = (e) => { settings.chantVoice = e.target.checked; saveSettings(); };
   $("sel-album-end").value = settings.albumEnd;
@@ -2651,14 +2583,6 @@ async function init() {
     },
   });
   $("btn-describe").onclick = () => { closeMenus(); announceLights(); };
-  $("lb-lyrics").onclick = () => setLyricsMode("lyrics");
-  $("lb-roman").onclick = () => setLyricsMode("roman");
-  $("btn-lyrics").onclick = () => {
-    settings.lyrics = !settings.lyrics;
-    saveSettings();
-    applyLyrics(true);
-  };
-  applyLyrics(false);
   $("btn-play").onclick = togglePlay;
   $("btn-mic").onclick = () => (mic?.hybrid ? toggleMicSync().then(toggleMic) : toggleMic());
   $("btn-mic-sync").onclick = () => { closeMenus(); toggleMicSync(); };
@@ -2793,7 +2717,6 @@ async function init() {
   });
   requestAnimationFrame(frame);
   await player.init();
-  applyLyrics(false);
   // Retoma la cola guardada (en pausa) si no se pidió una canción por enlace.
   if (!(songParam && /^[a-z0-9-]{1,80}$/.test(songParam))) restoreQueue();
 

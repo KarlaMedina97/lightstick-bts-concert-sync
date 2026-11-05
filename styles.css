@@ -316,6 +316,15 @@ kbd {
 .app:not(.side-drawer):has(#side:not([hidden])) #btn-cola,
 .app:not(.side-drawer):has(#side:not([hidden])) .ex-links { display: none; }
 .app:not(.side-drawer) #side-close { display: none; }
+/* Nota "¿Por qué no están todos los videos?" en el inicio */
+.info-note { margin: 0 0 var(--s-4); padding: var(--s-2) var(--s-4); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); font-size: var(--fs-14); }
+.info-note summary { min-height: var(--tap); display: flex; align-items: center; gap: var(--s-2); cursor: pointer; font-weight: 700; color: var(--text); list-style: none; }
+.info-note summary::-webkit-details-marker { display: none; }
+.info-note summary::before { content: "ⓘ"; color: var(--accent); font-size: 1.1em; }
+.info-note summary::after { content: ""; margin-left: auto; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; rotate: 45deg; transition: rotate var(--dur-2); }
+.info-note[open] summary::after { rotate: -135deg; }
+.info-note summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
+.info-note p { margin: 0 0 var(--s-2); color: var(--text-2); line-height: var(--lh-body); max-width: 70ch; }
 .lang-btn { font-size: var(--fs-12); font-weight: 800; letter-spacing: 0.04em; }
 .pill:hover, .round:hover { background: var(--surface-active); border-color: var(--border-strong); }
 .pill:active, .round:active { transform: scale(0.97); }
@@ -808,22 +817,6 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 @keyframes chant-pop { from { transform: scale(1.35); opacity: 0; filter: blur(6px); } to { transform: none; opacity: 1; filter: none; } }
 
 /* Barra de letra: chip de estado discreto bajo el video, simétrico al chip de luces. */
-.lyrics-bar {
-  position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); z-index: 3; max-width: calc(100% - 2 * var(--s-4));
-  display: flex; align-items: center; gap: var(--s-2); flex-wrap: nowrap; justify-content: center; min-height: 28px;
-  background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--r-pill); padding: 3px var(--s-3) 3px 3px; font-size: var(--fs-12); line-height: 1.3;
-  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); box-shadow: var(--e-1);
-  white-space: nowrap; overflow: hidden;
-  animation: tab-in var(--dur-3) var(--ease-out);
-}
-.lb-seg { flex: none; display: inline-flex; padding: 2px; gap: 2px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.08); }
-.lb-opt { min-height: 32px; padding: 0 var(--s-3); border: 0; border-radius: var(--r-pill); background: none; color: var(--text-2); font: inherit; font-weight: 700; cursor: pointer; }
-.lb-opt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
-.lb-opt:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-@media (pointer: coarse) { .lb-opt { min-height: 40px; } }
-.lb-tag { flex: none; background: var(--accent); color: var(--accent-ink); font-weight: 700; border-radius: var(--r-pill); padding: 2px var(--s-2); }
-#lb-text { color: var(--text-2); overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.lyrics-bar a { flex: none; color: #e3d4ff; font-weight: 600; }
 
 /* =====================================================================
    Guía integrada (coach) y su píldora
@@ -996,19 +989,6 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   .coach { box-shadow: var(--hairline-top), var(--e-1); }
   .coach-pill { align-self: center; }
   /* La tira de letra queda justo debajo del video (que aquí va arriba del escenario). */
-  .lyrics-bar { bottom: auto; top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + var(--s-2)); }
-  /* Teléfono: la barra de letra es una tarjeta de dos filas (selector + enlace / qué se muestra) que cabe entera. */
-  .lyrics-bar {
-    left: var(--s-3); right: var(--s-3); transform: none; margin-inline: auto; animation-name: view-in; /* centrada sin transform */
-    width: auto; max-width: 480px; flex-wrap: wrap; justify-content: space-between; row-gap: 2px;
-    white-space: normal; border-radius: var(--r-lg); padding: var(--s-1) var(--s-2) var(--s-1) var(--s-1);
-  }
-  .lyrics-bar .lb-seg { order: 1; }
-  .lyrics-bar a { order: 2; padding: var(--s-2) var(--s-1); }
-  .lyrics-bar #lb-text { order: 3; flex: 1 0 100%; padding: 0 var(--s-2) 2px; white-space: normal; }
-  /* En Luces no hay video: la barra va arriba del escenario, nunca encima del foco de luz. */
-  .app[data-view="lights"] .lyrics-bar { top: var(--s-2); }
-  .app[data-view="lights"] .lights-view { padding-top: 112px; }
   .art { width: 44px; height: 44px; }
   .art::after { inset: 19px; }
   .video-card { width: min(100cqw, calc((100cqh - 64px) * 16 / 9)); border-radius: var(--r-lg); }
@@ -1331,7 +1311,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   .phone-only { display: inline-flex; }
   /* --dock-h aquí solo ubica avisos y hojas encima del dock: la altura real la da el contenido */
   .dock { min-height: 0; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "np transport" "progress progress" "actions actions"; row-gap: var(--s-1); padding: var(--s-2) var(--s-3) var(--s-1); }
-  .dock-actions { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; }
+  .dock-actions { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); /* tantas columnas como botones visibles */ gap: 2px; }
   .dbtn { min-width: 0; min-height: 48px; padding: 2px 0; }
   .dbtn span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
   .dbtn svg { width: 20px; height: 20px; }
@@ -1904,12 +1884,11 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 @media (max-width: 640px) {
   /* Debajo del video; deja el hueco de la tira de letra solo si está visible */
   .upnext {
-    --un-top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + 132px); /* debajo de la tarjeta de letra (3 filas en teléfono) */
+    --un-top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + var(--s-3));
     top: var(--un-top); bottom: auto; left: 0; right: 0; width: auto;
     max-height: calc(100cqh - var(--un-top)); overflow: auto;
     background: var(--surface-1); box-shadow: var(--e-1);
   }
-  .stage:has(#lyrics-bar[hidden]) .upnext { --un-top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + var(--s-3)); }
   /* UI-04 · Explorar en teléfono: el mini video mide 200 px y su barra va debajo, nunca encima del reproductor de
      YouTube (sus políticas no permiten tapar el reproductor ni sus controles). */
   .app.exploring .video-card { --mini-w: calc(100cqw - 16px); }

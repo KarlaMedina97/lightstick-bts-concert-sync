@@ -59,6 +59,58 @@ En `tests/looks.test.js`:
 | Los LED responden de forma lineal y el ojo no: un 40 % se veía casi como un 100 %. | **Curva de brillo** (γ = 2) solo en lo que se envía al ARMY Bomb. |
 | Un video bloqueado para insertar (Graduation Song, por LatinAutor – UMPG) daba un error genérico. | Se quitó del catálogo. El aviso ahora explica el motivo según el código de YouTube (101/150, 100). Además, la guía para agregar canciones pide probar cada video en el reproductor, porque oEmbed no detecta estos bloqueos. |
 
+### Estudio de bora-waves.com (solo estadísticas, sin copiar datos ni código)
+
+Analicé la secuencia comunitaria más popular de FIRE: «MIC DROP + FYA + FIRE (Arirang World Tour)», de 9:54 y con 1.889 cues. Solo saqué estadísticas agregadas; no guardé tiempos ni colores exactos.
+
+- **Dos capas:** una pista de color sólido (1.151 cues) y otra de efecto, con 725 fundidos y 13 parpadeos. En la práctica, cada golpe es «color encendido + fundido de unos 0,4 s».
+- **Densidad por zona:** en la parte tranquila hay unos 2 cambios por segundo, con luces de unos 0,7 s. En el clímax hay de 3,6 a 3,9 cambios por segundo, con luces de 0,1 a 0,4 s.
+- **Colores muy pocos y del concepto:**
+  - la parte de MIC DROP usa sobre todo verde y blanco (es una sola secuencia de fans, no algo confirmado);
+  - la de FIRE usa rojo, naranja y blanco, con algo de amarillo;
+  - no aparece ni un fucsia.
+- **Casi nunca queda apagado:** hay oscuridad solo entre el 2 % y el 5 % del tiempo.
+- **Por qué se siente «soso»:** todo es color plano con fundidos; no hay ola entre varios sticks ni respiración, y la estructura es igual de principio a fin.
+
+**Qué tomamos (sin copiar):**
+- Golpes que encienden y se funden rápido (estilo `hit`).
+- Pocos colores por canción, siempre del concepto (`onConcept`).
+- Luces más largas en lo tranquilo y más cortas en el clímax (`div` por sección).
+
+**Qué hacemos distinto:**
+- Oscuridad real entre golpes, que da contraste (en FIRE, más del 10 % del tiempo).
+- Explosión blanco → amarillo → rojo → brasa.
+- Olas entre varios sticks, «canto» por frase y colores del propio video filtrados por el concepto.
+- Golpes reales tomados del micrófono.
+- Modo seguro de 2,5 Hz como máximo. Esa secuencia llega a casi 4 cambios por segundo, por encima del límite de WCAG; aquí solo sería posible con el modo seguro apagado.
+
+### Danger y el «casi apagado» (cuarta ronda)
+
+Medí el brillo que realmente le llega al LED, sección por sección. En Danger, el coro final quedaba **100 % apagado** y los coros, entre el 79 % y el 87 % del tiempo casi apagados. Había tres causas, y valían para casi todo el catálogo:
+
+1. **Negro en las paletas:** 29 álbumes tienen un color casi negro (Dark & Wild usa `#111111`), y en un LED eso es «sin luz». Ahora `lightable()` descarta los grises y negros, y lleva los oscuros saturados a brillo pleno con el mismo tono; por ejemplo, el azul marino pasa a azul.
+2. **La curva del LED (γ = 2) aplastaba los medios.** Ahora `ledLevel()` aplica la curva **sobre un piso** por sección: piso de energía (0,12 en canciones intensas) + 0,5 × nivel². Solo la sección final puede llegar a negro, porque ahí sí hay una razón musical. En las canciones con explosiones (FIRE) el piso es una brasa tenue, para conservar el contraste.
+3. **Golpes demasiado cortos en lo intenso:** en el clímax ahora tienen más cuerpo, salvo las explosiones. La «ola» lleva un pulso suave, para no quedar siempre al máximo y quitarle fuerza al coro.
+
+**Danger:**
+- rojo, blanco y rojo claro;
+- versos de rap como momentos intensos (golpes);
+- curva propia que sube de la intro al coro final.
+
+Resultado del brillo promedio del LED:
+
+| intro | verso (rap) | coro | puente | coro final |
+| --- | --- | --- | --- | --- |
+| 0,50 | 0,59 | 0,64 | 0,58 | 0,67 |
+
+Nunca queda apagado; los golpes llegan hasta 0,97.
+
+Otras canciones de rap con versos intensos (`rap: true`): Boy In Luv, No More Dream, We Are Bulletproof Pt.2, DOPE, MIC Drop, Not Today, IDOL, ON, Daechwita, Hooligan, 2.0 y FIRE.
+
+Prueba nueva: ninguna canción intensa del catálogo puede quedar «apagada» (por debajo de 0,08) fuera del cierre, y el coro final debe superar a la intro.
+
+**Límite honesto:** la página no escucha el audio. Las partes de la canción siguen siendo porcentajes de la duración, y el carácter de cada canción (rap, coros) viene de conocerla, no de analizar su sonido en vivo. Para seguir la voz y los golpes reales de verdad hay dos herramientas: «Marcar ritmo» y el modo «Con el sonido del video».
+
 Lo que **no** se puede hacer:
 
 - recrear el modo concierto oficial (textos o imágenes con el público);

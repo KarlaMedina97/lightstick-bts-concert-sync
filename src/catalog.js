@@ -5,7 +5,6 @@
 // kind: "concert" para presentaciones en vivo (TV, premios, conciertos oficiales); "cover" para covers oficiales
 // (álbumes "covers-<integrante>", con el artista original en el título).
 // artist: "BTS" (grupo) o el integrante: "RM", "Jin", "SUGA" (también Agust D), "j-hope", "Jimin", "V", "Jung Kook".
-// lyricVideo: video oficial con la letra en pantalla (canal oficial/autorizado), para el modo "Letra".
 // officialCaptions: el video `yt` trae subtítulos oficiales (no automáticos) en el reproductor.
 // Solo canales oficiales o autorizados; cada ID se verificó con oEmbed.
 
@@ -504,7 +503,7 @@ export const ALBUMS = [
     year: 2021,
     palette: ["#7c4dff", "#ff4081", "#00e5ff"],
     songs: [
-      { id: "my-universe", title: "My Universe", yt: "3YqPKLZF_WU", bpm: 105, energy: "mid", lyricVideo: "bZYPI4mYwhw", officialCaptions: true },
+      { id: "my-universe", title: "My Universe", yt: "3YqPKLZF_WU", bpm: 105, energy: "mid", officialCaptions: true },
       { id: "my-universe-amas", title: "My Universe (Live at the AMAs)", yt: "9L3aw9PfDpw", bpm: 105, energy: "mid", kind: "concert" },
     ],
   },
@@ -527,7 +526,7 @@ export const ALBUMS = [
     artist: "BTS",
     year: 2022,
     palette: ["#ff5722", "#ffeb3b", "#2196f3"],
-    songs: [{ id: "bad-decisions", title: "Bad Decisions", yt: "BGNkkVrJZks", bpm: 124, energy: "high", lyricVideo: "Q2VYtCSshic", officialCaptions: true }],
+    songs: [{ id: "bad-decisions", title: "Bad Decisions", yt: "BGNkkVrJZks", bpm: 124, energy: "high", officialCaptions: true }],
   },
   {
     id: "my-you",
@@ -594,7 +593,7 @@ export const ALBUMS = [
     year: 2022,
     palette: ["#1a237e", "#4fc3f7", "#ffffff"],
     songs: [
-      { id: "the-astronaut", title: "The Astronaut", yt: "c6ASQOwKkhk", bpm: 120, energy: "mid", lyricVideo: "yAU7Fw8Sif0", officialCaptions: true },
+      { id: "the-astronaut", title: "The Astronaut", yt: "c6ASQOwKkhk", bpm: 120, energy: "mid", officialCaptions: true },
       { id: "the-astronaut-coldplay-live", title: "The Astronaut (with Coldplay, Buenos Aires)", yt: "FqmYc62HUec", bpm: 120, energy: "mid", kind: "concert" },
     ],
   },
@@ -683,7 +682,7 @@ export const ALBUMS = [
     songs: [
       { id: "seven", title: "Seven (feat. Latto)", yt: "QU9c0053UAU", bpm: 125, energy: "high", officialCaptions: true },
       { id: "3d", title: "3D (feat. Jack Harlow)", yt: "mHNCM-YALSA", bpm: 108, energy: "high" },
-      { id: "standing-next-to-you", title: "Standing Next to You", yt: "UNo0TG9LwwI", bpm: 106, energy: "high", lyricVideo: "1ppY8E2wrWo", officialCaptions: true },
+      { id: "standing-next-to-you", title: "Standing Next to You", yt: "UNo0TG9LwwI", bpm: 106, energy: "high", officialCaptions: true },
       { id: "hate-you", title: "Hate You (Visualizer)", yt: "tAcKfnf0zv4", bpm: 80, energy: "ballad" },
       { id: "seven-performance", title: "Seven (feat. Latto) (Performance Video)", yt: "1QYBiNRu1ok", bpm: 125, energy: "high" },
       { id: "seven-iheart", title: "Seven (iHeartRadio LIVE)", yt: "6gefJSC0-p0", bpm: 125, energy: "high", kind: "concert" },
@@ -764,7 +763,7 @@ export const ALBUMS = [
     year: 2024,
     palette: ["#4fc3f7", "#fff176", "#ffffff"],
     songs: [
-      { id: "ill-be-there", title: "I'll Be There", yt: "PWjZ3p1jNho", bpm: 130, energy: "high", lyricVideo: "WxXcgnIfV0U" },
+      { id: "ill-be-there", title: "I'll Be There", yt: "PWjZ3p1jNho", bpm: 130, energy: "high" },
       { id: "running-wild", title: "Running Wild", yt: "uoHol5Dr_go", bpm: 118, energy: "mid" },
       { id: "ill-be-there-live-clip", title: "I'll Be There (Live Clip)", yt: "1RlXJJKpMSo", bpm: 130, energy: "high", kind: "concert" },
       { id: "running-wild-live-clip", title: "Running Wild (Live Clip)", yt: "buaBdxY0H5E", bpm: 118, energy: "mid", kind: "concert" },
@@ -794,7 +793,7 @@ export const ALBUMS = [
     year: 2025,
     palette: ["#424242", "#b0bec5", "#e53935"],
     songs: [
-      { id: "dont-say-you-love-me", title: "Don't Say You Love Me", yt: "o7BcyAd6rqg", bpm: 82, energy: "ballad", lyricVideo: "iD_3rMPrggQ" },
+      { id: "dont-say-you-love-me", title: "Don't Say You Love Me", yt: "o7BcyAd6rqg", bpm: 82, energy: "ballad" },
       { id: "dsylm-seongsu", title: "Don't Say You Love Me @ Seongsu (Live Clip)", yt: "k7xcVbxN-eM", bpm: 82, energy: "ballad", kind: "concert" },
     ],
   },
@@ -816,7 +815,7 @@ export const ALBUMS = [
       { id: "swim", title: "SWIM", yt: "b4iVv91Z6lY", bpm: 100, energy: "mid", officialCaptions: true },
       { id: "hooligan", title: "Hooligan", yt: "diBO0gMuTXo", bpm: 120, energy: "high" },
       { id: "two-point-o", title: "2.0", yt: "_gyultVTesk", bpm: 110, energy: "high" },
-      { id: "normal", title: "NORMAL", yt: "GEk4jHwfFTA", bpm: 100, energy: "mid", lyricVideo: "6yvxHpIO5NY", officialCaptions: true },
+      { id: "normal", title: "NORMAL", yt: "GEk4jHwfFTA", bpm: 100, energy: "mid", officialCaptions: true },
       { id: "merry-go-round", title: "Merry Go Round", yt: "eJXL4-4m5nY", bpm: 105, energy: "mid" },
       { id: "swim-performance", title: "SWIM (Performance Video)", yt: "h-Y97xErGL8", bpm: 100, energy: "mid", officialCaptions: true },
       { id: "two-point-o-dance-practice", title: "2.0 (Dance Practice)", yt: "A1nu9jg6ciY", bpm: 110, energy: "high" },

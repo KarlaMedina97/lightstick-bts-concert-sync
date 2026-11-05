@@ -16,6 +16,7 @@ export const STYLES = {
   flame: { label: "Llamas", description: "Rojo y naranja que tiemblan como fuego, sin destellos bruscos." },
   disco: { label: "Disco", description: "Cambia de color de la paleta cada 2 tiempos." },
   split: { label: "Secciones", description: "Cada ARMY Bomb toma un color y la asignación rota, como las zonas del estadio." },
+  hit: { label: "Golpes", description: "Oscuro entre golpes y una explosión de luz en cada golpe fuerte, como en el concierto." },
   sparkle: { label: "Chispas", description: "Base tenue con chispas breves, como estrellas (máximo 2 por segundo en modo seguro)." },
 };
 
@@ -27,18 +28,24 @@ export const STYLES = {
 const H = "high", B = "ballad";
 const BALLAD_PLAN = ["breathe", "breathe", "ocean", "breathe", "breathe", "breathe", "ocean", "breathe", "fadeout"];
 export const SONG_LOOKS = {
-  fire: { lock: true, palette: ["#ff1a00", "#ff6a00", "#ffb300"], plan: ["breathe", "flame", "flame", "pulse", "flame", "pulse", "flame", "pulse", "fadeout"], source: "parcial" },
-  dynamite: { palette: ["#ff4fa3", "#ffd23f", "#3ec1ff", "#7cff6b"], plan: ["breathe", "disco", "wave", "disco", "disco", "pulse", "wave", "rainbow", "fadeout"] },
+  fire: { lock: true, explode: true, palette: ["#ff1a00", "#ffd000", "#ffffff"], plan: ["flame", "flame", "hit", "hit", "flame", "hit", "flame", "hit", "fadeout"], source: "parcial" },
+  dynamite: { rainbow: true, palette: ["#ff4fa3", "#ffd23f", "#3ec1ff", "#7cff6b"], plan: ["breathe", "disco", "wave", "disco", "disco", "pulse", "wave", "rainbow", "fadeout"] },
   butter: { palette: ["#ffd400", "#ffe680", "#ffffff"], plan: ["breathe", "pulse", "breathe", "pulse", "pulse", "pulse", "breathe", "pulse", "fadeout"], source: "fans" },
-  ptd: { palette: ["#ff5a5a", "#ffd23f", "#4fd1ff", "#9b6bff"], plan: ["breathe", "wave", "wave", "rainbow", "wave", "rainbow", "ocean", "rainbow", "fadeout"], source: "fans" },
-  "mic-drop": { palette: ["#ffffff", "#ff2d2d", "#3a3a3a"], plan: ["breathe", "pulse", "flash", "flash", "pulse", "flash", "breathe", "flash", "fadeout"] },
+  ptd: { rainbow: true, palette: ["#ff5a5a", "#ffd23f", "#4fd1ff", "#9b6bff"], plan: ["breathe", "wave", "wave", "rainbow", "wave", "rainbow", "ocean", "rainbow", "fadeout"], source: "fans" },
+  "mic-drop": { explode: true, palette: ["#ffffff", "#ff2d2d", "#3a3a3a"], plan: ["breathe", "hit", "hit", "hit", "pulse", "hit", "breathe", "hit", "fadeout"] },
   idol: { palette: ["#ff2e88", "#00c2a8", "#ffb300"], plan: ["breathe", "wave", "pulse", "disco", "wave", "disco", "split", "rainbow", "fadeout"] },
   "spring-day": { palette: ["#bfe3ff", "#ffffff", "#9fb8ff"], plan: BALLAD_PLAN, oceanColor: "#9fc4ff" },
   "yet-to-come": { palette: ["#8a2be2", "#ffe9b0"], plan: ["breathe", "ocean", "ocean", "wave", "ocean", "wave", "ocean", "ocean", "fadeout"], source: "parcial" },
+  // Danger (2014): rap y coro gritado con mucha fuerza; rojo, blanco y rojo claro (el negro del álbum es "sin luz").
+  danger: {
+    rap: true, palette: ["#ff1a1a", "#ffffff", "#ff5252"],
+    plan: ["pulse", "hit", "pulse", "hit", "hit", "hit", "pulse", "hit", "fadeout"],
+    curve: [0.75, 0.92, 0.85, 0.97, 0.92, 0.98, 0.85, 1, 0.6],
+  },
   dna: { palette: ["#00b2ff", "#ff4fd8", "#ffffff"], plan: ["breathe", "wave", "pulse", "pulse", "wave", "pulse", "wave", "rainbow", "fadeout"] },
   "fake-love": { palette: ["#b0002a", "#5a1a6a", "#ffffff"], plan: ["breathe", "breathe", "pulse", "pulse", "breathe", "pulse", "breathe", "pulse", "fadeout"] },
   bst: { palette: ["#8a1240", "#c9a227", "#ffffff"], plan: ["breathe", "breathe", "wave", "pulse", "breathe", "pulse", "breathe", "pulse", "fadeout"] },
-  "not-today": { palette: ["#ffffff", "#e53935", "#5a5a5a"], plan: ["breathe", "pulse", "pulse", "flash", "pulse", "flash", "breathe", "flash", "fadeout"] },
+  "not-today": { explode: true, palette: ["#ffffff", "#e53935", "#5a5a5a"], plan: ["breathe", "hit", "pulse", "hit", "pulse", "hit", "breathe", "hit", "fadeout"] },
   dope: { palette: ["#ffffff", "#ff1744"] },
   run: { palette: ["#ff9a3c", "#ffd27a"] },
   "save-me": { palette: ["#00e5ff", "#ff5ab4"] },
@@ -52,17 +59,20 @@ export const SONG_LOOKS = {
   "film-out": { palette: ["#9ec9ff", "#ffffff"], plan: BALLAD_PLAN, oceanColor: "#9ec9ff" },
   "my-universe": { palette: ["#3a2fd0", "#ff6ad5", "#ffffff"], plan: ["breathe", "sparkle", "wave", "wave", "sparkle", "wave", "ocean", "rainbow", "fadeout"] },
   "the-astronaut": { palette: ["#2a4ab8", "#ffffff", "#8fd3ff"], plan: ["breathe", "sparkle", "ocean", "wave", "sparkle", "wave", "ocean", "wave", "fadeout"] },
-  daechwita: { palette: ["#c9a227", "#a00000", "#ffffff"], plan: ["breathe", "pulse", "pulse", "pulse", "pulse", "pulse", "flame", "pulse", "fadeout"] },
+  daechwita: { explode: true, palette: ["#c9a227", "#a00000", "#ffffff"], plan: ["breathe", "hit", "pulse", "hit", "pulse", "hit", "flame", "hit", "fadeout"] },
   seven: { plan: ["breathe", "wave", "pulse", "disco", "wave", "disco", "breathe", "rainbow", "fadeout"] },
   // Era ARIRANG (2026): rojo como base (sin verificar: solo un resumen de prensa de la apertura en Goyang).
   hooligan: { palette: ["#c8102e", "#ffffff", "#ff5a5a"], energy: H, source: "sin verificar" },
   swim: { palette: ["#c8102e", "#ffffff", "#ff8a8a"], source: "sin verificar" },
 };
 for (const id of ["haegeum", "agust-d"]) SONG_LOOKS[id] = SONG_LOOKS.daechwita;
+// Canciones con mucho rap: los versos son momentos intensos, no de bajón.
+for (const id of ["boy-in-luv", "no-more-dream", "we-are-bulletproof-pt2"]) SONG_LOOKS[id] ??= { rap: true };
 for (const id of ["standing-next-to-you", "3d"]) SONG_LOOKS[id] = SONG_LOOKS.seven;
 for (const id of ["two-point-o"]) SONG_LOOKS[id] = SONG_LOOKS.hooligan;
 for (const id of ["normal"]) SONG_LOOKS[id] = SONG_LOOKS.swim;
 for (const id of ["blue-side", "winter-bear", "lights", "epiphany", "singularity", "serendipity", "abyss", "forever-rain"]) SONG_LOOKS[id] ??= { plan: BALLAD_PLAN };
+for (const id of ["dope", "mic-drop", "not-today", "idol", "on", "daechwita", "hooligan", "two-point-o", "fire"]) SONG_LOOKS[id].rap = true;
 // Ids que empiezan igual pero son otra canción.
 const NOT_VARIANTS = new Set(["run-bts-dance-practice", "run-bts-busan", "on-the-street"]);
 
@@ -98,12 +108,48 @@ const CURVES = {
 // Qué cuadro del video da color a cada sección: portada → 25 % → 50 % → 75 % del video.
 const FRAME_OF = [0, 0, 0, 1, 1, 1, 2, 2, 2];
 const FLAME = ["#ff1a00", "#ff6a00"];
+const FLOOR_BASE = { high: 0.12, mid: 0.08, ballad: 0.04 };
 
 const PLANS = {
-  high: ["breathe", "wave", "pulse", "flash", "wave", "pulse", "breathe", "rainbow", "fadeout"],
-  mid: ["breathe", "wave", "breathe", "pulse", "wave", "pulse", "ocean", "wave", "fadeout"],
-  ballad: ["breathe", "breathe", "ocean", "ocean", "breathe", "ocean", "rainbow", "ocean", "fadeout"],
+  high: ["breathe", "wave", "pulse", "hit", "wave", "hit", "breathe", "hit", "fadeout"],
+  mid: ["breathe", "wave", "breathe", "pulse", "wave", "hit", "ocean", "hit", "fadeout"],
+  ballad: ["breathe", "breathe", "ocean", "ocean", "breathe", "ocean", "wave", "ocean", "fadeout"],
 };
+
+/** Tono (0–1) y saturación de un color. */
+function hueSat([r, g, b]) {
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  if (!d) return [0, 0];
+  const h = max === r ? ((g - b) / d + (g < b ? 6 : 0)) / 6 : max === g ? ((b - r) / d + 2) / 6 : ((r - g) / d + 4) / 6;
+  return [h, d / max];
+}
+/**
+ * Filtra colores del video que no van con el concepto de la canción: solo quedan los que están a menos de 35°
+ * de tono de algún color de su paleta curada (el blanco del concepto no deja pasar colores nuevos).
+ * En FIRE, por ejemplo, un fucsia del video nunca llega al ARMY Bomb.
+ */
+export function onConcept(videoHex, conceptHex) {
+  const concept = conceptHex.map((h) => hueSat(hexToRgb(h))).filter(([, sat]) => sat > 0.25).map(([h]) => h);
+  if (!concept.length) return videoHex;
+  return videoHex.filter((v) => {
+    const [h, sat] = hueSat(hexToRgb(v));
+    if (sat < 0.25) return true;
+    return concept.some((c) => Math.min(Math.abs(h - c), 1 - Math.abs(h - c)) * 360 <= 35);
+  });
+}
+
+/**
+ * Color que un ARMY Bomb puede mostrar: los oscuros saturados se llevan a brillo pleno con el mismo tono
+ * (azul marino → azul) y los grises o negros se descartan (en un LED son "apagado", no un color).
+ */
+export function lightable(hex) {
+  const c = hexToRgb(hex);
+  const mx = Math.max(...c);
+  if (mx >= 140) return c;
+  const [, sat] = hueSat(c);
+  if (sat < 0.3 || mx < 12) return null;
+  return c.map((v) => (v * 255) / mx);
+}
 
 export function hexToRgb(hex) {
   const n = Number.parseInt(hex.replace("#", ""), 16);
@@ -136,14 +182,24 @@ export function generatePattern(song, album, duration, opts = {}) {
   const look = lookFor(song.id);
   const energy = look?.energy ?? song.energy;
   const plan = look?.plan ?? PLANS[energy] ?? PLANS.mid;
-  const curve = CURVES[energy] ?? CURVES.mid;
+  let curve = look?.curve ?? CURVES[energy] ?? CURVES.mid;
+  // Rap: los versos (y el puente) suben; ahí está la fuerza de la canción.
+  if (look?.rap && !look?.curve) curve = curve.map((v, i) => ([1, 4, 6].includes(i) ? Math.max(v, 0.85) : v));
   // Colores: los del propio video (opts.video, de src/videopalette.js) si existen; si no, el look o el álbum.
   // Un look con lock (FIRE) conserva su paleta curada.
-  const vid = opts.video?.overall?.length && !look?.lock ? opts.video : null;
-  const palette = [PURPLE, ...(vid?.overall ?? look?.palette ?? album.palette)].map(hexToRgb);
-  const framePal = vid?.frames?.map((f) => (f?.length ? f : vid.overall).map(hexToRgb)) ?? null;
+  let vid = opts.video?.overall?.length && !look?.lock ? opts.video : null;
+  if (vid && look?.palette) {
+    const keep = (list) => onConcept(list ?? [], look.palette);
+    const overall = keep(vid.overall);
+    vid = overall.length ? { overall, frames: (vid.frames ?? []).map((f) => { const k = keep(f); return k.length ? k : overall; }) } : null;
+  }
+  const source = (vid?.overall ?? look?.palette ?? album.palette).map(lightable).filter(Boolean);
+  const palette = [hexToRgb(PURPLE), ...(source.length ? source : [hexToRgb("#b388ff")])];
+  const framePal = vid?.frames?.map((f) => { const c = (f?.length ? f : vid.overall).map(lightable).filter(Boolean); return c.length ? c : palette.slice(1); }) ?? null;
   const oceanRgb = look?.oceanColor ? hexToRgb(look.oceanColor) : null;
   const flamePal = (look?.palette ?? FLAME).slice(0, 2).map(hexToRgb);
+  if (look?.explode && flamePal.length === 2) flamePal[1] = mix(flamePal[0], flamePal[1], 0.45); // brasa: rojo→naranja
+  const white = [255, 255, 255];
   const beat = 60 / (song.bpm || 100);
   // Fase: segundo del video donde cae un tiempo (lo marca la persona con "Marcar ritmo"). Sin ella, el compás
   // empezaría en el segundo 0 del video, y casi ningún MV empieza la música justo ahí.
@@ -164,6 +220,8 @@ export function generatePattern(song, album, duration, opts = {}) {
       color: frame ? frame[i % frame.length] : palette[(i % (palette.length - 1)) + 1] ?? palette[0],
       lvl,
       gain: 0.4 + 0.6 * lvl, // suave → tenue, culminante → pleno
+      // Brillo mínimo que verá el ARMY Bomb en esta sección (tras la curva del LED). Más alto en lo intenso.
+      floor: plan[i] === "fadeout" && !opts.styleOverride ? 0 : (look?.explode ? 0.04 : FLOOR_BASE[energy] ?? 0.1) + (look?.explode ? 0.12 : 0.5) * lvl ** 2, // explosiones: brasa tenue entre golpes
       div: lvl >= 0.9 ? 1 : lvl >= 0.65 ? 2 : 4, // late en cada tiempo, cada 2 o cada 4
     };
   });
@@ -171,6 +229,7 @@ export function generatePattern(song, album, duration, opts = {}) {
   // Pseudoaleatorio estable (mismo resultado en cada cuadro) para las chispas.
   const hash = (x) => { const v = Math.sin(x * 127.1 + 311.7) * 43758.5453; return v - Math.floor(v); };
 
+  let ext = null;
   function styleColor(sec, t, i, n) {
     const local = t - sec.start;
     // Compás GLOBAL (desde el inicio del video), no por sección: si el pulso reiniciara en cada sección,
@@ -230,11 +289,42 @@ export function generatePattern(song, album, duration, opts = {}) {
         const frac = pos - idx;
         const a = palette[idx % palette.length];
         const b = palette[(idx + 1) % palette.length];
-        return mix(a, b, clamp01((frac - 0.7) / 0.3)); // mantiene y luego funde
+        // Pulso suave en cada tiempo (no siempre al máximo): la ola acompaña, el coro es el que pega.
+        const bstep = beats / beatsPerFlash, bf = bstep - Math.floor(bstep); // respeta el límite del modo seguro
+        return scale(mix(a, b, clamp01((frac - 0.7) / 0.3)), 0.68 + 0.24 * Math.exp(-bf * 3)); // mantiene y luego funde
       }
       case "rainbow": {
-        const h = (local / (beat * 16) + phase) % 1;
-        return hsvToRgb(h, 0.9, 1);
+        // Arcoíris real solo si es el concepto (Dynamite, Permission to Dance); si no, recorre la paleta de la canción.
+        if (look?.rainbow || (!look && !vid)) return hsvToRgb((local / (beat * 16) + phase) % 1, 0.9, 1);
+        const colors = palette.slice(1).length ? palette.slice(1) : palette;
+        const pos = ((local / (beat * 4) + phase * colors.length) % colors.length + colors.length) % colors.length;
+        const a = Math.floor(pos);
+        return mix(colors[a], colors[(a + 1) % colors.length], pos - a);
+      }
+      case "hit": {
+        // Golpes: casi apagado entre golpes (no siempre encendido) y una explosión en cada golpe fuerte.
+        // El 1 y el 3 del compás pegan más que el 2 y el 4. Con el sonido del video, el golpe lo da el micrófono.
+        let env;
+        if (ext?.hit != null) env = ext.hit;
+        else {
+          const per = Math.max(sec.div >= 4 ? 2 : 1, beatsPerFlash);
+          const step = beats / per;
+          const k = Math.floor(step);
+          const frac = step - k;
+          const strong = per >= 2 || ((k % 4) + 4) % 4 === 0 || ((k % 4) + 4) % 4 === 2 ? 1 : 0.7;
+          // En lo culminante el golpe tiene más cuerpo (se apaga más lento); en lo suave es un toque corto.
+          // Explosiones (FIRE): siempre cortas, con brasa entre golpes.
+          env = strong * Math.exp(-frac * (look?.explode ? 6 : 6 - 3 * sec.lvl));
+        }
+        const ember = scale(look?.explode ? flamePal[0] : sec.color, 0.06);
+        if (look?.explode) {
+          // Explosión: núcleo blanco → amarillo → rojo → brasa (fuego, no colores ajenos).
+          const yellow = palette[2] ?? [255, 208, 0], red = palette[1] ?? flamePal[0];
+          if (env > 0.75) return mix(yellow, white, (env - 0.75) / 0.25);
+          if (env > 0.35) return mix(red, yellow, (env - 0.35) / 0.4);
+          return mix(ember, red, env / 0.35);
+        }
+        return mix(ember, sec.color, env);
       }
       case "flash": {
         const step = Math.floor(beats / beatsPerFlash);
@@ -252,7 +342,8 @@ export function generatePattern(song, album, duration, opts = {}) {
   }
 
   const CROSSFADE = 0.6;
-  function colorAt(t, i = 0, n = 1) {
+  function colorAt(t, i = 0, n = 1, external = null) {
+    ext = external;
     if (!(duration > 0)) return palette[0];
     const tt = Math.min(Math.max(0, t), duration - 0.001);
     const idx = sections.findIndex((s) => tt >= s.start && tt < s.end);
@@ -271,11 +362,29 @@ export function generatePattern(song, album, duration, opts = {}) {
     return c;
   }
 
+  /** Brillo mínimo del LED en el segundo t (lo usa la app al convertir a brillo del ARMY Bomb). */
+  function floorAt(t) {
+    const s = sections.find((x) => t >= x.start && t < x.end) ?? sections[sections.length - 1];
+    return s.floor;
+  }
+
   function sectionAt(t) {
     return sections.find((s) => t >= s.start && t < s.end) ?? sections[sections.length - 1];
   }
 
-  return { sections, colorAt, sectionAt, beat };
+  return { sections, colorAt, sectionAt, floorAt, beat };
+}
+
+/**
+ * Brillo que verá el LED: curva perceptiva (γ) por encima de un piso. El piso evita que una parte intensa se vea
+ * apagada; la curva hace que lo suave se vea suave de verdad. El tono no cambia.
+ * @param {number[]} rgb 0–255 @param {number} floor 0–1 @param {number} gamma
+ */
+export function ledLevel(rgb, floor = 0.2, gamma = 2) {
+  const m = Math.max(...rgb) / 255;
+  if (m <= 0.002) return floor > 0 ? rgb : [0, 0, 0];
+  const target = floor + (1 - floor) * m ** gamma;
+  return rgb.map((v) => Math.min(255, (v / 255 / m) * target * 255));
 }
 
 /**
@@ -306,6 +415,10 @@ export function generateConcertPattern(duration, opts) {
     colorAt(t, i = 0, n = 1) {
       const b = blockAt(t);
       return b.p.colorAt(t - b.start, i, n);
+    },
+    floorAt(t) {
+      const b = blockAt(t);
+      return b.p.floorAt(t - b.start);
     },
     sectionAt(t) {
       const b = blockAt(t);

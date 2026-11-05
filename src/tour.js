@@ -9,7 +9,6 @@ const KEY = "pws.tour.v1";
 export const DEFAULT_TIPS = [
   // Un selector puede listar varias opciones: se usa la primera visible (escritorio o teléfono).
   { target: "#btn-bt, #dock-bt", title: "Conecta tu ARMY Bomb", text: "Cambia de color con cada parte de la canción. ¿Sin él? La vista Luces usa tu pantalla.", place: "bottom" },
-  { target: "#btn-lyrics", title: "Letra", text: "Muestra la letra con el video oficial o sus subtítulos, cuando existen.", place: "top" },
   { target: "#btn-live", title: "Concierto", text: "¿En el estadio o frente a la TV? Elige y tus luces te acompañan.", place: "top" },
   { target: "#btn-cola", title: "Tu cola", text: "Toca ⋯ en una canción y elige Agregar a la cola. Ordénala arrastrando.", place: "top" },
 ];

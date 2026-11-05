@@ -1,5 +1,10 @@
 // Inglés del reproductor (player/index.html) y sus módulos, salvo src/app.js.
 export default {
+  "Golpes": "Hits",
+  "Oscuro entre golpes y una explosión de luz en cada golpe fuerte, como en el concierto.": "Dark between hits and a burst of light on every strong beat, like at a concert.",
+  "¿Por qué no están todos los videos de BTS?": "Why aren't all BTS videos here?",
+  "Algunos videos oficiales no se pueden ver dentro de Purple Wave. Quien tiene los derechos de la música (una discográfica o una editora) puede bloquear que el video se reproduzca fuera de YouTube, a veces solo en algunos países.": "Some official videos can't be played inside Purple Wave. Whoever holds the music rights (a label or publisher) can block the video from playing outside YouTube, sometimes only in some countries.",
+  "Cuando eso pasa, YouTube muestra «El video no está disponible» y las luces no tienen con qué sincronizarse, así que lo quitamos de la lista. No es un error de tu ARMY Bomb ni de tu conexión: puedes verlo en YouTube.": "When that happens, YouTube shows “Video unavailable” and the lights have nothing to sync with, so we remove it from the list. It isn't a problem with your ARMY Bomb or your connection: you can watch it on YouTube.",
   // Estilos de luz nuevos (docs/patrones-luces.md)
   "Llamas": "Flames",
   "Disco": "Disco",

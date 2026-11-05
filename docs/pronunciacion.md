@@ -1,5 +1,10 @@
 # Letra y pronunciación: opciones evaluadas (2026-11-05)
 
+> **Retirada el 2026-11-05.** Se probó y no funcionaba bien en este caso: pocos videos traen pistas oficiales de
+> subtítulos o de pronunciación, y el modo con letra cambiaba de video a mitad de la canción. Se quitaron el botón
+> «Letra», la barra Letra/Pronunciación, el ajuste de idioma de la letra, el estante «Con letra en pantalla» y el
+> campo `lyricVideo` del catálogo. Este documento queda como registro del análisis legal.
+
 Objetivo: ayudar a cantar con los videos mostrando la pronunciación (romanización) de las canciones en coreano.
 
 ## Resumen
