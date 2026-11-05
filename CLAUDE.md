@@ -7,7 +7,7 @@ Léela entera antes de cambiar algo. `AGENTS.md` apunta aquí.
 
 **Purple Wave Sync** (`lightstick-bts-concert-sync`): PWA estática, no oficial y de código abierto, que sincroniza
 el lightstick ARMY Bomb por **Web Bluetooth** con videos de YouTube de canciones y conciertos de BTS.
-Se publica en GitHub Pages: https://karlamedina97.github.io/lightstick-bts-concert-sync/
+Se publica en GitHub Pages con dominio propio: https://lumiparty.com/ (DNS en Hostinger; antes https://karlamedina97.github.io/lightstick-bts-concert-sync/)
 
 - Sin build, sin dependencias de npm, sin backend propio. JavaScript moderno con módulos ES nativos.
 - Interfaz y textos en **español** (fuente), cortos y directos; opción de **inglés** con `src/i18n.js`.
