@@ -5,18 +5,55 @@
 
 export const ALBUMS = [
   {
+    id: "2cool4skool",
+    title: "2 COOL 4 SKOOL",
+    year: 2013,
+    palette: ["#212121", "#ffeb3b", "#e53935"],
+    songs: [{ id: "no-more-dream", title: "No More Dream", yt: "rBG5L7UsUxA", bpm: 84, energy: "high" }],
+  },
+  {
+    id: "skool-luv-affair",
+    title: "Skool Luv Affair",
+    year: 2014,
+    palette: ["#c62828", "#212121", "#ffffff"],
+    songs: [{ id: "boy-in-luv", title: "Boy In Luv", yt: "LHHjp3IMjMk", bpm: 122, energy: "high" }],
+  },
+  {
+    id: "dark-and-wild",
+    title: "Dark & Wild",
+    year: 2014,
+    palette: ["#b71c1c", "#111111", "#ff5252"],
+    songs: [
+      { id: "danger", title: "Danger", yt: "bagj78IQ3l0", bpm: 123, energy: "high" },
+      { id: "war-of-hormone", title: "War of Hormone", yt: "XQmpVHUi-0A", bpm: 122, energy: "high" },
+    ],
+  },
+  {
     id: "hyyh-pt1",
     title: "The Most Beautiful Moment in Life Pt.1",
     year: 2015,
     palette: ["#ff6f91", "#6a5acd", "#ffd6e0"],
-    songs: [{ id: "i-need-u", title: "I NEED U", yt: "jjskoRh8GTE", bpm: 79, energy: "mid" }],
+    songs: [
+      { id: "i-need-u", title: "I NEED U", yt: "jjskoRh8GTE", bpm: 79, energy: "mid" },
+      { id: "dope", title: "DOPE", yt: "BVwAVbKYYeM", bpm: 125, energy: "high" },
+    ],
+  },
+  {
+    id: "hyyh-pt2",
+    title: "The Most Beautiful Moment in Life Pt.2",
+    year: 2015,
+    palette: ["#ff8a65", "#4fc3f7", "#ffffff"],
+    songs: [{ id: "run", title: "RUN", yt: "wKysONrSmew", bpm: 128, energy: "high" }],
   },
   {
     id: "young-forever",
     title: "The Most Beautiful Moment in Life: Young Forever",
     year: 2016,
     palette: ["#ff4500", "#ffb000", "#ff1e56"],
-    songs: [{ id: "fire", title: "FIRE", yt: "ALj5MKjy2BU", bpm: 168, energy: "high" }],
+    songs: [
+      { id: "fire", title: "FIRE", yt: "ALj5MKjy2BU", bpm: 168, energy: "high" },
+      { id: "save-me", title: "Save ME", yt: "GZjt_sA2eso", bpm: 112, energy: "high" },
+    ],
   },
   {
     id: "wings",
@@ -64,7 +101,10 @@ export const ALBUMS = [
     title: "Map of the Soul: Persona",
     year: 2019,
     palette: ["#ff8fb1", "#ffffff", "#b39ddb"],
-    songs: [{ id: "bwl", title: "Boy With Luv (feat. Halsey)", yt: "XsX3ATc3FbA", bpm: 120, energy: "high" }],
+    songs: [
+      { id: "bwl", title: "Boy With Luv (feat. Halsey)", yt: "XsX3ATc3FbA", bpm: 120, energy: "high" },
+      { id: "make-it-right", title: "Make It Right (feat. Lauv)", yt: "eXBu09fwe3I", bpm: 106, energy: "mid" },
+    ],
   },
   {
     id: "mots-7",
@@ -87,6 +127,13 @@ export const ALBUMS = [
     ],
   },
   {
+    id: "face-yourself",
+    title: "FACE YOURSELF (Japón)",
+    year: 2018,
+    palette: ["#3949ab", "#ffd54f", "#ffffff"],
+    songs: [{ id: "airplane-pt2-jp", title: "Airplane pt.2 (Japanese ver.)", yt: "CxnJf0tWu48", bpm: 104, energy: "mid" }],
+  },
+  {
     id: "butter",
     title: "Butter",
     year: 2021,
@@ -97,11 +144,25 @@ export const ALBUMS = [
     ],
   },
   {
+    id: "my-universe",
+    title: "My Universe (con Coldplay)",
+    year: 2021,
+    palette: ["#7c4dff", "#ff4081", "#00e5ff"],
+    songs: [{ id: "my-universe", title: "My Universe", yt: "3YqPKLZF_WU", bpm: 105, energy: "mid" }],
+  },
+  {
     id: "proof",
     title: "Proof",
     year: 2022,
     palette: ["#7b1fa2", "#e1bee7", "#ffffff"],
     songs: [{ id: "yet-to-come", title: "Yet To Come", yt: "kXpOEzNZ8hQ", bpm: 87, energy: "ballad" }],
+  },
+  {
+    id: "take-two",
+    title: "Take Two",
+    year: 2023,
+    palette: ["#9575cd", "#fce4ec", "#ffffff"],
+    songs: [{ id: "take-two", title: "Take Two (Live Clip)", yt: "owjVpYCmwcg", bpm: 80, energy: "ballad", kind: "concert" }],
   },
   {
     id: "arirang",
