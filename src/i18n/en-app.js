@@ -2,6 +2,28 @@
 // Los patrones con datos (títulos de canciones o álbumes, nombres, búsquedas) usan funciones para que esos
 // datos nunca pasen por el diccionario; los que llevan partes traducibles usan "$1" (se buscan en el diccionario).
 const dict = {
+  // Sincronía con el sonido real y errores de YouTube
+  "Con el sonido del video": "With the video's sound",
+  "El micrófono escucha tus parlantes y ajusta la intensidad. Nada se graba": "The mic listens to your speakers and adjusts the intensity. Nothing is recorded",
+  "Con la canción sonando, toca “Marcar ritmo” 4 veces o más en cada golpe: las luces se alinean al ritmo.": "With the song playing, tap “Tap tempo” 4 or more times on each beat: the lights line up with the rhythm.",
+  "El dueño de los derechos no permite ver este video fuera de YouTube en tu región. Pasamos al siguiente.": "The rights holder doesn't allow this video outside YouTube in your region. Skipping to the next one.",
+  "Este video ya no está en YouTube. Pasamos al siguiente.": "This video is no longer on YouTube. Skipping to the next one.",
+  "YouTube no pudo cargar este video. Pasamos al siguiente.": "YouTube couldn't load this video. Skipping to the next one.",
+  "Intensidad con el sonido real: el micrófono escucha tus parlantes. Nada se graba.": "Intensity from the real sound: the mic listens to your speakers. Nothing is recorded.",
+  "Intensidad con el sonido real apagada.": "Real-sound intensity off.",
+  "No pudimos usar el micrófono. Revisa el permiso en tu navegador.": "We couldn't use the microphone. Check your browser's permission.",
+  // Ficha del dispositivo
+  "Nombre": "Name",
+  "Versión": "Version",
+  "Dirección MAC": "MAC address",
+  "Batería": "Battery",
+  "Firmware": "Firmware",
+  "Special Edition": "Special Edition",
+  "Ver. 3 o Special Edition": "Ver. 3 or Special Edition",
+  "No disponible: este ARMY Bomb no la envió": "Not available: this ARMY Bomb didn't send it",
+  "No disponible: el navegador no permite leerla": "Not available: the browser doesn't allow reading it",
+  "No disponible: este ARMY Bomb no informa su nivel": "Not available: this ARMY Bomb doesn't report its level",
+  "¡Ups! Tu ARMY Bomb tiene poca batería. Cambia las baterías.": "Oops! Your ARMY Bomb is low on battery. Change the batteries.",
   // Accesibilidad (docs/accesibilidad-visual.md)
   "Accesibilidad": "Accessibility",
   "Sonidos de la app": "App sounds",
@@ -123,6 +145,9 @@ const dict = {
 
   // Estilos de luz (src/patterns.js; también en el selector de Ajustes)
   "Océano morado": "Purple ocean",
+  "Llamas": "Flames",
+  "Secciones": "Sections",
+  "Chispas": "Sparkles",
   "Respiración": "Breathing",
   "Latido": "Heartbeat",
   "Ola de colores": "Color wave",
@@ -258,6 +283,9 @@ const ctxLabel = (s) => {
 
 const SECTION_EN = { intro: "intro", verso: "verse", "pre-coro": "pre-chorus", coro: "chorus", puente: "bridge", "coro final": "final chorus", final: "outro" };
 export const patterns = [
+  [/^(\d+) BPM, luces alineadas al ritmo\.$/, "$1 BPM, lights lined up with the rhythm."],
+  [/^(\d+) BPM\. Para alinear las luces, marca el ritmo con la canción sonando\.$/, "$1 BPM. To line up the lights, tap the rhythm while the song plays."],
+  [/^(\d+) BPM · alineado$/, "$1 BPM · aligned"],
   [/^(\d+:\d{2}(?::\d{2})?) de (\d+:\d{2}(?::\d{2})?)(?:, (.+))?$/, (m, a, b, sec) => `${a} of ${b}${sec ? `, ${SECTION_EN[sec] ?? sec}` : ""}`], // aria-valuetext de la línea de tiempo
   // Nombre accesible de cada canción (songLabel), con "Reproducir" y etiqueta opcionales.
   [

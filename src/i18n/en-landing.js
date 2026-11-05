@@ -1,5 +1,9 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
+  "Menú": "Menu",
+  "Hecho por ARMY": "Made by ARMY",
+  "no oficial": "unofficial",
+  "gratis": "free",
   // ---------- <head> ----------
   "Purple Wave Sync · Tu ARMY Bomb al ritmo de BTS": "Purple Wave Sync · Your ARMY Bomb in sync with BTS",
   "Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos oficiales de BTS, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.":

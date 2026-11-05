@@ -1,5 +1,14 @@
 // Inglés del reproductor (player/index.html) y sus módulos, salvo src/app.js.
 export default {
+  // Estilos de luz nuevos (docs/patrones-luces.md)
+  "Llamas": "Flames",
+  "Disco": "Disco",
+  "Secciones": "Sections",
+  "Chispas": "Sparkles",
+  "Rojo y naranja que tiemblan como fuego, sin destellos bruscos.": "Red and orange flickering like fire, with no harsh flashes.",
+  "Cambia de color de la paleta cada 2 tiempos.": "Switches palette color every 2 beats.",
+  "Cada ARMY Bomb toma un color y la asignación rota, como las zonas del estadio.": "Each ARMY Bomb takes a color and the assignment rotates, like stadium zones.",
+  "Base tenue con chispas breves, como estrellas (máximo 2 por segundo en modo seguro).": "Dim base with short sparkles like stars (2 per second max in safe mode).",
   // ── player/index.html: cabecera, navegación y biblioteca ──
   "Página web no oficial para sincronizar tu lightstick con videos de canciones y conciertos de BTS, álbum por álbum.":
     "Unofficial web app to sync your lightstick with BTS song and concert videos, album by album.",

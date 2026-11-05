@@ -36,7 +36,7 @@ Antes de dar algo por terminado: `npm run check` y probar en el navegador (escri
 | `src/favorites.js`, `src/tour.js`, `src/camera.js` | Lista Me gusta, recorrido de bienvenida, modo concierto con cámara |
 | `src/ble.js` | Web Bluetooth: descubrimiento, familias V4/SE, paquetes de color, ritmo de escritura |
 | `src/player.js` | Envoltura del reproductor de YouTube (reloj interpolado, subtítulos oficiales) |
-| `src/patterns.js` | Generador de patrones de luz por secciones (y modo concierto) |
+| `src/patterns.js` | Generador de patrones de luz por secciones, looks por canción (`SONG_LOOKS`, ver `docs/patrones-luces.md`) y modo concierto |
 | `src/catalog.js` | Álbumes (`artist`: BTS o integrante), canciones (`yt` oficial, `lyricVideo` oficial con letra si existe), películas de concierto |
 | `src/guide.js` | Guía de conexión integrada (4 pasos) |
 | `src/fanchant.js`, `src/crowd.js`, `src/mic.js` | Fanchant entre canciones, multitud en canvas, modo micrófono |

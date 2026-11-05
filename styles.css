@@ -725,6 +725,18 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .stick-item { display: grid; grid-template-columns: auto 1fr auto; gap: var(--s-3); align-items: center; padding: var(--s-2) var(--s-2) var(--s-2) var(--s-3); background: var(--surface-field); border: 1px solid var(--border); border-radius: var(--r-md); animation: tab-in var(--dur-3) var(--ease-out); }
 .stick-item strong { font-size: var(--fs-14); }
 .stick-item small { display: block; color: var(--muted); font-size: var(--fs-12); }
+/* Ficha del dispositivo conectado */
+.stick-info { grid-column: 1 / -1; display: grid; gap: var(--s-2); }
+.stick-info dl { display: grid; grid-template-columns: auto 1fr; gap: 4px var(--s-3); margin: 0; font-size: var(--fs-12); }
+.stick-info dt { color: var(--muted); }
+.stick-info dd { margin: 0; color: var(--text); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.stick-info dd.na { color: var(--text-2); font-style: italic; }
+.batt { display: inline-flex; align-items: center; gap: var(--s-2); }
+.batt meter { width: 72px; height: 10px; }
+.stick-low { margin: 0; padding: var(--s-2) var(--s-3); border-radius: var(--r-sm); border: 1px solid var(--error); background: var(--error-soft); color: var(--text); font-size: var(--fs-14); font-weight: 700; }
+.stick-low::before { content: "🔋 "; }
+.stick-item.low { border-color: var(--error); }
+@media (forced-colors: active) { .stick-low { border: 2px solid CanvasText; } }
 .dot { width: 14px; height: 14px; border-radius: 50%; background: #8a2be2; }
 
 /* Reto de ritmo */
@@ -985,6 +997,18 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   .coach-pill { align-self: center; }
   /* La tira de letra queda justo debajo del video (que aquí va arriba del escenario). */
   .lyrics-bar { bottom: auto; top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + var(--s-2)); }
+  /* Teléfono: la barra de letra es una tarjeta de dos filas (selector + enlace / qué se muestra) que cabe entera. */
+  .lyrics-bar {
+    left: var(--s-3); right: var(--s-3); transform: none; margin-inline: auto; animation-name: view-in; /* centrada sin transform */
+    width: auto; max-width: 480px; flex-wrap: wrap; justify-content: space-between; row-gap: 2px;
+    white-space: normal; border-radius: var(--r-lg); padding: var(--s-1) var(--s-2) var(--s-1) var(--s-1);
+  }
+  .lyrics-bar .lb-seg { order: 1; }
+  .lyrics-bar a { order: 2; padding: var(--s-2) var(--s-1); }
+  .lyrics-bar #lb-text { order: 3; flex: 1 0 100%; padding: 0 var(--s-2) 2px; white-space: normal; }
+  /* En Luces no hay video: la barra va arriba del escenario, nunca encima del foco de luz. */
+  .app[data-view="lights"] .lyrics-bar { top: var(--s-2); }
+  .app[data-view="lights"] .lights-view { padding-top: 112px; }
   .art { width: 44px; height: 44px; }
   .art::after { inset: 19px; }
   .video-card { width: min(100cqw, calc((100cqh - 64px) * 16 / 9)); border-radius: var(--r-lg); }
@@ -1202,19 +1226,23 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 }
 .sg-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease-out); }
 .sg-thumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(6, 4, 20, 0.72), transparent 55%); }
-/* Indicador de reproducción (al pasar el cursor, enfocar o elegir): velo claro con el color de la canción (--p1)
-   y el botón blanco ▶ que sube con rebote abajo a la derecha. Desaparece cuando esa canción empieza a sonar. */
+/* Indicador de reproducción (al pasar el cursor, enfocar con teclado o elegir): sombreado suave y un ▶ grande
+   al centro. El resplandor del recuadro con el color de la canción (--p1) lo da .sg-thumb. Desaparece al sonar.
+   El ♥ queda encima (z-index 2) con su propio fondo oscuro, en la esquina: no compite con el ▶ del centro. */
 .sg-icon {
-  position: absolute; inset: 0; z-index: 1;
-  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--p1, #a66bff) 50%, rgba(255, 255, 255, 0.25)), color-mix(in srgb, var(--p1, #a66bff) 34%, transparent) 72%);
+  position: absolute; inset: 0; z-index: 1; display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 50%, rgba(8, 6, 20, 0.18), rgba(8, 6, 20, 0.42) 75%);
   opacity: 0; transition: opacity var(--dur-2) var(--ease-out);
   pointer-events: none;
 }
 .sg-icon svg, .al-play svg {
-  position: absolute; right: 10px; bottom: 10px; box-sizing: border-box; width: 40px; height: 40px; padding: 11px 10px 11px 12px;
-  border-radius: 50%; background: #fff; color: var(--text-ink); box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.8);
-  transform: translateY(6px) scale(0.9); transition: transform var(--dur-3) var(--ease-spring);
+  width: clamp(28px, 26%, 56px); height: auto; aspect-ratio: 1; margin-left: 3%; color: #fff;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 14px color-mix(in srgb, var(--p1, #a66bff) 70%, transparent));
+  transform: scale(0.85); transition: transform var(--dur-3) var(--ease-spring);
 }
+/* Resplandor alrededor del recuadro con el color de la canción, al pasar el cursor o enfocar con teclado. */
+.sg-play:hover .sg-thumb, .sg-play:focus-visible .sg-thumb { transform: translateY(-2px); box-shadow: 0 0 0 1px color-mix(in srgb, var(--p1, var(--accent)) 60%, transparent), 0 18px 40px -16px var(--p1, var(--accent)); }
+.sg-play:hover img { transform: scale(1.05); }
 .sg-play:hover .sg-icon, .sg-play:focus-visible .sg-icon, .sg-play:active .sg-icon, .sg-play.playing .sg-icon { opacity: 1; }
 .sg-play:hover .sg-icon svg, .sg-play:focus-visible .sg-icon svg, .sg-play.playing .sg-icon svg { transform: none; }
 .playing-now .sg-play.playing .sg-icon { opacity: 0; }
@@ -1251,7 +1279,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .un-list .sg-play { grid-template-columns: 96px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: var(--s-3); row-gap: 0; align-items: center; padding: var(--s-1); border-radius: var(--r-md); }
 .un-list .sg-play:hover { background: var(--surface-hover); }
 .un-list .sg-thumb { grid-row: 1 / 3; border-radius: var(--r-sm); }
-.un-list .sg-icon svg { width: 28px; height: 28px; padding: 7px 6px 7px 8px; right: 6px; bottom: 6px; }
+.un-list .sg-icon svg { width: 26px; }
 .un-list .sg-meta { margin-top: 0; }
 .un-list .sg-badge, .un-list .sg-like { display: none; }
 
@@ -1566,14 +1594,14 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .al-play {
   position: absolute; z-index: 1; left: 0; right: 0; top: 0; aspect-ratio: 16 / 9; border: 0; padding: 0; cursor: pointer;
   border-radius: var(--r-lg); display: grid; place-items: center; color: #fff;
-  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--p1, #a66bff) 50%, rgba(255, 255, 255, 0.25)), color-mix(in srgb, var(--p1, #a66bff) 34%, transparent) 72%);
+  background: radial-gradient(circle at 50% 50%, rgba(8, 6, 20, 0.18), rgba(8, 6, 20, 0.42) 75%);
   opacity: 0; transition: opacity var(--dur-2) var(--ease-out);
 }
 .al-play:hover, .al-play:focus-visible, .al-play:active { opacity: 1; }
 .al-play:hover svg, .al-play:focus-visible svg { transform: none; }
-.al-play { display: block; }
+.al-play { display: grid; }
 .al-play:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
-.al-item:has(> .al-play:hover) .sg-thumb { transform: translateY(-2px); box-shadow: 0 0 0 1px color-mix(in srgb, var(--p1, var(--accent)) 60%, transparent), 0 18px 40px -16px var(--p1, var(--accent)); }
+.al-item:has(> .al-play:hover) .sg-thumb, .al-item:has(> .al-play:focus-visible) .sg-thumb { transform: translateY(-2px); box-shadow: 0 0 0 1px color-mix(in srgb, var(--p1, var(--accent)) 60%, transparent), 0 18px 40px -16px var(--p1, var(--accent)); }
 .al-item:has(> .al-play:hover) .sg-thumb img { transform: scale(1.05); }
 .al-item:has(> .al-play:hover) .al-play { transform: translateY(-2px); }
 .al-item .sg-like { right: auto; left: 4px; }
@@ -1876,7 +1904,7 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 @media (max-width: 640px) {
   /* Debajo del video; deja el hueco de la tira de letra solo si está visible */
   .upnext {
-    --un-top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + 52px);
+    --un-top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + 132px); /* debajo de la tarjeta de letra (3 filas en teléfono) */
     top: var(--un-top); bottom: auto; left: 0; right: 0; width: auto;
     max-height: calc(100cqh - var(--un-top)); overflow: auto;
     background: var(--surface-1); box-shadow: var(--e-1);

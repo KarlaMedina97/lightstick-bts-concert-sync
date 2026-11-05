@@ -1,6 +1,6 @@
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
 import { PURPLE, STYLES, generateConcertPattern, generatePattern, hexToRgb, rgbToHex } from "./patterns.js";
-import { bluetoothSupport, requestStick } from "./ble.js";
+import { bluetoothSupport, requestStick, LOW_BATTERY } from "./ble.js";
 import { Player } from "./player.js";
 import { DONATIONS, PROJECT } from "./config.js";
 import { RhythmChallenge, MIN_TAPS_FOR_RANKING } from "./rhythm.js";
@@ -22,6 +22,7 @@ import { lang, t } from "./i18n.js";
 import { say } from "./announce.js";
 import { earcon, buzz, configureEarcons } from "./earcons.js";
 import { colorName } from "./palette.js";
+import { videoPalette } from "./videopalette.js";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app");
@@ -40,7 +41,7 @@ const store = {
 };
 
 const SETTINGS_KEY = "pws.settings.v1";
-const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, lyrics: false, lyricsLang: "ko", lyricsMode: "lyrics", chant: true, chantVoice: true, sounds: true, describe: false, keys: true, calm: false, bpm: {} };
+const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, lyrics: false, lyricsLang: "ko", lyricsMode: "lyrics", chant: true, chantVoice: true, sounds: true, describe: false, keys: true, calm: false, bpm: {}, phase: {} };
 const settings = { ...defaults, ...store.get(SETTINGS_KEY, {}) };
 if (matchMedia("(prefers-reduced-motion: reduce)").matches) settings.safeMode = true;
 const saveSettings = () => store.set(SETTINGS_KEY, settings);
@@ -204,7 +205,7 @@ function renderSticks() {
       const strong = document.createElement("strong");
       strong.textContent = s.name;
       const small = document.createElement("small");
-      small.textContent = `${s.family === "v4" ? "Ver. 4" : "SE / Ver. 3"}${s.battery != null ? ` · batería ${s.battery}%` : ""}`;
+      small.textContent = s.version;
       info.append(strong, small);
       const btn = document.createElement("button");
       btn.className = "btn small";
@@ -212,7 +213,8 @@ function renderSticks() {
       btn.textContent = "Desconectar";
       btn.setAttribute("aria-label", `Desconectar ${s.name}`);
       btn.onclick = () => s.disconnect();
-      li.append(dot, info, btn);
+      li.classList.toggle("low", s.lowBattery);
+      li.append(dot, info, btn, stickDetails(s));
       return li;
     }),
   );
@@ -229,6 +231,57 @@ function renderSticks() {
   // El nombre accesible empieza con el texto visible (WCAG 2.5.3).
   if (n) $("btn-bt").setAttribute("aria-label", `${n} conectado${n > 1 ? "s" : ""}. Administrar ARMY Bomb`);
   else $("btn-bt").removeAttribute("aria-label");
+}
+
+/** Ficha del dispositivo: solo datos reales; lo que no se puede leer se dice tal cual. */
+function stickDetails(s) {
+  const wrap = document.createElement("div");
+  wrap.className = "stick-info";
+  if (s.lowBattery) {
+    const low = document.createElement("p");
+    low.className = "stick-low";
+    low.setAttribute("role", "alert");
+    low.textContent = "¡Ups! Tu ARMY Bomb tiene poca batería. Cambia las baterías.";
+    wrap.append(low);
+  }
+  const dl = document.createElement("dl");
+  const row = (label, value, { na = false } = {}) => {
+    const dt = document.createElement("dt");
+    dt.textContent = label;
+    const dd = document.createElement("dd");
+    if (value instanceof Node) dd.append(value);
+    else dd.textContent = value;
+    dd.classList.toggle("na", na);
+    dl.append(dt, dd);
+  };
+  row("Nombre", s.name);
+  row("Versión", s.version);
+  const mac = s.info?.mac;
+  if (mac) row("Dirección MAC", mac);
+  else row("Dirección MAC", s.info?.macReason === "device" ? "No disponible: este ARMY Bomb no la envió" : "No disponible: el navegador no permite leerla", { na: true });
+  if (s.battery != null) {
+    const box = document.createElement("span");
+    box.className = "batt";
+    const m = document.createElement("meter");
+    m.min = 0; m.max = 100; m.low = LOW_BATTERY + 1; m.high = 40; m.optimum = 100; m.value = s.battery;
+    m.setAttribute("aria-hidden", "true"); // el porcentaje en texto ya lo dice
+    const pct = document.createElement("span");
+    pct.textContent = `${s.battery} %`;
+    box.append(m, pct);
+    row("Batería", box);
+  } else row("Batería", "No disponible: este ARMY Bomb no informa su nivel", { na: true });
+  if (s.info?.firmware) row("Firmware", s.info.firmware);
+  wrap.append(dl);
+  return wrap;
+}
+const warnedLow = new Set();
+/** Avisa una sola vez por ARMY Bomb cuando la batería baja al 10 % o menos. */
+function checkBattery(s) {
+  if (!s.lowBattery || warnedLow.has(s.id)) return;
+  warnedLow.add(s.id);
+  toast("¡Ups! Tu ARMY Bomb tiene poca batería. Cambia las baterías.", 8000, { assertive: true });
+  earcon("error");
+  buzz([80, 60, 80]);
 }
 
 function showBtWarning(reason) {
@@ -264,7 +317,9 @@ async function onConnect() {
       buzz([60, 40, 60]);
     });
     sticks.push(stick);
+    stick.onBattery = () => { renderSticks(); checkBattery(stick); };
     renderSticks();
+    setTimeout(() => checkBattery(stick), 2500); // después del aviso de "conectado"
     stick.setColor(hexToRgb(PURPLE));
     toast(`¡${stick.name} conectado! Borahae 💜`);
     earcon("connected");
@@ -648,6 +703,9 @@ function loadIndex(i, { autoplay = true } = {}) {
   replayClass(app, "song-change"); // solo presentación: transición de cambio de canción
   pattern = null;
   patternDuration = 0;
+  // Colores del propio MV (portada y cuadros al 25/50/75 %): cuando llegan, el patrón se rehace con ellos.
+  currentVideoPal = null;
+  if (song.kind !== "concert") videoPalette(song.yt).then((v) => { if (current === i && v) { currentVideoPal = v; pattern = null; } });
   markCurrent();
   startChallenge();
   renderRanking();
@@ -668,12 +726,13 @@ function loadIndex(i, { autoplay = true } = {}) {
   renderUpNext();
 }
 
+let currentVideoPal = null;
 function buildPattern() {
   const item = queue[current];
   const dur = player.duration();
   if (!item || !(dur > 0)) return;
   const bpm = Number(settings.bpm[item.song.id] ?? item.song.bpm);
-  const opts = { styleOverride: settings.style === "auto" ? null : settings.style, safeMode: settings.safeMode };
+  const opts = { styleOverride: settings.style === "auto" ? null : settings.style, safeMode: settings.safeMode, video: currentVideoPal, phase: settings.phase?.[item.song.id] ?? 0 };
   pattern =
     item.song.kind === "concert"
       ? generateConcertPattern(dur, { ...opts, bpm, palettes: ALBUMS.map((a) => a.palette) })
@@ -822,7 +881,7 @@ let lastDescribed = 0;
 function describeLights() {
   const c = lastColors?.[0];
   const parts = [];
-  if (mic) parts.push(t("Las luces siguen el micrófono"));
+  if (mic && !mic.hybrid) parts.push(t("Las luces siguen el micrófono"));
   else if (cam) parts.push(t("Las luces copian el color de la cámara"));
   if (c && player?.state === "playing") parts.push(colorName(c.map((v) => v * (settings.brightness / 100)), lang));
   else parts.push(t(current >= 0 ? "En pausa" : "Luces listas"));
@@ -902,8 +961,30 @@ async function toggleMic() {
     toast("No pudimos usar el micrófono. Revisa el permiso en tu navegador.");
   }
 }
+/** "Con el sonido del video": el video sigue sonando y el micrófono solo ajusta la intensidad de su patrón. */
+async function toggleMicSync() {
+  if (mic?.hybrid) {
+    mic.stop();
+    mic = null;
+    syncMicButtons();
+    return toast("Intensidad con el sonido real apagada.");
+  }
+  if (mic) { mic.stop(); mic = null; }
+  try {
+    mic = new MicSync({ palette: [hexToRgb(PURPLE)], maxChangesPerSec: settings.safeMode ? 2.5 : 8 });
+    mic.hybrid = true;
+    await mic.start();
+    syncMicButtons();
+    toast("Intensidad con el sonido real: el micrófono escucha tus parlantes. Nada se graba.");
+  } catch {
+    mic = null;
+    syncMicButtons();
+    toast("No pudimos usar el micrófono. Revisa el permiso en tu navegador.");
+  }
+}
 function syncMicButtons() {
-  $("btn-mic").setAttribute("aria-pressed", Boolean(mic));
+  $("btn-mic").setAttribute("aria-pressed", Boolean(mic && !mic.hybrid));
+  $("btn-mic-sync").setAttribute("aria-pressed", Boolean(mic?.hybrid));
   syncLiveButton();
   $("btn-mic-2").textContent = mic ? "Apagar micrófono" : "Activar micrófono";
 }
@@ -919,6 +1000,7 @@ function setupSim() {
   }
 }
 
+const LED_GAMMA = 2;
 let lastUi = 0;
 let lastLabel = "";
 let lastSave = 0;
@@ -938,7 +1020,7 @@ function frame(now) {
     const camColor = cam.sample(now);
     const c = cam.strength > 0.25 || !mic ? camColor : mic.sample(now);
     colors = Array.from({ length: total }, () => c);
-  } else if (mic) {
+  } else if (mic && !mic.hybrid) {
     const c = mic.sample(now);
     colors = Array.from({ length: total }, () => c);
   } else {
@@ -950,7 +1032,14 @@ function frame(now) {
     colors = Array.from({ length: total }, (_, i) => (pattern && playing ? pattern.colorAt(lt, i, total) : [45, 20, 90]));
   }
 
-  sticks.forEach((s, i) => s.setColor(colors[i].map((v) => v * k)));
+  // Con el sonido del video: el patrón da los colores y el micrófono, cuánto brillan.
+  if (mic?.hybrid && pattern && player.state === "playing") {
+    const g = mic.intensity(now);
+    colors = colors.map((c) => c.map((v) => v * g));
+  }
+  // Los LED del ARMY Bomb responden lineal y el ojo no: sin esta curva, un 40 % se ve casi como un 100 %
+  // y la diferencia entre lo suave y lo intenso se pierde.
+  sticks.forEach((s, i) => s.setColor(colors[i].map((v) => 255 * ((v * k) / 255) ** LED_GAMMA)));
   if (crowd) { crowd.setColor(colors[0].map((v) => Math.max(40, v * k))); crowd.draw(now); }
 
   // La interfaz se actualiza a ~20 fps para ahorrar batería.
@@ -990,7 +1079,7 @@ function frame(now) {
   crowd?.setEnergy(energy);
 
   let label;
-  if (mic) label = "🎙 Luces siguiendo el micrófono";
+  if (mic && !mic.hybrid) label = "🎙 Luces siguiendo el micrófono";
   else if (pattern && player.state === "playing") {
     const sec = pattern.sectionAt(t);
     label = `Luces: ${STYLES[sec.style].label} · ${sec.label}`;
@@ -2199,8 +2288,10 @@ function placeMini(animate) {
     bl: [g, stage.height - h - g], br: [stage.width - w - g, stage.height - h - g],
   }[MINI.corner];
   card.classList.toggle("snapping", Boolean(animate));
-  card.style.setProperty("--mx", `${Math.max(0, pos[0])}px`);
-  card.style.setProperty("--my", `${Math.max(top, pos[1])}px`);
+  // Siempre dentro del escenario, aunque el mini sea más ancho que el hueco disponible.
+  const maxX = Math.max(0, stage.width - w - g), maxY = Math.max(top, stage.height - h - g);
+  card.style.setProperty("--mx", `${Math.min(maxX, Math.max(0, pos[0]))}px`);
+  card.style.setProperty("--my", `${Math.min(maxY, Math.max(top, pos[1]))}px`);
 }
 function bindMini() {
   const bar = $("mini-bar");
@@ -2244,7 +2335,10 @@ function bindMini() {
   $("mini-size").onclick = () => setSmall(!card.classList.contains("mini-sm"));
   // Minimizar desde la vista Video: el video sigue sonando en un mini reproductor chico, abajo a la derecha.
   $("btn-min").onclick = () => { MINI.corner = "br"; setSmall(true); $("view-explore").click(); };
-  addEventListener("resize", () => placeMini(false));
+  // El escenario cambia de tamaño sin que cambie la ventana (abrir, cerrar o compactar la biblioteca, el dock,
+  // la barra de desplazamiento): se recoloca con cada cambio real de tamaño, no solo con "resize".
+  if ("ResizeObserver" in window) new ResizeObserver(() => placeMini(false)).observe($("main"));
+  else addEventListener("resize", () => placeMini(false));
 }
 
 // ---------- Ajustes ----------
@@ -2317,17 +2411,33 @@ function bindSettings() {
   $("num-bpm").onchange = (e) => setBpm(Number(e.target.value));
 
   // Marcar tempo: promedio de los intervalos entre toques.
+  // Marcar ritmo con la canción sonando: BPM (mediana de los intervalos) y fase (dónde cae el tiempo), con el reloj
+  // del video. Así el latido de las luces cae en el golpe de la música y no en el segundo 0 del video.
   let taps = [];
   $("btn-tap-tempo").onclick = () => {
-    const now = performance.now();
-    taps = taps.filter((t) => now - t < 3000);
+    const item = queue[current];
+    const playing = player?.state === "playing";
+    const now = playing ? player.time() : performance.now() / 1000;
+    taps = taps.filter((t) => now - t < 3 && now >= t);
     taps.push(now);
-    if (taps.length >= 4) {
-      const gaps = taps.slice(1).map((t, i) => t - taps[i]);
-      const bpm = 60000 / (gaps.reduce((a, b) => a + b, 0) / gaps.length);
+    const n = taps.length;
+    if (n >= 4) {
+      const gaps = taps.slice(1).map((t, i) => t - taps[i]).sort((a, b) => a - b);
+      const gap = gaps[Math.floor(gaps.length / 2)];
+      const bpm = 60 / gap;
       setBpm(bpm);
-      $("btn-tap-tempo").textContent = `${Math.round(bpm)} BPM`;
-    } else $("btn-tap-tempo").textContent = `Toca… ${taps.length}/4`;
+      if (playing && item) {
+        const b = 60 / Math.round(bpm);
+        // Fase promedio de los toques (circular) para no depender de un solo toque.
+        const ang = taps.map((t) => (2 * Math.PI * (t % b)) / b);
+        const mean = Math.atan2(ang.reduce((a, x) => a + Math.sin(x), 0), ang.reduce((a, x) => a + Math.cos(x), 0));
+        settings.phase[item.song.id] = Number(((((mean / (2 * Math.PI)) * b) + b) % b).toFixed(3));
+        saveSettings();
+        pattern = null;
+      }
+      $("btn-tap-tempo").textContent = `${Math.round(bpm)} BPM${playing ? " · alineado" : ""}`;
+      say(playing ? `${Math.round(bpm)} BPM, luces alineadas al ritmo.` : `${Math.round(bpm)} BPM. Para alinear las luces, marca el ritmo con la canción sonando.`);
+    } else $("btn-tap-tempo").textContent = `Toca… ${n}/4`;
   };
 }
 
@@ -2495,7 +2605,7 @@ function onPlayerState(state) {
   app.classList.toggle("playing-now", playing);
   if (playing) {
     requestWakeLock();
-    if (mic) toggleMic();
+    if (mic && !mic.hybrid) toggleMic(); // el modo TV se apaga al reproducir; el de intensidad, no
   }
   poke();
 }
@@ -2550,7 +2660,8 @@ async function init() {
   };
   applyLyrics(false);
   $("btn-play").onclick = togglePlay;
-  $("btn-mic").onclick = toggleMic;
+  $("btn-mic").onclick = () => (mic?.hybrid ? toggleMicSync().then(toggleMic) : toggleMic());
+  $("btn-mic-sync").onclick = () => { closeMenus(); toggleMicSync(); };
   $("btn-mic-2").onclick = toggleMic;
   $("btn-fs").onclick = toggleFullscreen;
   $("form-add").onsubmit = onAddVideo;
@@ -2671,8 +2782,12 @@ async function init() {
       }
       next(true);
     },
-    onError: () => {
-      toast("YouTube no deja ver este video aquí. Pasamos al siguiente.");
+    onError: (code) => {
+      // 101/150: el dueño de los derechos no permite verlo fuera de YouTube (a veces solo en algunas regiones).
+      const msg = code === 101 || code === 150
+        ? "El dueño de los derechos no permite ver este video fuera de YouTube en tu región. Pasamos al siguiente."
+        : code === 100 ? "Este video ya no está en YouTube. Pasamos al siguiente." : "YouTube no pudo cargar este video. Pasamos al siguiente.";
+      toast(msg, 6000);
       setTimeout(() => next(true), 1500);
     },
   });

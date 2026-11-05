@@ -1561,7 +1561,7 @@ if (gsap && !reduceMotion && !SHOT) {
   gsap.from(heroChars, { yPercent: 70, opacity: 0, skewX: 14, filter: "blur(10px)", duration: 1.1, stagger: 0.022, ease: "expo.out", delay: 0.1, clearProps: "filter" });
   gsap.from(".reveal", { y: 26, opacity: 0, duration: 1, stagger: 0.08, ease: "expo.out", delay: 0.45 });
   // Respiración del espaciado en las etiquetas.
-  gsap.to(".kicker, .eyebrow", { letterSpacing: "0.22em", duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1 });
+  if (innerWidth >= 720) gsap.to(".kicker, .eyebrow", { letterSpacing: "0.22em", duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1 });
   if (ScrollTrigger) {
     // Títulos de capítulo: entran letra por letra al aparecer.
     for (const { el } of kts) {

@@ -43,13 +43,19 @@
   <div class="enter-fx" aria-hidden="true"></div>
 
   <header class="nav">
-    <a class="brand" href="./" data-scroll-top><img src="icons/icon.svg" alt="" width="28" height="28" draggable="false"> Purple Wave Sync</a>
+    <a class="brand" href="./" data-scroll-top><img src="icons/icon.svg" alt="" width="28" height="28" draggable="false"> <span class="brand-name">Purple Wave Sync</span></a>
     <nav aria-label="Principal">
-      <a href="#anatomia">El ARMY Bomb</a>
-      <a href="#conectar">Cómo conectar</a>
-      <a href="#demo">Pruébalo aquí</a>
-      <a href="#versiones">Versiones</a>
-      <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync" target="_blank" rel="noopener noreferrer">Código en GitHub</a>
+      <button id="nav-menu-btn" class="nav-menu-btn" type="button" aria-expanded="false" aria-controls="nav-links">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="nav-menu-label">Menú</span>
+      </button>
+      <ul id="nav-links" class="nav-links">
+        <li><a href="#anatomia">El ARMY Bomb</a></li>
+        <li><a href="#conectar">Cómo conectar</a></li>
+        <li><a href="#demo">Pruébalo aquí</a></li>
+        <li><a href="#versiones">Versiones</a></li>
+        <li><a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync" target="_blank" rel="noopener noreferrer">Código en GitHub</a></li>
+        <li class="nl-lang"><button class="nav-lang-long" type="button" data-lang-toggle="long">English</button></li>
+      </ul>
       <button class="nav-lang" type="button" data-lang-toggle>EN</button>
       <a class="nav-cta js-enter" href="player/">Abrir el reproductor</a>
     </nav>
@@ -60,7 +66,7 @@
     <section id="inicio" class="chapter hero" data-side="right" data-pal="hero" aria-labelledby="hero-title">
       <div class="slot" data-rot="0" data-spin="1" data-gesture="intro" data-mood="hero" aria-hidden="true"></div>
       <div class="copy">
-        <p class="eyebrow reveal">Hecho por ARMY · no oficial · gratis <span class="ko" lang="ko">보라해</span></p>
+        <p class="eyebrow reveal"><span class="nw">Hecho por ARMY</span> · <span class="nw">no oficial</span> · <span class="nw">gratis</span> <span class="ko nw" lang="ko">보라해</span></p>
         <h1 id="hero-title" class="display kt">
           <span class="h-thin">Tu</span> <span class="h-giant">ARMY Bomb,</span>
           <span class="grad h-line">al ritmo de cada canción</span>
@@ -291,6 +297,7 @@
   </footer>
 
   <script type="module" src="src/i18n.js"></script>
+  <script type="module" src="src/nav-menu.js"></script>
   <script type="module" src="src/landing.js"></script>
 </body>
 </html>

@@ -7,6 +7,12 @@ const SE_CHAR = "00010203-0405-0607-0809-0a0b0c0d2b19";
 const DEVICE_INFO = "0000180a-0000-1000-8000-00805f9b34fb";
 const BATTERY = "0000180f-0000-1000-8000-00805f9b34fb";
 const BATTERY_LEVEL = "00002a19-0000-1000-8000-00805f9b34fb";
+// Device Information (estándar): modelo, firmware y fabricante.
+const DIS_CHARS = { model: "00002a24-0000-1000-8000-00805f9b34fb", firmware: "00002a26-0000-1000-8000-00805f9b34fb", maker: "00002a29-0000-1000-8000-00805f9b34fb" };
+// V4: la identidad (con la MAC en los 6 primeros bytes, invertidos) está en ff05 del servicio fe03 (docs/protocolo-ble.md).
+const V4_ID_SERVICE = `0001fe03${V4_BASE}`;
+const V4_ID_CHAR = `0001ff05${V4_BASE}`;
+export const LOW_BATTERY = 10; // % o menos: avisar que cambien las baterías
 const V4_SERVICES = ["fe01", "fe02", "fe03", "fe04", "fe06"].map((s) => `0001${s}${V4_BASE}`);
 const V4_CHARS = ["ff01", "ff02", "ff04", "ff05", "ff06", "ff13"].map((c) => `0001${c}${V4_BASE}`);
 
@@ -71,14 +77,76 @@ async function findV4Characteristic(server) {
   return writable.find((c) => c.properties.write) ?? null;
 }
 
-async function readBattery(server) {
+/** Batería estándar (0x180F). Devuelve la característica para poder escuchar cambios, o null si no existe. */
+async function batteryChar(server) {
   try {
     const svc = await server.getPrimaryService(BATTERY);
-    const ch = await svc.getCharacteristic(BATTERY_LEVEL);
-    return (await ch.readValue()).getUint8(0);
+    return await svc.getCharacteristic(BATTERY_LEVEL);
   } catch {
     return null;
   }
+}
+async function readLevel(ch) {
+  try {
+    const v = (await ch.readValue()).getUint8(0);
+    return v >= 0 && v <= 100 ? v : null;
+  } catch {
+    return null;
+  }
+}
+
+const decoder = new TextDecoder();
+async function readText(svc, uuid) {
+  try {
+    const ch = await svc.getCharacteristic(uuid);
+    const t = decoder.decode(await ch.readValue()).replace(/\0+$/, "").trim();
+    return t || null;
+  } catch {
+    return null;
+  }
+}
+
+/** MAC a partir de bytes (los 6 primeros, en orden inverso): "A4:C1:38:…". */
+export function macFromBytes(bytes) {
+  if (!bytes || bytes.length < 6) return null;
+  const six = [...bytes.slice(0, 6)].reverse();
+  if (six.every((b) => b === 0) || six.every((b) => b === 255)) return null;
+  return six.map((b) => b.toString(16).padStart(2, "0").toUpperCase()).join(":");
+}
+
+/** Versión legible del ARMY Bomb según la familia y el nombre que anuncia. */
+export function versionLabel(family, name = "") {
+  if (family === "v4") return "Ver. 4";
+  if (/LIGHTSTICK_SE/.test(name)) return "Special Edition";
+  if (/LIGHTSTICK3/.test(name)) return "Ver. 3";
+  return "Ver. 3 o Special Edition";
+}
+
+/**
+ * Datos del dispositivo. Solo se muestra lo que el ARMY Bomb realmente entrega: si algo no se puede leer,
+ * queda en null con el motivo (nunca se inventan datos).
+ */
+async function readInfo(server, family) {
+  const info = { model: null, firmware: null, maker: null, mac: null, macReason: null };
+  try {
+    const dis = await server.getPrimaryService(DEVICE_INFO);
+    info.model = await readText(dis, DIS_CHARS.model);
+    info.firmware = await readText(dis, DIS_CHARS.firmware);
+    info.maker = await readText(dis, DIS_CHARS.maker);
+  } catch {}
+  if (family === "v4") {
+    try {
+      const svc = await server.getPrimaryService(V4_ID_SERVICE);
+      const ch = await svc.getCharacteristic(V4_ID_CHAR);
+      const v = await ch.readValue();
+      info.mac = macFromBytes(new Uint8Array(v.buffer, v.byteOffset, v.byteLength));
+    } catch {}
+    if (!info.mac) info.macReason = "device";
+  } else {
+    // Web Bluetooth oculta la dirección MAC a propósito (privacidad); este modelo tampoco la envía por otro lado.
+    info.macReason = "browser";
+  }
+  return info;
 }
 
 /** Construye el paquete de color según la familia del lightstick. */
@@ -117,21 +185,29 @@ export async function connectStick(device) {
       ? await findV4Characteristic(server)
       : await (await server.getPrimaryService(SE_SERVICE)).getCharacteristic(SE_CHAR);
   if (!characteristic) throw new Error("No se encontró una característica de escritura.");
-  const battery = await readBattery(server);
-  return new Stick(device, characteristic, family, battery);
+  const battCh = await batteryChar(server);
+  const battery = battCh ? await readLevel(battCh) : null;
+  const info = await readInfo(server, family);
+  const stick = new Stick(device, characteristic, family, battery, info);
+  stick.watchBattery(battCh);
+  return stick;
 }
 
 const MIN_INTERVAL = 20; // ms entre escrituras
 const BACKOFF_INTERVAL = 120;
 
 export class Stick {
-  constructor(device, characteristic, family, battery) {
+  constructor(device, characteristic, family, battery, info = {}) {
     this.device = device;
     this.characteristic = characteristic;
     this.family = family;
-    this.battery = battery;
+    this.battery = battery; // % o null si el ARMY Bomb no lo informa
+    this.info = info;
     this.id = device.id;
     this.name = device.name ?? "Lightstick";
+    this.version = versionLabel(family, this.name);
+    this.onBattery = null; // (nivel) => void
+    this.batteryTimer = 0;
     this.interval = MIN_INTERVAL;
     this.okWrites = 0;
     this.lastWrite = 0;
@@ -181,7 +257,32 @@ export class Stick {
     }
   }
 
+  /** Escucha la batería: notificaciones si el ARMY Bomb las da; si no, vuelve a leer cada 2 minutos. */
+  async watchBattery(ch) {
+    if (!ch) return;
+    const update = (v) => {
+      if (v == null || v === this.battery) return;
+      this.battery = v;
+      this.onBattery?.(v);
+    };
+    if (ch.properties.notify) {
+      try {
+        ch.addEventListener("characteristicvaluechanged", (e) => update(e.target.value.getUint8(0)));
+        await ch.startNotifications();
+        return;
+      } catch {}
+    }
+    this.batteryTimer = setInterval(async () => {
+      if (!this.connected) return clearInterval(this.batteryTimer);
+      // Entre colores: no compite con el envío (el lector de batería es una petición corta).
+      if (!this.busy) update(await readLevel(ch));
+    }, 120000);
+  }
+
+  get lowBattery() { return this.battery != null && this.battery <= LOW_BATTERY; }
+
   disconnect() {
+    clearInterval(this.batteryTimer);
     try { this.device.gatt.disconnect(); } catch {}
   }
 }
