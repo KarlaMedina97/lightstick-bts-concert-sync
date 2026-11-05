@@ -85,6 +85,11 @@ Las páginas dentro de carpetas usan rutas relativas con `../`. No uses `<base>`
 - **No añadir trailers `Co-Authored-By`** de asistentes de IA.
 - No reescribir el historial publicado sin pedirlo explícitamente.
 
+### CI
+- Un solo pipeline: `.github/workflows/ci.yml` (commits, pruebas, CSP y despliegue a Pages); CodeQL solo semanal y en PR.
+- Los jobs corren donde diga la variable de repositorio `RUNNER` (`pws-local` = runner local en la PC). Los pull requests
+  siempre usan runners de GitHub. Ver `docs/runner-local.md`.
+
 ## Protocolo Bluetooth (resumen)
 
 - Filtros: `BTS LIGHTSTICK_SE`, `multiM`, `BTS LIGHTSTICK3`, `BTS_V4 LS`, prefijo `BBOMB-`.

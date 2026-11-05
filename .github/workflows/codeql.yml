@@ -1,11 +1,13 @@
 name: CodeQL
 
+# Análisis semanal y en pull requests (ya no en cada push a main).
+# Los pull requests usan runners de GitHub; el análisis semanal y el manual, el runner local si RUNNER está definido.
 on:
-  push:
-    branches: [main]
   pull_request:
+    paths: ["src/**", "scripts/**", "*.html", "**/*.js", ".github/workflows/codeql.yml"]
   schedule:
-    - cron: "0 6 * * 1"
+    - cron: "0 15 * * 1"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -13,7 +15,8 @@ permissions:
 
 jobs:
   analyze:
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-latest' || vars.RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: github/codeql-action/init@v3

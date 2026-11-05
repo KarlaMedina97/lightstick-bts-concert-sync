@@ -1,0 +1,63 @@
+name: CI y despliegue
+
+# Un solo pipeline: revisa commits, pruebas y CSP, y publica en GitHub Pages.
+# Corre en el runner local (variable de repositorio RUNNER = pws-local). Si RUNNER no existe o vale
+# ubuntu-latest, usa los runners de GitHub. Los pull requests SIEMPRE usan runners de GitHub: así el código
+# de un fork nunca se ejecuta en esta PC.
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["docs/**", "**/*.md", ".claude/**", ".github/dependabot.yml"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check:
+    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-latest' || vars.RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Commits convencionales
+        env:
+          RANGE: ${{ github.event_name == 'pull_request' && format('{0}..{1}', github.event.pull_request.base.sha, github.event.pull_request.head.sha) || format('{0}..{1}', github.event.before, github.sha) }}
+        run: node scripts/check-commits.mjs "$RANGE" || node scripts/check-commits.mjs HEAD~1..HEAD
+      - name: Pruebas
+        run: npm test
+      - name: CSP al día
+        run: npm run csp && git diff --exit-code -- index.html player/index.html
+
+  deploy:
+    needs: check
+    if: github.event_name != 'pull_request'
+    runs-on: ${{ vars.RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
