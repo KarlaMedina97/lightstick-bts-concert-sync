@@ -19,5 +19,9 @@ jobs:
       - uses: github/codeql-action/init@v3
         with:
           languages: javascript
-          paths-ignore: vendor
+          # vendor/ son librerías de terceros sin modificar (three.js, GSAP); se analiza solo código propio.
+          config: |
+            paths-ignore:
+              - vendor
+              - fonts
       - uses: github/codeql-action/analyze@v3
