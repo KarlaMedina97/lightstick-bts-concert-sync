@@ -111,6 +111,33 @@ Prueba nueva: ninguna canción intensa del catálogo puede quedar «apagada» (p
 
 **Límite honesto:** la página no escucha el audio. Las partes de la canción siguen siendo porcentajes de la duración, y el carácter de cada canción (rap, coros) viene de conocerla, no de analizar su sonido en vivo. Para seguir la voz y los golpes reales de verdad hay dos herramientas: «Marcar ritmo» y el modo «Con el sonido del video».
 
+### Euphoria: de robótico a orgánico (quinta ronda)
+
+**Por qué se veía robótico:**
+- La luz latía en cada tiempo como un metrónomo: subía y bajaba exacto cada 0,57 s.
+- El color se quedaba fijo y luego saltaba (rosa → gris → morado).
+- El blanco a medio brillo se veía gris apagado.
+
+**Estilos nuevos para canciones soñadoras:**
+
+| Estilo | Qué hace |
+| --- | --- |
+| `aurora` | Gradiente continuo, sin pausas ni saltos, con un vaivén lento. El brillo suma ondas de periodos que no coinciden (8 tiempos, 5,3 s y 2,9 s), así que nunca se repite igual. |
+| `rise` | El pre-coro crece hacia el coro, cada vez más brillante y vivo, con un mínimo de 1,5 s por color. |
+| `bloom` | El coro se abre por **compás**, no por tiempo: sube en el 1, tiene un eco suave en el 3 y destellos tenues (como mucho 1 por segundo). |
+
+**Cambios de color:**
+- Se mezcla por el círculo de colores, no en línea recta en RGB, para que los intermedios no se vuelvan grises.
+- La paleta se recorre de ida y vuelta, así que nunca pasa por colores ajenos (antes aparecía verde entre el durazno y el celeste).
+- Las transiciones entre secciones duran 2,2 s y el «canto» es más amplio e irregular (`organic`).
+
+**Euphoria:**
+- Celeste, rosa, lavanda y durazno.
+- Plan: aurora → subida → florecer en los coros.
+- Brillo del LED: verso 0,54, coro 0,76 y coro final 0,80.
+
+Prueba nueva: Euphoria no da saltos de más de 0,03 de luminancia en 50 ms en versos, intro ni puente; no tiene verdes; y los coros brillan más que los versos.
+
 Lo que **no** se puede hacer:
 
 - recrear el modo concierto oficial (textos o imágenes con el público);

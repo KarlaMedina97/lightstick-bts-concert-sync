@@ -16,6 +16,9 @@ export const STYLES = {
   flame: { label: "Llamas", description: "Rojo y naranja que tiemblan como fuego, sin destellos bruscos." },
   disco: { label: "Disco", description: "Cambia de color de la paleta cada 2 tiempos." },
   split: { label: "Secciones", description: "Cada ARMY Bomb toma un color y la asignación rota, como las zonas del estadio." },
+  aurora: { label: "Aurora", description: "Colores que se deslizan sin pausas y un brillo que respira con ondas que nunca se repiten igual." },
+  rise: { label: "Subida", description: "La luz va creciendo hacia el coro, cada vez más brillante y viva." },
+  bloom: { label: "Florecer", description: "En cada compás la luz se abre y se apaga despacio, con destellos suaves." },
   hit: { label: "Golpes", description: "Oscuro entre golpes y una explosión de luz en cada golpe fuerte, como en el concierto." },
   sparkle: { label: "Chispas", description: "Base tenue con chispas breves, como estrellas (máximo 2 por segundo en modo seguro)." },
 };
@@ -51,7 +54,13 @@ export const SONG_LOOKS = {
   "save-me": { palette: ["#00e5ff", "#ff5ab4"] },
   "i-need-u": { palette: ["#c62828", "#ff8a65"], plan: ["breathe", "breathe", "ocean", "pulse", "breathe", "pulse", "breathe", "pulse", "fadeout"], oceanColor: "#c62828" },
   "epilogue-young-forever": { palette: ["#ffffff", "#ffd6e8", "#8a2be2"], energy: B },
-  euphoria: { palette: ["#7ad7ff", "#ffd1f2", "#ffffff"], plan: ["breathe", "wave", "wave", "pulse", "wave", "pulse", "ocean", "wave", "fadeout"] },
+  // Euphoria (Jung Kook, 2018): soñadora y luminosa. Luz que fluye (aurora), un pre-coro que sube y coros que
+  // florecen por compás; nada de golpes en cada tiempo. Celeste, rosa, lavanda y durazno del MV.
+  euphoria: {
+    organic: true, crossfade: 2.2, palette: ["#7ad7ff", "#ffb3e6", "#c9a6ff", "#ffc49a"],
+    plan: ["aurora", "aurora", "rise", "bloom", "aurora", "bloom", "aurora", "bloom", "fadeout"],
+    curve: [0.5, 0.68, 0.78, 0.95, 0.7, 0.97, 0.6, 1, 0.45],
+  },
   bwl: { palette: ["#ff8ccf", "#ffffff", "#ffd1e8"], plan: ["breathe", "wave", "pulse", "pulse", "wave", "pulse", "wave", "rainbow", "fadeout"] },
   on: { palette: ["#d9c7a0", "#8a6a3a", "#ffffff"], plan: ["breathe", "pulse", "pulse", "pulse", "pulse", "pulse", "split", "pulse", "fadeout"] },
   "black-swan": { palette: ["#ffffff", "#8c8c8c", "#b3a5ff"], plan: BALLAD_PLAN, oceanColor: "#b3a5ff" },
@@ -161,6 +170,30 @@ export function rgbToHex([r, g, b]) {
 }
 
 const mix = (a, b, k) => a.map((v, i) => v + (b[i] - v) * k);
+/** Recorre la paleta de ida y vuelta (A→B→C→B→A…): nunca cierra el círculo pasando por colores ajenos. */
+function pingPong(colors, pos) {
+  const n = colors.length;
+  if (n < 2) return colors[0];
+  const span = 2 * (n - 1);
+  const q = ((pos % span) + span) % span;
+  const x = q <= n - 1 ? q : span - q;
+  const a = Math.min(n - 2, Math.floor(x)), f = x - a;
+  return mixVivid(colors[a], colors[a + 1], f * f * (3 - 2 * f));
+}
+/** Mezcla por el círculo de colores (no en línea recta en RGB): los intermedios siguen vivos, no grises. */
+function mixVivid(a, b, k) {
+  const hsv = ([r, g, bl]) => {
+    const mx = Math.max(r, g, bl), mn = Math.min(r, g, bl), d = mx - mn;
+    let h = 0;
+    if (d) h = mx === r ? ((g - bl) / d + (g < bl ? 6 : 0)) / 6 : mx === g ? ((bl - r) / d + 2) / 6 : ((r - g) / d + 4) / 6;
+    return [h, mx ? d / mx : 0, mx / 255];
+  };
+  const [h1, s1, v1] = hsv(a), [h2, s2, v2] = hsv(b);
+  if (s1 < 0.08 || s2 < 0.08) return mix(a, b, k); // con blanco o gris, la mezcla normal ya va bien
+  let dh = h2 - h1;
+  if (dh > 0.5) dh -= 1; else if (dh < -0.5) dh += 1;
+  return hsvToRgb((((h1 + dh * k) % 1) + 1) % 1, s1 + (s2 - s1) * k, v1 + (v2 - v1) * k);
+}
 const scale = (c, k) => c.map((v) => v * k);
 const clamp01 = (x) => Math.min(1, Math.max(0, x));
 
@@ -301,6 +334,35 @@ export function generatePattern(song, album, duration, opts = {}) {
         const a = Math.floor(pos);
         return mix(colors[a], colors[(a + 1) % colors.length], pos - a);
       }
+      case "aurora": {
+        // Gradiente continuo por la paleta (sin mantener ni saltar), con un vaivén lento que lo hace "vivo",
+        // y brillo con ondas de periodos que no coinciden: nunca se repite igual, no parece un metrónomo.
+        const colors = palette.slice(1).length ? palette.slice(1) : palette;
+        const drift = beats / 12 + 0.35 * Math.sin(2 * Math.PI * (t / 23 + phase)) + phase * colors.length * 0.5;
+        const k = 0.78 + 0.12 * Math.sin(2 * Math.PI * (beats / 8 - phase)) + 0.07 * Math.sin(2 * Math.PI * (t / 5.3 + 2 * phase)) + 0.04 * Math.sin(2 * Math.PI * t / 2.9);
+        return scale(pingPong(colors, drift), k);
+      }
+      case "rise": {
+        // Crece a lo largo de la sección: de 0,55 a pleno, con aurora de fondo cada vez más rápida.
+        const colors = palette.slice(1).length ? palette.slice(1) : palette;
+        const u = clamp01(local / Math.max(0.1, sec.end - sec.start));
+        // Cada vez más rápida, pero nunca menos de 1,5 s por color (sin parpadeos a tempos altos).
+        const c = pingPong(colors, local / Math.max(1.5, beat * (8 - 5 * u)) + phase * colors.length);
+        return mix(scale(c, 0.55 + 0.45 * u * u), [255, 255, 255], 0.18 * u * u);
+      }
+      case "bloom": {
+        // Por compás (4 tiempos): se abre rápido en el 1 y baja despacio, con un eco suave en el 3.
+        // Destellos blancos tenues y escasos (≤ 1/s) encima, como brillos en el aire.
+        const colors = palette.slice(1).length ? palette.slice(1) : palette;
+        const bar = beats / 4, b = Math.floor(bar), x = (bar - b) * 4;
+        const env = 0.62 + 0.38 * Math.exp(-x / 1.7) + 0.12 * Math.exp(-Math.abs(x - 2) * 2.5);
+        // El color avanza en el 1 del compás, fundido en medio tiempo (no corte), de ida y vuelta por la paleta.
+        const c = pingPong(colors, b - 1 + clamp01(x / 0.5) + Math.round(phase * colors.length));
+        // Destellos: como mucho uno por segundo y de subida suave (sin pico brusco).
+        const slot = 1.1, idx = Math.floor(t / slot), u2 = (t / slot) - idx;
+        const spark = hash(idx + i * 13.7) > 0.6 ? Math.sin(Math.PI * Math.min(1, u2 / 0.45)) : 0;
+        return mix(scale(c, Math.min(1, env)), [255, 255, 255], 0.2 * spark);
+      }
       case "hit": {
         // Golpes: casi apagado entre golpes (no siempre encendido) y una explosión en cada golpe fuerte.
         // El 1 y el 3 del compás pegan más que el 2 y el 4. Con el sonido del video, el golpe lo da el micrófono.
@@ -341,7 +403,7 @@ export function generatePattern(song, album, duration, opts = {}) {
     }
   }
 
-  const CROSSFADE = 0.6;
+  const CROSSFADE = look?.crossfade ?? 0.6;
   function colorAt(t, i = 0, n = 1, external = null) {
     ext = external;
     if (!(duration > 0)) return palette[0];
@@ -351,7 +413,9 @@ export function generatePattern(song, album, duration, opts = {}) {
     // Brillo por sección (con mínimo: una sección suave no debe parecer una desconexión) y el "canto": cada frase
     // de 2 compases la luz toma aire (sube en medio tiempo y se apaga despacio), como una voz. Es lento (< 0,5 Hz).
     const x = (((tt - phase0) / beat) % 8 + 8) % 8;
-    const sing = 0.86 + 0.14 * Math.min(1, x / 0.5) * Math.exp(-x / 5);
+    const sing = look?.organic
+      ? 0.9 + 0.1 * Math.sin(2 * Math.PI * (x / 8)) * (0.7 + 0.3 * Math.sin(2 * Math.PI * tt / 31))
+      : 0.86 + 0.14 * Math.min(1, x / 0.5) * Math.exp(-x / 5);
     const withGain = (s, col) => (s.style === "fadeout" ? col : scale(col, s.gain * sing));
     const c = withGain(sec, styleColor(sec, tt, i, n));
     const prev = sections[idx - 1];

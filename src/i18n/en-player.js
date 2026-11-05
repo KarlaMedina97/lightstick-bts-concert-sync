@@ -1,5 +1,11 @@
 // Inglés del reproductor (player/index.html) y sus módulos, salvo src/app.js.
 export default {
+  "Aurora": "Aurora",
+  "Subida": "Rise",
+  "Florecer": "Bloom",
+  "Colores que se deslizan sin pausas y un brillo que respira con ondas que nunca se repiten igual.": "Colors glide without stops and the brightness breathes in waves that never repeat the same way.",
+  "La luz va creciendo hacia el coro, cada vez más brillante y viva.": "The light builds toward the chorus, brighter and livelier.",
+  "En cada compás la luz se abre y se apaga despacio, con destellos suaves.": "Each bar the light opens up and fades slowly, with soft sparkles.",
   "Golpes": "Hits",
   "Oscuro entre golpes y una explosión de luz en cada golpe fuerte, como en el concierto.": "Dark between hits and a burst of light on every strong beat, like at a concert.",
   "¿Por qué no están todos los videos de BTS?": "Why aren't all BTS videos here?",

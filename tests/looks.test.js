@@ -159,3 +159,23 @@ test("canciones intensas: el ARMY Bomb nunca se ve apagado salvo en el cierre, y
     assert.ok(avg["coro final"] > avg.intro, `${s.id}: coro final ${avg["coro final"].toFixed(2)} ≤ intro ${avg.intro.toFixed(2)}`);
   }
 });
+
+test("Euphoria fluye: sin saltos bruscos en versos y puente, sin verdes, y el coro final es el punto más alto", () => {
+  const s = songs.find((x) => x.id === "euphoria");
+  const p = generatePattern(s, s.album, 230, { safeMode: true });
+  const hue = ([r, g, b]) => { const mx = Math.max(r, g, b), d = mx - Math.min(r, g, b); if (d < 20) return -1; const h = mx === r ? ((g - b) / d + 6) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; return h * 60; };
+  const avg = {};
+  for (const sec of p.sections) {
+    let prev = null, maxJump = 0, sum = 0, n = 0;
+    for (let t = sec.start + 2.5; t < sec.end - 0.1; t += 0.05) {
+      const c = p.colorAt(t), l = lum(c);
+      const h = hue(c);
+      assert.ok(!(h > 70 && h < 170), `${sec.label}: verde en t=${t.toFixed(2)}`);
+      if (prev != null) maxJump = Math.max(maxJump, Math.abs(l - prev));
+      prev = l; sum += l; n++;
+    }
+    avg[sec.label] = sum / n;
+    if (["verso", "verso 2", "puente", "intro"].includes(sec.label)) assert.ok(maxJump < 0.03, `${sec.label}: salto ${maxJump.toFixed(3)} en 50 ms`);
+  }
+  assert.ok(avg["coro final"] > avg.verso && avg.coro > avg.verso, "los coros brillan más que los versos");
+});
