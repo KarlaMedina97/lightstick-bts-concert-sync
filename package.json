@@ -32,9 +32,10 @@
     "csp": "node scripts/csp.mjs",
     "check:csp": "node scripts/csp.mjs && git diff --exit-code -- index.html player/index.html",
     "check:commits": "node scripts/check-commits.mjs origin/main..HEAD",
-    "check": "npm test && npm run check:csp",
+    "check": "npm test && npm run check:csp && npm run build",
     "check-commits": "npm run check:commits",
-    "check:embeds": "node scripts/check-embeds.mjs"
+    "check:embeds": "node scripts/check-embeds.mjs",
+    "build": "node scripts/build-site.mjs"
   },
   "engines": {
     "node": ">=22"

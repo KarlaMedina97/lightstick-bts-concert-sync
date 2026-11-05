@@ -22,6 +22,7 @@ Se publica en GitHub Pages: https://karlamedina97.github.io/lightstick-bts-conce
 | `npm run csp` | Regenera la Content-Security-Policy de `index.html` y `app.html` |
 | `npm run check` | Pruebas + verifica que la CSP esté al día (lo mismo que corre CI) |
 | `npm run check:commits` | Verifica mensajes de commit contra `origin/main` |
+| `npm run build` | Arma `_site/` con solo lo que se publica (lista en `scripts/build-site.mjs`); CI despliega esa carpeta |
 | `npm run check:embeds` | Comprueba que cada video del catálogo se pueda ver dentro de la página (bloqueos por derechos, error 150) |
 
 Antes de dar algo por terminado: `npm run check` y probar en el navegador (escritorio y 390×844).
@@ -74,6 +75,8 @@ Las páginas dentro de carpetas usan rutas relativas con `../`. No uses `<base>`
 - Muestra datos del usuario o del servidor con `textContent`, nunca `innerHTML`. Valida con `sanitizeRow`
   (`src/leaderboard.js`) o equivalentes.
 - Nunca pongas claves `service_role` ni secretos en el repo. La clave `anon` de Supabase es pública por diseño.
+- Lo que se publica es solo la lista `PUBLIC` de `scripts/build-site.mjs`: un archivo nuevo del sitio va ahí (y en
+  `sw.js`); documentación, pruebas y scripts nunca. Ver `docs/seguridad.md`.
 
 ### Idioma
 - El HTML y el JS se escriben en español. **Todo texto visible nuevo** (o aria-label, title, data-tip, placeholder) necesita su

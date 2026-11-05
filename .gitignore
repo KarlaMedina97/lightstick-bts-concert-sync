@@ -5,3 +5,8 @@ Thumbs.db
 .claude/settings.local.json
 .env
 .env.*
+_site/
+*.pem
+*.key
+*.p12
+*.pfx
