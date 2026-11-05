@@ -2,7 +2,8 @@
 // Los videos se reproducen desde YouTube (canales oficiales); este proyecto no aloja audio ni video.
 // energy: "high" (baile), "mid" (medio tiempo), "ballad" (balada) — define el estilo de luces.
 // bpm: aproximado; se puede ajustar desde la app.
-// kind: "concert" para presentaciones en vivo (TV, premios, conciertos oficiales).
+// kind: "concert" para presentaciones en vivo (TV, premios, conciertos oficiales); "cover" para covers oficiales
+// (álbumes "covers-<integrante>", con el artista original en el título).
 // artist: "BTS" (grupo) o el integrante: "RM", "Jin", "SUGA" (también Agust D), "j-hope", "Jimin", "V", "Jung Kook".
 // lyricVideo: video oficial con la letra en pantalla (canal oficial/autorizado), para el modo "Letra".
 // officialCaptions: el video `yt` trae subtítulos oficiales (no automáticos) en el reproductor.
@@ -63,6 +64,18 @@ export const ALBUMS = [
     ],
   },
   {
+    id: "covers-v",
+    title: "Covers · V",
+    artist: "V",
+    year: 2014,
+    palette: ["#4e342e", "#bcaaa4", "#90caf9"],
+    songs: [
+      { id: "hug-me-cover", title: "Hug me (cover de Jung Joon Il, con j-hope)", yt: "tv_HQ-0upns", bpm: 76, energy: "ballad", kind: "cover" },
+      { id: "someone-like-you-cover", title: "Someone Like You (cover de Adele)", yt: "56jN9-cMEBU", bpm: 68, energy: "ballad", kind: "cover" },
+      { id: "look-like-christmas-cover", title: "It's Beginning to Look a Lot Like Christmas (cover de Michael Bublé)", yt: "QH4mCEanwKI", bpm: 96, energy: "mid", kind: "cover" },
+    ],
+  },
+  {
     id: "hyyh-pt1",
     title: "The Most Beautiful Moment in Life Pt.1",
     artist: "BTS",
@@ -91,6 +104,29 @@ export const ALBUMS = [
     songs: [
       { id: "for-you", title: "FOR YOU", yt: "TTG6nxwdhyA", bpm: 96, energy: "mid" },
       { id: "i-need-u-jp", title: "I NEED U (Japanese ver.)", yt: "LYAcYSmaLoc", bpm: 79, energy: "mid" },
+    ],
+  },
+  {
+    id: "covers-bts",
+    title: "Covers · BTS",
+    artist: "BTS",
+    year: 2015,
+    palette: ["#37474f", "#ffca28", "#ef5350"],
+    songs: [
+      { id: "perfect-man-cover", title: "Perfect Man (cover de SHINHWA)", yt: "AMMx1hOwH-4", bpm: 130, energy: "high", kind: "cover" },
+      { id: "as-i-told-you-cover", title: "As I Told You (cover de Kim Sung Jae)", yt: "inNYQUC6dFs", bpm: 112, energy: "high", kind: "cover" },
+    ],
+  },
+  {
+    id: "rm-mixtape",
+    title: "RM (mixtape)",
+    artist: "RM",
+    year: 2015,
+    palette: ["#111111", "#9e9e9e", "#ff5252"],
+    songs: [
+      { id: "do-you", title: "Do You", yt: "0XAxf8aFtL4", bpm: 90, energy: "mid" },
+      { id: "joke", title: "Joke", yt: "TfenCTabhDY", bpm: 92, energy: "high" },
+      { id: "awakening", title: "Awakening", yt: "JKBM9y3EuDQ", bpm: 80, energy: "mid", officialCaptions: true },
     ],
   },
   {
@@ -173,6 +209,35 @@ export const ALBUMS = [
     ],
   },
   {
+    id: "covers-jimin",
+    title: "Covers · Jimin",
+    artist: "Jimin",
+    year: 2017,
+    palette: ["#f8bbd0", "#ffffff", "#ba68c8"],
+    songs: [{ id: "we-dont-talk-anymore-cover", title: "We Don't Talk Anymore (cover de Charlie Puth, con Jung Kook)", yt: "RbctNBlXBJc", bpm: 100, energy: "mid", kind: "cover" }],
+  },
+  {
+    id: "covers-jung-kook",
+    title: "Covers · Jung Kook",
+    artist: "Jung Kook",
+    year: 2017,
+    palette: ["#212121", "#e0e0e0", "#7c4dff"],
+    songs: [
+      { id: "lost-stars-cover", title: "Lost Stars (cover de Adam Levine)", yt: "VLzRQCIZrmE", bpm: 84, energy: "ballad", kind: "cover" },
+      { id: "falling-cover", title: "Falling (cover de Harry Styles)", yt: "22VOzqS_9ms", bpm: 110, energy: "ballad", kind: "cover" },
+      { id: "christmas-song-cover", title: "The Christmas Song (cover de Nat King Cole)", yt: "fjTvhaDsRDg", bpm: 70, energy: "ballad", kind: "cover" },
+      { id: "let-there-be-love-cover", title: "Let There Be Love (cover de Oasis, BBC Live Lounge)", yt: "2davNWu3mr4", bpm: 76, energy: "ballad", kind: "cover" },
+    ],
+  },
+  {
+    id: "change-rm",
+    title: "Change (RM & Wale)",
+    artist: "RM",
+    year: 2017,
+    palette: ["#263238", "#80cbc4", "#ffffff"],
+    songs: [{ id: "change-rm", title: "Change (with Wale)", yt: "9rAyprZdo7o", bpm: 95, energy: "mid" }],
+  },
+  {
     id: "ly-wonder",
     title: "Love Yourself 起 'Wonder'",
     artist: "BTS",
@@ -230,7 +295,10 @@ export const ALBUMS = [
     artist: "RM",
     year: 2018,
     palette: ["#78909c", "#cfd8dc", "#263238"],
-    songs: [{ id: "forever-rain", title: "forever rain", yt: "Cvb76hBX_Oc", bpm: 80, energy: "ballad", officialCaptions: true }],
+    songs: [
+      { id: "forever-rain", title: "forever rain", yt: "Cvb76hBX_Oc", bpm: 80, energy: "ballad", officialCaptions: true },
+      { id: "seoul-rm", title: "seoul (prod. HONNE)", yt: "F8wI5ZosdRA", bpm: 90, energy: "mid", officialCaptions: true },
+    ],
   },
   {
     id: "hope-world",
@@ -238,7 +306,10 @@ export const ALBUMS = [
     artist: "j-hope",
     year: 2018,
     palette: ["#4dd0e1", "#ffab40", "#ffffff"],
-    songs: [{ id: "daydream", title: "Daydream", yt: "OK3GJ0WIQ8s", bpm: 105, energy: "high", officialCaptions: true }],
+    songs: [
+      { id: "daydream", title: "Daydream", yt: "OK3GJ0WIQ8s", bpm: 105, energy: "high", officialCaptions: true },
+      { id: "blue-side", title: "Blue Side", yt: "OZD_EU_hMUQ", bpm: 90, energy: "ballad" },
+    ],
   },
   {
     id: "mots-persona",
@@ -280,6 +351,17 @@ export const ALBUMS = [
     songs: [{ id: "chicken-noodle-soup", title: "Chicken Noodle Soup (feat. Becky G)", yt: "i23NEQEFpgQ", bpm: 95, energy: "high", officialCaptions: true }],
   },
   {
+    id: "winter-bear",
+    title: "Winter Bear / Snow Flower (V)",
+    artist: "V",
+    year: 2019,
+    palette: ["#bbdefb", "#ffffff", "#8d6e63"],
+    songs: [
+      { id: "winter-bear", title: "Winter Bear", yt: "pk7ESz6vtyA", bpm: 70, energy: "ballad" },
+      { id: "snow-flower", title: "Snow Flower (feat. Peakboy)", yt: "2nY0spA5UL4", bpm: 82, energy: "ballad" },
+    ],
+  },
+  {
     id: "mots-7",
     title: "Map of the Soul: 7",
     artist: "BTS",
@@ -310,6 +392,38 @@ export const ALBUMS = [
     year: 2020,
     palette: ["#3e2723", "#d7ccc8", "#c62828"],
     songs: [{ id: "daechwita", title: "Daechwita", yt: "qGjAWJ2zWWI", bpm: 86, energy: "high", officialCaptions: true }],
+  },
+  {
+    id: "christmas-love-jimin",
+    title: "Christmas Love (Jimin)",
+    artist: "Jimin",
+    year: 2020,
+    palette: ["#c62828", "#ffffff", "#81c784"],
+    songs: [{ id: "christmas-love", title: "Christmas Love", yt: "LDPSNwJPnGY", bpm: 96, energy: "mid" }],
+  },
+  {
+    id: "suga-collabs-2020",
+    title: "eight / Blueberry Eyes / Over the Horizon (SUGA)",
+    artist: "SUGA",
+    year: 2020,
+    palette: ["#90a4ae", "#7986cb", "#ffffff"],
+    songs: [
+      { id: "eight-iu", title: "eight (IU, prod. & feat. SUGA)", yt: "TgOu00Mf3kI", bpm: 120, energy: "mid" },
+      { id: "blueberry-eyes", title: "Blueberry Eyes (MAX feat. SUGA)", yt: "xcoEL6XwCN4", bpm: 96, energy: "mid" },
+      { id: "over-the-horizon", title: "Over the Horizon (arreglo de SUGA)", yt: "0IR2dYcyTCs", bpm: 80, energy: "ballad" },
+    ],
+  },
+  {
+    id: "abyss-jin",
+    title: "Abyss / Super Tuna (Jin)",
+    artist: "Jin",
+    year: 2020,
+    palette: ["#0d47a1", "#4fc3f7", "#e1f5fe"],
+    songs: [
+      { id: "abyss", title: "Abyss", yt: "aqtSOksH-NE", bpm: 72, energy: "ballad" },
+      { id: "super-tuna", title: "Super Tuna (Special Video)", yt: "ArHGiOxYwHM", bpm: 128, energy: "high" },
+      { id: "super-tuna-performance", title: "Super Tuna (Special Performance Video)", yt: "cQA7VKSvXFM", bpm: 128, energy: "high" },
+    ],
   },
   {
     id: "be",
@@ -385,6 +499,22 @@ export const ALBUMS = [
     songs: [{ id: "bad-decisions", title: "Bad Decisions", yt: "BGNkkVrJZks", bpm: 124, energy: "high", lyricVideo: "Q2VYtCSshic", officialCaptions: true }],
   },
   {
+    id: "my-you",
+    title: "My You (Jung Kook)",
+    artist: "Jung Kook",
+    year: 2022,
+    palette: ["#4a148c", "#e1bee7", "#ffffff"],
+    songs: [{ id: "my-you", title: "My You", yt: "_yTP_L8fC-k", bpm: 76, energy: "ballad" }],
+  },
+  {
+    id: "that-that",
+    title: "That That (PSY prod. & feat. SUGA)",
+    artist: "SUGA",
+    year: 2022,
+    palette: ["#212121", "#ffeb3b", "#03a9f4"],
+    songs: [{ id: "that-that", title: "That That (PSY prod. & feat. SUGA)", yt: "8dJyRm2jJ-U", bpm: 130, energy: "high" }],
+  },
+  {
     id: "left-and-right",
     title: "Left and Right (Charlie Puth)",
     artist: "Jung Kook",
@@ -401,6 +531,28 @@ export const ALBUMS = [
     songs: [
       { id: "more", title: "MORE", yt: "pKdBFeewZYE", bpm: 100, energy: "high", officialCaptions: true },
       { id: "arson", title: "Arson", yt: "QmpTkkaKYSU", bpm: 90, energy: "high", officialCaptions: true },
+      { id: "future-jhope", title: "Future (Visualizer)", yt: "Fh2PTrTaxv0", bpm: 105, energy: "high" },
+      { id: "equal-sign", title: "= (Equal Sign) (Visualizer)", yt: "_hNuNiNhcI4", bpm: 90, energy: "mid" },
+      { id: "future-lollapalooza", title: "Future (Lollapalooza 2022)", yt: "Rlcep6K2Ql0", bpm: 105, energy: "high", kind: "concert" },
+    ],
+  },
+  {
+    id: "rush-hour",
+    title: "Rush Hour (Crush feat. j-hope)",
+    artist: "j-hope",
+    year: 2022,
+    palette: ["#ff7043", "#ffe082", "#37474f"],
+    songs: [{ id: "rush-hour", title: "Rush Hour (Crush feat. j-hope)", yt: "PS0qkO5qty0", bpm: 100, energy: "high" }],
+  },
+  {
+    id: "dreamers",
+    title: "Dreamers (FIFA World Cup 2022)",
+    artist: "Jung Kook",
+    year: 2022,
+    palette: ["#7b1fa2", "#ffd600", "#ffffff"],
+    songs: [
+      { id: "dreamers", title: "Dreamers (feat. Fahad Al Kubaisi)", yt: "IwzkfMmNMpM", bpm: 95, energy: "high" },
+      { id: "dreamers-opening", title: "Dreamers (Ceremonia de apertura Qatar 2022)", yt: "jEdfjuG0Fx4", bpm: 95, energy: "high", kind: "concert" },
     ],
   },
   {
@@ -417,7 +569,10 @@ export const ALBUMS = [
     artist: "RM",
     year: 2022,
     palette: ["#3f51b5", "#9fa8da", "#f5f5f5"],
-    songs: [{ id: "wild-flower", title: "Wild Flower (with youjeen)", yt: "u18be_kRmC0", bpm: 75, energy: "mid", officialCaptions: true }],
+    songs: [
+      { id: "wild-flower", title: "Wild Flower (with youjeen)", yt: "u18be_kRmC0", bpm: 75, energy: "mid", officialCaptions: true },
+      { id: "still-life", title: "Still Life (with Anderson .Paak)", yt: "2vfmL4q2koo", bpm: 105, energy: "high" },
+    ],
   },
   {
     id: "take-two",
@@ -437,6 +592,14 @@ export const ALBUMS = [
       { id: "set-me-free-pt2", title: "Set Me Free Pt.2", yt: "UaywgAqcLxI", bpm: 100, energy: "high", officialCaptions: true },
       { id: "like-crazy", title: "Like Crazy", yt: "nOI67IDlNMQ", bpm: 120, energy: "mid", officialCaptions: true },
     ],
+  },
+  {
+    id: "vibe",
+    title: "VIBE (TAEYANG feat. Jimin)",
+    artist: "Jimin",
+    year: 2023,
+    palette: ["#000000", "#ff6f00", "#ffffff"],
+    songs: [{ id: "vibe", title: "VIBE (TAEYANG feat. Jimin)", yt: "cXCBiF67jLM", bpm: 110, energy: "high", officialCaptions: true }],
   },
   {
     id: "d-day",
@@ -469,6 +632,9 @@ export const ALBUMS = [
     songs: [
       { id: "love-me-again", title: "Love Me Again", yt: "HYzyRHAHJl8", bpm: 93, energy: "ballad", officialCaptions: true },
       { id: "slow-dancing", title: "Slow Dancing", yt: "eI0iTRS0Ha8", bpm: 81, energy: "ballad" },
+      { id: "rainy-days", title: "Rainy Days", yt: "yTsINmrAK4I", bpm: 80, energy: "ballad" },
+      { id: "blue-v", title: "Blue", yt: "sIh9_cNCwPc", bpm: 86, energy: "mid" },
+      { id: "love-me-again-band", title: "Love Me Again (Band Session)", yt: "r2rZXrsBAfE", bpm: 93, energy: "ballad", kind: "concert" },
     ],
   },
   {
@@ -481,7 +647,17 @@ export const ALBUMS = [
       { id: "seven", title: "Seven (feat. Latto)", yt: "QU9c0053UAU", bpm: 125, energy: "high", officialCaptions: true },
       { id: "3d", title: "3D (feat. Jack Harlow)", yt: "mHNCM-YALSA", bpm: 108, energy: "high" },
       { id: "standing-next-to-you", title: "Standing Next to You", yt: "UNo0TG9LwwI", bpm: 106, energy: "high", lyricVideo: "1ppY8E2wrWo", officialCaptions: true },
+      { id: "hate-you", title: "Hate You (Visualizer)", yt: "tAcKfnf0zv4", bpm: 80, energy: "ballad" },
+      { id: "seven-performance", title: "Seven (feat. Latto) (Performance Video)", yt: "1QYBiNRu1ok", bpm: 125, energy: "high" },
     ],
+  },
+  {
+    id: "closer-than-this",
+    title: "Closer Than This (Jimin)",
+    artist: "Jimin",
+    year: 2023,
+    palette: ["#e1bee7", "#ffffff", "#9575cd"],
+    songs: [{ id: "closer-than-this", title: "Closer Than This", yt: "zzKV_T9ybe8", bpm: 90, energy: "ballad" }],
   },
   {
     id: "hope-on-the-street",
@@ -492,6 +668,14 @@ export const ALBUMS = [
     songs: [{ id: "neuron", title: "NEURON", yt: "z4Rg_VgOlJU", bpm: 95, energy: "high", officialCaptions: true }],
   },
   {
+    id: "never-let-go",
+    title: "Never Let Go (Jung Kook)",
+    artist: "Jung Kook",
+    year: 2024,
+    palette: ["#1a237e", "#c5cae9", "#ffffff"],
+    songs: [{ id: "never-let-go", title: "Never Let Go (Lyric Video)", yt: "J_n4Ysi5iUM", bpm: 92, energy: "mid" }],
+  },
+  {
     id: "rpwp",
     title: "Right Place, Wrong Person (RM)",
     artist: "RM",
@@ -500,6 +684,9 @@ export const ALBUMS = [
     songs: [
       { id: "lost-rm", title: "LOST!", yt: "kq6UVL3H6SI", bpm: 120, energy: "mid", officialCaptions: true },
       { id: "come-back-to-me", title: "Come back to me", yt: "NrfikKxF4Ps", bpm: 74, energy: "ballad" },
+      { id: "groin", title: "Groin", yt: "ChAXAFqzBpw", bpm: 110, energy: "high" },
+      { id: "credit-roll", title: "ㅠㅠ (Credit Roll)", yt: "p6w64hIPloI", bpm: 95, energy: "mid" },
+      { id: "nuts-live", title: "Nuts (Live Video)", yt: "z7FiZTE1NiI", bpm: 100, energy: "mid", kind: "concert" },
     ],
   },
   {
@@ -511,6 +698,8 @@ export const ALBUMS = [
     songs: [
       { id: "smeraldo-garden-marching-band", title: "Smeraldo Garden Marching Band (feat. Loco)", yt: "LIER2z3DBe8", bpm: 108, energy: "mid", officialCaptions: true },
       { id: "who-jimin", title: "Who", yt: "Av9DvtlJ9_M", bpm: 120, energy: "high" },
+      { id: "be-mine-en", title: "Be Mine (English Version) (Visualizer)", yt: "MYrZ5T3jFmA", bpm: 105, energy: "mid" },
+      { id: "rebirth-slow-dance-live", title: "Rebirth + Slow Dance (feat. Sofia Carson) (Live Clip)", yt: "pI9vHl-cyuI", bpm: 100, energy: "mid", kind: "concert" },
     ],
   },
   {
@@ -545,6 +734,7 @@ export const ALBUMS = [
       { id: "sweet-dreams", title: "Sweet Dreams (feat. Miguel)", yt: "kW1e8NtdW90", bpm: 85, energy: "mid" },
       { id: "mona-lisa", title: "MONA LISA", yt: "ECqGCH1TfLY", bpm: 105, energy: "high", officialCaptions: true },
       { id: "killin-it-girl", title: "Killin' It Girl (feat. GloRilla)", yt: "q9leDzlNEaY", bpm: 115, energy: "high", officialCaptions: true },
+      { id: "lock-unlock-lolla", title: "lock / unlock + i wonder… (Lollapalooza Berlin 2025)", yt: "WrFpJ_1wMJU", bpm: 100, energy: "high", kind: "concert" },
     ],
   },
   {
@@ -553,7 +743,18 @@ export const ALBUMS = [
     artist: "Jin",
     year: 2025,
     palette: ["#424242", "#b0bec5", "#e53935"],
-    songs: [{ id: "dont-say-you-love-me", title: "Don't Say You Love Me", yt: "o7BcyAd6rqg", bpm: 82, energy: "ballad", lyricVideo: "iD_3rMPrggQ" }],
+    songs: [
+      { id: "dont-say-you-love-me", title: "Don't Say You Love Me", yt: "o7BcyAd6rqg", bpm: 82, energy: "ballad", lyricVideo: "iD_3rMPrggQ" },
+      { id: "dsylm-seongsu", title: "Don't Say You Love Me @ Seongsu (Live Clip)", yt: "k7xcVbxN-eM", bpm: 82, energy: "ballad", kind: "concert" },
+    ],
+  },
+  {
+    id: "close-to-you-jin",
+    title: "Close to You (Jin, OST)",
+    artist: "Jin",
+    year: 2025,
+    palette: ["#283593", "#ffd54f", "#e8eaf6"],
+    songs: [{ id: "close-to-you", title: "Close to You (When the Stars Gossip OST)", yt: "NFeI7hJvfeA", bpm: 76, energy: "ballad" }],
   },
   {
     id: "arirang",
