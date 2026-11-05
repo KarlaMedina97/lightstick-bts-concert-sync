@@ -1,14 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Purple Wave Sync">
+  <!-- Favicon simplificado: legible a 16 px. Globo con la ola original sobre un mango corto. -->
   <defs>
-    <radialGradient id="g" cx="40%" cy="35%" r="65%">
-      <stop offset="0" stop-color="#f3e5ff"/>
+    <radialGradient id="g" cx="38%" cy="30%" r="80%">
+      <stop offset="0" stop-color="#f3e9ff"/>
       <stop offset=".45" stop-color="#a66bff"/>
-      <stop offset="1" stop-color="#5a1aa8"/>
+      <stop offset="1" stop-color="#4b1590"/>
     </radialGradient>
   </defs>
-  <rect width="512" height="512" rx="112" fill="#1b0b2e"/>
-  <path d="M40 390c60-40 120-40 180 0s120 40 180 0 72-30 72-30v110H40z" fill="#7a2bd6" opacity=".55"/>
-  <rect x="232" y="300" width="48" height="150" rx="20" fill="#3a2552"/>
-  <circle cx="256" cy="210" r="120" fill="url(#g)"/>
-  <circle cx="256" cy="210" r="120" fill="none" stroke="#f3e5ff" stroke-opacity=".5" stroke-width="10"/>
+  <rect width="64" height="64" rx="16" fill="#140735"/>
+  <rect x="28" y="42" width="8" height="18" rx="3" fill="#2b2638"/>
+  <rect x="24" y="40" width="16" height="5" rx="2.5" fill="#0d0b14"/>
+  <circle cx="32" cy="25" r="18" fill="url(#g)"/>
+  <circle cx="32" cy="25" r="18" fill="none" stroke="#ffffff" stroke-opacity=".7" stroke-width="1.6"/>
+  <path d="M21 34 C21 25 26 18 34 16 C40 15 45 18 45 22 C45 25 43 27 40 27 C37 27 36 25 37 23 C33 23 30 26 30 31 C30 33 31 34 32 35 Z" fill="#ffffff"/>
 </svg>

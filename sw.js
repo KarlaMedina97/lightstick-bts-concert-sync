@@ -1,6 +1,6 @@
 // Service worker: guarda la app para abrirla sin conexión (los videos sí necesitan internet).
 // Solo guarda archivos propios del sitio; nunca respuestas de terceros ni con errores.
-const CACHE = "pws-v7";
+const CACHE = "pws-v8";
 const SHELL = [
   "./",
   "index.html",
@@ -26,11 +26,15 @@ const SHELL = [
   "assets/grain.svg",
   "assets/empty-stage.svg",
   "icons/apple-touch-icon.png",
+  "icons/icon-192.png",
+  "icons/logo-mark.svg",
   "src/app.js",
   "src/ble.js",
   "src/catalog.js",
   "src/config.js",
   "src/crowd.js",
+  "src/suggest.js",
+  "src/palette.js",
   "src/fanchant.js",
   "src/feedback.js",
   "src/guide.js",

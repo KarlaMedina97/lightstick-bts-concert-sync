@@ -1,7 +1,7 @@
 {
   "name": "Purple Wave Sync",
   "short_name": "PurpleWave",
-  "description": "Sincroniza tu lightstick con canciones, álbum por álbum. Proyecto de fans, abierto y no oficial.",
+  "description": "Tu ARMY Bomb, al ritmo de cada canción. Proyecto de fans, abierto y no oficial.",
   "lang": "es",
   "start_url": "player/",
   "scope": "./",
@@ -9,8 +9,51 @@
   "background_color": "#060818",
   "theme_color": "#070a1a",
   "icons": [
-    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Abrir el reproductor",
+      "url": "player/",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Conectar mi ARMY Bomb",
+      "url": "player/?guide=1",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }
