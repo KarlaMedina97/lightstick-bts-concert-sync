@@ -482,7 +482,7 @@ kbd {
 .thumb { width: 64px; height: 36px; border-radius: var(--r-sm); background: #1d1930 center / cover; position: relative; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06); overflow: hidden; }
 .song.playing .thumb::after { /* ecualizador */
   content: ""; position: absolute; inset: 0; background-color: rgba(10, 6, 25, 0.6);
-  background-image: linear-gradient(var(--accent), var(--accent)), linear-gradient(var(--accent), var(--accent)), linear-gradient(var(--accent), var(--accent));
+  background-image: linear-gradient(var(--song-accent), var(--song-accent)), linear-gradient(var(--song-accent), var(--song-accent)), linear-gradient(var(--song-accent), var(--song-accent));
   background-repeat: no-repeat; background-size: 3px 40%, 3px 70%, 3px 50%;
   background-position: calc(50% - 6px) 60%, 50% 60%, calc(50% + 6px) 60%;
   animation: eq 0.9s ease-in-out infinite alternate;
@@ -1048,13 +1048,12 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 /* =====================================================================
    Paleta por canción
    app.js pone --song-accent / --song-accent-2 (derivados de la paleta del álbum,
-   con contraste AA garantizado en src/palette.js). Todo el acento de la app los sigue.
+   con contraste AA garantizado en src/palette.js). Solo se usan en lo decorativo (brillos, degradados,
+   título de lo que suena, ecualizador). CTA, interruptores, estados activos y foco usan el acento de marca.
    ===================================================================== */
 :root { --song-accent: #b58cff; --song-accent-2: #7cc4ff; --song-ink: #120a24; }
 .app {
-  --accent: var(--song-accent);
-  --accent-soft: color-mix(in srgb, var(--song-accent) 16%, transparent);
-  --accent-ink: var(--song-ink);
+  --brand-line: color-mix(in srgb, var(--accent) 42%, transparent);
   --song-line: color-mix(in srgb, var(--song-accent) 42%, transparent);
   --title-grad: linear-gradient(100deg, #fff 0%, #fff 28%, var(--song-accent) 68%, var(--song-accent-2) 100%);
 }
@@ -1246,7 +1245,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .dbtn svg { width: 19px; height: 19px; }
 .dbtn:hover { background: var(--surface-hover); color: var(--text); }
 .dbtn:active { transform: scale(0.96); }
-.dbtn[aria-pressed="true"], .dbtn.on { color: var(--accent); background: var(--accent-soft); border-color: var(--song-line); }
+.dbtn[aria-pressed="true"], .dbtn.on { color: var(--accent); background: var(--accent-soft); border-color: var(--brand-line); }
 .dbtn[aria-expanded="true"] { background: var(--surface-active); color: var(--text); }
 .phone-only { display: none; }
 
@@ -1318,7 +1317,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 }
 
 /* La píldora de la guía minimizada no compite con el botón principal "Conectar". */
-.coach-pill { background: var(--surface-2); color: var(--text); border: 1px solid var(--song-line); box-shadow: var(--hairline-top), var(--e-2); }
+.coach-pill { background: var(--surface-2); color: var(--text); border: 1px solid var(--brand-line); box-shadow: var(--hairline-top), var(--e-2); }
 .coach-pill::before { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
 /* =====================================================================
@@ -1427,8 +1426,8 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .cq-head { display: flex; justify-content: space-between; align-items: center; gap: var(--s-2); }
 .cq-head .btn { min-height: 36px; }
 .cq-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-#cq-user-sec.empty .cq-list { min-height: 48px; border: 1px dashed var(--border-strong); border-radius: var(--r-md); }
-#cq-user-sec:not(.empty) .cq-empty { display: none; }
+#cq-user-sec.is-empty .cq-list { min-height: 48px; border: 1px dashed var(--border-strong); border-radius: var(--r-md); }
+#cq-user-sec:not(.is-empty) .cq-empty { display: none; }
 .cq-item { display: grid; grid-template-columns: 36px minmax(0, 1fr) 40px; align-items: center; gap: 2px; border-radius: var(--r-md); touch-action: pan-y; transition: background var(--dur-2), transform var(--dur-2) var(--ease-out); }
 .cq-item:hover, .cq-item:focus-within { background: var(--surface-hover); }
 .cq-handle { width: 36px; height: var(--tap); border: 0; border-radius: var(--r-sm); background: none; color: var(--muted); cursor: grab; touch-action: none; display: grid; place-items: center; }
@@ -1551,7 +1550,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 }
 .explore-head { background: color-mix(in srgb, #0a0920 94%, transparent); border-radius: 0 0 var(--r-lg) var(--r-lg); box-shadow: 0 12px 24px -16px rgba(0, 0, 0, 0.8); }
 /* Títulos largos en el dock: se desvanecen al final (las letras animadas no admiten "…") */
-.np-title { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent); }
+.np-title.is-overflowing { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent); }
 
 /* Un solo buscador a la vez: si el inicio o Explorar están en pantalla (con su buscador y filtros),
    la lista lateral oculta los suyos y queda como lista de álbumes. */
@@ -1659,7 +1658,7 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 .nps-lights { display: inline-flex; align-items: center; gap: var(--s-1); font-size: var(--fs-12); font-weight: 600; color: var(--text-2); }
 .nps-channel { font-size: var(--fs-12); color: var(--muted); }
 .nps-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }
-.nps-actions .btn[aria-pressed="true"] { color: var(--accent); border-color: var(--song-line); background: var(--accent-soft); }
+.nps-actions .btn[aria-pressed="true"] { color: var(--accent); border-color: var(--brand-line); background: var(--accent-soft); }
 .nps-sec { display: grid; gap: var(--s-1); }
 .nps-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 /* Columna derecha (≥ 1280 px) */
@@ -1700,12 +1699,13 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
   --warn: #8a5a00; --warn-bg: #fff3d1; --warn-text: #5c3d00;
 }
 :root[data-theme="light"] .app {
-  --accent: var(--song-accent-l, #6b3fd1);
+  --accent: #6b3fd1;          /* marca en claro: 6.3:1 sobre blanco, texto blanco encima 6.3:1 */
   --accent-ink: #ffffff;
-  --accent-soft: color-mix(in srgb, var(--song-accent-l, #6b3fd1) 12%, transparent);
+  --accent-soft: rgba(107, 63, 209, 0.12);
+  --brand-line: rgba(107, 63, 209, 0.38);
   --song-line: color-mix(in srgb, var(--song-accent-l, #6b3fd1) 36%, transparent);
   --list-bg: #ffffff;
-  --title-grad: linear-gradient(100deg, var(--text) 0%, var(--text) 30%, var(--accent) 70%, var(--song-accent-l2, #1f6fb2) 100%);
+  --title-grad: linear-gradient(100deg, var(--text) 0%, var(--text) 30%, var(--song-accent-l, #6b3fd1) 70%, var(--song-accent-l2, #1f6fb2) 100%);
 }
 :root[data-theme="light"] body { background: var(--bg); }
 :root[data-theme="light"] .ambient {
@@ -1764,3 +1764,72 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 }
 /* Tema claro: el público se ve, pero detrás de un velo para que los textos de Explorar se lean bien */
 :root[data-theme="light"] .home-view { background: linear-gradient(to bottom, rgba(244, 240, 251, 0.8), rgba(244, 240, 251, 0.62)); border-radius: var(--r-xl); }
+
+/* =====================================================================
+   Auditoría UX (docs/ux-audit.md) · ajustes "ahora"
+   ===================================================================== */
+/* UI-08 · áreas de toque: ≥ 36 px con mouse, ≥ 44 px con dedo */
+.like-btn { width: 36px; height: 36px; }
+.song-row { gap: var(--s-2); } /* ≥ 8 px entre ♡ y ⋯ */
+.filter-chip { min-height: 36px; }
+.seg button, .tabs button { min-height: 36px; }
+@media (pointer: coarse) {
+  .like-btn, .more-btn, .filter-chip, .seg button, .tabs button, .menu-item, .lib-item { min-height: var(--tap); }
+  .like-btn, .more-btn { min-width: var(--tap); }
+  .menu-item { min-width: var(--tap); }
+}
+/* IA-02 · pestañas completas en teléfono (360 px) */
+@media (max-width: 640px) {
+  .hud-top { gap: var(--s-2); }
+  .view-tabs { flex: 1 1 auto; max-width: calc(100% - var(--tap) - var(--s-2)); }
+  .view-tabs button { padding: 0 var(--s-2); font-size: 0.8125rem; min-width: 0; }
+}
+/* L-07 · el título del dock cabe: sin canción, tamaño menor; columna más ancha en escritorio */
+.app.home .np-title { font-size: var(--fs-16); }
+@media (min-width: 1280px) { .dock { grid-template-columns: minmax(220px, 1fr) minmax(260px, 1.3fr) auto; } }
+/* L-06 · contadores de los chips legibles (sin opacidad) */
+.filter-chip .n { opacity: 1; color: var(--text-2); }
+.filter-chip[aria-pressed="true"] .n { color: inherit; }
+/* L-05 / V-01 · texto sobre el escenario: tarjetas con fondo propio y velo detrás de Explorar */
+.sg-play { background: var(--surface-1); border-radius: var(--r-lg); padding-bottom: var(--s-2); box-shadow: 0 0 0 1px var(--border); }
+.sg-play .sg-thumb { border-radius: var(--r-lg) var(--r-lg) var(--r-sm) var(--r-sm); }
+.sg-title, .sg-meta { padding: 0 var(--s-2); }
+.home-view { background: linear-gradient(to bottom, rgba(6, 6, 26, 0.72), rgba(6, 6, 26, 0.58)); border-radius: var(--r-xl); }
+.app.home .crowd-canvas, .app:has(#home:not([hidden])) .crowd-canvas { opacity: 0.35; }
+.app:has(#home:not([hidden])) .beams { opacity: 0.15; }
+.shelf-head { background: none; }
+/* L-10 · rótulos coreanos más discretos y fuera del camino en teléfono */
+.shelf-ko { opacity: 0.45; }
+@media (max-width: 480px) { .shelf-ko { display: none; } }
+/* V-06 · glifo de intensidad: neutro (no parece un estado activo) */
+.lights-glyph { color: var(--text-2); }
+.lights-legend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); padding: 0 var(--s-1); font-size: var(--fs-12); font-weight: 600; color: var(--text-2); }
+.ll-item { display: inline-flex; align-items: center; gap: var(--s-1); }
+/* UI-02 · primera visita: una tarjeta para conectar (sin guía automática) */
+.connect-card { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-4); padding: var(--s-4); border-radius: var(--r-lg); background: var(--surface-1); border: 1px solid var(--brand-line); box-shadow: var(--e-1); }
+.connect-card p { flex: 1 1 200px; display: grid; gap: 2px; }
+.connect-card strong { font-size: var(--fs-16); }
+.connect-card span:not(.sp-stick) { font-size: var(--fs-14); color: var(--text-2); }
+.cc-actions { display: flex; gap: var(--s-2); }
+/* I-10 · teléfono: "A continuación" ocupa el hueco bajo el video (no flota) */
+@media (max-width: 640px) {
+  .upnext {
+    top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + 52px); bottom: auto; left: 0; right: 0; width: auto;
+    max-height: calc(100cqh - (36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + 52px)); overflow: auto;
+    background: var(--surface-1); box-shadow: var(--e-1);
+  }
+  /* UI-04 · Explorar en teléfono: el mini video mide solo 200 px (controles encima) y el dock va compacto */
+  .app.exploring .video-card { --mini-w: calc(100cqw - 16px); }
+  .app.exploring .mini-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 44px; background: linear-gradient(to top, rgba(8, 6, 20, 0.85), transparent); color: #fff; }
+  .app.exploring .progress { display: none; }
+  .app.exploring .home-view { padding-bottom: 228px; }
+  /* UI-05 · avisos encima del dock (zona del pulgar) */
+  .toast { top: auto; bottom: calc(var(--pad) + var(--dock-h) + var(--s-3) + var(--safe-b)); }
+  .toast[hidden] { transform: translate(-50%, 8px) scale(0.98); }
+}
+:root[data-theme="light"] .home-view { background: linear-gradient(to bottom, rgba(244, 240, 251, 0.86), rgba(244, 240, 251, 0.72)); }
+:root[data-theme="light"] .sg-play { background: rgba(255, 255, 255, 0.92); }
+/* UI-07 / UI-01 · en los paneles, cada fila mide lo que su contenido (las filas con scroll horizontal,
+   como los chips, ya no se aplastan a 0 px cuando el panel es más bajo que su contenido) */
+.panel-body { grid-auto-rows: max-content; }
+.filters { min-height: max-content; }

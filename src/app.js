@@ -63,6 +63,8 @@ let mic = null;
 let view = "video";
 let crowd = null;
 let startTourLater = () => {};
+let firstSongPending = true;
+let tourScheduled = false;
 let fanchant = null;
 let chantFlashAt = -1e9;
 const sticks = [];
@@ -106,8 +108,9 @@ function closePanel(restoreFocus = true) {
 }
 function bindPanels() {
   document.querySelectorAll(".panel .close").forEach((b) => (b.onclick = () => closePanel()));
-  $("btn-queue").onclick = (e) => showPanel("panel-queue", e.currentTarget);
-  $("btn-start").onclick = (e) => showPanel("panel-queue", e.currentTarget);
+  // #btn-queue (Mis videos en la biblioteca) se maneja con [data-go], igual que los demás accesos.
+  // "Ver canciones" lleva al buscador de Explorar (la lista ya está en pantalla).
+  $("btn-start").onclick = () => { $("search-explore").focus(); $("search-explore").scrollIntoView({ block: "nearest" }); };
   $("btn-settings").onclick = (e) => showPanel("panel-settings", e.currentTarget);
   $("btn-game").onclick = (e) => showPanel("panel-game", e.currentTarget);
   $("btn-bt").onclick = (e) => showPanel("panel-bt", e.currentTarget);
@@ -153,7 +156,7 @@ function setView(v) {
   const exploring = v === "explore";
   $("lights-view").hidden = v !== "lights";
   // En Explorar el video sigue sonando en un mini reproductor; sin canción, Video y Explorar muestran el inicio.
-  $("video-view").hidden = v === "lights" || (exploring && current < 0);
+  $("video-view").hidden = v === "lights"; // sin canción, .app.home lo deja invisible (el iframe de YouTube sigue cargando)
   $("home").hidden = !(exploring || (v === "video" && current < 0));
   app.classList.toggle("exploring", exploring && current >= 0);
   app.dataset.view = v;
@@ -596,6 +599,10 @@ function loadIndex(i, { autoplay = true } = {}) {
   renderRanking();
   player.load(videoFor(song), autoplay);
   $("mini-title").textContent = song.title;
+  if (firstSongPending) {
+    firstSongPending = false;
+    if (view === "explore") { selectViewTab("view-video"); view = "video"; }
+  }
   $("np-open").dataset.tip = `Ahora suena: ${song.title}`;
   maybeNudgeSupport();
   if (view === "video") $("home").hidden = true;
@@ -954,6 +961,12 @@ function setNowTitle(text) {
   // El degradado se reparte sobre todo el título: cada letra muestra su tramo (--i de --n).
   vis.style.setProperty("--n", Math.max(2, [...text].length));
   el.replaceChildren(sr, vis);
+  requestAnimationFrame(markTitleOverflow);
+}
+/** El título del dock se desvanece al final solo cuando no cabe. */
+function markTitleOverflow() {
+  const el = $("now-title");
+  el.classList.toggle("is-overflowing", el.scrollWidth > el.clientWidth + 1);
 }
 /** Acentos legibles derivados de la paleta del álbum (ver src/palette.js). */
 function applySongTheme(palette) {
@@ -1007,7 +1020,7 @@ function lightGlyph(item) {
   const g = document.createElement("span");
   g.className = "lights-glyph";
   g.dataset.level = lvl;
-  g.dataset.tip = `Luces ${LIGHT_NAME[lvl]}`;
+  g.dataset.tip = `Intensidad de luces: ${LIGHT_NAME[lvl]}`;
   g.setAttribute("aria-hidden", "true");
   // Globo de lightstick cuyo halo crece con la intensidad (3 = halo fuerte con rayos).
   g.innerHTML = `<svg viewBox="0 0 20 20"><circle class="lg-halo" cx="10" cy="8" r="7.5"/><path class="lg-rays" d="M10 .4v1.4M3.6 2.6l1 1M16.4 2.6l-1 1M1.8 8h1.4M16.8 8h1.4"/><circle class="lg-globe" cx="10" cy="8" r="3.6"/><path class="lg-stick" d="M10 11.8V18.6"/></svg>`;
@@ -1136,7 +1149,9 @@ function renderUpNext() {
 function updateUpNextCard(t, dur) {
   const card = $("upnext");
   const left = dur - t;
+  const inline = matchMedia("(max-width: 640px)").matches && view === "video";
   const show = card.dataset.force === "1" ||
+    (inline && current >= 0 && !upnextDismissed && !fanchant?.running && $("upnext-list").children.length > 0) ||
     (current >= 0 && dur > 45 && left > 0 && left < 25 && !upnextDismissed && !fanchant?.running && $("upnext-list").children.length > 0);
   if (card.hidden === !show) return;
   card.hidden = !show;
@@ -1768,7 +1783,7 @@ function renderCola() {
     now.append(row);
   } else now.textContent = "Nada sonando aún";
   $("cq-user").replaceChildren(...pq.userQueue.map((e) => colaItem(e, "userQueue")));
-  $("cq-user-sec").classList.toggle("empty", !pq.userQueue.length);
+  $("cq-user-sec").classList.toggle("is-empty", !pq.userQueue.length);
   $("cq-clear").hidden = !pq.userQueue.length;
   const ctx = pq.context.slice(0, COLA_MAX);
   $("cq-ctx").replaceChildren(...ctx.map((e) => colaItem(e, "context")));
@@ -2271,6 +2286,8 @@ function onPlayerState(state) {
   $("mini-play").setAttribute("aria-label", playing ? "Pausar" : "Reproducir");
   $("mini-play").querySelector("use").setAttribute("href", playing ? "#i-pause" : "#i-play");
   if (playing && resumeAt > 3) { player.seek(resumeAt); resumeAt = 0; }
+  // El recorrido corto llega después de que suena la primera canción (no antes).
+  if (playing && !tourScheduled) { tourScheduled = true; if (!Tour.done) setTimeout(() => startTourLater(), 4000); }
   app.classList.toggle("playing-now", playing);
   if (playing) {
     requestWakeLock();
@@ -2302,6 +2319,9 @@ async function init() {
   bindGame();
   bindTimeline();
   bindTabs(["view-video", "view-lights", "view-explore"], (id) => switchView({ "view-video": "video", "view-lights": "lights", "view-explore": "explore" }[id]));
+  // Sin canción, lo que se ve es Explorar: la pestaña lo dice.
+  if (current < 0) { selectViewTab("view-explore"); setView("explore"); }
+  addEventListener("resize", () => requestAnimationFrame(markTitleOverflow));
   bindTabs(["qt-songs", "qt-concerts", "qt-mine"]);
 
   const support = bluetoothSupport();
@@ -2361,7 +2381,7 @@ async function init() {
     },
     hasSticks: () => sticks.length > 0,
     stickNames: () => sticks.map((s) => s.name),
-    onDone: (name) => { toast(`💜 ¡${name} listo! Ahora elige una canción.`); if (!Tour.done) setTimeout(() => startTourLater(), 1200); },
+    onDone: (name) => { toast(`💜 ¡${name} listo! Ahora elige una canción.`); },
   });
   $("btn-guide").onclick = () => { closePanel(false); guide.open(); };
   bindMenu();
@@ -2412,11 +2432,14 @@ async function init() {
   addEventListener("pagehide", () => { mic?.stop(); cam?.stop(); });
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && mic) toggleMic(); });
   const params = new URLSearchParams(location.search);
-  if ((params.has("guide") || params.has("guia")) || !guide.seen) guide.open();
-  else if (!Tour.done) setTimeout(startTour, 1500);
-  startTourLater = () => startTour();
+  // Primera visita: Explorar con una tarjeta "¿Tienes un ARMY Bomb?" (la guía solo si la persona quiere).
+  if (params.has("guide") || params.has("guia")) guide.open();
+  else if (!guide.seen) $("connect-card").hidden = false;
+  $("cc-yes").onclick = () => { $("connect-card").hidden = true; guide.open(); };
+  $("cc-no").onclick = () => { $("connect-card").hidden = true; try { localStorage.setItem("pws.guide.seen", "1"); } catch {} };
+  // El recorrido no se apila con la guía: si está abierta, espera.
+  startTourLater = () => { if (Tour.done) return; if ($("guide").hidden) startTour(); else setTimeout(() => startTourLater(), 5000); };
   // Si la persona omite la guía, el recorrido empieza después.
-  $("g-skip").addEventListener("click", () => { if (!Tour.done) setTimeout(startTour, 500); });
   // Enlace directo a una canción: /player/?song=dynamite
   const songParam = params.get("song");
   if (songParam && /^[a-z0-9-]{1,80}$/.test(songParam)) {
