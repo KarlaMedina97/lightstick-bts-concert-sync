@@ -394,3 +394,17 @@ Carpeta: `C:\Users\USUARIO\AppData\Local\Temp\claude\93853b72d935e70d\fce09ad3-0
   `-feedback`, `-panel-queue`; `x-privacy-390.png`, `x-privacy-1440.png`.
 - Datos: `landing-live-contrast.json`, `player-report-1440x900.json`, `player-report-390x844.json`,
   `player-report-768x1024_360x740.json`.
+
+## 2026-11-05 · Ronda 3: un solo lugar por acción
+
+| Problema | Cambio |
+| --- | --- |
+| Tres botones de reproducir juntos (miniatura de Explorar, mini reproductor y pie de página) | Se quitó el ▶ del mini reproductor y el botón redondo de cada miniatura. La miniatura muestra un velo con el color de la canción y un ▶ grande al pasar el cursor o al elegirla; desaparece cuando suena. El pie de página es el único control de reproducción. |
+| El ▶ rojo de YouTube en el mini reproductor | Es del reproductor incrustado: las políticas de YouTube no permiten taparlo ni ocultar sus controles. Solo aparece antes de la primera reproducción. |
+| Barra del mini reproductor encima del video en teléfono | Va debajo del video, nunca sobre el reproductor de YouTube. |
+| Miniatura flotante sin forma de quitarla | Botón ✕ "Ocultar miniatura": pausa el video; reaparece al reproducir desde el pie de página o con "Mostrar". |
+| Tres botones de "Conectar" en el inicio (cabecera, portada, tarjeta) | Queda el de la cabecera y la tarjeta de primera visita (con la guía). |
+| "Explorar" y "Buscar" repetidos en la biblioteca | Se quitaron: están en la pestaña Explorar y en el atajo "/". |
+| "Cola" en la biblioteca y en el pie; "Mis videos" y "Conciertos" en la biblioteca y en Explorar | Con la biblioteca a la vista, solo aparecen en ella; en teléfono y tablet (sin biblioteca) siguen en el pie y en Explorar. |
+| Tres formas de cerrar la biblioteca en escritorio | El botón Biblioteca de la cabecera la abre y la cierra; el ✕ interno solo existe en modo cajón (tablet). |
+| Portadas de álbum con un botón blanco aparte | La portada entera reproduce el álbum, con el mismo velo; el título abre el álbum. |

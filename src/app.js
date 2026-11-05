@@ -18,6 +18,7 @@ import { shelves, upNext, myAlbums } from "./suggest.js";
 import { songTheme } from "./palette.js";
 import { PlayQueue } from "./queue.js";
 import { initTooltips } from "./tooltip.js";
+import { lang, t } from "./i18n.js";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app");
@@ -36,7 +37,7 @@ const store = {
 };
 
 const SETTINGS_KEY = "pws.settings.v1";
-const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, lyrics: false, lyricsLang: "ko", chant: true, chantVoice: true, bpm: {} };
+const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, lyrics: false, lyricsLang: "ko", lyricsMode: "lyrics", chant: true, chantVoice: true, bpm: {} };
 const settings = { ...defaults, ...store.get(SETTINGS_KEY, {}) };
 if (matchMedia("(prefers-reduced-motion: reduce)").matches) settings.safeMode = true;
 const saveSettings = () => store.set(SETTINGS_KEY, settings);
@@ -110,15 +111,13 @@ function bindPanels() {
   document.querySelectorAll(".panel .close").forEach((b) => (b.onclick = () => closePanel()));
   // #btn-queue (Mis videos en la biblioteca) se maneja con [data-go], igual que los demás accesos.
   // "Ver canciones" lleva al buscador de Explorar (la lista ya está en pantalla).
-  $("btn-start").onclick = () => { $("search-explore").focus(); $("search-explore").scrollIntoView({ block: "nearest" }); };
   $("btn-settings").onclick = (e) => showPanel("panel-settings", e.currentTarget);
   $("btn-game").onclick = (e) => showPanel("panel-game", e.currentTarget);
   $("btn-bt").onclick = (e) => showPanel("panel-bt", e.currentTarget);
   $("dock-bt").onclick = (e) => showPanel("panel-bt", e.currentTarget);
-  $("home-connect").onclick = (e) => showPanel("panel-bt", e.currentTarget);
   document.addEventListener("pointerdown", (e) => {
     if (!openPanel) return;
-    if (e.target.closest(".panel") || e.target.closest("dialog") || e.target.closest(".toast, #song-menu, .cq-ghost") || e.target.closest("[aria-controls^='panel-']") || e.target.closest("#btn-start")) return;
+    if (e.target.closest(".panel") || e.target.closest("dialog") || e.target.closest(".toast, #song-menu, .cq-ghost") || e.target.closest("[aria-controls^='panel-']")) return;
     closePanel(false);
   });
 }
@@ -160,6 +159,7 @@ function setView(v) {
   $("home").hidden = !(exploring || (v === "video" && current < 0));
   app.classList.toggle("exploring", exploring && current >= 0);
   app.dataset.view = v;
+  if (!exploring) app.classList.remove("mini-off");
   requestAnimationFrame(() => placeMini(false));
 }
 /** Cambio de vista (la transición entre video grande y mini es CSS). */
@@ -200,7 +200,6 @@ function renderSticks() {
   $("btn-bt").classList.toggle("on", n > 0);
   $("dock-bt-label").textContent = n ? "Conectado" : "Conectar";
   $("dock-bt").classList.toggle("on", n > 0);
-  $("home-connect").hidden = n > 0;
   // El nombre accesible empieza con el texto visible (WCAG 2.5.3).
   if (n) $("btn-bt").setAttribute("aria-label", `${n} conectado${n > 1 ? "s" : ""}. Administrar ARMY Bomb`);
   else $("btn-bt").removeAttribute("aria-label");
@@ -583,7 +582,7 @@ function markCurrent() {
       b.setAttribute("aria-label", b.classList.contains("sg-play") ? `Reproducir ${songLabel(item)}` : songLabel(item));
     }
   });
-  document.querySelectorAll(".song").forEach((b) => {
+  document.querySelectorAll(".song, .sg-play").forEach((b) => {
     const on = Number(b.dataset.index) === current;
     b.classList.toggle("playing", on);
     if (on) b.setAttribute("aria-current", "true");
@@ -662,35 +661,67 @@ function renderTimeline() {
 
 /** Con "Letra" activada se usa el video oficial con la letra en pantalla, si existe. */
 function videoFor(song) {
-  return settings.lyrics && song.lyricVideo ? song.lyricVideo : song.yt;
+  // En Pronunciación se usa el MV: la letra del video con letra taparía la pista romanizada.
+  return settings.lyrics && settings.lyricsMode !== "roman" && song.lyricVideo ? song.lyricVideo : song.yt;
 }
 
 const LYRIC_NAMES = { ko: "coreano", es: "español", en: "inglés", ja: "japonés", pt: "portugués" };
+const romanOn = () => settings.lyrics && settings.lyricsMode === "roman";
+const geniusQuery = (song, extra = "") => `https://genius.com/search?q=${encodeURIComponent(`BTS ${song.title.replace(/\s*\(.*?\)/g, "")}${extra}`)}`;
 function updateLyricsBar() {
   const bar = $("lyrics-bar");
   const item = queue[current];
   bar.hidden = !settings.lyrics || !item;
   if (bar.hidden) return;
-  $("lb-text").textContent = item.song.lyricVideo ? "Video oficial con la letra en pantalla" : `${LYRIC_NAMES[settings.lyricsLang][0].toUpperCase()}${LYRIC_NAMES[settings.lyricsLang].slice(1)}${settings.lyricsLang === "ko" ? " (hangul)" : ""} · subtítulos oficiales del video`;
-  // Enlace externo a la letra completa (no copiamos letras en la app).
-  $("lb-link").href = `https://genius.com/search?q=${encodeURIComponent(`BTS ${item.song.title.replace(/\s*\(.*?\)/g, "")}`)}`;
+  const roman = romanOn();
+  $("lb-lyrics").setAttribute("aria-pressed", String(!roman));
+  $("lb-roman").setAttribute("aria-pressed", String(roman));
+  const cap = `${LYRIC_NAMES[settings.lyricsLang][0].toUpperCase()}${LYRIC_NAMES[settings.lyricsLang].slice(1)}${settings.lyricsLang === "ko" ? " (hangul)" : ""}`;
+  if (roman) {
+    const track = player?.romanTrack();
+    $("lb-text").textContent = track ? "Pronunciación · subtítulos oficiales del video" : "Este video no trae pronunciación oficial";
+    // Enlace externo a la romanización; no copiamos letras ni pronunciaciones en la app.
+    $("lb-link").textContent = "Ver pronunciación en Genius ↗";
+    $("lb-link").href = geniusQuery(item.song, " romanized");
+  } else {
+    $("lb-text").textContent = item.song.lyricVideo ? "Video oficial con la letra en pantalla" : `${cap} · subtítulos oficiales del video`;
+    $("lb-link").textContent = "Ver la letra en Genius ↗";
+    $("lb-link").href = geniusQuery(item.song);
+  }
+}
+
+/** Cambia de video (MV ⇄ video con letra) conservando el punto de la canción. */
+function reloadKeepingTime(song) {
+  const t = player.time();
+  const playing = player.state === "playing";
+  player.load(videoFor(song), playing);
+  if (t > 2) setTimeout(() => player.seek(t), 900);
+  pattern = null;
+}
+
+/** Letra ⇄ pronunciación (romanización oficial del video, si existe). */
+function setLyricsMode(mode) {
+  if (settings.lyricsMode === mode) return;
+  const song = queue[current]?.song;
+  const before = song && videoFor(song);
+  settings.lyricsMode = mode;
+  saveSettings();
+  if (song && player?.ready && videoFor(song) !== before) reloadKeepingTime(song);
+  player?.setCaptions(settings.lyrics ? settings.lyricsLang : null, { roman: romanOn() });
+  updateLyricsBar();
+  if (mode === "roman") setTimeout(updateLyricsBar, 2500); // la lista de pistas llega cuando el video ya suena
 }
 
 function applyLyrics(announce) {
   $("btn-lyrics").setAttribute("aria-pressed", settings.lyrics);
   updateLyricsBar();
   const song = queue[current]?.song;
-  // Cambia entre el MV y el video oficial con letra, conservando el punto de la canción.
-  if (announce && song?.lyricVideo && player?.ready) {
-    const t = player.time();
-    const playing = player.state === "playing";
-    player.load(videoFor(song), playing);
-    if (t > 2) setTimeout(() => player.seek(t), 900);
-    pattern = null;
-  }
-  player?.setCaptions(settings.lyrics && !song?.lyricVideo ? settings.lyricsLang : null);
+  if (announce && song?.lyricVideo && player?.ready) reloadKeepingTime(song);
+  const usesCaptions = settings.lyrics && (romanOn() || !song?.lyricVideo);
+  player?.setCaptions(usesCaptions ? settings.lyricsLang : null, { roman: romanOn() });
   if (!announce) return;
   if (!settings.lyrics) return toast("Letra oculta.");
+  if (romanOn()) { setTimeout(updateLyricsBar, 2500); return toast("Pronunciación activada."); }
   if (song?.lyricVideo) return toast("Letra activada: cambiamos al video oficial con letra.");
   toast(`Letra en ${LYRIC_NAMES[settings.lyricsLang]} activada.`);
   setTimeout(() => {
@@ -1252,6 +1283,13 @@ function albumCard(id) {
   li.append(open, play, like);
   return li;
 }
+/** "Me gusta" del panel Ahora suena: botón de acción (Like) o estado (Liked); "Me gusta" también es el nombre de la lista. */
+function likeLabel(liked) {
+  const span = $("nps-like").querySelector("span");
+  span.setAttribute("translate", "no"); // lo maneja esta función en los dos idiomas
+  span.textContent = lang === "en" ? (liked ? "Liked" : "Like") : (liked ? "Te gusta" : "Me gusta");
+}
+addEventListener("pws:lang", () => likeLabel($("nps-like").getAttribute("aria-pressed") === "true"));
 function likedIndices() {
   return favorites.list().slice().reverse().map((id) => idxOf(id)).filter((i) => i >= 0);
 }
@@ -1443,7 +1481,7 @@ async function renderNowPanel() {
   $("nps-chips").replaceChildren(chips, lights);
   const liked = favorites.has(song.id);
   $("nps-like").setAttribute("aria-pressed", liked);
-  $("nps-like").querySelector("span").textContent = liked ? "Te gusta" : "Me gusta";
+  likeLabel(liked);
   const saved = savedAlbums.includes(album.id);
   $("nps-save").hidden = album.id === "mine";
   $("nps-save").setAttribute("aria-pressed", saved);
@@ -2038,6 +2076,17 @@ function moreButton(index, title) {
 
 // ---------- Explorar con mini reproductor ----------
 const MINI = { corner: "br" };
+/** Oculta la miniatura y pausa: nunca suena un video que no se ve. */
+function hideMini() {
+  player.pause();
+  app.classList.add("mini-off");
+  toastAction("Miniatura oculta, video en pausa", "Mostrar", () => { showMini(); player.play(); });
+  $("btn-play").focus({ preventScroll: true });
+}
+function showMini() {
+  app.classList.remove("mini-off");
+  requestAnimationFrame(() => placeMini(false));
+}
 function placeMini(animate) {
   const card = $("video-view");
   if (!app.classList.contains("exploring")) { card.style.removeProperty("--mx"); card.style.removeProperty("--my"); return; }
@@ -2084,7 +2133,7 @@ function bindMini() {
     bar.addEventListener("pointermove", move);
     bar.addEventListener("pointerup", up);
   });
-  $("mini-play").onclick = () => togglePlay();
+  $("mini-hide").onclick = () => hideMini();
   $("mini-back").onclick = () => $("view-video").click();
   const setSmall = (on) => {
     card.classList.toggle("mini-sm", on);
@@ -2314,8 +2363,9 @@ function onPlayerState(state) {
   const playing = state === "playing";
   $("play-icon").setAttribute("href", playing ? "#i-pause" : "#i-play");
   $("btn-play").setAttribute("aria-label", playing ? "Pausar" : "Reproducir");
-  $("mini-play").setAttribute("aria-label", playing ? "Pausar" : "Reproducir");
-  $("mini-play").querySelector("use").setAttribute("href", playing ? "#i-pause" : "#i-play");
+  // Miniatura oculta: el video no suena. Si se reanuda desde el pie de página, la miniatura vuelve.
+  if (playing && app.classList.contains("mini-off")) showMini();
+  markCurrent();
   if (playing && resumeAt > 3) { player.seek(resumeAt); resumeAt = 0; }
   // El recorrido corto llega después de que suena la primera canción (no antes).
   if (playing && !tourScheduled) { tourScheduled = true; if (!Tour.done) setTimeout(() => startTourLater(), 4000); }
@@ -2367,6 +2417,8 @@ async function init() {
       crowd?.flash();
     },
   });
+  $("lb-lyrics").onclick = () => setLyricsMode("lyrics");
+  $("lb-roman").onclick = () => setLyricsMode("roman");
   $("btn-lyrics").onclick = () => {
     settings.lyrics = !settings.lyrics;
     saveSettings();
@@ -2455,7 +2507,7 @@ async function init() {
   $("btn-tour").onclick = () => { closePanel(false); Tour.reset(); setTimeout(startTour, 250); };
   bindFeedback();
   $("btn-clear-data").onclick = () => {
-    if (!confirm("¿Borrar tus ajustes, nickname, puntajes, Me gusta, álbumes, historial y videos de este dispositivo? No se puede deshacer.")) return;
+    if (!confirm(t("¿Borrar tus ajustes, nickname, puntajes, Me gusta, álbumes, historial y videos de este dispositivo? No se puede deshacer."))) return;
     clearAllLocalData();
     toast("Listo, datos borrados. La página se recargará.");
     setTimeout(() => location.reload(), 1200);

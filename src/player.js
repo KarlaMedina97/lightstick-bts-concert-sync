@@ -18,6 +18,13 @@ function loadYouTubeApi() {
   return apiReady;
 }
 
+/** ¿Es una pista de pronunciación? @param {{languageCode?:string, languageName?:string, displayName?:string, name?:string}} t */
+export function isRomanTrack(t) {
+  const code = String(t?.languageCode ?? "");
+  const name = `${t?.languageName ?? ""} ${t?.displayName ?? ""} ${t?.name ?? ""}`;
+  return /-latn\b/i.test(code) || /romani[sz]|romaji|rōmaji|pronunci|발음/i.test(name);
+}
+
 export class Player {
   /** @param {HTMLElement} mount @param {{onEnded?:()=>void, onState?:(s:string)=>void, onError?:(e:number)=>void}} cb */
   constructor(mount, cb = {}) {
@@ -57,9 +64,20 @@ export class Player {
    * No incluimos letras en el proyecto; dependen de que el video tenga esa pista.
    * @param {string|null} lang "ko", "es", "en"… o null para apagar.
    */
-  setCaptions(lang) {
+  setCaptions(lang, { roman = false } = {}) {
     this.captionLang = lang;
+    this.captionRoman = roman;
     this.#applyCaptions();
+  }
+
+  /** Pista de pronunciación (romanización) que publica el canal, si existe: "ko-Latn", "Korean (Romanized)"… */
+  romanTrack() {
+    try {
+      const list = this.yt?.getOption?.("captions", "tracklist") ?? [];
+      return list.find((t) => isRomanTrack(t)) ?? null;
+    } catch {
+      return null;
+    }
   }
 
   /** @returns {{available:boolean, langs:string[]}} */
@@ -77,7 +95,8 @@ export class Player {
     try {
       if (this.captionLang) {
         this.yt.loadModule("captions");
-        this.yt.setOption("captions", "track", { languageCode: this.captionLang });
+        const roman = this.captionRoman ? this.romanTrack() : null;
+        this.yt.setOption("captions", "track", roman ?? { languageCode: this.captionLang });
         this.yt.setOption("captions", "fontSize", 1);
       } else {
         this.yt.setOption("captions", "track", {});

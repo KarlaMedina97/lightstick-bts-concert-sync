@@ -89,6 +89,7 @@
         <button id="view-explore" role="tab" type="button" aria-selected="true" aria-controls="home">Explorar</button>
       </div>
       <div class="top-actions">
+        <button class="round lang-btn" type="button" data-lang-toggle>EN</button>
         <button id="btn-theme" class="round" type="button" aria-label="Cambiar a tema claro" data-tip="Tema claro u oscuro"><svg aria-hidden="true"><use id="theme-icon" href="#i-sun"/></svg></button>
         <button id="btn-settings" class="round" type="button" aria-haspopup="dialog" aria-controls="panel-settings" aria-label="Ajustes" data-tip="Ajustes"><svg aria-hidden="true"><use href="#i-gear"/></svg></button>
         <button id="btn-bt" class="pill cta" type="button" aria-haspopup="dialog" aria-controls="panel-bt">
@@ -107,6 +108,7 @@
           <button role="menuitem" type="button" data-go="concerts" aria-controls="panel-queue"><svg aria-hidden="true"><use href="#i-live"/></svg>Conciertos</button>
           <hr>
           <button role="menuitem" type="button" data-proxy="btn-theme"><svg aria-hidden="true"><use href="#i-moon"/></svg><span id="m-theme-label">Tema claro u oscuro</span></button>
+          <button role="menuitem" type="button" data-lang-toggle="long">English</button>
           <button role="menuitem" type="button" data-proxy="btn-settings"><svg aria-hidden="true"><use href="#i-gear"/></svg>Ajustes</button>
           <button role="menuitem" type="button" data-proxy="btn-feedback"><svg aria-hidden="true"><use href="#i-chat"/></svg>Dar mi opinión</button>
           <a role="menuitem" href="../"><svg aria-hidden="true"><use href="#i-home"/></svg>Página de inicio</a>
@@ -122,11 +124,9 @@
         <button id="side-close" class="ibtn sm" type="button" aria-label="Ocultar biblioteca"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
       </div>
       <nav class="lib-nav" aria-label="Secciones">
-        <button class="lib-item" type="button" data-go="explore" data-tip="Explorar"><svg aria-hidden="true"><use href="#i-explore"/></svg><span class="lib-label">Explorar</span></button>
-        <button class="lib-item" type="button" data-go="search" data-tip="Buscar ( / )"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="lib-label">Buscar</span><kbd class="lib-kbd">/</kbd></button>
         <button class="lib-item" type="button" data-go="likes" data-tip="Me gusta"><svg aria-hidden="true"><use href="#i-heart"/></svg><span class="lib-label">Me gusta</span><b id="lib-n-likes" class="lib-n">0</b></button>
         <button class="lib-item" type="button" data-go="albums" data-tip="Mis álbumes"><svg aria-hidden="true"><use href="#i-album"/></svg><span class="lib-label">Mis álbumes</span><b id="lib-n-albums" class="lib-n">0</b></button>
-        <button class="lib-item" type="button" data-go="cola" aria-haspopup="dialog" aria-controls="panel-cola" data-tip="Cola"><svg aria-hidden="true"><use href="#i-queue"/></svg><span class="lib-label">Cola</span><b id="lib-n-cola" class="lib-n">0</b></button>
+        <button class="lib-item" type="button" data-go="cola" aria-haspopup="dialog" aria-controls="panel-cola" data-tip="Cola de reproducción"><svg aria-hidden="true"><use href="#i-queue"/></svg><span class="lib-label">Cola de reproducción</span><b id="lib-n-cola" class="lib-n">0</b></button>
         <button id="btn-queue" class="lib-item" type="button" data-go="mine" aria-haspopup="dialog" aria-controls="panel-queue" data-tip="Mis videos"><svg aria-hidden="true"><use href="#i-list"/></svg><span class="lib-label">Mis videos</span></button>
         <button class="lib-item" type="button" data-go="concerts" aria-haspopup="dialog" aria-controls="panel-queue" data-tip="Conciertos"><svg aria-hidden="true"><use href="#i-live"/></svg><span class="lib-label">Conciertos</span></button>
       </nav>
@@ -157,9 +157,9 @@
         <div id="mini-bar" class="mini-bar">
           <span class="mini-grip" aria-hidden="true"></span>
           <span id="mini-title" class="mini-title"></span>
-          <button id="mini-play" class="ibtn sm" type="button" aria-label="Reproducir"><svg aria-hidden="true"><use href="#i-play"/></svg></button>
           <button id="mini-size" class="ibtn sm" type="button" aria-pressed="false" aria-label="Achicar video"><svg aria-hidden="true"><use href="#i-shrink"/></svg></button>
           <button id="mini-back" class="ibtn sm" type="button" aria-label="Volver al video"><svg aria-hidden="true"><use href="#i-expand"/></svg></button>
+          <button id="mini-hide" class="ibtn sm" type="button" aria-label="Ocultar miniatura (pausa el video)"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
         </div>
         <div id="empty" class="empty" aria-hidden="true">
           <img class="empty-art" src="../assets/empty-stage.svg" alt="" width="180" height="150">
@@ -179,11 +179,7 @@
           <div class="hero-text">
             <p class="eyebrow">Proyecto de fans · no oficial</p>
             <h1 id="home-title" class="hero-title">¿Qué suena hoy?</h1>
-            <p class="hero-sub">Dale play y tus luces siguen la canción.</p>
-          </div>
-          <div class="hero-cta">
-            <button id="home-connect" class="btn primary lg" type="button" aria-haspopup="dialog" aria-controls="panel-bt"><svg aria-hidden="true"><use href="#i-bt"/></svg>Conectar ARMY Bomb</button>
-            <button id="btn-start" class="btn secondary lg" type="button"><svg aria-hidden="true"><use href="#i-list"/></svg>Ver canciones</button>
+            <p class="hero-sub">Elige una canción y tus luces la siguen.</p>
           </div>
         </div>
         <!-- Primera visita: conectar solo si la persona quiere (la guía no se abre sola) -->
@@ -259,7 +255,10 @@
       </aside>
 
       <div id="lyrics-bar" class="lyrics-bar" hidden>
-        <span class="lb-tag">Letra</span>
+        <span class="lb-seg" role="group" aria-label="Qué mostrar">
+          <button id="lb-lyrics" class="lb-opt" type="button" aria-pressed="true">Letra</button>
+          <button id="lb-roman" class="lb-opt" type="button" aria-pressed="false">Pronunciación</button>
+        </span>
         <span id="lb-text">Coreano (hangul) · subtítulos oficiales del video</span>
         <a id="lb-link" href="#" target="_blank" rel="noopener noreferrer">Ver la letra en Genius ↗</a>
       </div>
@@ -309,7 +308,7 @@
       </div>
       <!-- Acciones secundarias, siempre con etiqueta (en línea, o debajo del ícono si el dock es angosto). -->
       <div class="dock-actions">
-        <button id="btn-cola" class="dbtn" type="button" title="Cola" aria-haspopup="dialog" aria-controls="panel-cola"><svg aria-hidden="true"><use href="#i-queue"/></svg><span>Cola</span></button>
+        <button id="btn-cola" class="dbtn" type="button" title="Cola de reproducción" aria-haspopup="dialog" aria-controls="panel-cola"><svg aria-hidden="true"><use href="#i-queue"/></svg><span>Cola</span></button>
         <button id="btn-lyrics" class="dbtn" type="button" aria-pressed="false" title="Muestra la letra (video o subtítulos oficiales)"><svg aria-hidden="true"><use href="#i-lyrics"/></svg><span>Letra</span></button>
         <button id="btn-live" class="dbtn" type="button" title="Concierto" aria-expanded="false" aria-controls="menu-live" aria-haspopup="true"><svg aria-hidden="true"><use href="#i-live"/></svg><span>Concierto</span></button>
         <button id="btn-fs" class="dbtn dbtn-icon" type="button" aria-label="Pantalla completa" data-tip="Pantalla completa (F)"><svg aria-hidden="true"><use href="#i-expand"/></svg><span>Pantalla</span></button>
@@ -385,7 +384,7 @@
     <!-- Panel: cola -->
     <section id="panel-cola" class="panel" role="dialog" aria-labelledby="pc-title" hidden>
       <header class="panel-head">
-        <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-queue"/></svg></span><h2 id="pc-title">Cola</h2></div>
+        <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-queue"/></svg></span><h2 id="pc-title">Cola de reproducción</h2></div>
         <div class="cq-modes">
           <button id="cq-shuffle" class="ibtn sm mode phone-only" type="button" aria-pressed="false" aria-label="Aleatorio: no"><svg aria-hidden="true"><use href="#i-shuffle"/></svg></button>
           <button id="cq-repeat" class="ibtn sm mode phone-only" type="button" aria-pressed="false" aria-label="Repetir: no"><svg aria-hidden="true"><use href="#i-repeat"/></svg></button>
@@ -685,6 +684,7 @@
     </div>
   </dialog>
 
+  <script type="module" src="../src/i18n.js"></script>
   <script type="module" src="../src/app.js"></script>
   <script type="module" src="../src/mobile-nav.js"></script>
 </body>

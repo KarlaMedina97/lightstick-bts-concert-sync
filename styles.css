@@ -310,6 +310,13 @@ kbd {
 }
 .pill { position: relative; border-radius: var(--r-pill); padding: 0 var(--s-4) 0 var(--s-3); }
 .pill svg, .round svg { width: 18px; height: 18px; }
+/* Un solo lugar por acción ----------------------------------------------------------
+   Con la biblioteca a la vista, sus accesos (Cola, Mis videos, Conciertos) no se repiten en el pie ni en Explorar,
+   y se cierra con el botón Biblioteca de la cabecera: el ✕ interno solo existe en modo cajón (tablet). */
+.app:not(.side-drawer):has(#side:not([hidden])) #btn-cola,
+.app:not(.side-drawer):has(#side:not([hidden])) .ex-links { display: none; }
+.app:not(.side-drawer) #side-close { display: none; }
+.lang-btn { font-size: var(--fs-12); font-weight: 800; letter-spacing: 0.04em; }
 .pill:hover, .round:hover { background: var(--surface-active); border-color: var(--border-strong); }
 .pill:active, .round:active { transform: scale(0.97); }
 .pill.on { background: var(--accent); color: var(--accent-ink); border-color: transparent; box-shadow: 0 8px 28px -8px var(--accent); }
@@ -797,6 +804,11 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   white-space: nowrap; overflow: hidden;
   animation: tab-in var(--dur-3) var(--ease-out);
 }
+.lb-seg { flex: none; display: inline-flex; padding: 2px; gap: 2px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.08); }
+.lb-opt { min-height: 32px; padding: 0 var(--s-3); border: 0; border-radius: var(--r-pill); background: none; color: var(--text-2); font: inherit; font-weight: 700; cursor: pointer; }
+.lb-opt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.lb-opt:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (pointer: coarse) { .lb-opt { min-height: 40px; } }
 .lb-tag { flex: none; background: var(--accent); color: var(--accent-ink); font-weight: 700; border-radius: var(--r-pill); padding: 2px var(--s-2); }
 #lb-text { color: var(--text-2); overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .lyrics-bar a { flex: none; color: #e3d4ff; font-weight: 600; }
@@ -875,13 +887,29 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .g-handle { width: 30px; height: 96px; margin-top: -4px; border-radius: 6px 6px 14px 14px; background: linear-gradient(90deg, #1c1a26, #3a3648, #1c1a26); position: relative; }
 .g-btn { position: absolute; left: 50%; top: 26px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #777; }
 .g-stick.small .g-globe { width: 56px; height: 56px; } .g-stick.small .g-handle { width: 18px; height: 58px; }
-.on-power .g-globe { animation: g-on 2.4s ease-in-out infinite, g-blink-blue 2.4s infinite; }
-.on-power .g-btn { animation: g-btn 2.4s infinite; }
-.g-finger { position: absolute; left: calc(50% + 18px); top: 112px; width: 26px; height: 26px; border-radius: 50%; background: #ffd9c7; opacity: 0.9; animation: g-press 2.4s infinite; }
-@keyframes g-on { 0%, 35% { background: radial-gradient(circle at 35% 30%, #fff9 0 12%, #555 50%, #333); box-shadow: none; } 50%, 100% { background: radial-gradient(circle at 35% 30%, #fff 0 12%, #8a2be2 50%, #4b1590); box-shadow: 0 0 40px 10px #8a2be2; } }
-@keyframes g-btn { 0%, 35% { background: #777; } 50%, 100% { background: #c9a6ff; } }
-@keyframes g-press { 0% { transform: translate(20px, 0); } 25%, 40% { transform: translate(-6px, -60px) scale(0.9); } 60%, 100% { transform: translate(20px, 0); } }
-@keyframes g-blink-blue { 0%, 70% { filter: none; } 80% { filter: hue-rotate(-60deg) brightness(1.3); } 90% { filter: none; } 95% { filter: hue-rotate(-60deg) brightness(1.3); } }
+/* Paso 3 (4 s): 0–15 % la mano llega · 15–65 % mantiene los dos botones (2 s, anillo) · 65 % suelta · 70–100 % parpadeo */
+.on-power { perspective: 400px; }
+.on-power .g-handle { transform: rotateY(-14deg); box-shadow: inset -6px 0 8px rgba(0, 0, 0, 0.45), inset 4px 0 6px rgba(255, 255, 255, 0.08); }
+.on-power .g-globe { animation: g-on 4s ease-in-out infinite; }
+.on-power .g-btn { width: 12px; height: 12px; margin-left: -6px; background: radial-gradient(circle at 40% 35%, #aaa, #555); box-shadow: 0 2px 0 #222, inset 0 1px 1px #fff5; animation: g-btn 4s infinite; }
+.g-hand { position: absolute; left: 40px; top: 98px; width: 96px; height: 70px; overflow: visible; filter: drop-shadow(-4px 6px 6px rgba(0, 0, 0, 0.5)); transform-origin: 100% 50%; animation: g-hand 4s cubic-bezier(.4, 0, .2, 1) infinite; }
+@keyframes g-hand {
+  0% { transform: translateX(46px) rotateY(30deg); opacity: 0; }
+  8% { opacity: 1; }
+  15%, 62% { transform: translateX(0) scale(0.97, 1); opacity: 1; }
+  17%, 60% { transform: translateX(-2px) scale(0.95, 1); }
+  72%, 100% { transform: translateX(46px) rotateY(30deg); opacity: 0; }
+}
+@keyframes g-btn {
+  0%, 15% { transform: none; box-shadow: 0 2px 0 #222, inset 0 1px 1px #fff5; }
+  17%, 62% { transform: translateY(1px) scale(0.85); box-shadow: 0 0 0 #222, 0 0 8px #c9a6ff; background: #c9a6ff; }
+  66%, 100% { transform: none; }
+}
+@keyframes g-on {
+  0%, 66% { background: radial-gradient(circle at 35% 30%, #fff9 0 12%, #555 50%, #333); box-shadow: none; }
+  70%, 78%, 86%, 94% { background: radial-gradient(circle at 35% 30%, #fff 0 12%, #4f8dff 50%, #2a3f9a); box-shadow: 0 0 40px 10px #4f8dff; }
+  74%, 82%, 90%, 100% { background: radial-gradient(circle at 35% 30%, #fff9 0 12%, #555 50%, #333); box-shadow: none; }
+}
 .g-phone { width: 104px; height: 176px; border-radius: 18px; border: 3px solid #cfc8e0; background: #101020; display: grid; place-content: center; justify-items: center; gap: 10px; color: #fff; font-weight: 700; position: relative; }
 .g-bt { font-size: 2.2rem; color: #4fc3f7; animation: g-blink 1.6s infinite; }
 .g-toggle { width: 52px; height: 28px; border-radius: 14px; background: #444; position: relative; animation: g-tog 3s infinite; }
@@ -898,11 +926,11 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .g-stick.test .g-globe { animation: g-test 3s infinite; }
 @keyframes g-test { 0%, 100% { background: radial-gradient(circle at 35% 30%, #fff 0 12%, #8a2be2 50%, #4b1590); box-shadow: 0 0 50px 14px #8a2be2; } 50% { background: radial-gradient(circle at 35% 30%, #fff 0 12%, #a66bff 50%, #5b2bb5); box-shadow: 0 0 70px 24px #a66bff; } }
 .g-handle .b1 { top: 22px; } .g-handle .b2 { top: 44px; }
-.g-finger.f1 { top: 102px; } .g-finger.f2 { top: 124px; }
 .g-timer { position: relative; width: 64px; height: 64px; display: grid; place-items: center; font-weight: 800; }
 .g-timer svg { position: absolute; inset: 0; width: 64px; height: 64px; transform: rotate(-90deg); }
-.g-timer circle { fill: none; stroke: #a66bff; stroke-width: 4; stroke-dasharray: 107; stroke-dashoffset: 107; animation: g-ring 2.4s linear infinite; }
-@keyframes g-ring { 0%, 15% { stroke-dashoffset: 107; } 60%, 100% { stroke-dashoffset: 0; } }
+.g-timer circle { fill: none; stroke: #a66bff; stroke-width: 4; stroke-dasharray: 107; stroke-dashoffset: 107; animation: g-ring 4s linear infinite; }
+@keyframes g-ring { 0%, 16% { stroke-dashoffset: 107; } 62%, 100% { stroke-dashoffset: 0; } }
+.c-scene .on-power + .g-timer { right: auto; bottom: auto; left: -10px; top: -8px; }
 .g-chooser { width: 170px; background: #f4f1fa; color: #111; border-radius: 12px; padding: 10px; display: grid; gap: 5px; font-size: 0.68rem; box-shadow: 0 10px 30px #0008; }
 .g-chooser .g-cap { color: #555; }
 .g-row { padding: 6px 8px; border-radius: 6px; background: #e6e1ef; }
@@ -1174,16 +1202,23 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 }
 .sg-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease-out); }
 .sg-thumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(6, 4, 20, 0.72), transparent 55%); }
+/* Indicador de reproducción: velo claro con el color de la canción (--p1) con un ▶ grande al centro (al pasar el cursor, enfocar o elegir).
+   Desaparece cuando la canción de esa tarjeta empieza a sonar. */
 .sg-icon {
-  position: absolute; right: 10px; bottom: 10px; z-index: 1; width: 40px; height: 40px; border-radius: 50%;
-  display: grid; place-items: center; background: #fff; color: var(--text-ink); box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.8);
-  opacity: 0; transform: translateY(6px) scale(0.9); transition: opacity var(--dur-2), transform var(--dur-3) var(--ease-spring);
+  position: absolute; inset: 0; z-index: 1; display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--p1, #a66bff) 50%, rgba(255, 255, 255, 0.25)), color-mix(in srgb, var(--p1, #a66bff) 34%, transparent) 72%);
+  color: #fff; opacity: 0; transition: opacity var(--dur-2) var(--ease-out);
+  pointer-events: none;
 }
-.sg-icon svg { width: 18px; height: 18px; margin-left: 2px; }
-.sg-play:hover .sg-thumb, .sg-play:focus-visible .sg-thumb { transform: translateY(-2px); box-shadow: 0 0 0 1px color-mix(in srgb, var(--p1, var(--accent)) 60%, transparent), 0 18px 40px -16px var(--p1, var(--accent)); }
-.sg-play:hover img { transform: scale(1.05); }
-.sg-play:hover .sg-icon, .sg-play:focus-visible .sg-icon { opacity: 1; transform: none; }
-@media (hover: none) { .sg-icon { opacity: 1; transform: none; width: 34px; height: 34px; } }
+.sg-icon svg {
+  width: clamp(26px, 28%, 58px); aspect-ratio: 1; height: auto; margin-left: 4%;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--p1, #a66bff) 80%, transparent)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55)); transform: scale(0.86); transition: transform var(--dur-3) var(--ease-spring);
+}
+.sg-play:hover .sg-icon, .sg-play:focus-visible .sg-icon, .sg-play:active .sg-icon, .sg-play.playing .sg-icon { opacity: 1; }
+.sg-play:hover .sg-icon svg, .sg-play:focus-visible .sg-icon svg, .sg-play.playing .sg-icon svg { transform: none; }
+.playing-now .sg-play.playing .sg-icon { opacity: 0; }
+/* Canción elegida: el mismo resaltado luminoso del cursor, con el color de cada canción (--p1), fijo. */
+.sg-play.playing .sg-thumb { box-shadow: 0 0 0 2px var(--p1, var(--accent)), 0 0 0 5px color-mix(in srgb, var(--p1, var(--accent)) 30%, transparent), 0 18px 40px -14px var(--p1, var(--accent)); }
 .sg-badge { position: absolute; left: 8px; top: 8px; z-index: 1; margin: 0; background: rgba(12, 8, 28, 0.72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 .sg-title { display: block; padding: 0 2px; font-size: var(--fs-14); font-weight: 700; line-height: var(--lh-snug); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sg-meta { display: block; padding: 0 2px; margin-top: -4px; font-size: var(--fs-12); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1215,8 +1250,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .un-list .sg-play { grid-template-columns: 96px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: var(--s-3); row-gap: 0; align-items: center; padding: var(--s-1); border-radius: var(--r-md); }
 .un-list .sg-play:hover { background: var(--surface-hover); }
 .un-list .sg-thumb { grid-row: 1 / 3; border-radius: var(--r-sm); }
-.un-list .sg-icon { width: 28px; height: 28px; right: 6px; bottom: 6px; }
-.un-list .sg-icon svg { width: 14px; height: 14px; }
+.un-list .sg-icon svg { width: 22px; }
 .un-list .sg-meta { margin-top: 0; }
 .un-list .sg-badge, .un-list .sg-like { display: none; }
 
@@ -1416,6 +1450,8 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .app.exploring .home-view { padding-bottom: 280px; animation: none; }
 
 .mini-bar { display: none; }
+/* Miniatura oculta (el video queda en pausa; ver hideMini en src/app.js) */
+.app.exploring.mini-off .video-card { visibility: hidden; pointer-events: none; }
 .app.exploring .video-card {
   --mini-w: min(356px, calc(100cqw - 24px));
   position: absolute; left: 0; top: 0; z-index: 7; width: var(--mini-w); aspect-ratio: auto;
@@ -1488,7 +1524,6 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .meta-line[hidden] { display: none; }
 
 /* Un solo "Conectar" por pantalla: el de la barra superior (escritorio) o el del dock (teléfono). */
-#home-connect { display: none !important; }
 /* Botones sobre las tarjetas: aparecen al pasar el mouse o con el foco (siempre visibles en pantallas táctiles). */
 .sg-item > .more-btn, .sg-item > .sg-like { opacity: 0; transition: opacity var(--dur-2), background var(--dur-2); }
 .sg-item:hover > .more-btn, .sg-item:hover > .sg-like, .sg-item:focus-within > .more-btn, .sg-item:focus-within > .sg-like,
@@ -1526,13 +1561,20 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .album-title .album-like { margin-left: auto; width: 36px; height: 36px; flex: none; }
 .album-title::after { order: 0; }
 .album-title .album-like { order: 1; }
+/* Álbumes: la portada entera reproduce; al pasar el cursor, el mismo velo con el color del álbum con ▶ grande que las canciones. */
 .al-play {
-  position: absolute; z-index: 2; right: 10px; top: calc((100% - 44px) * 0 + 10px); width: var(--tap); height: var(--tap); border-radius: 50%; border: 0; cursor: pointer;
-  display: grid; place-items: center; background: #fff; color: var(--text-ink); box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.8);
-  transition: transform var(--dur-2) var(--ease-spring);
+  position: absolute; z-index: 1; left: 0; right: 0; top: 0; aspect-ratio: 16 / 9; border: 0; padding: 0; cursor: pointer;
+  border-radius: var(--r-lg); display: grid; place-items: center; color: #fff;
+  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--p1, #a66bff) 50%, rgba(255, 255, 255, 0.25)), color-mix(in srgb, var(--p1, #a66bff) 34%, transparent) 72%);
+  opacity: 0; transition: opacity var(--dur-2) var(--ease-out);
 }
-.al-play svg { width: 18px; height: 18px; margin-left: 2px; }
-.al-play:hover { transform: scale(1.06); }
+.al-play svg { width: clamp(26px, 28%, 58px); height: auto; aspect-ratio: 1; margin-left: 4%; filter: drop-shadow(0 0 18px color-mix(in srgb, var(--p1, #a66bff) 80%, transparent)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55)); transform: scale(0.86); transition: transform var(--dur-3) var(--ease-spring); }
+.al-play:hover, .al-play:focus-visible, .al-play:active { opacity: 1; }
+.al-play:hover svg, .al-play:focus-visible svg { transform: none; }
+.al-play:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.al-item:has(> .al-play:hover) .sg-thumb { transform: translateY(-2px); box-shadow: 0 0 0 1px color-mix(in srgb, var(--p1, var(--accent)) 60%, transparent), 0 18px 40px -16px var(--p1, var(--accent)); }
+.al-item:has(> .al-play:hover) .sg-thumb img { transform: scale(1.05); }
+.al-item:has(> .al-play:hover) .al-play { transform: translateY(-2px); }
 .al-item .sg-like { right: auto; left: 4px; }
 .al-cover::before { /* degradado de la paleta del álbum sobre la portada */
   content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(160deg, color-mix(in srgb, var(--p1, #8a2be2) 55%, transparent), transparent 55%, color-mix(in srgb, var(--p2, #4fc3f7) 45%, transparent));
@@ -1839,11 +1881,12 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
     background: var(--surface-1); box-shadow: var(--e-1);
   }
   .stage:has(#lyrics-bar[hidden]) .upnext { --un-top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + var(--s-3)); }
-  /* UI-04 · Explorar en teléfono: el mini video mide solo 200 px (controles encima) y el dock va compacto */
+  /* UI-04 · Explorar en teléfono: el mini video mide 200 px y su barra va debajo, nunca encima del reproductor de
+     YouTube (sus políticas no permiten tapar el reproductor ni sus controles). */
   .app.exploring .video-card { --mini-w: calc(100cqw - 16px); }
-  .app.exploring .mini-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 44px; background: linear-gradient(to top, rgba(8, 6, 20, 0.85), transparent); color: #fff; }
+  .app.exploring .mini-bar { height: 44px; }
   .app.exploring .progress { display: none; }
-  .app.exploring .home-view { padding-bottom: 228px; }
+  .app.exploring .home-view { padding-bottom: 272px; }
   /* UI-05 · avisos encima del dock (zona del pulgar) */
   .toast { top: auto; bottom: calc(var(--pad) + var(--dock-h) + var(--s-3) + var(--safe-b)); }
   .toast[hidden] { transform: translate(-50%, 8px) scale(0.98); }
