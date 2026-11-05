@@ -7,11 +7,14 @@ const KEY = "pws.tour.v1";
 
 /** @type {Tip[]} */
 export const DEFAULT_TIPS = [
-  { target: "#btn-side", title: "Elige qué escuchar", text: "Canciones por álbum y por integrante. Usa el buscador o la tecla /.", place: "bottom" },
-  { target: "[data-tour='like']", title: "Arma tu lista", text: "Toca ♡ en una canción para guardarla en Me gusta.", place: "right" },
-  { target: "#btn-bt", title: "Conecta tu ARMY Bomb", text: "Se ilumina con cada parte de la canción. Sin lightstick, la vista Luces usa tu pantalla.", place: "bottom" },
-  { target: "#btn-lyrics", title: "Letra", text: "Cambia al video oficial con la letra en pantalla cuando existe.", place: "top" },
-  { target: "#btn-mic", title: "¿Concierto en la TV?", text: "El modo micrófono hace que las luces sigan lo que suena cerca.", place: "top" },
+  // Un selector puede listar varias opciones: se usa la primera visible (p. ej. escritorio o teléfono).
+  { target: "#btn-side, #view-explore", title: "Elige qué escuchar", text: "Canciones por álbum y por integrante. Busca con la tecla /.", place: "bottom" },
+  { target: "[data-tour='like']", title: "Arma tu lista", text: "Toca ♡ y la canción queda en Me gusta, lista para la próxima.", place: "right" },
+  { target: "#btn-bt, #dock-bt", title: "Conecta tu ARMY Bomb", text: "Cambia de color con cada parte de la canción. ¿Sin él? La vista Luces usa tu pantalla.", place: "bottom" },
+  { target: "#btn-lyrics", title: "Letra", text: "Muestra la letra con el video oficial o sus subtítulos, cuando existen.", place: "top" },
+  { target: "#btn-live", title: "Concierto", text: "¿En el estadio o frente a la TV? Elige y tus luces te acompañan.", place: "top" },
+  { target: "#btn-cola", title: "Tu cola", text: "Agrega canciones con ⋯ y ordénalas arrastrando.", place: "top" },
+  { target: "#btn-more", title: "Más opciones", text: "Ajustes, reto de ritmo, opinar y pantalla completa.", place: "top" },
 ];
 
 export class Tour {
@@ -77,10 +80,11 @@ export class Tour {
   }
 
   visibleTarget(tip) {
-    const el = document.querySelector(tip.target);
-    if (!el) return null;
-    const r = el.getBoundingClientRect();
-    return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== "hidden" ? el : null;
+    for (const el of document.querySelectorAll(tip.target)) {
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== "hidden") return el;
+    }
+    return null;
   }
 
   place() {

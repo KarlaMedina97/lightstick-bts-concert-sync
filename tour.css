@@ -60,3 +60,9 @@
 #btn-concert[aria-pressed="true"] { background: #ff5c8a; border-color: #ff5c8a; color: #fff; }
 .badge-lyrics-inline { margin-left: .4rem; }
 .song-row[hidden] { display: none !important; }
+/* Espaciado 8 pt y alturas de botón consistentes */
+.tour { padding: 16px; }
+.tour-actions { margin-top: 12px; gap: 12px; }
+.tour-skip, .tour-next { min-height: 36px; padding: 0 16px; }
+@media (pointer: coarse) { .tour-skip, .tour-next { min-height: 44px; } }
+.filters { gap: 8px; }

@@ -6,25 +6,25 @@ const STEPS = [
   {
     scene: "bluetooth",
     title: "Activa el Bluetooth",
-    text: "En tu teléfono o computador. En iPhone, abre esta página en Bluefy.",
-    next: "Ya está",
+    text: "En tu celular o computadora. En iPhone, abre esta página en la app Bluefy.",
+    next: "Listo",
   },
   {
     scene: "free",
-    title: "Libéralo de otros dispositivos",
-    text: "Si estaba conectado a otro teléfono o app, desconéctalo: solo admite uno a la vez.",
+    title: "Libéralo",
+    text: "Si está conectado a otro celular o app, desconéctalo: solo acepta uno a la vez.",
     next: "Hecho",
   },
   {
     scene: "power",
-    title: "Enciende el modo Bluetooth",
-    text: "Con el ARMY Bomb apagado, mantén presionados los dos botones del mango durante 2 segundos.",
+    title: "Modo Bluetooth",
+    text: "Con el ARMY Bomb apagado, mantén los dos botones 2 segundos, hasta que parpadee.",
     next: "Ya parpadea",
   },
   {
     scene: "pair",
     title: "Conéctalo",
-    text: "Toca Conectar y elige el dispositivo resaltado: BTS LIGHTSTICK o BBOMB-…",
+    text: "Toca Conectar y elige tu ARMY Bomb: aparece como BTS LIGHTSTICK o BBOMB-…",
     action: "connect",
   },
 ];
@@ -97,7 +97,7 @@ export class Guide {
     this.el.hidden = true;
     if (!this.hooks.hasSticks()) {
       this.pill.hidden = false;
-      this.pill.textContent = `Conectar ARMY Bomb · paso ${this.i + 1}/${STEPS.length}`;
+      this.pill.textContent = `Seguir conectando · paso ${this.i + 1} de ${STEPS.length}`;
     }
   }
 
@@ -133,13 +133,13 @@ export class Guide {
   }
 
   async connect() {
-    this.showStatus("wait", "Buscando…", "Elige tu ARMY Bomb en la ventana del navegador");
+    this.showStatus("wait", "Buscando…", "Elige tu ARMY Bomb en la lista que abrió el navegador");
     this.actionBtn.disabled = true;
     await this.hooks.onConnect();
     this.actionBtn.disabled = false;
     const names = this.hooks.stickNames?.() ?? [];
     if (!names.length) {
-      this.showStatus("fail", "No se conectó", "Revisa que parpadee en modo Bluetooth y vuelve a intentarlo");
+      this.showStatus("fail", "No se conectó", "Revisa que esté parpadeando y vuelve a tocar Conectar");
       return;
     }
     // Éxito: nombre del dispositivo resaltado, prueba de luz y cierre.
@@ -148,8 +148,8 @@ export class Guide {
     this.scene.innerHTML = SCENES.done;
     this.stepEl.textContent = "Listo";
     this.titleEl.textContent = "¡Conectado!";
-    this.textEl.textContent = "Si brilla en morado, ya está sincronizado.";
-    this.showStatus("ok", name, names.length > 1 ? `${names.length} lightsticks conectadas` : "Recibiendo colores");
+    this.textEl.textContent = "Si brilla en morado, ya está. Borahae 💜";
+    this.showStatus("ok", name, names.length > 1 ? `${names.length} ARMY Bomb conectados` : "Recibiendo colores");
     this.actionBtn.hidden = true;
     this.prevBtn.hidden = true;
     this.hooks.onTest();
