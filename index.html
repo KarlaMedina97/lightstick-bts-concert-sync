@@ -15,6 +15,9 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preload" href="fonts/unbounded-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/plus-jakarta-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="landing.css">
   <script type="importmap">
     {
@@ -25,50 +28,184 @@
     }
   </script>
   <script src="vendor/gsap/gsap.min.js" defer></script>
+  <script src="vendor/gsap/ScrollTrigger.min.js" defer></script>
 </head>
-<body>
+<body class="landing">
+  <a class="skip" href="#contenido">Saltar al contenido</a>
   <canvas id="scene" aria-hidden="true"></canvas>
   <div class="vignette" aria-hidden="true"></div>
+  <!-- Marcadores numerados sobre las piezas 3D (decorativos: el texto real está en las tarjetas). -->
+  <div class="markers" aria-hidden="true"></div>
 
   <header class="nav">
     <a class="brand" href="./"><img src="icons/icon.svg" alt="" width="28" height="28"> Purple Wave Sync</a>
     <nav aria-label="Principal">
-      <a href="app.html?guia=1">Cómo conectar</a>
+      <a href="#anatomia">Anatomía</a>
+      <a href="#conectar">Cómo conectar</a>
+      <a href="#demo">Pruébalo</a>
       <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync" target="_blank" rel="noopener noreferrer">GitHub</a>
     </nav>
   </header>
 
-  <main class="hero">
-    <p class="eyebrow reveal">Proyecto de fans · no oficial · gratis</p>
-    <h1 class="reveal">Tu lightstick,<br><span class="grad">al ritmo del concierto</span></h1>
-    <p class="lead reveal">Conecta tu ARMY Bomb por Bluetooth y míralo brillar con los videos de BTS, canción por canción y álbum por álbum.
-      En iPhone, Android o tu computador.</p>
-    <div class="ctas reveal">
-      <a class="btn primary" href="app.html">Entrar a la experiencia</a>
-      <button id="btn-intro" class="btn" type="button" aria-pressed="false">▶ Escuchar la intro</button>
-    </div>
-    <p class="hint reveal">Toca o arrastra la lightstick 💜</p>
+  <main id="contenido">
+    <!-- Cada capítulo tiene un "slot": el hueco donde se coloca el lightstick 3D (pegajoso en escritorio). -->
+    <section id="inicio" class="chapter hero" data-side="right" aria-labelledby="hero-title">
+      <div class="slot" data-rot="0" data-spin="1" aria-hidden="true"></div>
+      <div class="copy">
+        <p class="eyebrow reveal">Proyecto de fans · no oficial · gratis</p>
+        <h1 id="hero-title" class="display reveal">Tu lightstick,<br><span class="grad">al ritmo del concierto</span></h1>
+        <p class="lead reveal">Conecta tu ARMY Bomb por Bluetooth y míralo brillar con los videos de BTS, canción por canción y álbum por álbum.
+          En iPhone, Android o tu computador.</p>
+        <div class="ctas reveal">
+          <a class="btn primary" href="player/">Entrar a la experiencia</a>
+          <button class="btn js-intro" type="button" aria-pressed="false">▶ Escuchar la intro</button>
+        </div>
+        <ul class="hero-facts reveal" aria-label="En resumen">
+          <li><b>0</b> instalaciones</li>
+          <li><b>0</b> cuentas</li>
+          <li><b>100%</b> en tu navegador</li>
+        </ul>
+      </div>
+    </section>
+
+    <aside id="mini" class="mini" aria-label="Canción destacada" hidden>
+      <div class="mini-video"><div id="yt"></div></div>
+      <div class="mini-info">
+        <p class="mini-label">Ahora girando con</p>
+        <p id="mini-title" class="mini-title">—</p>
+        <p id="mini-note" class="mini-note"></p>
+      </div>
+      <button id="mini-close" class="mini-close" type="button" aria-label="Detener la intro">✕</button>
+    </aside>
+
+    <section id="anatomia" class="chapter" data-side="right" aria-labelledby="anat-title">
+      <div class="slot" data-rot="0.35" data-tilt="0.1" data-explode="scroll" aria-hidden="true"></div>
+      <div class="copy">
+        <div class="head reveal-up">
+          <p class="kicker"><span class="num">01</span> Anatomía</p>
+          <h2 id="anat-title" class="title">Pieza por pieza, <span class="grad">qué hace cada una</span></h2>
+          <p class="sub">Pasa el cursor o el foco por una tarjeta para resaltar la pieza (y al revés). Ilustración inspirada: el emblema es una ola original, no el logo oficial.</p>
+        </div>
+        <ol class="parts reveal-up">
+          <li><button class="part-card" type="button" data-part="gem"><span class="pc-n">01</span><b>Remate y gema</b><span>El detalle rojo de arriba: decora y la hace reconocible.</span></button></li>
+          <li><button class="part-card" type="button" data-part="shell"><span class="pc-n">02</span><b>Globo</b><span>La app lo llena con el color de cada parte de la canción.</span></button></li>
+          <li><button class="part-card" type="button" data-part="emblem"><span class="pc-n">03</span><b>Emblema de luz</b><span>La fuente de luz principal: sigue el patrón del tema.</span></button></li>
+          <li><button class="part-card" type="button" data-part="base"><span class="pc-n">04</span><b>Anillo LED</b><span>Con varias lightsticks, la app hace olas entre ellas.</span></button></li>
+          <li><button class="part-card" type="button" data-part="collar"><span class="pc-n">05</span><b>Collar</b><span>Une globo y mango, con un borde que atrapa la luz.</span></button></li>
+          <li><button class="part-card" type="button" data-part="buttons"><span class="pc-n">06</span><b>Dos botones</b><span>Mantén ambos 2 s para entrar en modo Bluetooth.</span></button></li>
+          <li><button class="part-card" type="button" data-part="handle"><span class="pc-n">07</span><b>Mango</b><span>Su radio Bluetooth conecta con Web Bluetooth, sin instalar nada.</span></button></li>
+          <li><button class="part-card" type="button" data-part="bottom"><span class="pc-n">08</span><b>Tapa inferior</b><span>Se desenrosca para cambiar las pilas (3 AAA).</span></button></li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="conectar" class="chapter" data-side="left" aria-labelledby="t-conectar">
+      <div class="slot" data-rot="-0.15" data-tilt="0.04" data-focus="buttons" aria-hidden="true"></div>
+      <div class="copy">
+        <div class="head reveal-up">
+          <p class="kicker"><span class="num">02</span> Cómo conectar</p>
+          <h2 id="t-conectar" class="title">Cuatro pasos y <span class="grad">a brillar</span></h2>
+          <p class="sub">Funciona en Chrome o Edge (Android, Windows, macOS, ChromeOS). En iPhone, abre la página en Bluefy.</p>
+        </div>
+        <ol class="steps reveal-up">
+          <li class="step"><span class="st-n">1</span><span class="st-ico" aria-hidden="true">ᛒ</span><b>Activa el Bluetooth</b><span>En tu teléfono o computador.</span></li>
+          <li class="step"><span class="st-n">2</span><span class="st-ico" aria-hidden="true">⇄</span><b>Libérala</b><span>Si está vinculada a otro teléfono o app, desconéctala: admite uno a la vez.</span></li>
+          <li class="step"><span class="st-n">3</span><span class="st-ico" aria-hidden="true">⏻</span><b>Modo Bluetooth</b><span>Apagada, mantén los dos botones del mango 2 s hasta que parpadee.</span></li>
+          <li class="step"><span class="st-n">4</span><span class="st-ico" aria-hidden="true">✓</span><b>Conectar</b><span>En la experiencia, toca Conectar y elige tu lightstick.</span></li>
+        </ol>
+        <p class="reveal-up"><a class="btn" href="player/?guide=1">Abrir la guía paso a paso</a></p>
+      </div>
+    </section>
+
+    <section id="demo" class="chapter" data-side="right" aria-labelledby="t-demo">
+      <div class="slot" data-rot="0.2" data-spin="0.35" aria-hidden="true"></div>
+      <div class="copy">
+        <div class="head reveal-up">
+          <p class="kicker"><span class="num">03</span> Pruébalo aquí</p>
+          <h2 id="t-demo" class="title">Elige un color y <span class="grad">el estadio responde</span></h2>
+          <p class="sub">Una muestra de lo que hace la app con tu lightstick y con el público.</p>
+        </div>
+        <div class="demo reveal-up">
+          <fieldset class="chips">
+            <legend>Color</legend>
+            <button type="button" class="chip" data-color="#8a2be2" aria-pressed="false"><i style="--c:#8a2be2"></i>Morado</button>
+            <button type="button" class="chip" data-color="#4fc3f7" aria-pressed="false"><i style="--c:#4fc3f7"></i>Cielo</button>
+            <button type="button" class="chip" data-color="#ff80ab" aria-pressed="false"><i style="--c:#ff80ab"></i>Rosa</button>
+            <button type="button" class="chip" data-color="#ffd600" aria-pressed="false"><i style="--c:#ffd600"></i>Oro</button>
+            <button type="button" class="chip" data-color="#00e5ff" aria-pressed="false"><i style="--c:#00e5ff"></i>Aqua</button>
+            <button type="button" class="chip" data-color="#ff3d00" aria-pressed="false"><i style="--c:#ff3d00"></i>Fuego</button>
+          </fieldset>
+          <fieldset class="chips moods">
+            <legend>Momento de la canción</legend>
+            <button type="button" class="chip" data-mood="0.15" aria-pressed="false">Intro tranquila</button>
+            <button type="button" class="chip" data-mood="0.55" aria-pressed="false">Verso</button>
+            <button type="button" class="chip" data-mood="1" aria-pressed="false">¡Coro!</button>
+          </fieldset>
+          <p class="demo-note" id="demo-status" role="status" aria-live="polite">Toca un color o un momento.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="funciones" class="chapter" data-side="left" aria-labelledby="t-funciones">
+      <div class="slot" data-rot="-0.9" data-tilt="0.08" aria-hidden="true"></div>
+      <div class="copy">
+        <div class="head reveal-up">
+          <p class="kicker"><span class="num">04</span> Qué puedes hacer</p>
+          <h2 id="t-funciones" class="title">Todo el concierto, <span class="grad">desde el navegador</span></h2>
+        </div>
+        <div class="feats reveal-up">
+          <article class="feat">
+            <div class="mock mock-video" aria-hidden="true"><span class="mv-play">▶</span><span class="mv-bar"><i style="--c:#8a2be2;--w:18%"></i><i style="--c:#4fc3f7;--w:30%"></i><i style="--c:#ff80ab;--w:22%"></i><i style="--c:#ffd600;--w:30%"></i></span></div>
+            <h3>Videos + luces</h3>
+            <p>Los videos oficiales y tu lightstick cambiando de color con el intro, el coro y el puente.</p>
+          </article>
+          <article class="feat">
+            <div class="mock mock-mic" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <h3>Modo micrófono</h3>
+            <p>¿Concierto en la TV? Tus luces siguen la música. El audio nunca sale de tu dispositivo.</p>
+          </article>
+          <article class="feat">
+            <div class="mock mock-chant" aria-hidden="true"><span>Kim Namjoon</span><span>Kim Seokjin</span><span>Min Yoongi</span><span>Jung Hoseok</span></div>
+            <h3>Fanchant</h3>
+            <p>Entre canciones, los nombres de los integrantes a tiempo, con romanización.</p>
+          </article>
+          <article class="feat">
+            <div class="mock mock-rank" aria-hidden="true"><span><b>1</b> @tu_nick <em>Ejemplo</em></span><span><b>2</b> @army_luz</span><span><b>3</b> @purple_7</span></div>
+            <h3>Reto de ritmo</h3>
+            <p>Toca al compás y entra al ranking solo con tu nickname. Sin cuentas.</p>
+          </article>
+          <article class="feat wide">
+            <div class="mock mock-safe" aria-hidden="true"><span class="ms-toggle"><b></b></span>Modo seguro · máx. 3 destellos/s</div>
+            <h3>Para todas las personas</h3>
+            <p>Teclado y lector de pantalla, modo seguro activado por defecto y, sin lightstick, tu pantalla como lightstick.</p>
+          </article>
+        </div>
+        <dl class="stats reveal-up">
+          <div><dt>Álbumes</dt><dd data-stat="albums">—</dd></div>
+          <div><dt>Canciones</dt><dd data-stat="songs">—</dd></div>
+          <div><dt>Conciertos</dt><dd data-stat="concerts">—</dd></div>
+          <div><dt>Destellos/s máx.</dt><dd>3</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section id="oceano" class="chapter ocean" data-side="center" aria-labelledby="t-oceano">
+      <div class="slot" data-rot="0" data-spin="0.8" data-crowd="1.5" aria-hidden="true"></div>
+      <div class="copy">
+        <p class="kicker reveal-up"><span class="num">05</span> El océano morado</p>
+        <h2 id="t-oceano" class="title display reveal-up">Enciende tu parte <span class="grad">del estadio</span></h2>
+        <p class="sub reveal-up">Dale play a la intro y mira cómo el público se enciende fila por fila, al ritmo de la canción.</p>
+        <div class="ctas reveal-up">
+          <a class="btn primary" href="player/">Entrar a la experiencia</a>
+          <button class="btn js-intro" type="button" aria-pressed="false">▶ Escuchar la intro</button>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <aside id="mini" class="mini" aria-label="Canción destacada" hidden>
-    <div class="mini-video"><div id="yt"></div></div>
-    <div class="mini-info">
-      <p class="mini-label">Ahora girando con</p>
-      <p id="mini-title" class="mini-title">—</p>
-      <p id="mini-note" class="mini-note"></p>
-    </div>
-    <button id="mini-close" class="mini-close" type="button" aria-label="Detener la intro">✕</button>
-  </aside>
-
-  <section class="features" aria-label="Qué puedes hacer">
-    <article class="feat reveal-up"><h2>Videos + luces</h2><p>Mira los videos oficiales mientras tu lightstick cambia de color con cada parte de la canción.</p></article>
-    <article class="feat reveal-up"><h2>Conciertos</h2><p>¿Ves un concierto en la TV? El modo micrófono hace que tus luces sigan la música.</p></article>
-    <article class="feat reveal-up"><h2>Reto de ritmo</h2><p>Toca al compás y entra al ranking solo con tu nickname de redes. Sin cuentas.</p></article>
-    <article class="feat reveal-up"><h2>Para todas las personas</h2><p>Controles con teclado y lector de pantalla, y modo seguro con máximo 3 destellos por segundo.</p></article>
-  </section>
-
   <footer class="foot">
-    <p><a href="privacidad.html">Privacidad</a> · Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS. La lightstick 3D es una ilustración inspirada, no el diseño oficial.
+    <p class="foot-links"><a href="privacy/">Privacidad</a> · <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync" target="_blank" rel="noopener noreferrer">GitHub</a> · <a href="player/?guide=1">Cómo conectar</a></p>
+    <p>Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS. La lightstick 3D es una ilustración inspirada, no el diseño oficial.
       La música se reproduce desde YouTube.</p>
   </footer>
 
