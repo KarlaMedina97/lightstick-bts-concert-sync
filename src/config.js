@@ -20,7 +20,7 @@ export const FEATURED = {
   bpm: 100,
   introStart: 0,
   introSeconds: 30,
-  note: "La canción de BTS más escuchada de 2026 en Spotify",
+  note: "La canción de BTS más escuchada de 2026 en Spotify (oct. 2026)",
 };
 
 // Ranking global (opcional). Sin estos datos, los rankings se guardan solo en el dispositivo.
