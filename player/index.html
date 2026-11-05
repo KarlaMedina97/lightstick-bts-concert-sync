@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; worker-src 'self'; manifest-src 'self'; media-src 'self'; font-src 'self'; upgrade-insecure-requests; connect-src 'self' https://www.youtube.com https://*.supabase.co; form-action 'self'; script-src 'self' https://www.youtube.com https://s.ytimg.com">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Purple Wave Sync</title>
+  <meta name="description" content="Página web no oficial para sincronizar tu lightstick con videos de canciones y conciertos de BTS, álbum por álbum.">
+  <meta name="theme-color" content="#070a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PurpleWave">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="preload" href="../fonts/plus-jakarta-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../fonts/fonts.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../tour.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M7 6v12M19 6.8v10.4a.8.8 0 0 1-1.2.7L10 12.7a.8.8 0 0 1 0-1.4l7.8-5.2a.8.8 0 0 1 1.2.7Z" stroke="currentColor" stroke-width="2" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M17 6v12M5 6.8v10.4a.8.8 0 0 0 1.2.7L14 12.7a.8.8 0 0 0 0-1.4L6.2 6.1A.8.8 0 0 0 5 6.8Z" stroke="currentColor" stroke-width="2" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M17 2l3 3-3 3M4 11V9a4 4 0 0 1 4-4h12M7 22l-3-3 3-3M20 13v2a4 4 0 0 1-4 4H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4ZM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-bt" viewBox="0 0 24 24"><path d="M7 7l10 10-5 5V2l5 5L7 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5h3v5h5V9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 9.5h8M8 12.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-lyrics" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11h4M13 11h4M7 15h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-9.2-9.4C1.6 7.3 3.8 4 7.2 4c2 0 3.6 1.1 4.8 2.8C13.2 5.1 14.8 4 16.8 4c3.4 0 5.6 3.3 4.4 6.6C19.5 15.4 12 20 12 20Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-guide" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 8.5v7l5.5-3.5L10 8.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-stick" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 13.5V21M8.6 8.6c1.1-.9 2.3-.9 3.4 0s2.3.9 3.4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="7" r="2.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="17" r="2.2" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5.5c0 4.3 3 7.9 7 9.5 4-1.6 7-5.2 7-9.5V6l-7-3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <a class="skip" href="#dock">Saltar a los controles</a>
+
+  <div id="app" class="app">
+    <!-- Escenario de fondo: degradados, haces de luz, multitud, neblina, viñeta y grano. -->
+    <div class="ambient" aria-hidden="true"></div>
+    <div class="beams" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <canvas id="crowd" class="crowd-canvas" aria-hidden="true"></canvas>
+    <div class="haze" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <header class="hud-top">
+      <nav class="menu" aria-label="Menú principal">
+        <a class="menu-item" href="../" title="Inicio"><svg aria-hidden="true"><use href="#i-home"/></svg><span>Inicio</span></a>
+        <button id="btn-side" class="menu-item" type="button" aria-expanded="false" aria-controls="side" title="Canciones"><svg aria-hidden="true"><use href="#i-list"/></svg><span>Canciones</span></button>
+        <button id="btn-feedback" class="menu-item" type="button" aria-haspopup="dialog" aria-controls="panel-feedback" title="Tu opinión"><svg aria-hidden="true"><use href="#i-chat"/></svg><span>Opinar</span></button>
+      </nav>
+      <div class="seg view-tabs" role="tablist" aria-label="Vista">
+        <button id="view-video" role="tab" type="button" aria-selected="true" aria-controls="video-view">Video</button>
+        <button id="view-lights" role="tab" type="button" aria-selected="false" aria-controls="lights-view">Luces</button>
+      </div>
+      <div class="top-actions">
+        <button id="btn-bt" class="pill" type="button" aria-haspopup="dialog" aria-controls="panel-bt">
+          <svg aria-hidden="true"><use href="#i-bt"/></svg><span id="conn-label">Conectar</span>
+        </button>
+        <button id="btn-fs" class="round" type="button" aria-label="Pantalla completa"><svg aria-hidden="true"><use href="#i-expand"/></svg></button>
+      </div>
+    </header>
+
+    <!-- Lista lateral de canciones (pantallas anchas) -->
+    <aside id="side" class="side" aria-label="Canciones por álbum" hidden>
+      <div class="side-head">
+        <h2>Canciones</h2>
+        <button id="side-close" class="ibtn sm" type="button" aria-label="Ocultar lista de canciones"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div class="search" role="search">
+        <svg aria-hidden="true"><use href="#i-search"/></svg>
+        <input id="search-side" class="song-search" type="search" placeholder="Buscar canción, álbum o año" aria-label="Buscar canciones" autocomplete="off" spellcheck="false" enterkeyhint="search">
+      </div>
+      <p class="search-empty hint" hidden></p>
+      <div class="filters" role="group" aria-label="Filtrar canciones" data-filters></div>
+      <div id="side-list" class="albums side-list"></div>
+    </aside>
+
+    <main id="main" class="stage">
+      <p id="style-chip" class="style-chip" aria-live="polite">Luces listas</p>
+
+      <div id="video-view" class="video-card" role="tabpanel" aria-label="Video">
+        <div class="video-box"><div id="yt"></div></div>
+        <div id="empty" class="empty">
+          <img class="empty-art" src="../assets/empty-stage.svg" alt="" width="180" height="150">
+          <p class="eyebrow">Proyecto de fans · no oficial</p>
+          <p class="empty-title">Elige una canción o un concierto</p>
+          <p class="empty-sub">Tus luces seguirán cada parte del video.</p>
+          <button id="btn-start" class="btn primary lg" type="button"><svg aria-hidden="true"><use href="#i-list"/></svg>Ver canciones</button>
+        </div>
+      </div>
+
+      <div id="lyrics-bar" class="lyrics-bar" hidden>
+        <span class="lb-tag">Letra</span>
+        <span id="lb-text">Coreano (hangul) · subtítulos oficiales del video</span>
+        <a id="lb-link" href="#" target="_blank" rel="noopener noreferrer">Letra completa y romanización ↗</a>
+      </div>
+
+      <div id="chant" class="chant" aria-live="assertive" hidden>
+        <p class="chant-label">Fanchant</p>
+        <p id="chant-name" class="chant-name"></p>
+        <p id="chant-roman" class="chant-roman"></p>
+        <button id="chant-skip" class="btn small" type="button">Saltar</button>
+      </div>
+
+      <div id="lights-view" class="lights-view" role="tabpanel" aria-label="Luces" hidden>
+        <div id="big-bulb" class="big-bulb" aria-hidden="true"></div>
+        <div id="sim" class="sim" aria-hidden="true"></div>
+        <p id="now-section" class="section-label">—</p>
+        <p class="hint">Tu pantalla también es una lightstick: súbele el brillo y levántala.</p>
+        <button id="btn-concert" class="btn primary" type="button" aria-pressed="false"><svg aria-hidden="true"><use href="#i-stick"/></svg><span>Estoy en un concierto</span></button>
+        <div id="concert-cam" class="concert-cam" hidden>
+          <div class="cam-frame">
+            <video id="cam-video" playsinline muted aria-label="Vista de la cámara para apuntar a un lightstick"></video>
+            <span class="cam-reticle" aria-hidden="true"></span>
+          </div>
+          <p id="cam-status" class="hint" role="status">Apunta la mira a un ARMY Bomb encendido</p>
+        </div>
+      </div>
+    </main>
+
+    <nav id="dock" class="dock" aria-label="Reproductor" tabindex="-1">
+      <div class="np">
+        <span id="np-art" class="art" aria-hidden="true"></span>
+        <div class="np-text">
+          <p id="now-title" class="np-title">Nada sonando</p>
+          <p id="now-album" class="np-sub">Purple Wave Sync</p>
+        </div>
+      </div>
+      <div class="transport">
+        <button id="btn-prev" class="ibtn" type="button" aria-label="Anterior"><svg aria-hidden="true"><use href="#i-prev"/></svg></button>
+        <button id="btn-play" class="ibtn play" type="button" aria-label="Reproducir"><svg aria-hidden="true"><use id="play-icon" href="#i-play"/></svg></button>
+        <button id="btn-next" class="ibtn" type="button" aria-label="Siguiente"><svg aria-hidden="true"><use href="#i-next"/></svg></button>
+      </div>
+      <div class="progress">
+        <div id="timeline" class="timeline" role="slider" tabindex="0" aria-label="Posición en el video" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-valuetext="0:00">
+          <div id="playhead" class="playhead"></div>
+        </div>
+        <span class="times"><span id="t-cur">0:00</span><span class="t-sep" aria-hidden="true">/</span><span id="t-dur">0:00</span></span>
+      </div>
+      <div class="dock-actions">
+        <button id="btn-auto" class="ibtn sm" type="button" aria-pressed="true" aria-label="Pasar a la siguiente al terminar" title="Pasar a la siguiente al terminar"><svg aria-hidden="true"><use href="#i-repeat"/></svg></button>
+        <button id="btn-lyrics" class="ibtn sm" type="button" aria-pressed="false" aria-label="Letra (subtítulos oficiales)" title="Letra (subtítulos oficiales del video)"><svg aria-hidden="true"><use href="#i-lyrics"/></svg><span class="ibtn-label">Letra</span></button>
+        <button id="btn-mic" class="ibtn sm" type="button" aria-pressed="false" aria-label="Modo micrófono" title="Modo micrófono (para conciertos en la TV)"><svg aria-hidden="true"><use href="#i-mic"/></svg></button>
+        <button id="btn-game" class="ibtn sm" type="button" aria-haspopup="dialog" aria-controls="panel-game" aria-label="Reto de ritmo" title="Reto de ritmo"><svg aria-hidden="true"><use href="#i-trophy"/></svg></button>
+        <button id="btn-settings" class="ibtn sm" type="button" aria-haspopup="dialog" aria-controls="panel-settings" aria-label="Ajustes" title="Ajustes"><svg aria-hidden="true"><use href="#i-gear"/></svg></button>
+        <button id="btn-queue" class="ibtn sm" type="button" aria-haspopup="dialog" aria-controls="panel-queue" aria-label="Canciones y conciertos" title="Canciones y conciertos"><svg aria-hidden="true"><use href="#i-list"/></svg></button>
+      </div>
+    </nav>
+
+    <!-- Panel: canciones y conciertos -->
+    <section id="panel-queue" class="panel" role="dialog" aria-labelledby="pq-title" hidden>
+      <header class="panel-head">
+        <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-list"/></svg></span><h2 id="pq-title">Canciones y conciertos</h2></div>
+        <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </header>
+      <div class="tabs" role="tablist" aria-label="Qué ver">
+        <button id="qt-songs" role="tab" type="button" aria-selected="true" aria-controls="q-songs">Canciones</button>
+        <button id="qt-concerts" role="tab" type="button" aria-selected="false" aria-controls="q-concerts">Conciertos</button>
+        <button id="qt-mine" role="tab" type="button" aria-selected="false" aria-controls="q-mine">Mis videos</button>
+      </div>
+      <div id="q-songs" class="panel-body" role="tabpanel">
+        <div class="search" role="search">
+        <svg aria-hidden="true"><use href="#i-search"/></svg>
+        <input id="search-panel" class="song-search" type="search" placeholder="Buscar canción, álbum o año" aria-label="Buscar canciones" autocomplete="off" spellcheck="false" enterkeyhint="search">
+      </div>
+        <p class="search-empty hint" hidden></p>
+        <div class="filters" role="group" aria-label="Filtrar canciones" data-filters></div>
+        <div id="albums" class="albums"></div>
+      </div>
+      <div id="q-concerts" class="panel-body" role="tabpanel" hidden>
+        <p class="hint">Los conciertos completos oficiales están en plataformas de pago y no se pueden incrustar aquí.
+          Ponlos en tu TV o en otro dispositivo y activa el <strong>modo micrófono</strong>: tus luces seguirán la música.</p>
+        <ul id="films" class="films"></ul>
+        <button id="btn-mic-2" class="btn primary" type="button">Activar modo micrófono</button>
+        <p class="hint">¿Encontraste una presentación en vivo oficial en YouTube (por ejemplo, en BANGTANTV)? Agrégala en <em>Mis videos</em> como concierto.</p>
+      </div>
+      <div id="q-mine" class="panel-body" role="tabpanel" hidden>
+        <form id="form-add" class="add-form">
+          <label for="inp-url">Enlace de YouTube</label>
+          <input id="inp-url" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…" required>
+          <fieldset class="kind">
+            <legend>Tipo</legend>
+            <label class="check"><input type="radio" name="kind" value="song" checked> Canción</label>
+            <label class="check"><input type="radio" name="kind" value="concert"> Concierto o en vivo</label>
+          </fieldset>
+          <button class="btn primary" type="submit">Agregar</button>
+        </form>
+        <p class="hint">Usa solo videos de canales oficiales. Se guardan en este dispositivo.</p>
+        <ol id="mine" class="mine"></ol>
+      </div>
+    </section>
+
+    <!-- Panel: Bluetooth -->
+    <section id="panel-bt" class="panel" role="dialog" aria-labelledby="pb-title" hidden>
+      <header class="panel-head">
+        <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-stick"/></svg></span><h2 id="pb-title">Tu lightstick</h2></div>
+        <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </header>
+      <div class="panel-body">
+        <p class="hint">Enciende la lightstick y el Bluetooth. Conecta varias para hacer olas.</p>
+        <div id="bt-warning" class="warning" hidden></div>
+        <div class="row wrap">
+          <button id="btn-connect" class="btn primary" type="button">Conectar lightstick</button>
+          <label class="check"><input id="chk-all" type="checkbox"> Mostrar todos los dispositivos</label>
+        </div>
+        <ul id="stick-list" class="sticks" aria-label="Lightsticks conectadas"></ul>
+        <button id="btn-guide" class="btn secondary" type="button"><svg aria-hidden="true"><use href="#i-guide"/></svg>Ver guía paso a paso</button>
+        <p class="hint">Sin lightstick también funciona: usa la vista <strong>Luces</strong> y tu pantalla brillará al ritmo.</p>
+      </div>
+    </section>
+
+    <!-- Panel: ajustes -->
+    <section id="panel-settings" class="panel" role="dialog" aria-labelledby="ps-title" hidden>
+      <header class="panel-head">
+        <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-sliders"/></svg></span><h2 id="ps-title">Ajustes</h2></div>
+        <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </header>
+      <div class="panel-body">
+        <section class="group" aria-labelledby="sg-lights">
+          <h3 id="sg-lights" class="group-title"><svg aria-hidden="true"><use href="#i-stick"/></svg>Luces</h3>
+          <div class="field">
+            <label for="rng-bright">Brillo <output id="out-bright">100%</output></label>
+            <input id="rng-bright" type="range" min="10" max="100" value="100">
+          </div>
+          <div class="field">
+            <label for="rng-latency">Ajuste de sincronía <output id="out-latency">+60 ms</output></label>
+            <input id="rng-latency" type="range" min="-300" max="300" step="10" value="60" aria-describedby="lat-help">
+            <p id="lat-help" class="hint">¿Llegan tarde? Súbelo. ¿Se adelantan? Bájalo.</p>
+          </div>
+          <div class="field">
+            <label for="sel-style">Estilo de luces</label>
+            <select id="sel-style"></select>
+            <p id="style-help" class="hint"></p>
+          </div>
+          <div class="field">
+            <label for="num-bpm">BPM del video actual</label>
+            <div class="row">
+              <input id="num-bpm" type="number" min="40" max="220" step="1" inputmode="numeric">
+              <button id="btn-tap-tempo" class="btn secondary" type="button">Marcar tempo</button>
+            </div>
+            <p class="hint">Toca "Marcar tempo" al ritmo 4 veces o más.</p>
+          </div>
+          <label class="check switch"><input id="chk-safe" type="checkbox" checked><span>Modo seguro<small>Máximo 3 destellos por segundo</small></span></label>
+        </section>
+
+        <section class="group" aria-labelledby="sg-play">
+          <h3 id="sg-play" class="group-title"><svg aria-hidden="true"><use href="#i-play"/></svg>Reproducción</h3>
+          <div class="field">
+            <label for="sel-lyrics">Idioma de la letra</label>
+            <select id="sel-lyrics">
+              <option value="ko">Coreano (hangul)</option>
+              <option value="es">Español</option>
+              <option value="en">Inglés</option>
+              <option value="ja">Japonés</option>
+              <option value="pt">Portugués</option>
+            </select>
+            <p class="hint">Son los subtítulos oficiales del video. Si no existen en ese idioma, no aparecen.</p>
+          </div>
+          <div class="field">
+            <label for="sel-album-end">Al terminar el álbum</label>
+            <select id="sel-album-end">
+              <option value="next">seguir con el siguiente</option>
+              <option value="repeat">repetir el álbum</option>
+              <option value="stop">detener</option>
+            </select>
+          </div>
+          <label class="check switch"><input id="chk-chant" type="checkbox" checked><span>Fanchant entre canciones<small>Los nombres de los integrantes, como en los conciertos</small></span></label>
+          <label class="check switch"><input id="chk-chant-voice" type="checkbox" checked><span>Con voz y ovación</span></label>
+          <label class="check switch"><input id="chk-wake" type="checkbox" checked><span>Mantener la pantalla encendida</span></label>
+        </section>
+
+        <section class="group" aria-labelledby="sg-privacy">
+          <h3 id="sg-privacy" class="group-title"><svg aria-hidden="true"><use href="#i-shield"/></svg>Privacidad</h3>
+          <p class="hint">Tus ajustes, nickname y puntajes se guardan solo en este dispositivo. El micrófono se procesa aquí y nunca se envía.
+            <a href="../privacy/">Política de privacidad</a>.</p>
+          <button id="btn-tour" class="btn secondary" type="button">Ver el recorrido de bienvenida</button>
+          <button id="btn-clear-data" class="btn danger" type="button">Borrar mis datos de este dispositivo</button>
+        </section>
+
+        <section class="group" aria-labelledby="sg-support">
+          <h3 id="sg-support" class="group-title"><svg aria-hidden="true"><use href="#i-heart"/></svg>Apoya el proyecto</h3>
+          <p class="hint">Es gratis y de código abierto. Si te gusta, ayuda a mantenerlo.</p>
+          <div id="donations" class="row wrap"></div>
+          <p class="hint"><a id="repo-link" href="#" target="_blank" rel="noopener noreferrer">Código en GitHub</a></p>
+          <p class="hint shortcuts">Atajos: <kbd>Espacio</kbd> reproducir · <kbd>N</kbd>/<kbd>P</kbd> siguiente/anterior · <kbd>B</kbd> reto · <kbd>F</kbd> pantalla completa</p>
+        </section>
+        <p class="hint small legal">Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS. Los videos se reproducen desde YouTube.
+          Los patrones de luz se generan en tu navegador e imitan estilos de concierto; no son shows oficiales.</p>
+      </div>
+    </section>
+
+    <!-- Panel: reto -->
+    <section id="panel-game" class="panel" role="dialog" aria-labelledby="pg-title" hidden>
+      <header class="panel-head">
+        <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-trophy"/></svg></span><h2 id="pg-title">Reto de ritmo</h2></div>
+        <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </header>
+      <div class="panel-body">
+        <p class="hint">Toca al compás y entra al ranking. Sin cuentas: solo tu nickname de redes.</p>
+        <div class="row wrap">
+          <label class="select">Red <select id="sel-network"></select></label>
+          <label class="select">Nickname
+            <input id="inp-handle" type="text" placeholder="@tu_nick" autocomplete="nickname" maxlength="31" spellcheck="false" aria-describedby="handle-help">
+          </label>
+        </div>
+        <p id="handle-help" class="hint">Letras, números, punto o guion bajo (2 a 30).</p>
+        <label class="check switch"><input id="chk-game" type="checkbox"><span>Jugar en cada canción</span></label>
+        <button id="tap-pad" class="tap-pad" type="button" aria-describedby="tap-help" disabled>Toca al ritmo</button>
+        <p id="tap-help" class="hint">También con la tecla <kbd>B</kbd>. 4 toques calibran; necesitas 16 para puntuar.</p>
+        <div class="score-row">
+          <span>Puntos <strong id="g-score">0</strong></span>
+          <span>Combo <strong id="g-combo">0</strong></span>
+          <span>Precisión <strong id="g-acc">—</strong></span>
+        </div>
+        <p id="g-judge" class="judge" aria-hidden="true">&nbsp;</p>
+        <div class="tabs" role="tablist" aria-label="Tipo de ranking">
+          <button id="tab-song" role="tab" type="button" aria-selected="true" aria-controls="rank-table">Esta canción</button>
+          <button id="tab-all" role="tab" type="button" aria-selected="false" aria-controls="rank-table">Puntos de fan</button>
+        </div>
+        <table id="rank-table" class="rank" role="tabpanel">
+          <caption id="rank-caption">Ranking</caption>
+          <thead><tr><th scope="col">#</th><th scope="col">Fan</th><th scope="col">Puntos</th></tr></thead>
+          <tbody id="rank-body"></tbody>
+        </table>
+        <p class="hint">Los nicknames no se verifican. <span id="rank-source"></span></p>
+      </div>
+    </section>
+
+    <!-- Panel: opinión -->
+    <section id="panel-feedback" class="panel" role="dialog" aria-labelledby="pf-title" hidden>
+      <header class="panel-head">
+        <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-chat"/></svg></span><h2 id="pf-title">Tu opinión</h2></div>
+        <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </header>
+      <form id="form-feedback" class="panel-body" novalidate>
+        <p class="hint">Ayúdanos a mejorar. Es anónimo: no pongas datos personales.</p>
+        <fieldset class="stars">
+          <legend>¿Qué tan agradable fue la experiencia?</legend>
+          <div class="star-row">
+            <input type="radio" id="fb-r5" name="rating" value="5"><label for="fb-r5" title="5 de 5">★<span class="sr">5 de 5</span></label>
+            <input type="radio" id="fb-r4" name="rating" value="4"><label for="fb-r4" title="4 de 5">★<span class="sr">4 de 5</span></label>
+            <input type="radio" id="fb-r3" name="rating" value="3"><label for="fb-r3" title="3 de 5">★<span class="sr">3 de 5</span></label>
+            <input type="radio" id="fb-r2" name="rating" value="2"><label for="fb-r2" title="2 de 5">★<span class="sr">2 de 5</span></label>
+            <input type="radio" id="fb-r1" name="rating" value="1"><label for="fb-r1" title="1 de 5">★<span class="sr">1 de 5</span></label>
+          </div>
+        </fieldset>
+        <label class="select">¿Qué tan fácil fue conectar tu lightstick?
+          <select name="ease">
+            <option value="">Elige una opción</option>
+            <option value="5">Muy fácil</option>
+            <option value="4">Fácil</option>
+            <option value="3">Normal</option>
+            <option value="2">Difícil</option>
+            <option value="1">No pude conectarla</option>
+            <option value="0">No lo intenté</option>
+          </select>
+        </label>
+        <label class="select">¿La usarías en un concierto o fiesta?
+          <select name="would_use">
+            <option value="">Elige una opción</option>
+            <option value="yes">Sí</option>
+            <option value="maybe">Tal vez</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+        <div class="field">
+          <label for="fb-comment">Comentario <output id="fb-count">0/1000</output></label>
+          <textarea id="fb-comment" name="comment" rows="4" maxlength="1000" placeholder="¿Qué te gustó? ¿Qué mejorarías? ¿Algo falló?"></textarea>
+        </div>
+        <label class="check"><input type="checkbox" name="device" checked> Incluir mi tipo de dispositivo y navegador (sin datos personales)</label>
+        <button class="btn primary" type="submit">Enviar opinión</button>
+        <p id="fb-status" class="hint" role="status"></p>
+        <p class="hint"><a id="fb-community" href="#" target="_blank" rel="noopener noreferrer">Ver y comentar en la comunidad (GitHub)</a></p>
+      </form>
+    </section>
+
+    <!-- Guía de conexión integrada (no modal) -->
+    <section id="guide" class="coach" aria-labelledby="guide-title" hidden>
+      <div class="c-scene" aria-hidden="true"></div>
+      <div class="c-body">
+        <div class="c-top">
+          <span id="c-step" class="c-step"></span>
+          <div class="g-progress" aria-hidden="true"></div>
+          <button id="g-voice" class="ibtn sm" type="button" aria-pressed="false" aria-label="Activar narración">🔈</button>
+          <button id="g-close" class="ibtn sm" type="button" aria-label="Minimizar guía">–</button>
+        </div>
+        <h2 id="guide-title" tabindex="-1"></h2>
+        <p id="guide-text" class="c-text" aria-live="polite"></p>
+        <div id="g-connected" class="g-connected" role="status" hidden>
+          <span class="g-dot" aria-hidden="true"></span>
+          <span><strong></strong><small></small></span>
+        </div>
+        <div class="c-actions">
+          <button id="g-skip" class="c-link" type="button">Omitir</button>
+          <button id="g-prev" class="btn small" type="button">Atrás</button>
+          <button id="g-action" class="btn small primary spotlight" type="button" hidden>Conectar</button>
+          <button id="g-next" class="btn small primary" type="button">Siguiente</button>
+        </div>
+      </div>
+    </section>
+    <button id="coach-pill" class="coach-pill" type="button" hidden></button>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  </div>
+
+  <script type="module" src="../src/app.js"></script>
+</body>
+</html>

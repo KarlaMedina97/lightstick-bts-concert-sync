@@ -15,11 +15,15 @@ const types = {
   ".json": "application/json",
   ".webmanifest": "application/manifest+json",
   ".png": "image/png",
+  ".woff2": "font/woff2",
+  ".lrc": "text/plain; charset=utf-8",
 };
 
 createServer(async (req, res) => {
   const path = decodeURIComponent(new URL(req.url, "http://x").pathname);
-  const file = normalize(join(root, path.endsWith("/") ? path + "index.html" : path));
+  let file = normalize(join(root, path.endsWith("/") ? path + "index.html" : path));
+  // Rutas de carpeta sin barra final (/player) → redirige a /player/, como GitHub Pages.
+  if (!extname(path) && !path.endsWith("/")) return res.writeHead(301, { location: path + "/" + (req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : "") }).end();
   if (!file.startsWith(root)) return res.writeHead(403).end();
   try {
     const body = await readFile(file);

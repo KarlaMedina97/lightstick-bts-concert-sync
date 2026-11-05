@@ -3,7 +3,7 @@
   "short_name": "PurpleWave",
   "description": "Sincroniza tu lightstick con canciones, álbum por álbum. Proyecto de fans, abierto y no oficial.",
   "lang": "es",
-  "start_url": "app.html",
+  "start_url": "player/",
   "scope": "./",
   "display": "standalone",
   "background_color": "#060818",

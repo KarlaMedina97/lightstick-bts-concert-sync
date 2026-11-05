@@ -42,7 +42,7 @@ function apply(file, extra) {
 }
 
 apply("index.html", { "connect-src": "'self'", "form-action": "'none'" });
-apply("app.html", {
+apply("player/index.html", {
   // oEmbed para títulos de videos y, si se configura, el ranking global de Supabase.
   "connect-src": "'self' https://www.youtube.com https://*.supabase.co",
   "form-action": "'self'",

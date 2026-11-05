@@ -30,7 +30,7 @@
     "dev": "node scripts/serve.mjs",
     "test": "node --test \"tests/*.test.js\"",
     "csp": "node scripts/csp.mjs",
-    "check:csp": "node scripts/csp.mjs && git diff --exit-code -- index.html app.html",
+    "check:csp": "node scripts/csp.mjs && git diff --exit-code -- index.html player/index.html",
     "check:commits": "node scripts/check-commits.mjs origin/main..HEAD",
     "check": "npm test && npm run check:csp",
     "check-commits": "npm run check:commits"
