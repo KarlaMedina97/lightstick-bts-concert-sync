@@ -1,15 +1,41 @@
 {
   "name": "lightstick-bts-concert-sync",
-  "version": "0.1.0",
-  "description": "PWA abierta para sincronizar lightsticks con canciones por álbum.",
+  "version": "0.4.0",
+  "description": "PWA no oficial y abierta para sincronizar el lightstick (ARMY Bomb) por Web Bluetooth con videos de canciones y conciertos de BTS.",
   "private": true,
   "type": "module",
   "license": "MIT",
+  "author": "Karla Medina (https://github.com/KarlaMedina97)",
+  "homepage": "https://karlamedina97.github.io/lightstick-bts-concert-sync/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KarlaMedina97/lightstick-bts-concert-sync.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KarlaMedina97/lightstick-bts-concert-sync/issues"
+  },
+  "keywords": [
+    "bts",
+    "army-bomb",
+    "lightstick",
+    "web-bluetooth",
+    "pwa",
+    "kpop",
+    "concert",
+    "threejs",
+    "gsap",
+    "accessibility"
+  ],
   "scripts": {
     "dev": "node scripts/serve.mjs",
+    "test": "node --test \"tests/*.test.js\"",
     "csp": "node scripts/csp.mjs",
-    "check-commits": "node scripts/check-commits.mjs origin/main..HEAD",
-    "test": "node --test \"tests/*.test.js\""
+    "check:csp": "node scripts/csp.mjs && git diff --exit-code -- index.html app.html",
+    "check:commits": "node scripts/check-commits.mjs origin/main..HEAD",
+    "check": "npm test && npm run check:csp",
+    "check-commits": "npm run check:commits"
   },
-  "engines": { "node": ">=22" }
+  "engines": {
+    "node": ">=22"
+  }
 }

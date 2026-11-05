@@ -34,7 +34,7 @@ export function buildFeedback(form, { includeDevice = true, songId = null, nav }
     os: d.os ?? null,
     browser: d.browser ?? null,
     bluetooth: d.bluetooth ?? null,
-    app_version: "0.3.0",
+    app_version: "0.4.0",
   };
 }
 
