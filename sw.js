@@ -1,6 +1,6 @@
 // Service worker: guarda la app para abrirla sin conexión (los videos sí necesitan internet).
 // Solo guarda archivos propios del sitio; nunca respuestas de terceros ni con errores.
-const CACHE = "pws-v12";
+const CACHE = "pws-v13";
 const SHELL = [
   "./",
   "index.html",
@@ -14,6 +14,11 @@ const SHELL = [
   "src/favorites.js",
   "src/tour.js",
   "src/camera.js",
+  "src/mobile-nav.js",
+  "src/models/shared.js",
+  "src/models/armybomb-v4.js",
+  "src/models/armybomb-v3.js",
+  "src/models/armybomb-se.js",
   "tour.css",
   "fonts/fonts.css",
   "fonts/unbounded-latin-wght-normal.woff2",
@@ -58,6 +63,7 @@ const SHELL = [
   "vendor/three/examples/jsm/shaders/CopyShader.js",
   "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
   "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+  "vendor/three/examples/jsm/environments/RoomEnvironment.js",
 ];
 
 self.addEventListener("install", (e) => {

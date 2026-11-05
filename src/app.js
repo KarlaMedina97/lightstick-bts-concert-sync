@@ -2066,6 +2066,17 @@ function bindMini() {
   });
   $("mini-play").onclick = () => togglePlay();
   $("mini-back").onclick = () => $("view-video").click();
+  const setSmall = (on) => {
+    card.classList.toggle("mini-sm", on);
+    const b = $("mini-size");
+    b.setAttribute("aria-pressed", String(on));
+    b.setAttribute("aria-label", on ? "Agrandar video" : "Achicar video");
+    b.querySelector("use").setAttribute("href", on ? "#i-grow" : "#i-shrink");
+    requestAnimationFrame(() => placeMini(true));
+  };
+  $("mini-size").onclick = () => setSmall(!card.classList.contains("mini-sm"));
+  // Minimizar desde la vista Video: el video sigue sonando en un mini reproductor chico, abajo a la derecha.
+  $("btn-min").onclick = () => { MINI.corner = "br"; setSmall(true); $("view-explore").click(); };
   addEventListener("resize", () => placeMini(false));
 }
 

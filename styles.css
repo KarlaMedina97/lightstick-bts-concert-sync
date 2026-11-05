@@ -1833,3 +1833,78 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
    como los chips, ya no se aplastan a 0 px cuando el panel es más bajo que su contenido) */
 .panel-body { grid-auto-rows: max-content; }
 .filters { min-height: max-content; }
+
+/* =====================================================================
+   Teléfono: logo + menú desplegable, ⋯ junto al título, ♡ visible, minimizar video
+   ===================================================================== */
+.m-brand, .m-nav { display: none; }
+/* ⋯ junto al nombre de la canción (no encima de la miniatura) */
+.sg-item .more-btn {
+  top: auto; bottom: 0; right: -6px; width: 36px; height: 44px; border-radius: var(--r-md);
+  color: var(--text-2); background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; transform: none; opacity: 1;
+}
+.sg-item .more-btn:hover, .sg-item .more-btn[aria-expanded="true"] { background: var(--surface-hover); color: var(--text); }
+.sg-item:has(> .more-btn) .sg-title, .sg-item:has(> .more-btn) .sg-meta { padding-right: 30px; }
+.sg-item > .more-btn { opacity: 1; }
+/* ♡ más visible sobre la miniatura */
+.sg-item > .like-btn.sg-like { background: rgba(8, 6, 20, 0.68); color: #fff; font-size: 22px; line-height: 1; opacity: 1;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3), 0 2px 8px rgba(0, 0, 0, 0.35); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); transform: scale(0.88); }
+.sg-item > .like-btn.sg-like:hover { background: rgba(8, 6, 20, 0.85); color: #fff; }
+.sg-item > .like-btn.sg-like[aria-pressed="true"] { color: #ff6fb5; }
+.al-item > .like-btn.sg-like { opacity: 1; }
+/* Minimizar video (teléfono): píldora en el hueco sobre el video, fuera de los controles de YouTube */
+.video-min { display: none; }
+@media (max-width: 640px) {
+  .app[data-view="video"]:not(.home) .video-min {
+    display: inline-flex; align-items: center; gap: 4px; position: absolute; top: 2px; left: var(--s-1); z-index: 3;
+    min-height: 36px; padding: 0 var(--s-3) 0 var(--s-2); border-radius: 999px; border: 1px solid var(--border-strong);
+    background: var(--surface-1); color: var(--text); font: 700 var(--fs-12)/1 inherit; cursor: pointer; box-shadow: var(--e-1);
+  }
+  .video-min svg { width: 18px; height: 18px; }
+  .video-min::before { content: ""; position: absolute; inset: -4px; } /* área táctil ≥ 44 px */
+}
+#mini-size svg, #mini-back svg { width: 18px; height: 18px; }
+/* Mini reproductor chico: 200 × 200 px (el mínimo que pide YouTube) en una esquina */
+.app.exploring .video-card.mini-sm { --mini-w: 200px; }
+.app.exploring .video-card.mini-sm .mini-title { display: none; }
+.app.exploring .video-card.mini-sm .mini-bar { justify-content: flex-end; }
+
+@media (max-width: 640px) {
+  .hud-top .menu, .hud-top .view-tabs { display: none; }
+  .m-brand { display: inline-flex; align-items: center; gap: var(--s-2); min-height: var(--tap); color: var(--text); text-decoration: none; font: 800 var(--fs-16)/1 var(--display, inherit); letter-spacing: -0.01em; }
+  .m-brand img { width: 30px; height: 30px; }
+  .m-nav { display: block; position: relative; margin-left: auto; }
+  .m-nav-btn {
+    display: inline-flex; align-items: center; gap: var(--s-1); min-height: var(--tap); padding: 0 var(--s-3) 0 var(--s-4);
+    border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface-1); color: var(--text);
+    font: 700 var(--fs-14)/1 inherit; cursor: pointer; box-shadow: var(--e-1);
+  }
+  .m-nav-btn svg { width: 18px; height: 18px; transition: transform var(--dur-2); }
+  .m-nav-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .m-nav-menu {
+    position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: min(260px, calc(100vw - 24px)); display: grid; gap: 2px;
+    padding: var(--s-2); border-radius: var(--r-lg); background: var(--surface-2, var(--surface-1)); border: 1px solid var(--border-strong);
+    box-shadow: var(--e-3, 0 12px 40px rgba(0, 0, 0, 0.35)); transform-origin: 100% 0; animation: m-nav-in var(--dur-2) var(--ease-out);
+  }
+  .m-nav-menu[hidden] { display: none; }
+  .m-nav-menu > button, .m-nav-menu > a {
+    display: flex; align-items: center; gap: var(--s-3); min-height: var(--tap); padding: 0 var(--s-3); border: 0; border-radius: var(--r-md);
+    background: transparent; color: var(--text); font: 600 var(--fs-14)/1.2 inherit; text-align: left; text-decoration: none; cursor: pointer;
+  }
+  .m-nav-menu > button:hover, .m-nav-menu > a:hover, .m-nav-menu > :focus-visible { background: var(--surface-hover); }
+  .m-nav-menu svg { width: 18px; height: 18px; flex: none; color: var(--text-2); }
+  .m-nav-menu [aria-checked="true"] { color: var(--brand, var(--text)); font-weight: 800; background: var(--brand-soft, var(--surface-hover)); }
+  .m-nav-menu [aria-checked="true"] svg { color: currentColor; }
+  .m-nav-h { margin: var(--s-1) var(--s-3) 2px; font-size: var(--fs-12); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .m-nav-menu hr { border: 0; border-top: 1px solid var(--border); margin: var(--s-1) var(--s-2); }
+  /* Explorar en teléfono: solo las miniaturas de las canciones */
+  .connect-card, .lights-legend { display: none !important; }
+}
+@keyframes m-nav-in { from { opacity: 0; transform: translateY(-6px) scale(0.97); } }
+@media (prefers-reduced-motion: reduce) { .m-nav-menu { animation: none; } }
+@media (max-width: 640px) {
+  /* Con el botón Minimizar a la derecha, el aviso de luces se alinea a la izquierda */
+  .app[data-view="video"]:not(.home) .video-min { left: auto; right: var(--s-1); }
+  .app[data-view="video"]:not(.home) .style-chip { justify-self: start; left: var(--s-1); right: auto; transform: none; translate: none; max-width: calc(100% - 140px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+@media (max-width: 640px) { .hud-top { position: relative; z-index: 20; } }
