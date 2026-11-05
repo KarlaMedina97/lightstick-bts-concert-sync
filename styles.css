@@ -1552,3 +1552,9 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .explore-head { background: color-mix(in srgb, #0a0920 94%, transparent); border-radius: 0 0 var(--r-lg) var(--r-lg); box-shadow: 0 12px 24px -16px rgba(0, 0, 0, 0.8); }
 /* Títulos largos en el dock: se desvanecen al final (las letras animadas no admiten "…") */
 .np-title { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent); }
+
+/* Un solo buscador a la vez: si el inicio o Explorar están en pantalla (con su buscador y filtros),
+   la lista lateral oculta los suyos y queda como lista de álbumes. */
+.app:has(#home:not([hidden])) .side .search,
+.app:has(#home:not([hidden])) .side [data-filters],
+.app:has(#home:not([hidden])) .side .search-empty { display: none !important; }
