@@ -3,7 +3,7 @@
 import { execFileSync } from "node:child_process";
 
 const TYPES = ["feat", "fix", "docs", "style", "refactor", "perf", "test", "build", "ci", "chore", "revert"];
-const RE = new RegExp(`^(${TYPES.join("|")})(\([a-z0-9-]+\))?!?: .{1,100}$`);
+const RE = new RegExp(String.raw`^(${TYPES.join("|")})(\([a-z0-9-]+\))?!?: .{1,100}$`);
 
 const range = process.argv[2] || "HEAD~1..HEAD";
 const out = execFileSync("git", ["log", "--format=%H%x00%s", range], { encoding: "utf8" }).trim();
