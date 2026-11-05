@@ -12,7 +12,15 @@ export const MEMBERS = [
   { ko: "전정국", roman: "Jeon Jungkook" },
 ];
 const FINAL = { ko: "방탄소년단!", roman: "BTS!" };
-const STEP_MS = 720;
+// Ritmo real del público: cada nombre ocupa 2 tiempos de la canción (unos 0,9–1 s). Referencia: guía oficial de
+// fanchant de DNA (fancafe de BTS, vía US BTS ARMY): la ronda de 7 nombres + «BTS!» empieza en 0:02 y se repite
+// dos veces antes de la primera estrofa, ≈ 1 s por grito a 130 BPM. Sin BPM, 1 s.
+export function chantStepMs(bpm) {
+  const ms = bpm > 0 ? (2 * 60000) / bpm : 1000;
+  // Tempos muy lentos o muy rápidos: el público corea a un paso cómodo (se dobla o se parte el tiempo).
+  const fit = ms > 1300 ? ms / 2 : ms < 700 ? ms * 2 : ms;
+  return Math.round(Math.min(1200, Math.max(850, fit)));
+}
 
 /** Ovación corta: ruido filtrado con una envolvente, sin archivos de audio. */
 function cheer(ctx, { when = 0, length = 0.5, gain = 0.18 } = {}) {
@@ -53,8 +61,9 @@ export class Fanchant {
   }
 
   /** Corre el fanchant completo. Resuelve al terminar o al saltarlo. */
-  run({ voice = true } = {}) {
+  run({ voice = true, bpm = 0 } = {}) {
     this.stop();
+    const STEP_MS = chantStepMs(bpm);
     const items = [...MEMBERS, FINAL];
     let ctx = null;
     if (voice) {
@@ -77,7 +86,7 @@ export class Fanchant {
       let i = 0;
       const step = () => {
         if (i >= items.length) {
-          this.timer = setTimeout(() => this.resolve?.(), 900);
+          this.timer = setTimeout(() => this.resolve?.(), 400);
           return;
         }
         const it = items[i];
@@ -91,12 +100,13 @@ export class Fanchant {
         if (voice && "speechSynthesis" in window) {
           const u = new SpeechSynthesisUtterance(it.ko);
           u.lang = "ko-KR";
-          u.rate = 1.15;
+          u.rate = 1; // tres sílabas por nombre, marcadas, como lo grita el público
           u.volume = 0.9;
           speechSynthesis.speak(u);
         }
         i++;
-        this.timer = setTimeout(step, i === items.length ? STEP_MS * 1.4 : STEP_MS);
+        // «BTS!» es el remate: dura el doble antes de que empiece la canción.
+        this.timer = setTimeout(step, i === items.length ? STEP_MS * 2 : STEP_MS);
       };
       this.timer = setTimeout(step, 500);
     });

@@ -10,7 +10,7 @@ import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { FEATURED } from "./config.js";
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
-import { MEMBERS } from "./fanchant.js";
+import { MEMBERS, chantStepMs } from "./fanchant.js";
 import { MicSync } from "./mic.js";
 import { spanishClone, localize } from "./i18n.js";
 import { createMaterials, glowTexture, contactShadow } from "./models/shared.js";
@@ -1137,8 +1137,10 @@ if (renderer) {
       if (gsap && !reduceMotion) gsap.from(el, { y: 14, opacity: 0, scale: 0.8, duration: 0.45, ease: "back.out(2)" });
       pulse(0.7);
       gw.pump = Math.max(gw.pump, 0.8);
-      if (voice) { const u = new SpeechSynthesisUtterance(m.ko); u.lang = "ko-KR"; u.rate = 1.1; speechSynthesis.speak(u); }
-      await new Promise((r) => setTimeout(r, 720));
+      if (voice) { const u = new SpeechSynthesisUtterance(m.ko); u.lang = "ko-KR"; u.rate = 1; speechSynthesis.speak(u); }
+      // Mismo ritmo que en el reproductor: 2 tiempos por nombre; «BTS!» dura el doble.
+      const stepMs = chantStepMs(FEATURED.bpm);
+      await new Promise((r) => setTimeout(r, i === seq.length - 1 ? stepMs * 2 : stepMs));
     }
     chanting = false;
     fcBtn.disabled = false;

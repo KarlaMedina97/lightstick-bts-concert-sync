@@ -2701,7 +2701,11 @@ async function init() {
       const endedAt = current;
       if (settings.chant && willContinue()) {
         say(settings.chantVoice ? "Fanchant: el público corea los nombres." : "Fanchant entre canciones.");
-        await fanchant.run({ voice: settings.chantVoice });
+        // Al ritmo de la canción que viene (como en el concierto, el público ya va con su tempo).
+        const up = pq.peek({ auto: true });
+        const upItem = up ? queue[idxOf(up.id ?? up)] : null;
+        const bpm = upItem ? Number(settings.bpm[upItem.song.id] ?? upItem.song.bpm) : 0;
+        await fanchant.run({ voice: settings.chantVoice, bpm });
         if (current !== endedAt) return; // la persona eligió otra canción durante el fanchant
       }
       next(true);
