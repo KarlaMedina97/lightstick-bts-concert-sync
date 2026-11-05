@@ -971,6 +971,7 @@ const LIGHT_LEVEL = { ballad: 1, mid: 2, high: 3 };
 const LIGHT_NAME = ["", "suaves", "medias", "intensas"];
 /** Tipo de video: MV por defecto; En vivo, Coreografía, Performance o Film según el catálogo. */
 function videoType(song) {
+  if (song.kind === "cover") return "Cover";
   if (song.kind === "concert") return "En vivo";
   if (/dance practice|choreograph/i.test(song.title)) return "Coreografía";
   if (/performance/i.test(song.title)) return "Performance";
