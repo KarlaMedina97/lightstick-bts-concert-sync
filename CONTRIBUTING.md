@@ -25,3 +25,22 @@ Edita `src/catalog.js` y agrega un objeto en el álbum correspondiente:
 ## Añadir un estilo de luz
 
 Agrega la entrada en `STYLES` y su caso en `styleColor()` dentro de `src/patterns.js`.
+
+## Mensajes de commit
+
+Usamos [Conventional Commits](https://www.conventionalcommits.org/es/): `tipo(alcance opcional): descripción`.
+
+| Tipo | Para |
+| --- | --- |
+| `feat` | una función nueva |
+| `fix` | corregir un error |
+| `docs` | documentación |
+| `style` | estilos o formato visual |
+| `refactor` | cambios de código sin cambiar comportamiento |
+| `perf` | rendimiento |
+| `test` | pruebas |
+| `ci` / `build` | integración continua o empaquetado |
+| `chore` | mantenimiento |
+
+Ejemplos: `feat(guia): resaltar el dispositivo conectado`, `fix(buscador): ignorar acentos`.
+Un flujo de GitHub Actions revisa los mensajes en cada push y PR (`node scripts/check-commits.mjs <rango>`).

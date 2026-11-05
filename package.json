@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "node scripts/serve.mjs",
     "csp": "node scripts/csp.mjs",
+    "check-commits": "node scripts/check-commits.mjs origin/main..HEAD",
     "test": "node --test \"tests/*.test.js\""
   },
   "engines": { "node": ">=22" }
