@@ -35,8 +35,10 @@ function apply(file, extra) {
   const hashes = inlineHashes(html).join(" ");
   const csp = policy({ ...extra, "script-src": `'self' ${hashes} ${YT}`.replace(/\s+/g, " ").trim() });
   const meta = `<meta http-equiv="Content-Security-Policy" content="${csp}">`;
-  html = html.replace(/<meta http-equiv="Content-Security-Policy"[^>]*>\n?\s*/, "");
-  html = html.replace(/(<meta charset="utf-8">\n)/, `$1  ${meta}\n`);
+  const eol = html.includes("\r\n") ? "\r\n" : "\n"; // en Windows el checkout puede traer CRLF
+  html = html.replace(/<meta http-equiv="Content-Security-Policy"[^>]*>\r?\n?[ \t]*/, "");
+  html = html.replace(/(<meta charset="utf-8">\r?\n)/, `$1  ${meta}${eol}`);
+  if (!html.includes(meta)) throw new Error(`${file}: no encontré <meta charset="utf-8"> para insertar la CSP`);
   writeFileSync(file, html);
   console.log(`${file}: ${csp}`);
 }

@@ -1,0 +1,5 @@
+# LF en todos los checkouts (también en el runner local de Windows): la CSP y las pruebas comparan texto.
+* text=auto eol=lf
+*.png binary
+*.woff2 binary
+*.ico binary
