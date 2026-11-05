@@ -242,6 +242,7 @@ function renderAlbums() {
   $("side-list").replaceChildren(...albumNodes(true));
   renderMine();
   markCurrent();
+  applySearch();
 }
 
 /** Encabezados de álbum + botones con miniatura, para el panel y la lista lateral. */
@@ -264,6 +265,66 @@ function albumNodes(includeMine) {
     nodes.push(h, ...items.map(([item, i]) => songButton(item, i)));
   }
   return nodes;
+}
+
+// ---------- Buscador de canciones ----------
+const norm = (t) => String(t ?? "").normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+let searchQuery = "";
+
+/** Filtra las listas (panel y costado) por título, álbum, año o tipo. */
+function applySearch() {
+  const terms = norm(searchQuery).split(" ").filter(Boolean);
+  for (const list of [$("albums"), $("side-list")]) {
+    let visibleInGroup = 0, header = null, total = 0;
+    const flush = () => { if (header) header.hidden = visibleInGroup === 0; };
+    for (const el of list.children) {
+      if (el.classList.contains("album-title")) { flush(); header = el; visibleInGroup = 0; continue; }
+      const item = queue[Number(el.dataset.index)];
+      if (!item) continue;
+      const hay = norm(`${item.song.title} ${item.album.title} ${item.album.year} ${item.song.kind === "concert" ? "concierto en vivo live" : ""} ${item.song.channel ?? ""}`);
+      const match = terms.every((t) => hay.includes(t));
+      el.hidden = !match;
+      if (match) { visibleInGroup++; total++; }
+    }
+    flush();
+    const empty = list.parentElement.querySelector(".search-empty");
+    if (!empty) continue;
+    if (terms.length && !total) {
+      empty.hidden = false;
+      empty.replaceChildren(document.createTextNode(`No está "${searchQuery}" en el catálogo. `));
+      const a = document.createElement("a");
+      a.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(`BTS ${searchQuery} official`)}`;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = "Búscala en YouTube";
+      empty.append(a, document.createTextNode(" y pega el enlace en Mis videos."));
+    } else empty.hidden = true;
+  }
+}
+
+function bindSearch() {
+  const inputs = [$("search-side"), $("search-panel")];
+  inputs.forEach((inp) => {
+    inp.addEventListener("input", () => {
+      searchQuery = inp.value;
+      inputs.forEach((o) => o !== inp && (o.value = inp.value));
+      applySearch();
+    });
+    inp.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const first = inp.closest(".side, .panel-body")?.querySelector(".song:not([hidden])");
+        first?.click();
+      }
+      if (e.key === "Escape" && inp.value) { e.stopPropagation(); inp.value = ""; searchQuery = ""; inputs.forEach((o) => (o.value = "")); applySearch(); }
+    });
+  });
+  // Atajo "/" para buscar, como en muchas apps.
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "/" || e.target.closest("input, textarea, select")) return;
+    e.preventDefault();
+    const target = !$("side").hidden ? $("search-side") : (showPanel("panel-queue", $("btn-queue")), $("search-panel"));
+    target.focus();
+  });
 }
 
 // ---------- Menú y lista lateral ----------
@@ -422,6 +483,7 @@ function playIndex(i) {
   renderRanking();
   player.load(song.yt, true);
   document.title = `${song.title} · Purple Wave Sync`;
+  updateLyricsBar();
   updateMediaSession();
 }
 
@@ -475,8 +537,19 @@ function willContinue() {
 }
 
 const LYRIC_NAMES = { ko: "coreano", es: "español", en: "inglés", ja: "japonés", pt: "portugués" };
+function updateLyricsBar() {
+  const bar = $("lyrics-bar");
+  const item = queue[current];
+  bar.hidden = !settings.lyrics || !item;
+  if (bar.hidden) return;
+  $("lb-text").textContent = `${LYRIC_NAMES[settings.lyricsLang][0].toUpperCase()}${LYRIC_NAMES[settings.lyricsLang].slice(1)}${settings.lyricsLang === "ko" ? " (hangul)" : ""} · subtítulos oficiales del video`;
+  // Enlace externo a la letra completa (no copiamos letras en la app).
+  $("lb-link").href = `https://genius.com/search?q=${encodeURIComponent(`BTS ${item.song.title.replace(/s*(.*?)/g, "")}`)}`;
+}
+
 function applyLyrics(announce) {
   $("btn-lyrics").setAttribute("aria-pressed", settings.lyrics);
+  updateLyricsBar();
   player?.setCaptions(settings.lyrics ? settings.lyricsLang : null);
   if (!announce) return;
   if (!settings.lyrics) return toast("Letra desactivada.");
@@ -960,9 +1033,12 @@ async function init() {
       setTimeout(() => sticks.forEach((s) => s.setColor(purple)), 1000);
     },
     hasSticks: () => sticks.length > 0,
+    stickNames: () => sticks.map((s) => s.name),
+    onDone: (name) => toast(`💜 ${name} sincronizado. ¡Elige una canción!`),
   });
   $("btn-guide").onclick = () => { closePanel(false); guide.open(); };
   bindMenu();
+  bindSearch();
   bindFeedback();
   $("btn-clear-data").onclick = () => {
     if (!confirm("¿Borrar tus ajustes, nickname, puntajes y videos guardados en este dispositivo?")) return;
@@ -974,9 +1050,7 @@ async function init() {
   addEventListener("pagehide", () => mic?.stop());
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && mic) toggleMic(); });
   const params = new URLSearchParams(location.search);
-  let seen = false;
-  try { seen = localStorage.getItem("pws.guide.seen") === "1"; } catch {}
-  if (params.has("guia") || !seen) guide.open();
+  if (params.has("guia") || !guide.seen) guide.open();
 
   player = new Player($("yt"), {
     onState: onPlayerState,

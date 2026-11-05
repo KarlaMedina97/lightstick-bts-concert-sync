@@ -15,6 +15,8 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preload" href="fonts/plus-jakarta-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -33,6 +35,7 @@
     <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5h3v5h5V9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 9.5h8M8 12.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-lyrics" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11h4M13 11h4M7 15h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   </svg>
 
@@ -66,6 +69,11 @@
         <h2>Canciones</h2>
         <button id="side-close" class="ibtn sm" type="button" aria-label="Ocultar lista de canciones"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
       </div>
+      <div class="search" role="search">
+        <svg aria-hidden="true"><use href="#i-search"/></svg>
+        <input id="search-side" class="song-search" type="search" placeholder="Buscar canción, álbum o año" aria-label="Buscar canciones" autocomplete="off" spellcheck="false" enterkeyhint="search">
+      </div>
+      <p class="search-empty hint" hidden></p>
       <div id="side-list" class="albums side-list"></div>
     </aside>
 
@@ -79,6 +87,12 @@
           <p class="empty-title">Elige una canción o un concierto</p>
           <button id="btn-start" class="btn primary" type="button">Ver canciones</button>
         </div>
+      </div>
+
+      <div id="lyrics-bar" class="lyrics-bar" hidden>
+        <span class="lb-tag">Letra</span>
+        <span id="lb-text">Coreano (hangul) · subtítulos oficiales del video</span>
+        <a id="lb-link" href="#" target="_blank" rel="noopener noreferrer">Letra completa y romanización ↗</a>
       </div>
 
       <div id="chant" class="chant" aria-live="assertive" hidden>
@@ -117,7 +131,7 @@
       </div>
       <div class="dock-actions">
         <button id="btn-auto" class="ibtn sm" type="button" aria-pressed="true" aria-label="Pasar a la siguiente al terminar" title="Pasar a la siguiente al terminar"><svg aria-hidden="true"><use href="#i-repeat"/></svg></button>
-        <button id="btn-lyrics" class="ibtn sm" type="button" aria-pressed="false" aria-label="Letra (subtítulos oficiales)" title="Letra (subtítulos oficiales del video)"><svg aria-hidden="true"><use href="#i-lyrics"/></svg></button>
+        <button id="btn-lyrics" class="ibtn sm" type="button" aria-pressed="false" aria-label="Letra (subtítulos oficiales)" title="Letra (subtítulos oficiales del video)"><svg aria-hidden="true"><use href="#i-lyrics"/></svg><span class="ibtn-label">Letra</span></button>
         <button id="btn-mic" class="ibtn sm" type="button" aria-pressed="false" aria-label="Modo micrófono" title="Modo micrófono (para conciertos en la TV)"><svg aria-hidden="true"><use href="#i-mic"/></svg></button>
         <button id="btn-game" class="ibtn sm" type="button" aria-haspopup="dialog" aria-controls="panel-game" aria-label="Reto de ritmo" title="Reto de ritmo"><svg aria-hidden="true"><use href="#i-trophy"/></svg></button>
         <button id="btn-settings" class="ibtn sm" type="button" aria-haspopup="dialog" aria-controls="panel-settings" aria-label="Ajustes" title="Ajustes"><svg aria-hidden="true"><use href="#i-gear"/></svg></button>
@@ -136,7 +150,14 @@
         <button id="qt-concerts" role="tab" type="button" aria-selected="false" aria-controls="q-concerts">Conciertos</button>
         <button id="qt-mine" role="tab" type="button" aria-selected="false" aria-controls="q-mine">Mis videos</button>
       </div>
-      <div id="q-songs" class="panel-body" role="tabpanel"><div id="albums" class="albums"></div></div>
+      <div id="q-songs" class="panel-body" role="tabpanel">
+        <div class="search" role="search">
+        <svg aria-hidden="true"><use href="#i-search"/></svg>
+        <input id="search-panel" class="song-search" type="search" placeholder="Buscar canción, álbum o año" aria-label="Buscar canciones" autocomplete="off" spellcheck="false" enterkeyhint="search">
+      </div>
+        <p class="search-empty hint" hidden></p>
+        <div id="albums" class="albums"></div>
+      </div>
       <div id="q-concerts" class="panel-body" role="tabpanel" hidden>
         <p class="hint">Los conciertos completos oficiales están en plataformas de pago y no se pueden incrustar aquí.
           Ponlos en tu TV o en otro dispositivo y activa el <strong>modo micrófono</strong>: tus luces seguirán la música.</p>
@@ -333,25 +354,31 @@
       </form>
     </section>
 
-    <!-- Guía de conexión -->
-    <section id="guide" class="guide" role="dialog" aria-modal="true" aria-labelledby="guide-title" aria-describedby="guide-text" hidden>
-      <div class="g-card">
-        <div class="g-top">
+    <!-- Guía de conexión integrada (no modal) -->
+    <section id="guide" class="coach" aria-labelledby="guide-title" hidden>
+      <div class="c-scene" aria-hidden="true"></div>
+      <div class="c-body">
+        <div class="c-top">
+          <span id="c-step" class="c-step"></span>
           <div class="g-progress" aria-hidden="true"></div>
-          <button id="g-voice" class="btn small" type="button" aria-pressed="true">🔊 Voz</button>
-          <button id="g-close" class="ibtn sm" type="button" aria-label="Cerrar guía"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+          <button id="g-voice" class="ibtn sm" type="button" aria-pressed="false" aria-label="Activar narración">🔈</button>
+          <button id="g-close" class="ibtn sm" type="button" aria-label="Minimizar guía">–</button>
         </div>
-        <div class="g-stage" aria-hidden="true"></div>
-        <h2 id="guide-title"></h2>
-        <p id="guide-text" class="g-text" aria-live="polite"></p>
-        <div class="g-actions">
-          <button id="g-prev" class="btn" type="button">Anterior</button>
-          <button id="g-replay" class="btn" type="button" aria-label="Repetir narración">↻</button>
-          <button id="g-action" class="btn" type="button" hidden></button>
-          <button id="g-next" class="btn primary" type="button">Siguiente</button>
+        <h2 id="guide-title" tabindex="-1"></h2>
+        <p id="guide-text" class="c-text" aria-live="polite"></p>
+        <div id="g-connected" class="g-connected" role="status" hidden>
+          <span class="g-dot" aria-hidden="true"></span>
+          <span><strong></strong><small></small></span>
+        </div>
+        <div class="c-actions">
+          <button id="g-skip" class="c-link" type="button">Omitir</button>
+          <button id="g-prev" class="btn small" type="button">Atrás</button>
+          <button id="g-action" class="btn small primary spotlight" type="button" hidden>Conectar</button>
+          <button id="g-next" class="btn small primary" type="button">Siguiente</button>
         </div>
       </div>
     </section>
+    <button id="coach-pill" class="coach-pill" type="button" hidden></button>
 
     <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   </div>
