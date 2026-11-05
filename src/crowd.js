@@ -5,6 +5,7 @@
 // casi gratis. API: setColor(rgb), setEnergy(0..1), flash(), draw(now).
 
 const FPS_MS = 1000 / 30; // ~30 fps es suficiente para el fondo
+const FPS_MS_PHONE = 1000 / 24; // en teléfonos, un poco menos: libera CPU para el video y el Bluetooth
 const TAU = Math.PI * 2;
 
 // Capas de atrás hacia adelante. `res` = resolución relativa (menos = más desenfoque).
@@ -136,7 +137,7 @@ export class Crowd {
   }
 
   draw(now) {
-    if (now - this.last < FPS_MS) return;
+    if (now - this.last < (this.phone ? FPS_MS_PHONE : FPS_MS)) return;
     const dt = Math.min(0.1, (now - this.last) / 1000);
     this.last = now;
     const { ctx, w, h, dpr } = this;

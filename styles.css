@@ -316,6 +316,20 @@ kbd {
 .app:not(.side-drawer):has(#side:not([hidden])) #btn-cola,
 .app:not(.side-drawer):has(#side:not([hidden])) .ex-links { display: none; }
 .app:not(.side-drawer) #side-close { display: none; }
+/* Rendimiento en teléfonos y pantallas táctiles -------------------------------------------------------
+   El desenfoque de fondo (backdrop-filter) es lo más caro para la GPU de un teléfono: se cambia por superficies
+   casi opacas. Los haces de luz pierden la mezcla "screen" y quedan 3; la neblina deja de moverse. */
+@media (max-width: 640px), (pointer: coarse) {
+  *, *::before, *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  :root { --surface-0: rgba(14, 12, 30, 0.9); --surface-1: rgba(17, 14, 34, 0.95); }
+  :root[data-theme="light"] { --surface-0: rgba(255, 255, 255, 0.94); --surface-1: rgba(255, 255, 255, 0.97); }
+  .beams i { mix-blend-mode: normal; will-change: transform; }
+  .beams i:nth-child(2), .beams i:nth-child(4) { display: none; }
+  .haze { animation: none; }
+}
+/* Las filas de Explorar que no se ven no se dibujan (cientos de tarjetas con imagen). */
+.shelf, .explore-list > * { content-visibility: auto; contain-intrinsic-size: auto 320px; }
+
 /* Nota "¿Por qué no están todos los videos?" en el inicio */
 .info-note { margin: 0 0 var(--s-4); padding: var(--s-2) var(--s-4); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); font-size: var(--fs-14); }
 .info-note summary { min-height: var(--tap); display: flex; align-items: center; gap: var(--s-2); cursor: pointer; font-weight: 700; color: var(--text); list-style: none; }

@@ -26,6 +26,8 @@ const SHOT = params.get("shot");
 const canvas = document.getElementById("scene");
 const mobileQ = () => innerWidth < 720;
 const LOW_END = innerWidth < 720 || (navigator.hardwareConcurrency || 8) <= 4 || (SHOT !== null && params.has("lite"));
+// Gama baja de verdad (pocos núcleos o poca memoria): sin bloom desde el inicio y resolución 1×.
+const VERY_LOW = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 3;
 const $ = (id) => document.getElementById(id);
 
 // Tarjetas de piezas y versiones: además de resaltar el modelo 3D, su texto se anuncia en #card-status
@@ -119,7 +121,7 @@ const demo = { active: false, color: new THREE.Color("#8a2be2"), energy: 0.55, g
 let api = null; // funciones de la escena que usa la interfaz (si hay WebGL)
 
 if (renderer) {
-  renderer.setPixelRatio(Math.min(devicePixelRatio, mobileQ() ? 1.25 : 1.5));
+  renderer.setPixelRatio(VERY_LOW ? 1 : Math.min(devicePixelRatio, mobileQ() ? 1.25 : 1.5));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -1429,7 +1431,7 @@ if (renderer) {
   }
   // ---------- Rendimiento: calidad adaptativa y medición con ?debug=1 ----------
   // Si el cuadro tarda > 22 ms durante 2 s, se baja un escalón: sin transmisión → sin bloom → menos público.
-  let useBloom = true, slowFor = 0, qTier = 0, frames = 0, acc = 0, accCpu = 0, lastReport = 0;
+  let useBloom = !VERY_LOW, slowFor = 0, qTier = VERY_LOW ? 2 : 0, frames = 0, acc = 0, accCpu = 0, lastReport = 0;
   const DEBUG = params.has("debug");
   if (DEBUG) renderer.info.autoReset = false;
   const dbg = DEBUG ? Object.assign(document.createElement("pre"), { className: "perf" }) : null;
@@ -1437,7 +1439,7 @@ if (renderer) {
   function perfTick(dt, cpu) {
     frames++; acc += dt; accCpu += cpu;
     slowFor = dt > 0.022 ? slowFor + dt : Math.max(0, slowFor - dt * 0.5);
-    if (slowFor > 2 && !SHOT && qTier < 3) {
+    if (slowFor > (LOW_END ? 1 : 2) && !SHOT && qTier < 3) { // en teléfonos se reacciona en 1 s, no en 2
       slowFor = 0;
       qTier++;
       if (qTier === 1 && mats.glass.transmission > 0) { mats.glass.transmission = 0; mats.glass.transparent = true; mats.glass.opacity = 0.16; mats.glass.needsUpdate = true; }

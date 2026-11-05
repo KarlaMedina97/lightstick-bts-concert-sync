@@ -932,6 +932,8 @@ function setupSim() {
 }
 
 const LED_GAMMA = 2;
+let lastGlow = "", lastGlowAt = 0, lastEnergy = "";
+const dotEls = []; // puntos de color de cada ARMY Bomb (se buscan una vez, no en cada cuadro)
 let micGain = 1;
 let lastUi = 0;
 let lastLabel = "";
@@ -984,9 +986,13 @@ function frame(now) {
   const hex = (c) => rgbToHex(c.map((v) => v * k));
   for (let i = 0; i < SIM_COUNT; i++) simEls[i].style.setProperty("--c", hex(colors[i]));
   $("big-bulb").style.setProperty("--c", hex(colors[0]));
-  app.style.setProperty("--glow", rgbToHex(colors[0].map((v) => Math.max(30, v * 0.8))));
+  // --glow tiñe fondos enormes (haces, neblina, sombras): cambiarlo 20 veces/s obliga a repintar toda la pantalla.
+  // Se actualiza como mucho 5 veces/s y solo si el color cambió de verdad (los cambios son de una paleta, no saltos bruscos).
+  const glow = rgbToHex(colors[0].map((v) => Math.round(Math.max(30, v * 0.8) / 8) * 8));
+  if (glow !== lastGlow && now - lastGlowAt > 200) { lastGlow = glow; lastGlowAt = now; app.style.setProperty("--glow", glow); }
   sticks.forEach((s, i) => {
-    const dot = document.querySelector(`.dot[data-index="${i}"]`);
+    let dot = dotEls[i];
+    if (!dot?.isConnected) dot = dotEls[i] = document.querySelector(`.dot[data-index="${i}"]`);
     if (dot) dot.style.background = rgbToHex(colors[i]);
   });
 
@@ -1008,8 +1014,8 @@ function frame(now) {
     energy = /coro final/.test(l) ? 1 : /coro/.test(l) ? 0.85 : /pre-coro|puente/.test(l) ? 0.65 : /verso/.test(l) ? 0.5 : /final/.test(l) ? 0.3 : 0.4;
     energy = Math.min(1, energy + (dur ? (t / dur) * 0.15 : 0)); // sube poco a poco a lo largo del video
   }
-  app.style.setProperty("--energy", energy.toFixed(2));
-  app.classList.toggle("chorus", energy >= 0.85);
+  const eq = (Math.round(energy * 20) / 20).toFixed(2); // pasos de 0,05: casi nunca cambia de un cuadro a otro
+  if (eq !== lastEnergy) { lastEnergy = eq; app.style.setProperty("--energy", eq); app.classList.toggle("chorus", energy >= 0.85); }
   if (now - lastSave > 5000 && player.state === "playing") { lastSave = now; saveQueue(); updateMediaPosition(); }
   updateUpNextCard(t, dur);
   crowd?.setEnergy(energy);
