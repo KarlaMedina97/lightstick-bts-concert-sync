@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" fill="none">
+  <!-- Ilustración original: lightstick genérica con ondas de luz sobre un mar de luces. -->
+  <defs>
+    <radialGradient id="glob" cx="40%" cy="34%" r="70%">
+      <stop offset="0" stop-color="#fbf5ff"/>
+      <stop offset=".42" stop-color="#b58cff"/>
+      <stop offset="1" stop-color="#5a24b0"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#b58cff" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#b58cff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sea" cx="50%" cy="100%" r="60%" gradientTransform="translate(0 .5) scale(1 .5)">
+      <stop offset="0" stop-color="#8a5cf0" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#8a5cf0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="handle" x1="0" x2="1">
+      <stop offset="0" stop-color="#1a1528"/>
+      <stop offset=".5" stop-color="#3b3352"/>
+      <stop offset="1" stop-color="#1a1528"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="120" cy="186" rx="120" ry="26" fill="url(#sea)"/>
+  <circle cx="120" cy="78" r="76" fill="url(#halo)"/>
+  <circle cx="120" cy="78" r="58" stroke="#b58cff" stroke-opacity=".22" stroke-width="1.5"/>
+  <circle cx="120" cy="78" r="72" stroke="#b58cff" stroke-opacity=".1" stroke-width="1.5"/>
+  <g fill="#d9c4ff">
+    <circle cx="34" cy="184" r="2.2" opacity=".45"/><circle cx="58" cy="176" r="2" opacity=".55"/>
+    <circle cx="80" cy="186" r="2.6" opacity=".8"/><circle cx="160" cy="186" r="2.6" opacity=".8"/>
+    <circle cx="182" cy="176" r="2" opacity=".55"/><circle cx="206" cy="184" r="2.2" opacity=".45"/>
+  </g>
+  <rect x="110" y="112" width="20" height="66" rx="8" fill="url(#handle)"/>
+  <rect x="116" y="126" width="8" height="3" rx="1.5" fill="#cdb6ff" opacity=".7"/>
+  <circle cx="120" cy="78" r="40" fill="url(#glob)"/>
+  <circle cx="120" cy="78" r="40" stroke="#fbf5ff" stroke-opacity=".45" stroke-width="2"/>
+  <path d="M96 84c8-6 16-6 24 0s16 6 24 0" stroke="#fbf5ff" stroke-opacity=".75" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="106" cy="62" rx="10" ry="6" fill="#fff" opacity=".55" transform="rotate(-30 106 62)"/>
+</svg>
