@@ -75,12 +75,14 @@
     <div class="vignette" aria-hidden="true"></div>
 
     <header class="hud-top">
-      <!-- Teléfono: logo a la izquierda y menú principal desplegable a la derecha -->
-      <a class="m-brand" href="../" aria-label="Purple Wave Sync: ir al inicio"><img src="../icons/logo-mark.svg" alt="" width="30" height="30"><span>Purple Wave</span></a>
-      <nav class="menu" aria-label="Menú principal">
-        <a class="menu-item" href="../" title="Inicio"><svg aria-hidden="true"><use href="#i-home"/></svg><span>Inicio</span></a>
-        <button id="btn-side" class="menu-item" type="button" aria-expanded="false" aria-controls="side"><svg aria-hidden="true"><use href="#i-rail"/></svg><span>Biblioteca</span></button>
-      </nav>
+      <!-- Logo (lleva a la página de inicio) y, en pantallas anchas, el botón de la biblioteca.
+           En teléfono, el menú principal es el desplegable de la derecha. -->
+      <div class="hud-start">
+        <a class="m-brand" href="../" aria-label="Purple Wave Sync: página de inicio" data-tip="Página de inicio"><img src="../icons/logo-mark.svg" alt="" width="30" height="30"><span>Purple Wave</span></a>
+        <nav class="menu" aria-label="Menú principal">
+          <button id="btn-side" class="menu-item" type="button" aria-expanded="false" aria-controls="side" data-tip="Biblioteca"><svg aria-hidden="true"><use href="#i-rail"/></svg><span class="menu-label">Biblioteca</span></button>
+        </nav>
+      </div>
       <div class="seg view-tabs" role="tablist" aria-label="Vista">
         <button id="view-video" role="tab" type="button" aria-selected="false" aria-controls="video-view">Video</button>
         <button id="view-lights" role="tab" type="button" aria-selected="false" aria-controls="lights-view">Luces</button>
@@ -90,7 +92,7 @@
         <button id="btn-theme" class="round" type="button" aria-label="Cambiar a tema claro" data-tip="Tema claro u oscuro"><svg aria-hidden="true"><use id="theme-icon" href="#i-sun"/></svg></button>
         <button id="btn-settings" class="round" type="button" aria-haspopup="dialog" aria-controls="panel-settings" aria-label="Ajustes" data-tip="Ajustes"><svg aria-hidden="true"><use href="#i-gear"/></svg></button>
         <button id="btn-bt" class="pill cta" type="button" aria-haspopup="dialog" aria-controls="panel-bt">
-          <svg aria-hidden="true"><use href="#i-bt"/></svg><span id="conn-label">Conectar ARMY Bomb</span>
+          <svg aria-hidden="true"><use href="#i-bt"/></svg><span id="conn-label">Conectar<span class="cta-ext"> ARMY Bomb</span></span>
         </button>
       </div>
       <div class="m-nav">
@@ -152,7 +154,6 @@
       <button id="btn-min" class="video-min" type="button" aria-label="Minimizar video"><svg aria-hidden="true"><use href="#i-min"/></svg><span>Minimizar</span></button>
       <div id="video-view" class="video-card" role="tabpanel" aria-label="Video">
         <div class="video-box"><div id="yt"></div></div>
-        <button id="btn-fs" class="video-fs ibtn sm" type="button" aria-label="Pantalla completa" data-tip="Pantalla completa (F)"><svg aria-hidden="true"><use href="#i-expand"/></svg></button>
         <div id="mini-bar" class="mini-bar">
           <span class="mini-grip" aria-hidden="true"></span>
           <span id="mini-title" class="mini-title"></span>
@@ -306,11 +307,12 @@
         </div>
         <span class="times"><span id="t-cur">0:00</span><span class="t-sep" aria-hidden="true">/</span><span id="t-dur">0:00</span></span>
       </div>
-      <!-- Acciones: secundarias con etiqueta; las terciarias van en "Más". -->
+      <!-- Acciones secundarias, siempre con etiqueta (en línea, o debajo del ícono si el dock es angosto). -->
       <div class="dock-actions">
         <button id="btn-cola" class="dbtn" type="button" title="Cola" aria-haspopup="dialog" aria-controls="panel-cola"><svg aria-hidden="true"><use href="#i-queue"/></svg><span>Cola</span></button>
         <button id="btn-lyrics" class="dbtn" type="button" aria-pressed="false" title="Muestra la letra (video o subtítulos oficiales)"><svg aria-hidden="true"><use href="#i-lyrics"/></svg><span>Letra</span></button>
         <button id="btn-live" class="dbtn" type="button" title="Concierto" aria-expanded="false" aria-controls="menu-live" aria-haspopup="true"><svg aria-hidden="true"><use href="#i-live"/></svg><span>Concierto</span></button>
+        <button id="btn-fs" class="dbtn dbtn-icon" type="button" aria-label="Pantalla completa" data-tip="Pantalla completa (F)"><svg aria-hidden="true"><use href="#i-expand"/></svg><span>Pantalla</span></button>
         <button id="dock-bt" class="dbtn phone-only" type="button" aria-haspopup="dialog" aria-controls="panel-bt"><svg aria-hidden="true"><use href="#i-bt"/></svg><span id="dock-bt-label">Conectar</span></button>
       </div>
     </nav>

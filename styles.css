@@ -242,7 +242,16 @@ kbd {
   min-height: var(--hud-h); flex-wrap: nowrap;
   transition: opacity var(--dur-3) var(--ease-out), transform var(--dur-3) var(--ease-out);
 }
+.hud-start { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
 .top-actions { display: flex; gap: var(--s-2); align-items: center; }
+/* Logo: lleva a la página de inicio (mismo lugar en teléfono, tablet y escritorio) */
+.m-brand {
+  display: inline-flex; align-items: center; gap: var(--s-2); min-height: var(--tap); padding: 0 var(--s-2) 0 2px; border-radius: var(--r-pill);
+  color: var(--text); text-decoration: none; font: 800 var(--fs-16)/1 var(--font-body); letter-spacing: -0.01em; white-space: nowrap;
+}
+.m-brand img { width: 30px; height: 30px; flex: none; }
+.m-brand:hover { color: var(--text); }
+.m-nav { display: none; }
 
 .menu, .seg, .pill, .round {
   background: var(--surface-0); border: 1px solid var(--border);
@@ -260,6 +269,12 @@ kbd {
 .menu-item svg { width: 18px; height: 18px; }
 .menu-item:hover { background: var(--surface-hover); color: var(--text); }
 .menu-item[aria-expanded="true"] { background: var(--accent-soft); color: var(--accent); }
+/* Pantallas medianas: logo, Biblioteca y CTA compactos para que la cabecera quepa en una línea */
+@media (max-width: 1099px) {
+  /* Ocultos a la vista pero no al lector de pantalla (el CTA sigue llamándose "Conectar ARMY Bomb") */
+  .m-brand span, .menu-label, .cta-ext { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .menu-item { width: 38px; justify-content: center; padding: 0; }
+}
 
 /* Pestañas segmentadas con indicador deslizante (2 o 3 opciones) */
 .seg, .tabs {
@@ -355,8 +370,6 @@ kbd {
 .empty-art { width: clamp(112px, 22cqw, 180px); height: auto; margin-bottom: var(--s-1); filter: drop-shadow(0 16px 40px var(--glow-soft)); animation: float 6s ease-in-out infinite; }
 @keyframes float { 50% { transform: translateY(-6px); } }
 .eyebrow { font-size: var(--fs-12); font-weight: 700; letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--accent); }
-.empty-title { font-family: var(--font-display); font-size: clamp(var(--fs-20), 3.2cqw, var(--fs-28)); font-weight: 600; line-height: var(--lh-tight); letter-spacing: var(--track-display); text-wrap: balance; }
-.empty-sub { font-size: var(--fs-14); color: var(--text-2); margin-bottom: var(--s-3); }
 
 .lights-view { display: grid; justify-items: center; align-content: center; gap: var(--s-5); text-align: center; width: 100%; height: 100%; animation: view-in var(--dur-4) var(--ease-out); }
 .big-bulb {
@@ -513,7 +526,6 @@ kbd {
 
 /* Buscador */
 .search { position: relative; margin: 0 0 var(--s-2); }
-.side .search { margin: 0 var(--s-3) var(--s-2); }
 .search svg { position: absolute; left: 14px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
 .song-search { width: 100%; padding-left: 42px !important; border-radius: var(--r-pill) !important; }
 .search-empty { padding: var(--s-2) var(--s-3) var(--s-3); }
@@ -534,12 +546,24 @@ kbd {
 @starting-style { .side:not([hidden]) { opacity: 0; transform: translateX(-16px); } }
 .side-head { display: flex; justify-content: space-between; align-items: center; padding: var(--s-3) var(--s-2) var(--s-2) var(--s-4); }
 .side-head h2 { font-size: var(--fs-16); }
-.side-list { overflow: auto; padding: 0 var(--s-2) var(--s-3); -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
 .app.with-side .stage, .app.with-side .dock { margin-left: calc(var(--side-w) + var(--s-4)); }
 .app.with-side .dock { width: auto; justify-self: stretch; }
 .app.with-side.fs .side { display: none; }
 .app.with-side.fs .stage, .app.with-side.fs .dock { margin-left: 0; }
-@media (max-width: 1099px) { .side { display: none !important; } .app.with-side .stage, .app.with-side .dock { margin-left: 0; } }
+/* Con la barra fija se cierra con "Biblioteca" (arriba); en el cajón no se contrae a íconos. */
+.app.with-side #side-close, .app.side-drawer #side-rail { display: none; }
+@media (max-width: 1099px) {
+  .app:not(.side-drawer) .side { display: none !important; }
+  .app.with-side .stage, .app.with-side .dock { margin-left: 0; }
+  /* Cajón (641–1099 px): flota sobre el contenido, por encima de los paneles */
+  .app.side-drawer .side {
+    z-index: calc(var(--z-panel) + 2); width: min(var(--side-w), calc(100% - 2 * var(--pad)));
+    bottom: calc(var(--pad) + var(--dock-h) + var(--s-3) + var(--safe-b)); /* no tapa el reproductor */
+    box-shadow: var(--hairline-top), var(--e-3);
+    overflow-y: auto; overscroll-behavior: contain; /* en horizontal no cabe entero: se desplaza todo el cajón */
+  }
+}
+@media (max-width: 640px) { .side { display: none !important; } }
 
 /* =====================================================================
    Paneles (diálogos no modales) y hojas inferiores en teléfono
@@ -920,32 +944,15 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   .app { gap: var(--s-4); }
 }
 
-/* Tablet */
-@media (max-width: 960px) {
-  :root { --dock-h: 116px; }
-  .dock {
-    grid-template-columns: minmax(0, 1fr) auto auto;
-    grid-template-areas: "np transport actions" "progress progress progress";
-    row-gap: var(--s-2); padding: var(--s-3) var(--s-4) var(--s-2);
-  }
-  .transport { gap: var(--s-1); }
-}
-@media (max-width: 760px) {
-  :root { --dock-h: 164px; }
-  .dock { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "np transport" "progress progress" "actions actions"; }
-  .dock-actions { justify-content: space-between; }
-}
 
 /* Teléfono */
 @media (max-width: 640px) {
   :root { --pad: var(--s-3); --r-xl: 20px; }
   .app { gap: var(--s-3); grid-template-rows: auto minmax(0, 1fr) auto auto; }
-  .menu-item span { display: none; }
-  .menu-item { padding: 0 10px; min-height: 38px; }
   .view-tabs button { min-width: 0; padding: 0 var(--s-3); }
   .pill span { max-width: 9ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .pill { padding: 0 var(--s-3); }
-  .dock { padding: var(--s-2) var(--s-3); grid-row: 4; grid-column: 1; position: relative; z-index: 2; }
+  .dock { grid-row: 4; grid-column: 1; position: relative; z-index: 2; }
   .coach { box-shadow: var(--hairline-top), var(--e-1); }
   .coach-pill { align-self: center; }
   /* La tira de letra queda justo debajo del video (que aquí va arriba del escenario). */
@@ -955,9 +962,6 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   .video-card { width: min(100cqw, calc((100cqh - 64px) * 16 / 9)); border-radius: var(--r-lg); }
   .empty { gap: var(--s-1); padding: var(--s-4); }
   .empty-art { width: 84px; }
-  .empty-sub { display: none; }
-  .empty .btn.lg { min-height: var(--tap); margin-top: var(--s-2); }
-  .empty-title { font-size: var(--fs-16); }
 
   /* La guía entra en el flujo, entre el video y el reproductor: no tapa nada. */
   .stage { place-items: start center; }
@@ -992,8 +996,6 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   .hud-top { gap: var(--s-2); }
 }
 @media (max-width: 360px) {
-  #btn-fs { display: none; }
-  .menu-item { padding: 0 var(--s-2); }
   .view-tabs button { padding: 0 10px; font-size: var(--fs-12); }
 }
 
@@ -1001,13 +1003,6 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 @media (max-height: 500px) and (orientation: landscape) {
   :root { --pad: var(--s-2); --hud-h: 40px; --dock-h: 60px; }
   .app { gap: var(--s-2); grid-template-rows: auto minmax(0, 1fr) auto; }
-  .menu-item span { display: none; }
-  .dock {
-    grid-row: auto; min-height: 0;
-    grid-template-columns: minmax(120px, 1fr) auto minmax(140px, 2fr) auto; grid-template-areas: "np transport progress actions";
-    border-radius: var(--r-pill); padding: var(--s-1) var(--s-3) var(--s-1) var(--s-1); row-gap: 0;
-  }
-  .dock-actions { justify-content: flex-end; }
   .np-sub { display: none; }
   .art { width: 36px; height: 36px; box-shadow: inset 0 0 0 10px #0d0b18; }
   .art::after { inset: 14px; }
@@ -1020,7 +1015,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   .c-scene { display: none; }
   .panel { max-height: calc(100dvh - 2 * var(--pad)); bottom: var(--pad); }
   .empty-art { width: 72px; }
-  .empty-sub, .eyebrow { display: none; }
+  .eyebrow { display: none; }
 }
 
 /* Pantallas táctiles: todos los controles a 44 px. */
@@ -1086,7 +1081,6 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .album-title::after { content: ""; flex: 1 1 24px; min-width: 24px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--p1, var(--accent)), var(--p2, transparent), var(--p3, transparent), transparent); opacity: 0.55; }
 
 /* Chips de filtro: cada integrante con su acento */
-.side > .filters { flex: none; padding: 0 var(--s-3) var(--s-2); }
 .filter-chip { min-height: 36px; padding: 0 var(--s-3); font-size: var(--fs-12); font-weight: 700; border-color: var(--border-strong); background: var(--surface-field); display: inline-flex; align-items: center; gap: 6px; transition: background var(--dur-2), color var(--dur-2), border-color var(--dur-2); }
 .filter-chip:hover { border-color: rgba(255, 255, 255, 0.3); }
 .filter-chip.member::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--chip); box-shadow: 0 0 8px var(--chip); }
@@ -1117,7 +1111,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 /* (el inicio se muestra u oculta con [hidden] desde setView) */
 .stage:has(#lights-view:not([hidden])) .home-view { display: none; }
 .app.home .video-card { visibility: hidden; }
-.app.home .style-chip { display: none; }
+.app.home .style-chip, .app[data-view="lights"] .style-chip { display: none; }
 .app.home .progress { visibility: hidden; }
 .home-view {
   position: absolute; inset: 0; z-index: 3; overflow: auto; overscroll-behavior: contain;
@@ -1249,6 +1243,53 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .dbtn[aria-expanded="true"] { background: var(--surface-active); color: var(--text); }
 .phone-only { display: none; }
 
+/* ---------------------------------------------------------------------
+   Dock: un solo lugar para su diseño según el ancho disponible
+   · ancho (≥ 800 px de dock): título | transporte + progreso | acciones con etiqueta en línea
+   · medio (< 800 px): igual, con la etiqueta corta bajo el ícono (nunca íconos sueltos)
+   · teléfono (≤ 640 px de pantalla): título + transporte / progreso / fila de acciones
+   · teléfono en horizontal: una sola fila tipo píldora, acciones solo con ícono (nombre accesible intacto)
+   --------------------------------------------------------------------- */
+.dock { container: dock / inline-size; grid-template-columns: minmax(160px, 1fr) minmax(240px, 1.3fr) auto; }
+.transport { gap: var(--s-2); }
+.dock-actions { gap: var(--s-1); }
+/* Pantalla completa: ícono con tooltip en pantallas anchas (es un símbolo conocido) */
+.dbtn-icon { width: var(--tap); padding: 0; }
+.dbtn-icon span, .dbtn-sr span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@container dock (max-width: 799px) {
+  .dock-actions { gap: 2px; }
+  .dbtn { flex-direction: column; gap: 2px; min-width: 56px; min-height: 52px; padding: var(--s-1) var(--s-1); border-radius: var(--r-md); font-size: 0.6875rem; letter-spacing: 0.01em; }
+  .dbtn-icon { width: auto; }
+  .dbtn-icon span { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
+  .transport { gap: var(--s-1); }
+}
+@media (max-width: 640px) {
+  :root { --dock-h: 148px; }
+  .phone-only { display: inline-flex; }
+  /* --dock-h aquí solo ubica avisos y hojas encima del dock: la altura real la da el contenido */
+  .dock { min-height: 0; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "np transport" "progress progress" "actions actions"; row-gap: var(--s-1); padding: var(--s-2) var(--s-3) var(--s-1); }
+  .dock-actions { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; }
+  .dbtn { min-width: 0; min-height: 48px; padding: 2px 0; }
+  .dbtn span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  .dbtn svg { width: 20px; height: 20px; }
+  #dock-bt:not(.on) { color: var(--accent); }
+  .np-title { font-size: var(--fs-16); }
+  /* Sin canción: solo "reproducir" (anterior/siguiente no hacen nada) y sin barra de tiempo */
+  .app.home .progress, .app.home #btn-prev, .app.home #btn-next { display: none; }
+  .app.home { --dock-h: 128px; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .dock {
+    grid-row: auto; min-height: 0;
+    grid-template-columns: minmax(120px, 1fr) auto minmax(140px, 2fr) auto; grid-template-areas: "np transport progress actions";
+    border-radius: var(--r-pill); padding: var(--s-1) var(--s-3) var(--s-1) var(--s-1); row-gap: 0;
+  }
+  .dock-actions { display: flex; justify-content: flex-end; gap: 2px; }
+  .dbtn { width: var(--tap); min-width: 0; min-height: var(--tap); padding: 0; }
+  .dbtn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .np-title { font-size: var(--fs-14); }
+}
+
 /* Menús compactos */
 .menu-pop {
   position: absolute; z-index: calc(var(--z-panel) + 1); width: min(320px, calc(100vw - 24px));
@@ -1280,18 +1321,10 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .mi[aria-pressed="true"]::after { background-color: var(--accent); background-position: 100% 50%; }
 .mi[aria-pressed="true"] { background: var(--accent-soft); }
 
-/* Teléfono: barra inferior con etiquetas al alcance del pulgar */
+/* Teléfono: cabecera mínima; Explorar compacto */
 @media (max-width: 640px) {
-  .phone-only { display: inline-flex; }
   #btn-side, .top-actions { display: none; }
   .hud-top { justify-content: space-between; }
-  .dock-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; justify-content: stretch; }
-  .dbtn { flex-direction: column; gap: 2px; min-height: 52px; padding: var(--s-1) 0; border-radius: var(--r-md); font-size: 0.6875rem; letter-spacing: 0.01em; }
-  .dbtn span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
-  .dbtn svg { width: 20px; height: 20px; }
-  #dock-bt:not(.on) { color: var(--accent); }
-  .app.home .progress { display: none; }
-  .np-title { font-size: var(--fs-16); }
   .home-view { padding: 0 0 var(--s-4); gap: var(--s-5); }
   .home-hero { padding: var(--s-4); gap: var(--s-3); }
   .hero-cta { width: 100%; }
@@ -1306,9 +1339,6 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   .home-view { gap: var(--s-4); }
   .home-hero { padding: var(--s-3) var(--s-4); }
   .hero-sub, .home-hero .eyebrow { display: none; }
-  .np-title { font-size: var(--fs-14); }
-  .dbtn span { display: none; }
-  .dbtn { width: var(--tap); padding: 0; }
   .upnext { display: none; }
 }
 
@@ -1374,7 +1404,10 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
 .explore-head .search { margin: 0; }
-.explore-head .filters { padding: 0; }
+.explore-head .filters {
+  padding: 0 var(--s-6) 0 0; scroll-padding-inline-end: var(--s-6);
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - var(--s-6)), transparent); mask-image: linear-gradient(to right, #000 calc(100% - var(--s-6)), transparent);
+}
 .explore-results { display: grid; gap: var(--s-3); }
 .explore-list { gap: 2px; }
 .explore-list .album-title { position: static; background: none; margin-top: var(--s-4); }
@@ -1426,8 +1459,9 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .cq-head { display: flex; justify-content: space-between; align-items: center; gap: var(--s-2); }
 .cq-head .btn { min-height: 36px; }
 .cq-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-#cq-user-sec.is-empty .cq-list { min-height: 48px; border: 1px dashed var(--border-strong); border-radius: var(--r-md); }
+#cq-user-sec.is-empty .cq-list { display: none; }
 #cq-user-sec:not(.is-empty) .cq-empty { display: none; }
+.cq-empty { padding: var(--s-3) var(--s-4); border: 1px dashed var(--border-strong); border-radius: var(--r-md); text-align: center; }
 .cq-item { display: grid; grid-template-columns: 36px minmax(0, 1fr) 40px; align-items: center; gap: 2px; border-radius: var(--r-md); touch-action: pan-y; transition: background var(--dur-2), transform var(--dur-2) var(--ease-out); }
 .cq-item:hover, .cq-item:focus-within { background: var(--surface-hover); }
 .cq-handle { width: 36px; height: var(--tap); border: 0; border-radius: var(--r-sm); background: none; color: var(--muted); cursor: grab; touch-action: none; display: grid; place-items: center; }
@@ -1451,11 +1485,6 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .toast-action:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 @media (pointer: coarse) { .toast-action { min-height: var(--tap); } }
 
-/* Dock en pantallas medianas: acciones solo con icono (el texto queda para lectores de pantalla y en el tooltip). */
-@media (min-width: 761px) and (max-width: 1099px) {
-  .dbtn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .dbtn { width: var(--tap); padding: 0; }
-}
 .meta-line[hidden] { display: none; }
 
 /* Un solo "Conectar" por pantalla: el de la barra superior (escritorio) o el del dock (teléfono). */
@@ -1532,8 +1561,6 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .toast-action { min-height: 36px; }
 .sg-play { gap: var(--s-2); }
 .sg-meta { margin-top: -6px; }
-.dock-actions { gap: var(--s-1); }
-.transport { gap: var(--s-2); }
 .coach { padding: var(--s-4); gap: var(--s-4); }
 .c-actions { gap: var(--s-2); margin-top: var(--s-2); }
 .menu-pop { padding: var(--s-2); gap: var(--s-1); }
@@ -1552,11 +1579,6 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 /* Títulos largos en el dock: se desvanecen al final (las letras animadas no admiten "…") */
 .np-title.is-overflowing { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent); }
 
-/* Un solo buscador a la vez: si el inicio o Explorar están en pantalla (con su buscador y filtros),
-   la lista lateral oculta los suyos y queda como lista de álbumes. */
-.app:has(#home:not([hidden])) .side .search,
-.app:has(#home:not([hidden])) .side [data-filters],
-.app:has(#home:not([hidden])) .side .search-empty { display: none !important; }
 
 /* =====================================================================
    Ronda 3 · Biblioteca, Ahora suena, tema claro, apoyo
@@ -1572,11 +1594,6 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 /* Barra superior: tema y ajustes */
 .top-actions .round { width: var(--tap); height: var(--tap); }
 
-/* Pantalla completa en la esquina del video */
-.video-fs { position: absolute; top: var(--s-3); right: var(--s-3); z-index: 2; color: #fff; background: rgba(8, 6, 20, 0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; transition: opacity var(--dur-2); }
-.video-card:hover .video-fs, .video-fs:focus-visible { opacity: 1; }
-@media (hover: none) { .video-fs { opacity: 1; } }
-.app.home .video-fs, .app.exploring .video-fs { display: none; }
 
 /* ---------- Biblioteca ---------- */
 .side.lib { --side-pad: var(--s-3); display: flex; flex-direction: column; gap: var(--s-2); padding-bottom: var(--s-3); }
@@ -1745,6 +1762,8 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 :root[data-theme="light"] .dlg { background: #fff; }
 :root[data-theme="light"] .coach::before { background: #fff; }
 :root[data-theme="light"] .lights-view .section-label, :root[data-theme="light"] .lights-view .hint { text-shadow: 0 1px 10px rgba(255, 255, 255, 0.9); }
+/* En claro, el público lila queda detrás del texto: el aviso va en una pastilla clara (contraste AA) */
+:root[data-theme="light"] .lights-view .hint { color: var(--text-2); background: var(--surface-1); padding: var(--s-1) var(--s-3); border-radius: var(--r-pill); box-shadow: var(--e-1); text-shadow: none; }
 :root[data-theme="light"] .shelf-likes { --shelf-c: #b3245f; }
 :root[data-theme="light"] .shelf-start { --shelf-c: #5b2fc0; }
 :root[data-theme="light"] .shelf-lyrics { --shelf-c: #1d5f9e; }
@@ -1786,7 +1805,6 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 }
 /* L-07 · el título del dock cabe: sin canción, tamaño menor; columna más ancha en escritorio */
 .app.home .np-title { font-size: var(--fs-16); }
-@media (min-width: 1280px) { .dock { grid-template-columns: minmax(220px, 1fr) minmax(260px, 1.3fr) auto; } }
 /* L-06 · contadores de los chips legibles (sin opacidad) */
 .filter-chip .n { opacity: 1; color: var(--text-2); }
 .filter-chip[aria-pressed="true"] .n { color: inherit; }
@@ -1813,11 +1831,14 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 .cc-actions { display: flex; gap: var(--s-2); }
 /* I-10 · teléfono: "A continuación" ocupa el hueco bajo el video (no flota) */
 @media (max-width: 640px) {
+  /* Debajo del video; deja el hueco de la tira de letra solo si está visible */
   .upnext {
-    top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + 52px); bottom: auto; left: 0; right: 0; width: auto;
-    max-height: calc(100cqh - (36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + 52px)); overflow: auto;
+    --un-top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + 52px);
+    top: var(--un-top); bottom: auto; left: 0; right: 0; width: auto;
+    max-height: calc(100cqh - var(--un-top)); overflow: auto;
     background: var(--surface-1); box-shadow: var(--e-1);
   }
+  .stage:has(#lyrics-bar[hidden]) .upnext { --un-top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + var(--s-3)); }
   /* UI-04 · Explorar en teléfono: el mini video mide solo 200 px (controles encima) y el dock va compacto */
   .app.exploring .video-card { --mini-w: calc(100cqw - 16px); }
   .app.exploring .mini-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 44px; background: linear-gradient(to top, rgba(8, 6, 20, 0.85), transparent); color: #fff; }
@@ -1837,7 +1858,6 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 /* =====================================================================
    Teléfono: logo + menú desplegable, ⋯ junto al título, ♡ visible, minimizar video
    ===================================================================== */
-.m-brand, .m-nav { display: none; }
 /* ⋯ junto al nombre de la canción (no encima de la miniatura) */
 .sg-item .more-btn {
   top: auto; bottom: 0; right: -6px; width: 36px; height: 44px; border-radius: var(--r-md);
@@ -1868,11 +1888,17 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 .app.exploring .video-card.mini-sm { --mini-w: 200px; }
 .app.exploring .video-card.mini-sm .mini-title { display: none; }
 .app.exploring .video-card.mini-sm .mini-bar { justify-content: flex-end; }
+/* Teléfono en horizontal: mini de 200 px en su propia columna a la derecha (no tapa tarjetas ni el dock) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .app.exploring .video-card { --mini-w: 200px; }
+  .app.exploring .video-card .mini-title { display: none; }
+  .app.exploring .video-card .mini-bar { justify-content: flex-end; height: 44px; }
+  .app.exploring .home-view { padding-right: 212px; padding-bottom: var(--s-5); }
+}
 
 @media (max-width: 640px) {
   .hud-top .menu, .hud-top .view-tabs { display: none; }
-  .m-brand { display: inline-flex; align-items: center; gap: var(--s-2); min-height: var(--tap); color: var(--text); text-decoration: none; font: 800 var(--fs-16)/1 var(--display, inherit); letter-spacing: -0.01em; }
-  .m-brand img { width: 30px; height: 30px; }
+  .m-brand span { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
   .m-nav { display: block; position: relative; margin-left: auto; }
   .m-nav-btn {
     display: inline-flex; align-items: center; gap: var(--s-1); min-height: var(--tap); padding: 0 var(--s-3) 0 var(--s-4);

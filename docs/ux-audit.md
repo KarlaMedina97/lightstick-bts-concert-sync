@@ -1,5 +1,41 @@
 # Auditoría UX · Purple Wave Sync
 
+## 2026-11-05 · Ronda 2
+
+Revisión de la copia local (con las decisiones ya pedidas: menú desplegable y logo en teléfono, "Minimizar" a un mini
+reproductor de 200 × 200, ⋯ junto al título y ♡ visible, Explorar en teléfono solo con miniaturas). Edge headless en
+360×740, 390×844, 768×1024, 1024×768, 1280×800, 1440×900 y 844×390, con medidas de `getBoundingClientRect`.
+Capturas en `scratchpad\audit\r2\` (`before-*` y `after-*`).
+
+### Problemas, por prioridad
+
+| # | Problema | Dónde | Evidencia | Arreglo |
+|---|---|---|---|---|
+| R2-01 | **El botón de pantalla completa tapa los controles de YouTube** (engranaje y subtítulos) en la esquina del video; en teléfono y tablet está siempre visible. | `#btn-fs` dentro de `.video-card` | 390×844, 768×1024 y 844×390: el ⛶ queda encima del ⚙ de YouTube. | Sale del video y pasa al dock como acción "Pantalla" (con etiqueta, igual que Cola/Letra/Concierto). |
+| R2-02 | **Tablet (641–1099 px): la cabecera no cabe.** Inicio + Biblioteca + 3 pestañas + tema + ajustes + "Conectar ARMY Bomb", que se parte en dos líneas en 768 px. "Inicio" lleva a la landing, pero se lee como "inicio de la app". | `.hud-top` | 768×1024: el CTA mide 2 líneas; la barra ocupa los 736 px. | Logo (como en teléfono) en vez del enlace "Inicio"; en < 1100 px el CTA dice solo "Conectar" y Biblioteca va con ícono. |
+| R2-03 | **Tablet: el botón Biblioteca abre otra lista** ("Canciones y conciertos") en vez de la biblioteca que se ve en escritorio. Dos navegaciones distintas para lo mismo. | `#btn-side`, `#panel-queue` | 768 y 1024: Biblioteca → panel de búsqueda con chips. | Entre 641 y 1099 px la biblioteca se abre como cajón sobre el contenido (se cierra con ✕, Esc, tocando fuera o al elegir). |
+| R2-04 | **Tablet: acciones del dock solo con ícono** (Cola, Letra, Concierto) entre 761 y 1099 px, con espacio de sobra (1024 px). | `.dock-actions` | 1024×768: tres íconos sueltos a la derecha. | Con etiqueta siempre: en línea desde 961 px, ícono sobre etiqueta corta entre 641 y 960. |
+| R2-05 | **Teléfono: el dock ocupa casi un cuarto de la pantalla** (164 px de 740 en 360×740) aunque no suene nada; "Nada sonando aún" se corta en "Nada s…" porque anterior/siguiente ocupan la fila. | `#dock` en `.app.home` | 360×740: dock 164 px, título 150 px de ancho. | Sin canción, el dock solo muestra reproducir; botones de acción de 48 px y relleno más ajustado. |
+| R2-06 | **Teléfono en horizontal: el mini reproductor de Explorar se sale por debajo del dock** y tapa las tarjetas (356 × 248 px en un escenario de ~260 px). | `.app.exploring .video-card`, 844×390 | `before-844x390-explore.png`. | En horizontal, mini de 200 px en una columna reservada a la derecha; el contenido se acomoda a su izquierda. |
+| R2-07 | **Escritorio: tres controles para la biblioteca** (Biblioteca arriba, contraer y ✕ en la propia barra). | `.side-head` | 1280/1440. | Con la barra fija se quita la ✕ (la cierra el botón de arriba); en el cajón de tablet se quita "contraer". |
+| R2-08 | **Luces: "En pausa" dos veces** (chip superior y rótulo bajo el globo). Pendiente de V-08. | `#style-chip` en vista Luces | 390×844 Luces. | El chip se oculta en Luces (el rótulo ya dice la sección). |
+| R2-09 | **Chips de filtro cortados sin indicio de scroll** en el borde derecho. | `.explore-head .filters` | 1024 y 1440: "j-hope", "Jimin" cortados. | Desvanecido en el borde y relleno final para que el último chip se vea entero. |
+| R2-10 | **Cola vacía: caja punteada vacía y el aviso debajo**, como dos cosas distintas. | `#cq-user-sec.is-empty` | 390×844 Cola. | El aviso va dentro de la caja punteada. |
+| R2-11 | **Capas de `styles.css` que se pisan** en dock, cabecera y acciones (`.dbtn` en 4 bloques, `.dock-actions` en 5, `.menu-item` en 4). | `styles.css` | — | Bloques consolidados para cabecera y dock; reglas muertas (`.side-list`, `.side .search`, `.empty-title`, `.empty-sub`, `.video-fs`) fuera. |
+| R2-12 | **Landing en teléfono más ancha que la pantalla**: la banda inclinada (`.marquee.alt`, margen −2vw) agranda el viewport a 406 px en un celular de 390 (todo se ve 4 % más chico) y en 844×390 el botón "Abrir el reproductor" queda cortado. | `landing.css` | `innerWidth` 406 con `visualViewport` 390. | `main { overflow-x: clip }` (recorta sin romper lo pegajoso). |
+| R2-13 | **Privacidad en teléfono sin enlace a la app** (el enlace "Ir a la app" se oculta por debajo de 720 px) y "la lightstick" en femenino. | `privacy/index.html` | 360×740. | El enlace pasa a botón de la cabecera (`.nav-cta`); "al lightstick". |
+
+**Resultado medido (después):** dock de teléfono 164 → 148 px con canción y 128 px sin canción; cabecera de 768 px en
+una línea; acciones del dock con etiqueta en todos los anchos salvo teléfono en horizontal; landing a 390 px sin
+desborde (`innerWidth` 390); mini reproductor en 844×390 dentro de su columna, sin tocar el dock; 48/48 pruebas.
+
+Fuera de esta ronda (siguen abiertos en la hoja de ruta): navegación inferior de 4 destinos en teléfono (UI-09), gestos
+(UI-10), niveles de calidad 3D (P-02) y el panel "Canciones y conciertos" como vistas propias (IA-01 completo).
+
+---
+
+## 2026-11-04 · Ronda 1
+
 Evaluación heurística (Nielsen), accesibilidad (WCAG 2.2 AA), diseño visual, arquitectura de información y UX móvil
 de la landing (`/`), el reproductor (`/player/`) y la privacidad (`/privacy/`).
 

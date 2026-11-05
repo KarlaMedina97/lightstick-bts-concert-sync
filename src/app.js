@@ -191,7 +191,12 @@ function renderSticks() {
     }),
   );
   const n = sticks.length;
-  $("conn-label").textContent = n ? `${n} conectado${n > 1 ? "s" : ""} 💜` : "Conectar ARMY Bomb";
+  // "Conectar" + " ARMY Bomb" (la segunda parte se oculta en pantallas medianas para que la cabecera quepa).
+  const ext = document.createElement("span");
+  ext.className = "cta-ext";
+  ext.textContent = " ARMY Bomb";
+  if (n) $("conn-label").textContent = `${n} conectado${n > 1 ? "s" : ""} 💜`;
+  else $("conn-label").replaceChildren("Conectar", ext);
   $("btn-bt").classList.toggle("on", n > 0);
   $("dock-bt-label").textContent = n ? "Conectado" : "Conectar";
   $("dock-bt").classList.toggle("on", n > 0);
@@ -430,26 +435,38 @@ function bindSearch() {
 // ---------- Menú y lista lateral ----------
 const SIDE_KEY = "pws.side.v1";
 const wide = () => matchMedia("(min-width: 1100px)").matches;
+// Entre 641 y 1099 px la biblioteca es un cajón sobre el contenido (en teléfono se usa el menú desplegable).
+const drawerMode = () => matchMedia("(min-width: 641px) and (max-width: 1099px)").matches;
 function setSide(open) {
   if (!wide()) {
-    // En pantallas pequeñas la lista se abre como panel.
-    $("side").hidden = true;
+    const show = open && drawerMode();
+    $("side").hidden = !show;
     app.classList.remove("with-side");
-    $("btn-side").setAttribute("aria-expanded", "false");
-    if (open) showPanel("panel-queue", $("btn-side"));
+    app.classList.toggle("side-drawer", show);
+    $("btn-side").setAttribute("aria-expanded", String(show));
+    if (show) requestAnimationFrame(() => $("side").querySelector(".lib-item")?.focus());
     return;
   }
+  app.classList.remove("side-drawer");
   $("side").hidden = !open;
   app.classList.toggle("with-side", open);
   $("btn-side").setAttribute("aria-expanded", String(open));
   store.set(SIDE_KEY, open);
 }
 function bindMenu() {
-  $("btn-side").onclick = () => (wide() ? setSide($("side").hidden) : setSide(true));
+  $("btn-side").onclick = () => setSide($("side").hidden);
   $("side-close").onclick = () => { setSide(false); $("btn-side").focus(); };
+  // El cajón se cierra al tocar fuera o al elegir algo dentro.
+  document.addEventListener("pointerdown", (e) => {
+    if (app.classList.contains("side-drawer") && !e.target.closest("#side, #btn-side, .panel, #song-menu")) setSide(false);
+  });
+  $("side").addEventListener("click", (e) => {
+    if (app.classList.contains("side-drawer") && e.target.closest(".lib-item, .lib-row, .support-pill")) setTimeout(() => setSide(false), 0);
+  });
   $("btn-feedback").onclick = (e) => showPanel("panel-feedback", e.currentTarget);
   setSide(wide() && store.get(SIDE_KEY, true));
-  matchMedia("(min-width: 1100px)").addEventListener("change", () => setSide(wide() && store.get(SIDE_KEY, true)));
+  matchMedia("(min-width: 1100px)").addEventListener("change", () => { applyRail(railPreferred()); setSide(wide() && store.get(SIDE_KEY, true)); });
+  matchMedia("(max-width: 640px)").addEventListener("change", () => { if (!wide()) setSide(false); });
 }
 
 // ---------- Opiniones ----------
@@ -887,6 +904,7 @@ function onFsChange() {
   const on = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
   app.classList.toggle("fs", on);
   $("btn-fs").setAttribute("aria-label", on ? "Salir de pantalla completa" : "Pantalla completa");
+  $("btn-fs").querySelector("span").textContent = on ? "Salir" : "Pantalla";
 }
 
 let idleTimer;
@@ -1281,7 +1299,7 @@ function railPreferred() {
   return typeof saved === "boolean" ? saved : innerWidth < 1280;
 }
 function applyRail(on) {
-  app.classList.toggle("rail", on);
+  app.classList.toggle("rail", on && wide()); // el cajón de tablet siempre va con etiquetas
   $("side-rail").setAttribute("aria-pressed", String(on));
   $("side-rail").setAttribute("aria-label", on ? "Expandir biblioteca" : "Contraer biblioteca");
   $("side-rail").dataset.tip = on ? "Expandir" : "Contraer";
@@ -2026,7 +2044,9 @@ function placeMini(animate) {
   const stage = $("main").getBoundingClientRect();
   const head = $("explore-head").getBoundingClientRect();
   const w = card.offsetWidth, h = card.offsetHeight, g = 12;
-  const top = Math.max(g, head.bottom - stage.top + g);
+  // Si Explorar le reserva una columna (teléfono en horizontal), el mini va arriba de todo, junto al buscador.
+  const reserved = parseFloat(getComputedStyle($("home")).paddingRight) >= w;
+  const top = reserved ? g / 2 : Math.max(g, Math.min(head.bottom - stage.top + g, stage.height - h - g));
   const pos = {
     tl: [g, top], tr: [stage.width - w - g, top],
     bl: [g, stage.height - h - g], br: [stage.width - w - g, stage.height - h - g],
@@ -2366,6 +2386,7 @@ async function init() {
     if (e.key === "Escape" && !$("song-menu").hidden) return closeSongMenu(true);
     if (e.key === "Escape" && document.querySelector(".menu-pop:not([hidden])")) return closeMenus();
     if (e.key === "Escape" && openPanel) return closePanel();
+    if (e.key === "Escape" && app.classList.contains("side-drawer")) { setSide(false); return $("btn-side").focus(); }
     if (e.target.closest("input, select, textarea, button, a, [role='slider']")) return;
     const k = e.key.toLowerCase();
     if (e.code === "Space") { e.preventDefault(); togglePlay(); }

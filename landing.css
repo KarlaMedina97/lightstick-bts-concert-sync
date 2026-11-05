@@ -152,7 +152,9 @@ h3 { font-size: 1.02rem; letter-spacing: -.02em; font-weight: 600; }
 .hero-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; align-items: center; margin-top: .3rem; }
 
 /* ---------- Capítulos: slot del modelo + contenido ---------- */
-main { position: relative; z-index: 2; }
+/* overflow-x: clip (no hidden): recorta la banda inclinada sin crear un contenedor de scroll, así lo pegajoso sigue
+   funcionando y el teléfono no agranda el viewport (antes 406 px de ancho en una pantalla de 390). */
+main { position: relative; z-index: 2; overflow-x: clip; }
 .chapter { position: relative; padding: 0 var(--gutter); }
 .slot { height: 46svh; pointer-events: none; }
 .copy { position: relative; display: grid; gap: 1.4rem; padding-bottom: 10svh; }
