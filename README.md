@@ -41,6 +41,15 @@ App web progresiva (PWA), gratuita y de código abierto, para sincronizar tu lig
   **modo seguro** (máx. 3 destellos/segundo, WCAG 2.3.1).
 - **Funciona como app instalable** y abre sin conexión (los videos sí necesitan internet).
 
+## Más funciones
+
+- **131 canciones** de canales oficiales: grupo y solistas (RM, Jin, SUGA, j-hope, Jimin, V, Jung Kook), con filtros por integrante.
+- **Me gusta:** arma tu lista con ♡ (se guarda en tu dispositivo).
+- **Letra:** cambia al video oficial con la letra en pantalla cuando existe.
+- **Estoy en un concierto:** la cámara copia el color de un ARMY Bomb real cercano y el micrófono marca el ritmo.
+- **Recorrido de bienvenida** con globos sobre los controles reales.
+- Rutas: `/`, `/player/`, `/privacy/`.
+
 ## Seguridad y privacidad
 
 - Sin cuentas ni servidor propio: los datos de cada persona quedan en su dispositivo y se pueden borrar desde Ajustes.

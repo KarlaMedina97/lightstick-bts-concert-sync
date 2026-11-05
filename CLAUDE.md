@@ -30,11 +30,14 @@ Antes de dar algo por terminado: `npm run check` y probar en el navegador (escri
 | Archivo | Responsabilidad |
 | --- | --- |
 | `index.html`, `landing.css`, `src/landing.js` | Landing 3D (three.js + GSAP/ScrollTrigger): lightstick que gira, se desarma con el scroll y océano de lightsticks |
-| `app.html`, `styles.css`, `src/app.js` | Reproductor: cola por álbum, vistas Video/Luces, paneles, ajustes, bucle de sincronía |
+| `player/index.html` (ruta `/player/`), `styles.css`, `tour.css`, `src/app.js` | Reproductor: cola por álbum, filtros por integrante, Me gusta, vistas Video/Luces, paneles, bucle de sincronía |
+| `privacy/index.html` (ruta `/privacy/`) | Política de privacidad |
+| `app.html`, `privacidad.html`, `src/redirect.js` | Redirecciones desde las direcciones antiguas |
+| `src/favorites.js`, `src/tour.js`, `src/camera.js` | Lista Me gusta, recorrido de bienvenida, modo concierto con cámara |
 | `src/ble.js` | Web Bluetooth: descubrimiento, familias V4/SE, paquetes de color, ritmo de escritura |
 | `src/player.js` | Envoltura del reproductor de YouTube (reloj interpolado, subtítulos oficiales) |
 | `src/patterns.js` | Generador de patrones de luz por secciones (y modo concierto) |
-| `src/catalog.js` | Álbumes, canciones (IDs de YouTube oficiales), películas de concierto |
+| `src/catalog.js` | Álbumes (`artist`: BTS o integrante), canciones (`yt` oficial, `lyricVideo` oficial con letra si existe), películas de concierto |
 | `src/guide.js` | Guía de conexión integrada (4 pasos) |
 | `src/fanchant.js`, `src/crowd.js`, `src/mic.js` | Fanchant entre canciones, multitud en canvas, modo micrófono |
 | `src/rhythm.js`, `src/leaderboard.js`, `src/feedback.js` | Reto de ritmo, rankings por nickname, opiniones |
@@ -44,6 +47,11 @@ Antes de dar algo por terminado: `npm run check` y probar en el navegador (escri
 | `fonts/` | Unbounded y Plus Jakarta Sans (OFL) servidas localmente |
 | `docs/protocolo-ble.md` | Notas del protocolo Bluetooth |
 | `docs/ranking-global.md` | SQL de Supabase para ranking y opiniones |
+
+## Rutas
+
+URLs amigables en inglés y sin `.html`: `/` (landing), `/player/` (`?guide=1` abre la guía, `?song=<id>` abre una canción), `/privacy/`.
+Las páginas dentro de carpetas usan rutas relativas con `../`. No uses `<base>` (rompe los íconos `<use href="#…">`).
 
 ## Reglas obligatorias
 
