@@ -1,0 +1,62 @@
+/* Recorrido de bienvenida: globo + anillo de foco sobre el control real. */
+.tour {
+  position: fixed; z-index: 60; width: min(300px, calc(100vw - 20px));
+  padding: 14px 16px 12px; border-radius: 16px;
+  background: #fbf9ff; color: #15111f; box-shadow: 0 18px 50px -12px #000c, 0 0 0 1px #ffffff40;
+  font-family: var(--font-body, system-ui), sans-serif;
+}
+.tour.in { animation: tour-in .32s cubic-bezier(.2, .9, .3, 1.15); }
+@keyframes tour-in { from { opacity: 0; transform: translateY(6px) scale(.97); } }
+.tour-arrow { position: absolute; width: 14px; height: 14px; background: inherit; transform: translate(-50%, -50%) rotate(45deg); border-radius: 3px; }
+.tour[data-place="bottom"] .tour-arrow { top: 0; }
+.tour[data-place="top"] .tour-arrow { top: 100% !important; }
+.tour[data-place="right"] .tour-arrow { left: 0 !important; }
+.tour[data-place="left"] .tour-arrow { left: 100% !important; }
+.tour-step { margin: 0 0 2px; font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6a3fd1; }
+.tour-title { margin: 0 0 4px; font-family: var(--font-display, system-ui), sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: -.01em; outline: none; }
+.tour-text { margin: 0; font-size: .88rem; line-height: 1.45; color: #3b3449; }
+.tour-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+.tour-skip, .tour-next { font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; min-height: 38px; border-radius: 999px; padding: 0 .9rem; }
+.tour-skip { background: none; border: 0; color: #5b536a; text-decoration: underline; text-underline-offset: 3px; padding-left: 0; }
+.tour-next { background: #15111f; color: #fff; border: 0; }
+.tour-skip:focus-visible, .tour-next:focus-visible { outline: 3px solid #b07cff; outline-offset: 2px; }
+.tour-ring {
+  position: fixed; z-index: 59; pointer-events: none; border-radius: 14px;
+  box-shadow: 0 0 0 3px #ffd166, 0 0 0 9px #ffd16640, 0 0 30px 6px #ffd16655;
+  transition: left .35s cubic-bezier(.2, .8, .2, 1), top .35s cubic-bezier(.2, .8, .2, 1), width .35s, height .35s;
+  animation: tour-pulse 1.8s ease-in-out infinite;
+}
+@keyframes tour-pulse { 50% { box-shadow: 0 0 0 3px #ffd166, 0 0 0 14px #ffd16620, 0 0 40px 10px #ffd16640; } }
+@media (prefers-reduced-motion: reduce) { .tour.in, .tour-ring { animation: none; transition: none; } }
+
+/* Botón "Me gusta" en cada canción y filtros */
+.like-btn {
+  flex: none; width: 36px; height: 36px; border-radius: 50%; border: 0; background: transparent; cursor: pointer;
+  display: grid; place-items: center; color: var(--muted, #b3adc4); font-size: 1.1rem; line-height: 1;
+}
+.like-btn:hover { background: #ffffff12; color: var(--text, #fff); }
+.like-btn[aria-pressed="true"] { color: #ff5c8a; }
+.like-btn[aria-pressed="true"]::before { content: "♥"; }
+.like-btn[aria-pressed="false"]::before { content: "♡"; }
+.like-btn.pop { animation: like-pop .35s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes like-pop { 40% { transform: scale(1.35); } }
+.song-row { display: flex; align-items: center; gap: 2px; }
+.song-row > .song { flex: 1; min-width: 0; }
+.filters { display: flex; gap: 6px; overflow-x: auto; padding: 2px 2px 8px; scrollbar-width: none; }
+.filters::-webkit-scrollbar { display: none; }
+.filter-chip {
+  flex: none; font: inherit; font-size: .8rem; font-weight: 600; min-height: 34px; padding: 0 .8rem; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line, #ffffff22); background: #ffffff0d; color: var(--text, #fff); white-space: nowrap;
+}
+.filter-chip[aria-pressed="true"] { background: var(--text, #fff); color: #111; border-color: transparent; }
+.filter-chip .n { opacity: .6; margin-left: .25rem; font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { .like-btn.pop { animation: none; } }
+
+/* Modo concierto: cámara para copiar el color de un lightstick real */
+.concert-cam { display: grid; justify-items: center; gap: 8px; }
+.cam-frame { position: relative; width: min(220px, 52vw); aspect-ratio: 1; border-radius: 22px; overflow: hidden; background: #000; box-shadow: 0 0 0 2px #ffffff30, 0 18px 40px -16px #000; }
+.cam-frame video { width: 100%; height: 100%; object-fit: cover; }
+.cam-reticle { position: absolute; left: 50%; top: 50%; width: 46%; aspect-ratio: 1; transform: translate(-50%, -50%); border: 3px solid #fff; border-radius: 50%; box-shadow: 0 0 0 2000px #00000055; }
+#btn-concert[aria-pressed="true"] { background: #ff5c8a; border-color: #ff5c8a; color: #fff; }
+.badge-lyrics-inline { margin-left: .4rem; }
+.song-row[hidden] { display: none !important; }

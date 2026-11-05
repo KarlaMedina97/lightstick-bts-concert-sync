@@ -11,6 +11,9 @@ import { fetchTitle, parseYouTubeId } from "./youtube.js";
 import { Guide } from "./guide.js";
 import { Crowd } from "./crowd.js";
 import { Fanchant } from "./fanchant.js";
+import { favorites } from "./favorites.js";
+import { Tour } from "./tour.js";
+import { CameraColor } from "./camera.js";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app");
@@ -55,6 +58,7 @@ let player;
 let mic = null;
 let view = "video";
 let crowd = null;
+let startTourLater = () => {};
 let fanchant = null;
 let chantFlashAt = -1e9;
 const sticks = [];
@@ -226,18 +230,47 @@ function songButton(item, index) {
   const meta = document.createElement("span");
   meta.className = "s-meta";
   meta.style.display = "block";
-  meta.textContent = song.kind === "concert" ? "Concierto / en vivo" : { high: "Baile", mid: "Medio tiempo", ballad: "Balada" }[song.energy] ?? "Canción";
+  const mood = song.kind === "concert" ? "Concierto / en vivo" : { high: "Baile", mid: "Medio tiempo", ballad: "Balada" }[song.energy] ?? "Canción";
+  meta.textContent = album.artist && album.artist !== "BTS" ? `${album.artist} · ${mood}` : mood;
   text.append(t, meta);
   const right = document.createElement("span");
   right.className = "s-meta";
   right.textContent = album.year || "";
   b.append(th, text, right);
-  b.setAttribute("aria-label", `${song.title}, ${album.title}`);
+  b.setAttribute("aria-label", `${song.title}, ${album.title}${song.lyricVideo ? ", con letra" : ""}`);
   b.onclick = () => { playIndex(index); if (matchMedia("(max-width: 640px)").matches) closePanel(false); };
-  return b;
+  if (song.lyricVideo) {
+    const badge = document.createElement("span");
+    badge.className = "badge-lyrics badge-lyrics-inline";
+    badge.textContent = "Con letra";
+    t.append(badge);
+  }
+  // Fila: canción + botón "Me gusta"
+  const row = document.createElement("div");
+  row.className = "song-row";
+  row.dataset.index = index;
+  const like = document.createElement("button");
+  like.type = "button";
+  like.className = "like-btn";
+  like.dataset.song = song.id;
+  const sync = () => {
+    const on = favorites.has(song.id);
+    like.setAttribute("aria-pressed", on);
+    like.setAttribute("aria-label", on ? `Quitar ${song.title} de Me gusta` : `Agregar ${song.title} a Me gusta`);
+  };
+  sync();
+  like.onclick = (e) => {
+    e.stopPropagation();
+    const on = favorites.toggle(song.id);
+    like.classList.remove("pop"); void like.offsetWidth; like.classList.add("pop");
+    toast(on ? `♥ ${song.title} en Me gusta` : `${song.title} quitada de Me gusta`, 2000);
+  };
+  row.append(b, like);
+  return row;
 }
 
 function renderAlbums() {
+  renderFilters();
   $("albums").replaceChildren(...albumNodes(false));
   $("side-list").replaceChildren(...albumNodes(true));
   renderMine();
@@ -267,6 +300,40 @@ function albumNodes(includeMine) {
   return nodes;
 }
 
+// ---------- Filtros: Todo / Me gusta / grupo / integrantes ----------
+const ARTIST_ORDER = ["BTS", "RM", "Jin", "SUGA", "j-hope", "Jimin", "V", "Jung Kook"];
+let listFilter = "all";
+const artistOf = (item) => item.album.artist ?? (item.album.id === "mine" ? "mine" : "BTS");
+
+function renderFilters() {
+  const counts = new Map();
+  queue.forEach((q) => counts.set(artistOf(q), (counts.get(artistOf(q)) ?? 0) + 1));
+  const chips = [["all", "Todo", queue.length], ["likes", "♥ Me gusta", favorites.count()]];
+  for (const a of ARTIST_ORDER) if (counts.get(a)) chips.push([a, a, counts.get(a)]);
+  if (counts.get("mine")) chips.push(["mine", "Mis videos", counts.get("mine")]);
+  document.querySelectorAll("[data-filters]").forEach((box) => {
+    box.replaceChildren(...chips.map(([id, label, n]) => {
+      const c = document.createElement("button");
+      c.type = "button";
+      c.className = "filter-chip";
+      c.setAttribute("aria-pressed", listFilter === id);
+      c.textContent = label;
+      const sp = document.createElement("span");
+      sp.className = "n";
+      sp.textContent = n;
+      c.append(sp);
+      c.onclick = () => { listFilter = id; renderFilters(); applySearch(); };
+      return c;
+    }));
+  });
+}
+
+function passesFilter(item) {
+  if (listFilter === "all") return true;
+  if (listFilter === "likes") return favorites.has(item.song.id);
+  return artistOf(item) === listFilter;
+}
+
 // ---------- Buscador de canciones ----------
 const norm = (t) => String(t ?? "").normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 let searchQuery = "";
@@ -281,15 +348,18 @@ function applySearch() {
       if (el.classList.contains("album-title")) { flush(); header = el; visibleInGroup = 0; continue; }
       const item = queue[Number(el.dataset.index)];
       if (!item) continue;
-      const hay = norm(`${item.song.title} ${item.album.title} ${item.album.year} ${item.song.kind === "concert" ? "concierto en vivo live" : ""} ${item.song.channel ?? ""}`);
-      const match = terms.every((t) => hay.includes(t));
+      const hay = norm(`${artistOf(item)} ${item.song.title} ${item.album.title} ${item.album.year} ${item.song.kind === "concert" ? "concierto en vivo live" : ""} ${item.song.channel ?? ""}`);
+      const match = passesFilter(item) && terms.every((t) => hay.includes(t));
       el.hidden = !match;
       if (match) { visibleInGroup++; total++; }
     }
     flush();
     const empty = list.parentElement.querySelector(".search-empty");
     if (!empty) continue;
-    if (terms.length && !total) {
+    if (listFilter === "likes" && !total && !terms.length) {
+      empty.hidden = false;
+      empty.textContent = "Aún no tienes canciones en Me gusta. Toca ♡ junto a una canción para guardarla.";
+    } else if (terms.length && !total) {
       empty.hidden = false;
       empty.replaceChildren(document.createTextNode(`No está "${searchQuery}" en el catálogo. `));
       const a = document.createElement("a");
@@ -312,7 +382,7 @@ function bindSearch() {
     });
     inp.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
-        const first = inp.closest(".side, .panel-body")?.querySelector(".song:not([hidden])");
+        const first = inp.closest(".side, .panel-body")?.querySelector(".song-row:not([hidden]) .song");
         first?.click();
       }
       if (e.key === "Escape" && inp.value) { e.stopPropagation(); inp.value = ""; searchQuery = ""; inputs.forEach((o) => (o.value = "")); applySearch(); }
@@ -476,12 +546,13 @@ function playIndex(i) {
   const art = $("np-art");
   album.palette.forEach((c, k) => art.style.setProperty(`--a${k + 1}`, c));
   $("empty").hidden = true;
+  replayClass(app, "song-change"); // solo presentación: transición de cambio de canción
   pattern = null;
   patternDuration = 0;
   markCurrent();
   startChallenge();
   renderRanking();
-  player.load(song.yt, true);
+  player.load(videoFor(song), true);
   document.title = `${song.title} · Purple Wave Sync`;
   updateLyricsBar();
   updateMediaSession();
@@ -536,23 +607,38 @@ function willContinue() {
   return !(albumEnds && settings.albumEnd === "stop");
 }
 
+/** Con "Letra" activada se usa el video oficial con la letra en pantalla, si existe. */
+function videoFor(song) {
+  return settings.lyrics && song.lyricVideo ? song.lyricVideo : song.yt;
+}
+
 const LYRIC_NAMES = { ko: "coreano", es: "español", en: "inglés", ja: "japonés", pt: "portugués" };
 function updateLyricsBar() {
   const bar = $("lyrics-bar");
   const item = queue[current];
   bar.hidden = !settings.lyrics || !item;
   if (bar.hidden) return;
-  $("lb-text").textContent = `${LYRIC_NAMES[settings.lyricsLang][0].toUpperCase()}${LYRIC_NAMES[settings.lyricsLang].slice(1)}${settings.lyricsLang === "ko" ? " (hangul)" : ""} · subtítulos oficiales del video`;
+  $("lb-text").textContent = item.song.lyricVideo ? "Video oficial con la letra en pantalla" : `${LYRIC_NAMES[settings.lyricsLang][0].toUpperCase()}${LYRIC_NAMES[settings.lyricsLang].slice(1)}${settings.lyricsLang === "ko" ? " (hangul)" : ""} · subtítulos oficiales del video`;
   // Enlace externo a la letra completa (no copiamos letras en la app).
-  $("lb-link").href = `https://genius.com/search?q=${encodeURIComponent(`BTS ${item.song.title.replace(/s*(.*?)/g, "")}`)}`;
+  $("lb-link").href = `https://genius.com/search?q=${encodeURIComponent(`BTS ${item.song.title.replace(/\s*\(.*?\)/g, "")}`)}`;
 }
 
 function applyLyrics(announce) {
   $("btn-lyrics").setAttribute("aria-pressed", settings.lyrics);
   updateLyricsBar();
-  player?.setCaptions(settings.lyrics ? settings.lyricsLang : null);
+  const song = queue[current]?.song;
+  // Cambia entre el MV y el video oficial con letra, conservando el punto de la canción.
+  if (announce && song?.lyricVideo && player?.ready) {
+    const t = player.time();
+    const playing = player.state === "playing";
+    player.load(videoFor(song), playing);
+    if (t > 2) setTimeout(() => player.seek(t), 900);
+    pattern = null;
+  }
+  player?.setCaptions(settings.lyrics && !song?.lyricVideo ? settings.lyricsLang : null);
   if (!announce) return;
   if (!settings.lyrics) return toast("Letra desactivada.");
+  if (song?.lyricVideo) return toast("Letra activada: video oficial con la letra en pantalla.");
   toast(`Letra en ${LYRIC_NAMES[settings.lyricsLang]} activada (subtítulos oficiales del video).`);
   setTimeout(() => {
     const info = player?.captionInfo();
@@ -590,6 +676,45 @@ function bindTimeline() {
 }
 
 // ---------- Modo micrófono ----------
+// ---------- "Estoy en un concierto" ----------
+let cam = null;
+let concertBrightnessBackup = null;
+async function toggleConcert() {
+  const btn = $("btn-concert");
+  if (cam) {
+    cam.stop();
+    cam = null;
+    if (mic) await toggleMic();
+    $("concert-cam").hidden = true;
+    btn.setAttribute("aria-pressed", "false");
+    btn.querySelector("span").textContent = "Estoy en un concierto";
+    if (concertBrightnessBackup !== null) { settings.brightness = concertBrightnessBackup; concertBrightnessBackup = null; }
+    toast("Modo concierto apagado.");
+    return;
+  }
+  if (!navigator.mediaDevices?.getUserMedia) return toast("Este navegador no permite usar la cámara.");
+  try {
+    if (player.state === "playing") player.pause();
+    setView("lights");
+    selectViewTab("view-lights");
+    cam = new CameraColor({ maxChangesPerSec: settings.safeMode ? 3 : 8 });
+    $("concert-cam").hidden = false;
+    await cam.start($("cam-video"));
+    concertBrightnessBackup = settings.brightness;
+    settings.brightness = 100;
+    btn.setAttribute("aria-pressed", "true");
+    btn.querySelector("span").textContent = "Salir del modo concierto";
+    requestWakeLock();
+    if (!mic) toggleMic().catch(() => {});
+    toast("Apunta la mira a un ARMY Bomb encendido: tu pantalla copiará su color.");
+  } catch {
+    cam?.stop();
+    cam = null;
+    $("concert-cam").hidden = true;
+    toast("No se pudo usar la cámara. Revisa los permisos del navegador.");
+  }
+}
+
 async function toggleMic() {
   if (mic) {
     mic.stop();
@@ -634,7 +759,7 @@ let lastUi = 0;
 let lastLabel = "";
 function frame(now) {
   requestAnimationFrame(frame);
-  if (!player?.ready) return;
+  if (!player?.ready) { crowd?.draw(now); return; } // el fondo se dibuja aunque YouTube aún no cargue
   const k = settings.brightness / 100;
   const total = Math.max(SIM_COUNT, sticks.length);
   let colors;
@@ -642,6 +767,11 @@ function frame(now) {
   if (fanchant?.running) {
     const kf = 0.25 + 0.75 * Math.exp(-(now - chantFlashAt) / 260);
     const c = hexToRgb(PURPLE).map((v) => v * kf);
+    colors = Array.from({ length: total }, () => c);
+  } else if (cam) {
+    // La cámara manda si ve una luz de color; si no, el micrófono marca el ritmo.
+    const camColor = cam.sample(now);
+    const c = cam.strength > 0.25 || !mic ? camColor : mic.sample(now);
     colors = Array.from({ length: total }, () => c);
   } else if (mic) {
     const c = mic.sample(now);
@@ -751,6 +881,24 @@ function updateMediaSession() {
   });
   navigator.mediaSession.setActionHandler("nexttrack", () => next(false));
   navigator.mediaSession.setActionHandler("previoustrack", prev);
+}
+
+// ---------- Presentación (solo clases y variables CSS) ----------
+/** Reinicia una animación CSS quitando y volviendo a poner la clase. */
+function replayClass(el, cls) {
+  el.classList.remove(cls);
+  void el.offsetWidth;
+  el.classList.add(cls);
+  clearTimeout(replayClass[cls]);
+  replayClass[cls] = setTimeout(() => el.classList.remove(cls), 1000);
+}
+/** Pinta el relleno de los deslizadores con --p (porcentaje del valor). */
+function bindRangeFill() {
+  document.querySelectorAll('input[type="range"]').forEach((r) => {
+    const paint = () => r.style.setProperty("--p", `${((r.value - r.min) / (r.max - r.min)) * 100}%`);
+    r.addEventListener("input", paint);
+    paint();
+  });
 }
 
 // ---------- Ajustes ----------
@@ -973,6 +1121,7 @@ async function init() {
   renderSticks();
   bindPanels();
   bindSettings();
+  bindRangeFill();
   renderDonations();
   bindGame();
   bindTimeline();
@@ -1034,11 +1183,29 @@ async function init() {
     },
     hasSticks: () => sticks.length > 0,
     stickNames: () => sticks.map((s) => s.name),
-    onDone: (name) => toast(`💜 ${name} sincronizado. ¡Elige una canción!`),
+    onDone: (name) => { toast(`💜 ${name} sincronizado. ¡Elige una canción!`); if (!Tour.done) setTimeout(() => startTourLater(), 1200); },
   });
   $("btn-guide").onclick = () => { closePanel(false); guide.open(); };
   bindMenu();
   bindSearch();
+  favorites.prune(queue.map((q) => q.song.id));
+  favorites.onChange(() => {
+    document.querySelectorAll(".like-btn").forEach((b) => {
+      const on = favorites.has(b.dataset.song);
+      b.setAttribute("aria-pressed", on);
+    });
+    renderFilters();
+    applySearch();
+  });
+  $("btn-concert").onclick = toggleConcert;
+  const firstLike = () => document.querySelector("#side:not([hidden]) .like-btn, #albums .like-btn");
+  const tour = new Tour();
+  const startTour = () => {
+    document.querySelectorAll("[data-tour='like']").forEach((el) => el.removeAttribute("data-tour"));
+    firstLike()?.setAttribute("data-tour", "like");
+    tour.start();
+  };
+  $("btn-tour").onclick = () => { closePanel(false); Tour.reset(); setTimeout(startTour, 250); };
   bindFeedback();
   $("btn-clear-data").onclick = () => {
     if (!confirm("¿Borrar tus ajustes, nickname, puntajes y videos guardados en este dispositivo?")) return;
@@ -1047,10 +1214,20 @@ async function init() {
     setTimeout(() => location.reload(), 1200);
   };
   // El micrófono se apaga al salir de la página o al ocultarla.
-  addEventListener("pagehide", () => mic?.stop());
+  addEventListener("pagehide", () => { mic?.stop(); cam?.stop(); });
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && mic) toggleMic(); });
   const params = new URLSearchParams(location.search);
-  if (params.has("guia") || !guide.seen) guide.open();
+  if ((params.has("guide") || params.has("guia")) || !guide.seen) guide.open();
+  else if (!Tour.done) setTimeout(startTour, 1500);
+  startTourLater = () => startTour();
+  // Si la persona omite la guía, el recorrido empieza después.
+  $("g-skip").addEventListener("click", () => { if (!Tour.done) setTimeout(startTour, 500); });
+  // Enlace directo a una canción: /player/?song=dynamite
+  const songParam = params.get("song");
+  if (songParam && /^[a-z0-9-]{1,80}$/.test(songParam)) {
+    const idx = queue.findIndex((q) => q.song.id === songParam);
+    if (idx >= 0) setTimeout(() => playIndex(idx), 800);
+  }
 
   player = new Player($("yt"), {
     onState: onPlayerState,
@@ -1073,7 +1250,7 @@ async function init() {
   await player.init();
   applyLyrics(false);
 
-  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
+  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("../sw.js", { scope: "../" }).catch(() => {});
 }
 
 init();
