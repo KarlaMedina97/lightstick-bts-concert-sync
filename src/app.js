@@ -283,7 +283,6 @@ function songButton(item, index) {
 function renderAlbums() {
   renderFilters();
   $("albums").replaceChildren(...albumNodes(false));
-  $("side-list").replaceChildren(...albumNodes(true));
   $("explore-list").replaceChildren(...albumNodes(true));
   renderMine();
   markCurrent();
@@ -368,7 +367,7 @@ function applySearch() {
   $("explore-results").hidden = !searching;
   $("home").classList.toggle("searching", searching);
   $("er-title").textContent = listFilter.startsWith("album:") ? queue.find((q) => q.album.id === listFilter.slice(6))?.album.title ?? "Resultados" : terms.length ? "Resultados" : listFilter === "all" ? "Todos los álbumes" : FILTER_NAMES[listFilter] ?? listFilter;
-  for (const list of [$("albums"), $("side-list"), $("explore-list")]) {
+  for (const list of [$("albums"), $("explore-list")]) {
     let visibleInGroup = 0, header = null, total = 0;
     const flush = () => { if (header) header.hidden = visibleInGroup === 0; };
     for (const el of list.children) {
@@ -400,7 +399,7 @@ function applySearch() {
 }
 
 function bindSearch() {
-  const inputs = [$("search-side"), $("search-panel"), $("search-explore")];
+  const inputs = [$("search-panel"), $("search-explore")];
   inputs.forEach((inp) => {
     inp.addEventListener("input", () => {
       searchQuery = inp.value;
@@ -441,7 +440,6 @@ function setSide(open) {
   app.classList.toggle("with-side", open);
   $("btn-side").setAttribute("aria-expanded", String(open));
   store.set(SIDE_KEY, open);
-  if (open) $("side-list").querySelector(".song.playing")?.scrollIntoView({ block: "nearest" });
 }
 function bindMenu() {
   $("btn-side").onclick = () => (wide() ? setSide($("side").hidden) : setSide(true));
@@ -598,6 +596,8 @@ function loadIndex(i, { autoplay = true } = {}) {
   renderRanking();
   player.load(videoFor(song), autoplay);
   $("mini-title").textContent = song.title;
+  $("np-open").dataset.tip = `Ahora suena: ${song.title}`;
+  maybeNudgeSupport();
   if (view === "video") $("home").hidden = true;
   setView(view);
   document.title = `${song.title} · Purple Wave Sync`;
@@ -1153,6 +1153,8 @@ function toggleAlbum(album) {
   store.set(ALBUMS_KEY, savedAlbums);
   document.querySelectorAll(`.album-like[data-album="${album.id}"]`).forEach((b) => syncAlbumLike(b, album));
   renderCollections();
+  renderLibrary();
+  renderNowPanel();
   toast(on ? `💜 ${album.title} guardado` : `${album.title} ya no está en Mis álbumes`, 2000);
 }
 function syncAlbumLike(b, album) {
@@ -1250,14 +1252,256 @@ function bindCollections() {
     exploreAll = false;
     listFilter = "all";
     searchQuery = "";
-    ["search-side", "search-panel", "search-explore"].forEach((x) => ($(x).value = ""));
+    ["search-panel", "search-explore"].forEach((x) => ($(x).value = ""));
     renderFilters();
     applySearch();
     $("search-explore").focus();
   };
 }
 
-// ---------- Menús compactos (Concierto y Más) ----------
+// ---------- Biblioteca (columna izquierda) ----------
+const RAIL_KEY = "pws.rail.v1";
+function railPreferred() {
+  const saved = store.get(RAIL_KEY, null);
+  return typeof saved === "boolean" ? saved : innerWidth < 1280;
+}
+function applyRail(on) {
+  app.classList.toggle("rail", on);
+  $("side-rail").setAttribute("aria-pressed", String(on));
+  $("side-rail").setAttribute("aria-label", on ? "Expandir biblioteca" : "Contraer biblioteca");
+  $("side-rail").dataset.tip = on ? "Expandir" : "Contraer";
+}
+function libItem(index, { sub = "" } = {}) {
+  const { album, song } = queue[index];
+  const li = document.createElement("li");
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "lib-row";
+  b.dataset.index = index;
+  b.setAttribute("aria-label", `Reproducir ${songLabel(queue[index])}`);
+  const th = document.createElement("span");
+  th.className = "thumb";
+  th.style.backgroundImage = `url(${thumbUrl(song.yt)})`;
+  const t = document.createElement("span");
+  t.className = "lib-row-text";
+  const a = document.createElement("span");
+  a.className = "s-title";
+  a.textContent = song.title;
+  const m = document.createElement("span");
+  m.className = "s-meta";
+  m.textContent = sub || soloArtist(queue[index]) || album.title;
+  t.append(a, m);
+  b.append(th, t);
+  b.onclick = () => { fanchant?.stop(); playIndex(index); };
+  li.append(b);
+  return li;
+}
+function renderLibrary() {
+  $("lib-n-likes").textContent = favorites.count();
+  $("lib-n-albums").textContent = savedAlbums.length;
+  $("lib-n-cola").textContent = pq ? pq.userQueue.length + pq.context.length : 0;
+  // Tus álbumes: puntos con la paleta como portada.
+  const albums = savedAlbums.slice().reverse().map((id) => queue.find((q) => q.album.id === id)?.album).filter(Boolean).slice(0, 8);
+  $("lib-albums").replaceChildren(...albums.map((al) => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "lib-row lib-album";
+    b.setAttribute("aria-label", `Abrir ${al.title}`);
+    b.dataset.tip = al.title;
+    const dots = document.createElement("span");
+    dots.className = "lib-dots";
+    al.palette.slice(0, 3).forEach((c, k) => dots.style.setProperty(`--p${k + 1}`, c));
+    const t = document.createElement("span");
+    t.className = "lib-row-text";
+    const n = document.createElement("span");
+    n.className = "s-title";
+    n.textContent = al.title;
+    const y = document.createElement("span");
+    y.className = "s-meta";
+    y.textContent = [al.year, al.artist && al.artist !== "BTS" ? al.artist : ""].filter(Boolean).join(" · ");
+    t.append(n, y);
+    b.append(dots, t);
+    b.onclick = () => openAlbum(al.id);
+    li.append(b);
+    return li;
+  }));
+  $("lib-albums-empty").hidden = albums.length > 0;
+  const recent = playedHistory.slice(-6).reverse().filter((id) => id !== queue[current]?.song.id).slice(0, 5).map(idxOf).filter((i) => i >= 0);
+  $("lib-recent").replaceChildren(...recent.map((i) => libItem(i)));
+  $("lib-recent-empty").hidden = recent.length > 0;
+}
+/** Acciones de la biblioteca (también los accesos de Explorar en teléfono). */
+function goLibrary(where, trigger) {
+  const toExplore = (then) => { if (view !== "explore") $("view-explore").click(); requestAnimationFrame(then); };
+  if (where === "explore") return toExplore(() => {});
+  if (where === "search") return toExplore(() => $("search-explore").focus());
+  if (where === "likes" || where === "albums") {
+    exploreAll = false;
+    listFilter = "all";
+    renderFilters();
+    applySearch();
+    return toExplore(() => $(where === "likes" ? "liked-songs" : "my-albums").scrollIntoView({ block: "start", behavior: "smooth" }));
+  }
+  if (where === "cola") { showPanel("panel-cola", trigger); return renderCola(); }
+  if (where === "mine" || where === "concerts") {
+    showPanel("panel-queue", trigger);
+    $(where === "mine" ? "qt-mine" : "qt-concerts").click();
+  }
+}
+function bindLibrary() {
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-go]");
+    if (b) goLibrary(b.dataset.go, b);
+  });
+  applyRail(railPreferred());
+  $("side-rail").onclick = () => { const on = !app.classList.contains("rail"); store.set(RAIL_KEY, on); applyRail(on); };
+  addEventListener("resize", () => { if (typeof store.get(RAIL_KEY, null) !== "boolean") applyRail(innerWidth < 1280); });
+  $("btn-feedback-2").onclick = (e) => showPanel("panel-feedback", e.currentTarget);
+  const sponsor = DONATIONS.find((d) => d.url)?.url ?? PROJECT.repo;
+  ["lib-support", "ex-support", "nudge-link"].forEach((id) => ($(id).href = sponsor));
+  $("nudge-close").onclick = () => ($("support-nudge").hidden = true);
+}
+
+// ---------- Ahora suena (columna derecha ≥ 1280 px; hoja en pantallas chicas) ----------
+const NP_KEY = "pws.np.v1";
+const channelCache = new Map();
+const npDocked = () => matchMedia("(min-width: 1280px)").matches;
+function setNpOpen(open) {
+  if (npDocked()) {
+    $("np-side").hidden = !open;
+    app.classList.toggle("with-np", open);
+    store.set(NP_KEY, open);
+  } else {
+    app.classList.remove("with-np");
+    if (open) showPanel("np-side", $("np-open")); else if (openPanel === "np-side") closePanel();
+  }
+  $("np-open").setAttribute("aria-expanded", String(open));
+  if (open) renderNowPanel();
+  requestAnimationFrame(() => placeMini(false));
+}
+function npList(listEl, indices, opts) {
+  listEl.replaceChildren(...indices.map((i) => libItem(i, opts)));
+  listEl.closest("section").hidden = !indices.length;
+}
+async function renderNowPanel() {
+  if ($("np-side").hidden) return;
+  const item = queue[current];
+  $("nps-empty").hidden = Boolean(item);
+  $("nps-main").hidden = !item;
+  if (!item) return;
+  const { album, song } = item;
+  $("nps-img").src = thumbUrl(song.yt);
+  $("nps-title").textContent = song.title;
+  const artist = album.id === "mine" ? song.channel ?? "Mis videos" : album.artist ?? "BTS";
+  $("nps-artist").textContent = artist;
+  $("nps-album-name").textContent = album.id === "mine" ? "Mis videos" : `${album.title}${album.year ? ` · ${album.year}` : ""}`;
+  $("nps-album").disabled = album.id === "mine";
+  $("nps-swatches").replaceChildren(...album.palette.slice(0, 3).map((c) => { const i = document.createElement("i"); i.style.background = c; return i; }));
+  // Solo datos que tenemos: tipo de video, letra, intensidad de luces y canal oficial.
+  const chips = metaLine(item);
+  chips.hidden = false;
+  [...chips.querySelectorAll(".m-artist")].forEach((n) => n.remove());
+  const type = videoType(song);
+  if (type === "MV") { const mv = document.createElement("span"); mv.className = "chip-type"; mv.textContent = "MV"; chips.prepend(mv); }
+  const lights = document.createElement("span");
+  lights.className = "nps-lights";
+  lights.append(lightGlyph(item), document.createTextNode(`Luces ${LIGHT_NAME[lightLevel(item)]}`));
+  $("nps-chips").replaceChildren(chips, lights);
+  const liked = favorites.has(song.id);
+  $("nps-like").setAttribute("aria-pressed", liked);
+  $("nps-like").querySelector("span").textContent = liked ? "Te gusta" : "Me gusta";
+  const saved = savedAlbums.includes(album.id);
+  $("nps-save").hidden = album.id === "mine";
+  $("nps-save").setAttribute("aria-pressed", saved);
+  $("nps-save").querySelector("span").textContent = saved ? "Álbum guardado" : "Guardar álbum";
+  // Listas cortas: en cola, más del artista, del mismo álbum.
+  const nextIdx = [...pq.userQueue, ...pq.context].slice(0, 3).map((e) => idxOf(e.id)).filter((i) => i >= 0);
+  npList($("nps-next"), nextIdx);
+  const me = album.artist ?? "BTS";
+  $("nps-artist-t").textContent = album.id === "mine" ? "Más de Mis videos" : `Más de ${me}`;
+  const byArtist = queue.map((q, i) => [q, i]).filter(([q, i]) => i !== current && q.album.id !== album.id && (q.album.artist ?? "BTS") === me && q.song.kind !== "concert" && videoType(q.song) === "MV").slice(-5).reverse().map(([, i]) => i);
+  npList($("nps-artist-list"), album.id === "mine" ? [] : byArtist);
+  const sameAlbum = queue.map((q, i) => [q, i]).filter(([q, i]) => i !== current && q.album.id === album.id).slice(0, 5).map(([, i]) => i);
+  npList($("nps-album-list"), sameAlbum);
+  // Canal oficial (oEmbed). Se cachea; si no responde, no se muestra nada.
+  const ch = $("nps-channel");
+  const link = `https://www.youtube.com/watch?v=${encodeURIComponent(videoFor(song))}`;
+  const paint = (name) => {
+    ch.replaceChildren();
+    if (name) { const s = document.createElement("span"); s.textContent = `Canal: ${name} · `; ch.append(s); }
+    const a = document.createElement("a");
+    a.href = link;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.textContent = "Ver en YouTube ↗";
+    ch.append(a);
+  };
+  paint(channelCache.get(song.yt) ?? song.channel ?? "");
+  if (!channelCache.has(song.yt) && !song.channel) {
+    const meta = await fetchTitle(song.yt);
+    channelCache.set(song.yt, meta?.channel ?? "");
+    if (queue[current]?.song.yt === song.yt) paint(channelCache.get(song.yt));
+  }
+}
+function bindNowPanel() {
+  $("np-open").onclick = () => {
+    const open = npDocked() ? $("np-side").hidden : openPanel !== "np-side";
+    setNpOpen(open);
+  };
+  $("nps-close").onclick = () => setNpOpen(false);
+  $("nps-like").onclick = () => { const id = queue[current]?.song.id; if (id) { const on = favorites.toggle(id); toast(on ? "💜 Guardada en Me gusta" : "Quitada de Me gusta", 2000); } };
+  $("nps-save").onclick = () => { const al = queue[current]?.album; if (al) toggleAlbum(al); };
+  $("nps-album").onclick = () => { const al = queue[current]?.album; if (al && al.id !== "mine") openAlbum(al.id); };
+  matchMedia("(min-width: 1280px)").addEventListener("change", () => {
+    if (npDocked()) setNpOpen(store.get(NP_KEY, false));
+    else { $("np-side").hidden = true; app.classList.remove("with-np"); }
+  });
+  if (npDocked() && store.get(NP_KEY, false)) setNpOpen(true);
+}
+
+// ---------- Tema claro / oscuro ----------
+const THEME_KEY = "pws.theme";
+function currentTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch {}
+  if (saved === "light" || saved === "dark") return saved;
+  return matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+}
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const next = theme === "light" ? "oscuro" : "claro";
+  $("btn-theme").setAttribute("aria-label", `Cambiar a tema ${next}`);
+  $("theme-icon").setAttribute("href", theme === "light" ? "#i-moon" : "#i-sun");
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "light" ? "#f4f0fb" : "#070a1a");
+  crowd?.setTheme?.(theme);
+}
+function bindTheme() {
+  applyTheme(currentTheme());
+  $("btn-theme").onclick = () => {
+    const t = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+    try { localStorage.setItem(THEME_KEY, t); } catch {}
+    applyTheme(t);
+  };
+  matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => {
+    let saved = null;
+    try { saved = localStorage.getItem(THEME_KEY); } catch {}
+    if (!saved) applyTheme(currentTheme());
+  });
+}
+
+// ---------- Apoyo: un aviso discreto, una vez por sesión, tras la quinta canción ----------
+let songsThisSession = 0;
+function maybeNudgeSupport() {
+  songsThisSession++;
+  if (songsThisSession !== 5) return;
+  try { if (sessionStorage.getItem("pws.nudge")) return; sessionStorage.setItem("pws.nudge", "1"); } catch { return; }
+  const n = $("support-nudge");
+  n.hidden = false;
+  setTimeout(() => (n.hidden = true), 15000);
+}
+
+// ---------- Menús compactos (Concierto) ----------
 function closeMenus(except) {
   document.querySelectorAll(".menu-pop").forEach((m) => {
     if (m === except || m.hidden || !m.dataset.menuFor) return;
@@ -1339,6 +1583,8 @@ function saveQueue() {
 function queueChanged() {
   saveQueue();
   renderUpNext();
+  renderLibrary();
+  renderNowPanel();
   if (!$("panel-cola").hidden) renderCola();
   syncModes();
 }
@@ -2041,9 +2287,11 @@ function selectViewTab(id) {
 
 async function init() {
   setupSim();
+  bindTheme();
   initTooltips();
   pq = new PlayQueue({ onContextEnd: contextEnd });
   crowd = new Crowd($("crowd"), { reduceMotion: matchMedia("(prefers-reduced-motion: reduce)").matches });
+  crowd.setTheme?.(document.documentElement.dataset.theme);
   renderAlbums();
   renderFilms();
   renderSticks();
@@ -2122,8 +2370,10 @@ async function init() {
   bindCola();
   bindSongMenu();
   bindMini();
-  $("mi-explore").onclick = () => $("view-explore").click();
   bindSearch();
+  bindLibrary();
+  bindNowPanel();
+  renderLibrary();
   renderHome();
   bindCollections();
   renderCollections();
@@ -2139,9 +2389,11 @@ async function init() {
     renderHome();
     renderCollections();
     renderUpNext();
+    renderLibrary();
+    renderNowPanel();
   });
   $("btn-concert").onclick = toggleConcert;
-  const firstLike = () => [...document.querySelectorAll("#home .sg-like, #side:not([hidden]) .like-btn, #albums .like-btn")].find((b) => b.getBoundingClientRect().width > 0);
+  const firstLike = () => [...document.querySelectorAll("#home .sg-like, #albums .like-btn")].find((b) => b.getBoundingClientRect().width > 0);
   const tour = new Tour();
   const startTour = () => {
     document.querySelectorAll("[data-tour='like']").forEach((el) => el.removeAttribute("data-tour"));

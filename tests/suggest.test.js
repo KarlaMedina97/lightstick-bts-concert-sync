@@ -54,3 +54,11 @@ test("Mis álbumes: guardados primero; si no hay, los de tus Me gusta; si no, va
   assert.deepEqual(d.ids, [queue.find((q) => q.song.id === "spring-day").album.id, "be"]);
   assert.deepEqual(myAlbums(queue), { ids: [], derived: false });
 });
+
+test("el tema claro también tiene acentos AA sobre blanco", () => {
+  for (const a of ALBUMS) {
+    const t = songTheme(a.palette);
+    assert.ok(contrast(t["--song-accent-l"], "#ffffff") >= 4.5, `${a.id} acento claro`);
+    assert.ok(contrast(t["--song-accent-l2"], "#ffffff") >= 4.5, `${a.id} acento claro 2`);
+  }
+});

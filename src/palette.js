@@ -59,6 +59,19 @@ export function readableAccent(hex, { minL = 0.66, maxL = 0.84 } = {}) {
   return out;
 }
 
+/** Variante para el tema claro: oscura y saturada, ≥ 4.5:1 sobre blanco (y texto blanco encima). */
+export function readableAccentOnLight(hex) {
+  let [h, s, l] = rgbToHsl(hexToRgb(hex));
+  s = s < 0.08 ? 0 : Math.min(0.9, Math.max(0.55, s));
+  l = Math.min(0.42, Math.max(0.26, l));
+  let out = rgbToHex(hslToRgb([h, s, l]));
+  for (let i = 0; i < 20 && contrast(out, "#ffffff") < 4.5; i++) {
+    l = Math.max(0.12, l - 0.02);
+    out = rgbToHex(hslToRgb([h, s, l]));
+  }
+  return out;
+}
+
 /** Elige el color más "vivo" de la paleta (saturado y no casi negro/blanco). */
 export function vividest(palette) {
   let best = palette[0], score = -1;
@@ -88,6 +101,8 @@ export function songTheme(palette = []) {
   return {
     "--song-accent": a1,
     "--song-accent-2": a2,
+    "--song-accent-l": readableAccentOnLight(main),
+    "--song-accent-l2": readableAccentOnLight(second === main ? rotate(main, 40) : second),
     "--song-ink": INK,
     "--song-soft": `rgba(${r}, ${g}, ${b}, 0.16)`,
     "--song-line": `rgba(${r}, ${g}, ${b}, 0.42)`,

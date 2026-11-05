@@ -111,6 +111,8 @@ export class Crowd {
   /** @param {number[]} rgb */
   setColor(rgb) { this.target = rgb; }
   setEnergy(e) { this.energy = e; }
+  /** Tema claro: público violeta suave sobre fondo lavanda; oscuro: siluetas casi negras. */
+  setTheme(theme) { this.light = theme === "light"; }
   /** Destello general (por ejemplo, en cada nombre del fanchant). */
   flash() { this.flashT = 1; }
 
@@ -170,8 +172,8 @@ export class Crowd {
 
     // Suelo: oscurece la parte baja para que el reproductor se lea bien encima.
     const floor = ctx.createLinearGradient(0, h * 0.72, 0, h);
-    floor.addColorStop(0, "rgba(4,4,12,0)");
-    floor.addColorStop(1, "rgba(4,4,12,.55)");
+    floor.addColorStop(0, this.light ? "rgba(244,240,251,0)" : "rgba(4,4,12,0)");
+    floor.addColorStop(1, this.light ? "rgba(244,240,251,.6)" : "rgba(4,4,12,.55)");
     ctx.fillStyle = floor;
     ctx.fillRect(0, h * 0.72, w, h * 0.28);
   }
@@ -200,9 +202,9 @@ export class Crowd {
     const d = Math.min(row.depth, 1);
     // Perspectiva atmosférica: las filas lejanas toman el tono de la neblina del escenario.
     const fog = (1 - d) * 0.75;
-    const fr = Math.round(mix(6, 8 + r * 0.12, fog));
-    const fg = Math.round(mix(5, 6 + g * 0.1, fog));
-    const fb = Math.round(mix(12, 18 + b * 0.16, fog));
+    const fr = Math.round(this.light ? mix(62, 200 + r * 0.06, fog) : mix(6, 8 + r * 0.12, fog));
+    const fg = Math.round(this.light ? mix(48, 190 + g * 0.05, fog) : mix(5, 6 + g * 0.1, fog));
+    const fb = Math.round(this.light ? mix(98, 228 + b * 0.04, fog) : mix(12, 18 + b * 0.16, fog));
     const body = `rgb(${fr},${fg},${fb})`;
     const rimA = clamp01((0.3 + 0.45 * e + this.flashT * 0.4) * (0.3 + 0.7 * d));
     const rim = `rgba(${Math.round(mix(r, 255, 0.3))},${Math.round(mix(g, 255, 0.3))},${Math.round(mix(b, 255, 0.3))},${rimA.toFixed(3)})`;
