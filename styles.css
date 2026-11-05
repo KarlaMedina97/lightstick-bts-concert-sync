@@ -1202,17 +1202,18 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 }
 .sg-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease-out); }
 .sg-thumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(6, 4, 20, 0.72), transparent 55%); }
-/* Indicador de reproducción: velo claro con el color de la canción (--p1) con un ▶ grande al centro (al pasar el cursor, enfocar o elegir).
-   Desaparece cuando la canción de esa tarjeta empieza a sonar. */
+/* Indicador de reproducción (al pasar el cursor, enfocar o elegir): velo claro con el color de la canción (--p1)
+   y el botón blanco ▶ que sube con rebote abajo a la derecha. Desaparece cuando esa canción empieza a sonar. */
 .sg-icon {
-  position: absolute; inset: 0; z-index: 1; display: grid; place-items: center;
+  position: absolute; inset: 0; z-index: 1;
   background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--p1, #a66bff) 50%, rgba(255, 255, 255, 0.25)), color-mix(in srgb, var(--p1, #a66bff) 34%, transparent) 72%);
-  color: #fff; opacity: 0; transition: opacity var(--dur-2) var(--ease-out);
+  opacity: 0; transition: opacity var(--dur-2) var(--ease-out);
   pointer-events: none;
 }
-.sg-icon svg {
-  width: clamp(26px, 28%, 58px); aspect-ratio: 1; height: auto; margin-left: 4%;
-  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--p1, #a66bff) 80%, transparent)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55)); transform: scale(0.86); transition: transform var(--dur-3) var(--ease-spring);
+.sg-icon svg, .al-play svg {
+  position: absolute; right: 10px; bottom: 10px; box-sizing: border-box; width: 40px; height: 40px; padding: 11px 10px 11px 12px;
+  border-radius: 50%; background: #fff; color: var(--text-ink); box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.8);
+  transform: translateY(6px) scale(0.9); transition: transform var(--dur-3) var(--ease-spring);
 }
 .sg-play:hover .sg-icon, .sg-play:focus-visible .sg-icon, .sg-play:active .sg-icon, .sg-play.playing .sg-icon { opacity: 1; }
 .sg-play:hover .sg-icon svg, .sg-play:focus-visible .sg-icon svg, .sg-play.playing .sg-icon svg { transform: none; }
@@ -1250,7 +1251,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .un-list .sg-play { grid-template-columns: 96px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: var(--s-3); row-gap: 0; align-items: center; padding: var(--s-1); border-radius: var(--r-md); }
 .un-list .sg-play:hover { background: var(--surface-hover); }
 .un-list .sg-thumb { grid-row: 1 / 3; border-radius: var(--r-sm); }
-.un-list .sg-icon svg { width: 22px; }
+.un-list .sg-icon svg { width: 28px; height: 28px; padding: 7px 6px 7px 8px; right: 6px; bottom: 6px; }
 .un-list .sg-meta { margin-top: 0; }
 .un-list .sg-badge, .un-list .sg-like { display: none; }
 
@@ -1568,9 +1569,9 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--p1, #a66bff) 50%, rgba(255, 255, 255, 0.25)), color-mix(in srgb, var(--p1, #a66bff) 34%, transparent) 72%);
   opacity: 0; transition: opacity var(--dur-2) var(--ease-out);
 }
-.al-play svg { width: clamp(26px, 28%, 58px); height: auto; aspect-ratio: 1; margin-left: 4%; filter: drop-shadow(0 0 18px color-mix(in srgb, var(--p1, #a66bff) 80%, transparent)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55)); transform: scale(0.86); transition: transform var(--dur-3) var(--ease-spring); }
 .al-play:hover, .al-play:focus-visible, .al-play:active { opacity: 1; }
 .al-play:hover svg, .al-play:focus-visible svg { transform: none; }
+.al-play { display: block; }
 .al-play:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
 .al-item:has(> .al-play:hover) .sg-thumb { transform: translateY(-2px); box-shadow: 0 0 0 1px color-mix(in srgb, var(--p1, var(--accent)) 60%, transparent), 0 18px 40px -16px var(--p1, var(--accent)); }
 .al-item:has(> .al-play:hover) .sg-thumb img { transform: scale(1.05); }
