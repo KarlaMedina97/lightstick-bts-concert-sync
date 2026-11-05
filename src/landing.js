@@ -27,6 +27,31 @@ const canvas = document.getElementById("scene");
 const mobileQ = () => innerWidth < 720;
 const LOW_END = innerWidth < 720 || (navigator.hardwareConcurrency || 8) <= 4 || (SHOT !== null && params.has("lite"));
 const $ = (id) => document.getElementById(id);
+
+// Tarjetas de piezas y versiones: además de resaltar el modelo 3D, su texto se anuncia en #card-status
+// (lector de pantalla). Cada pieza va en su propio nodo con el texto en español de la tarjeta, así i18n.js
+// la traduce con el diccionario. Con espera corta: varios toques seguidos solo anuncian el último.
+{
+  const status = $("card-status");
+  let timer = 0, last = null, lastAt = 0;
+  const announce = (card) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      const now = performance.now();
+      if (card === last && now - lastAt < 2000) return; // la misma tarjeta otra vez: no repetir
+      last = card; lastAt = now;
+      const es = spanishClone(card);
+      const pieces = [es.querySelector("b"), es.querySelector("b ~ span")].filter(Boolean).map((n) => {
+        const s = document.createElement("span");
+        s.textContent = n.textContent.trim();
+        return s;
+      });
+      status.replaceChildren();
+      pieces.forEach((s, i) => { if (i) status.append(": "); status.append(s); });
+    }, 300);
+  };
+  if (status) document.addEventListener("click", (e) => { const c = e.target.closest?.(".part-card, .ver-card"); if (c) announce(c); });
+}
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 
 const PALETTE = ["#8a2be2", "#4fc3f7", "#ff80ab", "#ffd600", "#7c4dff", "#00e5ff", "#ff3d00", "#e0f7fa"].map((c) => new THREE.Color(c));
@@ -661,17 +686,19 @@ if (renderer) {
     for (const L of leaders) { L.path.classList.toggle("hot", L.key === name); L.dot.classList.toggle("hot", L.key === name); }
     for (const M of markers) M.el.classList.toggle("hot", M.key === name);
   }
-  const bindHot = (el, name) => {
+  const bindHot = (el, name, focusable = true) => {
     const on = () => { hotFromUI = true; setHot(name); };
     const off = () => { hotFromUI = false; setHot(null); };
     el.addEventListener("pointerenter", on);
-    el.addEventListener("focus", on);
     el.addEventListener("pointerleave", off);
-    el.addEventListener("blur", off);
+    if (focusable) {
+      el.addEventListener("focus", on);
+      el.addEventListener("blur", off);
+    }
     el.addEventListener("click", () => { on(); pulse(0.5); });
   };
   for (const c of cards) bindHot(c, c.dataset.part);
-  for (const s of steps) bindHot(s, s.dataset.focus);
+  for (const s of steps) bindHot(s, s.dataset.focus, false); // los pasos son texto: solo al pasar el puntero
 
   // ---------- Marcadores numerados y líneas guía (anatomía) ----------
   const mkLayer = document.querySelector(".markers");
@@ -1026,12 +1053,15 @@ if (renderer) {
     if (player && ytReady) { setMiniState("expanded"); player.seekTo(FEATURED.introStart + s, true); player.playVideo(); }
     else { startIntro({ muted: false }); setIntroButton(true); }
   };
-  fvBar?.addEventListener("click", (e) => { const r = fvBar.getBoundingClientRect(); seekFrac((e.clientX - r.left) / r.width); });
+  // Patrón de slider de búsqueda (APG): con el foco en la barra, aria-valuenow/valuetext solo cambian justo
+  // después de una tecla o un toque (si no, el lector anunciaría cada segundo que avanza la intro).
+  let fvUserAt = -Infinity, fvSecs = -1;
+  fvBar?.addEventListener("click", (e) => { fvUserAt = performance.now(); const r = fvBar.getBoundingClientRect(); seekFrac((e.clientX - r.left) / r.width); });
   fvBar?.addEventListener("keydown", (e) => {
     const cur = player && ytReady ? (player.getCurrentTime() - FEATURED.introStart) / FEATURED.introSeconds : 0;
     const step = 2 / FEATURED.introSeconds;
     const m = { ArrowRight: cur + step, ArrowUp: cur + step, ArrowLeft: cur - step, ArrowDown: cur - step, Home: 0, End: 0.98 };
-    if (e.key in m) { e.preventDefault(); seekFrac(m[e.key]); }
+    if (e.key in m) { e.preventDefault(); fvUserAt = performance.now(); seekFrac(m[e.key]); }
   });
   function updateVideoMock() {
     if (!fvBar) return;
@@ -1041,8 +1071,13 @@ if (renderer) {
     [...fvSegs.children].forEach((el, i) => el.classList.toggle("on", isPlaying() && i === seg));
     const secs = Math.round(p * FEATURED.introSeconds);
     $("fv-time").textContent = `0:${String(secs).padStart(2, "0")}`;
-    fvBar.setAttribute("aria-valuenow", String(secs));
-    fvBar.setAttribute("aria-valuetext", `${secs} segundos`);
+    // Con foco: solo hasta 1 s después de la última interacción (el salto del video tarda un poco en llegar).
+    const focused = document.activeElement === fvBar;
+    if (secs !== fvSecs && (!focused || performance.now() - fvUserAt < 1000)) {
+      fvSecs = secs;
+      fvBar.setAttribute("aria-valuenow", String(secs));
+      fvBar.setAttribute("aria-valuetext", `${secs} segundos`);
+    }
   }
   // Micrófono: análisis real (como en el reproductor), ecualizador y lightstick reaccionan.
   let mic = null;

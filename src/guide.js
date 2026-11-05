@@ -71,7 +71,9 @@ export class Guide {
     this.voiceBtn.onclick = () => {
       this.voice = !this.voice;
       this.voiceBtn.setAttribute("aria-pressed", this.voice);
-      this.voiceBtn.setAttribute("aria-label", this.voice ? "Silenciar narración" : "Activar narración");
+      this.voiceBtn.setAttribute("aria-label", "Narración");
+      // Con narración, el texto deja de ser región viva: si no, el lector y la voz hablarían a la vez.
+      this.textEl.setAttribute("aria-live", this.voice ? "off" : "polite");
       this.voiceBtn.textContent = this.voice ? "🔊" : "🔈";
       if (this.voice) this.speak(STEPS[this.i]?.text ?? "");
       else speechSynthesis?.cancel?.();
@@ -88,6 +90,8 @@ export class Guide {
   }
 
   open(step = 0) {
+    const f = document.activeElement;
+    if (f && !this.el.contains(f) && f !== document.body) this.opener = f;
     this.pill.hidden = true;
     this.el.hidden = false;
     this.el.classList.remove("done");
@@ -102,7 +106,14 @@ export class Guide {
     if (!this.hooks.hasSticks()) {
       this.pill.hidden = false;
       this.pill.textContent = `Seguir conectando · paso ${this.i + 1} de ${STEPS.length}`;
-    }
+      if (this.el.contains(document.activeElement) || document.activeElement === document.body) this.pill.focus();
+    } else this.returnFocus();
+  }
+
+  /** Al cerrar, el foco vuelve a donde estaba (o al botón de conectar), nunca a un elemento oculto. */
+  returnFocus() {
+    const back = this.opener?.isConnected && !this.opener.closest("[hidden]") ? this.opener : document.getElementById("btn-bt");
+    back?.focus?.({ preventScroll: true });
   }
 
   restore() {
@@ -113,8 +124,10 @@ export class Guide {
 
   close() {
     speechSynthesis?.cancel?.();
+    const hadFocus = this.el.contains(document.activeElement);
     this.el.hidden = true;
     this.pill.hidden = true;
+    if (hadFocus) this.returnFocus();
     try { localStorage.setItem(SEEN_KEY, "1"); } catch {}
   }
 

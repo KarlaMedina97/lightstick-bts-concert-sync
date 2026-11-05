@@ -66,3 +66,24 @@
 .tour-skip, .tour-next { min-height: 36px; padding: 0 16px; }
 @media (pointer: coarse) { .tour-skip, .tour-next { min-height: 44px; } }
 .filters { gap: 8px; }
+
+/* Interfaz tranquila / menos transparencia (A-18): el anillo del recorrido no late */
+:root:has(.app.calm) .tour-ring { animation: none; }
+@media (prefers-reduced-transparency: reduce) { .tour-ring { animation: none; } }
+/* Más contraste (A-17) */
+@media (prefers-contrast: more) {
+  .tour { box-shadow: 0 18px 50px -12px #000c, 0 0 0 2px #15111f; }
+  .tour-text { color: #15111f; }
+}
+/* Colores forzados (A-06): globo con borde, anillo y foco con Highlight, estados pulsados visibles */
+@media (forced-colors: active) {
+  .tour { border: 1px solid CanvasText; }
+  .tour-arrow { display: none; }
+  .tour-next { border: 1px solid ButtonText; }
+  .tour-skip:focus-visible, .tour-next:focus-visible { outline: 3px solid Highlight; }
+  .tour-ring { outline: 3px solid Highlight; outline-offset: 2px; animation: none; }
+  .like-btn[aria-pressed="true"], .filter-chip[aria-pressed="true"], #btn-concert[aria-pressed="true"] {
+    forced-color-adjust: none; background: Highlight; color: HighlightText; border-color: Highlight;
+  }
+  .cam-reticle { border-color: CanvasText; }
+}

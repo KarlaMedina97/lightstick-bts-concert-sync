@@ -116,3 +116,30 @@ function rotate(hex, deg) {
 
 export const THEME_SURFACE = SURFACE;
 export const THEME_INK = INK;
+
+// ---------- Color en palabras (para lectores de pantalla, docs/accesibilidad-visual.md A-15) ----------
+const COLOR_WORDS = {
+  es: { white: "blanco", purple: "morado", violet: "violeta", pink: "rosa", red: "rojo", orange: "naranja", gold: "dorado", green: "verde", aqua: "aqua", sky: "celeste", blue: "azul", off: "apagado", dim: "tenue", bright: "intenso" },
+  en: { white: "white", purple: "purple", violet: "violet", pink: "pink", red: "red", orange: "orange", gold: "gold", green: "green", aqua: "aqua", sky: "sky blue", blue: "blue", off: "off", dim: "dim", bright: "bright" },
+};
+/** Nombre corto del color más cercano + intensidad: "rosa intenso", "azul tenue". @param {number[]} rgb */
+export function colorName(rgb, lang = "es") {
+  const w = COLOR_WORDS[lang] ?? COLOR_WORDS.es;
+  const [h, s, l] = rgbToHsl(rgb);
+  const max = Math.max(...rgb);
+  if (max < 18) return w.off;
+  let key;
+  if (s < 0.18 || l > 0.9) key = "white";
+  else if (h < 12 || h >= 345) key = "red";
+  else if (h < 40) key = "orange";
+  else if (h < 70) key = "gold";
+  else if (h < 160) key = "green";
+  else if (h < 190) key = "aqua";
+  else if (h < 215) key = "sky";
+  else if (h < 250) key = "blue";
+  else if (h < 262) key = "violet"; // el morado BTS (#8a2be2, 271°) queda en "morado"
+  else if (h < 310) key = "purple";
+  else key = "pink";
+  const level = max < 110 ? w.dim : max > 200 ? w.bright : "";
+  return level ? `${w[key]} ${level}` : w[key];
+}

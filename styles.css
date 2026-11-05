@@ -1978,3 +1978,191 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
   .app[data-view="video"]:not(.home) .style-chip { justify-self: start; left: var(--s-1); right: auto; transform: none; translate: none; max-width: calc(100% - 140px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 @media (max-width: 640px) { .hud-top { position: relative; z-index: 20; } }
+
+/* =====================================================================
+   Accesibilidad visual (docs/accesibilidad-visual.md)
+   A-12 foco no tapado · objetivos táctiles · A-17 más contraste · A-18 interfaz tranquila · A-06 colores forzados
+   ===================================================================== */
+
+/* ---------- A-12 · zoom 400 %: el foco no queda bajo la cabecera, el dock ni la barra de Explorar ---------- */
+html {
+  scroll-padding-top: calc(var(--hud-h) + var(--safe-t) + var(--s-2));
+  scroll-padding-bottom: calc(var(--dock-h) + var(--safe-b) + var(--s-2));
+}
+.home-view { scroll-padding-top: var(--s-3); scroll-padding-bottom: var(--s-5); }
+.app.exploring .home-view { scroll-padding-top: 120px; } /* .explore-head fija + título de álbum (top: 104px) */
+.panel-body, .lib-scroll, .app.side-drawer .side, .coach, .upnext, .menu-pop { scroll-padding-block: var(--s-3); }
+.sg-row { scroll-padding-inline: var(--s-1); }
+/* Ventanas muy bajas en vertical (lupa, zoom alto): dock compacto, etiquetas solo para el lector.
+   (En horizontal ya lo resuelve el bloque max-height: 500px de arriba.) */
+@media (max-height: 500px) and (orientation: portrait) {
+  :root { --pad: var(--s-2); }
+  .app { gap: var(--s-2); }
+  .np-sub { display: none; }
+  .art { width: 36px; height: 36px; box-shadow: inset 0 0 0 10px #0d0b18; }
+  .art::after { inset: 14px; }
+  .dock { row-gap: 0; padding-block: var(--s-1); }
+  .dbtn { min-height: var(--tap); padding: 0; }
+  .dbtn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+
+/* ---------- §2.13 · áreas táctiles de 44 px con el dedo ---------- */
+@media (pointer: coarse) {
+  .more-btn, .like-btn, .sg-item .more-btn, .sg-item > .like-btn.sg-like { min-width: var(--tap); min-height: var(--tap); }
+  .sg-item .more-btn { width: var(--tap); height: var(--tap); right: -8px; }
+  .sg-item:has(> .more-btn) .sg-title, .sg-item:has(> .more-btn) .sg-meta { padding-right: 38px; }
+  .sg-item > .like-btn.sg-like { transform: none; }
+  .lb-opt { min-height: var(--tap); min-width: var(--tap); }
+  .nps-album { min-height: var(--tap); }
+}
+
+/* ---------- A-17 · más contraste: superficies opacas, bordes ≥ 3:1, sin texto tenue ---------- */
+@media (prefers-contrast: more) {
+  :root {
+    --surface-0: #15122a; --surface-1: #15122a; --surface-2: #1b1733; --surface-field: #1d1a2b;
+    --border: rgba(255, 255, 255, 0.45);        /* ≈ 4:1 sobre --surface-solid */
+    --border-strong: rgba(255, 255, 255, 0.6);
+    --muted: var(--text-2);
+  }
+  :root:not([data-theme]) { --muted: var(--text-2); }
+  :root[data-theme="light"] {
+    --surface-0: #ffffff; --surface-1: #ffffff; --surface-2: #ffffff; --surface-field: #f4f0fb;
+    --border: rgba(30, 15, 60, 0.55);           /* ≈ 4:1 sobre blanco */
+    --border-strong: rgba(30, 15, 60, 0.7);
+    --muted: var(--text-2);
+  }
+  *, *::before, *::after, .dlg::backdrop { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .side, .panel { background: var(--list-bg); }
+  .home-view, :root[data-theme="light"] .home-view { background: var(--bg); }
+  .explore-head, :root[data-theme="light"] .explore-head, .explore-list .album-title { background: var(--bg); }
+  .sg-play, :root[data-theme="light"] .sg-play { background: var(--surface-1); box-shadow: 0 0 0 1px var(--border); }
+  .tip { background: #120e24; border-color: rgba(255, 255, 255, 0.6); }
+  .sg-badge, .sg-item > .like-btn.sg-like { background: #08061a; }
+  .lights-view .section-label, .lights-view .hint { background: var(--surface-solid); color: var(--text); padding: var(--s-1) var(--s-3); border-radius: var(--r-pill); border: 1px solid var(--border); text-shadow: none; }
+  /* Límites de los controles */
+  .check input[type="checkbox"], :root[data-theme="light"] .check input[type="checkbox"] { border-color: var(--border-strong); }
+  .check.switch input[type="checkbox"], .mi[aria-pressed]::after { box-shadow: inset 0 0 0 2px var(--border-strong); }
+  .check.switch input[type="checkbox"]:checked, .mi[aria-pressed="true"]::after { box-shadow: none; }
+  .timeline, :root[data-theme="light"] .timeline { background: var(--border); }
+  input[type="range"], :root[data-theme="light"] input[type="range"] { --track: linear-gradient(90deg, var(--accent) var(--p, 50%), var(--border) var(--p, 50%)); }
+  input[type="range"]::-moz-range-track { background: var(--border); }
+  .seg, .tabs, .menu, .filter-chip, .chip-type, .lyrics-bar, .style-chip, .dbtn[aria-pressed="true"], .dbtn.on { border-color: var(--border-strong); }
+  .lb-seg { border: 1px solid var(--border-strong); }
+  .btn.ghost { border-color: var(--border); }
+  /* Enlaces dentro de texto: siempre subrayados */
+  a:not([class]), p a, small a, .hint a, .legal a, .warning a, .lyrics-bar a, .support-nudge a, .c-text a { text-decoration-line: underline; }
+}
+
+/* ---------- A-18 · interfaz tranquila (.app.calm, ajuste "Interfaz tranquila") ----------
+   El color de la canción no tiñe la interfaz, sin haces, neblina ni público, bombilla de Luces con brillo
+   limitado y sin degradados animados. El brillo del ARMY Bomb por Bluetooth no cambia (JS y #rng-bright).
+   Las mismas reglas se repiten abajo para prefers-reduced-transparency. */
+.app.calm {
+  --glow: #2a2440 !important; /* !important: app.js lo pone en línea con cada color */
+  --light: #3a3358;
+  --glow-soft: rgba(42, 36, 64, 0.35);
+  --song-accent: var(--accent) !important; --song-accent-2: var(--accent) !important;
+  --song-accent-l: var(--accent) !important; --song-accent-l2: var(--accent) !important;
+  --song-line: var(--border-strong);
+  transition: none;
+}
+.app.calm .beams, .app.calm .haze, .app.calm .crowd-canvas, .app.calm .stage::before, .app.calm .chant::before { display: none; }
+.app.calm .ambient { background: linear-gradient(180deg, #0a0b26 0%, var(--bg) 45%, var(--bg-deep) 100%); }
+:root[data-theme="light"] .app.calm .ambient { background: linear-gradient(180deg, #ebe4fa 0%, var(--bg) 45%, #e9e1f7 100%); }
+.app.calm .big-bulb { filter: brightness(0.7); box-shadow: 0 0 40px 6px color-mix(in srgb, var(--c) 50%, transparent), inset 0 -20px 40px rgba(0, 0, 0, 0.35); }
+.app.calm .bulb { filter: brightness(0.8); }
+.app.calm .video-card, .app.calm.exploring .video-card { box-shadow: 0 0 0 1px var(--border-strong), var(--e-3); }
+.app.calm.playing-now .dock { border-color: var(--border); box-shadow: var(--hairline-top), var(--e-2); }
+.app.calm.playing-now .ibtn.play { box-shadow: 0 6px 20px -6px rgba(0, 0, 0, 0.7); }
+.app.calm.playing-now .art, .app.calm .song.playing .thumb::after, .app.calm .chant-name.pop,
+.app.calm .np-letters, .app.calm .np-letters .ch, .app.calm .hero-title, .app.calm .empty-art { animation: none !important; }
+.app.calm .chant-name { filter: none; }
+@media (prefers-reduced-transparency: reduce) {
+  .app {
+    --glow: #2a2440 !important;
+    --light: #3a3358;
+    --glow-soft: rgba(42, 36, 64, 0.35);
+    --song-accent: var(--accent) !important; --song-accent-2: var(--accent) !important;
+    --song-accent-l: var(--accent) !important; --song-accent-l2: var(--accent) !important;
+    --song-line: var(--border-strong);
+    transition: none;
+  }
+  .beams, .haze, .crowd-canvas, .stage::before, .chant::before { display: none; }
+  .ambient { background: linear-gradient(180deg, #0a0b26 0%, var(--bg) 45%, var(--bg-deep) 100%); }
+  :root[data-theme="light"] .ambient { background: linear-gradient(180deg, #ebe4fa 0%, var(--bg) 45%, #e9e1f7 100%); }
+  .big-bulb { filter: brightness(0.7); box-shadow: 0 0 40px 6px color-mix(in srgb, var(--c) 50%, transparent), inset 0 -20px 40px rgba(0, 0, 0, 0.35); }
+  .bulb { filter: brightness(0.8); }
+  .video-card, .app.exploring .video-card { box-shadow: 0 0 0 1px var(--border-strong), var(--e-3); }
+  .playing-now .dock { border-color: var(--border); box-shadow: var(--hairline-top), var(--e-2); }
+  .playing-now .ibtn.play { box-shadow: 0 6px 20px -6px rgba(0, 0, 0, 0.7); }
+  .playing-now .art, .song.playing .thumb::after, .chant-name.pop, .np-letters, .np-letters .ch, .hero-title, .empty-art { animation: none !important; }
+  .chant-name { filter: none; }
+  /* Menos transparencia también en las superficies de vidrio */
+  :root { --surface-0: #15122a; --surface-1: #15122a; }
+  :root[data-theme="light"] { --surface-0: #ffffff; --surface-1: #ffffff; }
+}
+
+/* ---------- A-06 · colores forzados (Windows Contraste alto) ---------- */
+@media (forced-colors: active) {
+  /* Foco visible en todo, también en campos y deslizadores que usaban outline: none + box-shadow */
+  :focus-visible,
+  select:focus-visible, input:focus-visible, textarea:focus-visible, input[type="range"]:focus-visible,
+  .dock:focus-visible, .mi:focus-visible, .sg-play:focus-visible, .al-play:focus-visible { outline: 3px solid Highlight !important; outline-offset: 2px !important; }
+  .kind .check:has(input:focus-visible), .star-row input:focus-visible + label { outline: 3px solid Highlight; outline-offset: 2px; }
+
+  /* Fondos decorativos: el sistema quita los degradados; la multitud (canvas) no debe quedar detrás del texto */
+  .ambient, .beams, .haze, .crowd-canvas, .vignette, .stage::before, .chant::before, .seg::before, .tabs::before { display: none; }
+
+  /* Estados pulsado / elegido / marcado: fondo Highlight (forced-color-adjust: none para que se vea) */
+  [aria-pressed="true"], [aria-selected="true"], [aria-checked="true"], .lb-opt[aria-pressed="true"], .filter-chip[aria-pressed="true"],
+  .seg [aria-selected="true"], .tabs [aria-selected="true"], .dbtn.on, .pill.on {
+    forced-color-adjust: none;
+    background: Highlight !important; color: HighlightText !important; border-color: Highlight !important;
+    outline: 2px solid CanvasText; outline-offset: 1px;
+  }
+  :is([aria-pressed="true"], [aria-selected="true"], [aria-checked="true"], .dbtn.on, .pill.on) * { color: inherit !important; }
+  .seg button, .tabs button, .lb-opt, .filter-chip, .dbtn, .ibtn, .more-btn, .like-btn, .menu-item, .mi, .lib-item { border: 1px solid transparent; }
+  [aria-current]:not([aria-current="false"]) { outline: 2px solid Highlight; outline-offset: 1px; text-decoration: underline; }
+  [aria-expanded="true"] { outline: 2px dashed Highlight; outline-offset: 1px; }
+  /* Canción que suena / tarjeta elegida en Explorar */
+  .song.playing, .sg-play.playing, .cq-nowrow, .rank tr.me td { outline: 3px solid Highlight; outline-offset: 2px; }
+  .song.playing::before { forced-color-adjust: none; background: Highlight; }
+  .kind .check:has(input:checked) { outline: 2px solid Highlight; border-color: Highlight; }
+  .star-row input:checked ~ label { color: Highlight; }
+
+  /* Casillas e interruptores: el estado se dibuja con colores del sistema */
+  .check input[type="checkbox"] { forced-color-adjust: none; border: 2px solid ButtonText; background-color: Canvas; }
+  .check input[type="checkbox"]:checked { background-color: Highlight; border-color: Highlight; }
+  .check.switch input[type="checkbox"] {
+    forced-color-adjust: none; border: 2px solid ButtonText; background-color: Canvas;
+    background-image: radial-gradient(circle, ButtonText 0 8px, transparent 8.5px); background-size: 22px 22px; background-position: 0 50%;
+  }
+  .check.switch input[type="checkbox"]:checked {
+    background-color: Highlight; border-color: Highlight;
+    background-image: radial-gradient(circle, HighlightText 0 8px, transparent 8.5px); background-size: 22px 22px; background-position: 100% 50%;
+  }
+  .mi[aria-pressed]::after {
+    forced-color-adjust: none; border: 2px solid ButtonText;
+    background: Canvas radial-gradient(circle, ButtonText 0 6px, transparent 6.5px) 0 50% / 18px 18px no-repeat;
+  }
+  .mi[aria-pressed="true"]::after { border-color: HighlightText; background: Highlight radial-gradient(circle, HighlightText 0 6px, transparent 6.5px) 100% 50% / 18px 18px no-repeat; }
+
+  /* Deslizadores y barra de tiempo */
+  input[type="range"] { forced-color-adjust: none; --track: linear-gradient(90deg, Highlight var(--p, 50%), GrayText var(--p, 50%)); }
+  input[type="range"]::-webkit-slider-thumb { background: ButtonText; border: 2px solid Canvas; box-shadow: none; }
+  input[type="range"]::-moz-range-thumb { background: ButtonText; border: 2px solid Canvas; box-shadow: none; }
+  input[type="range"]::-moz-range-track { background: GrayText; }
+  input[type="range"]::-moz-range-progress { background: Highlight; }
+  .timeline { border: 1px solid CanvasText; }
+  .playhead { forced-color-adjust: none; background: CanvasText; box-shadow: 0 0 0 2px Canvas; }
+
+  /* Superficies flotantes: borde propio (sin sombra ni vidrio no se distinguen del fondo) */
+  .panel, .np-side, .dock, .side, .menu-pop, #song-menu, .m-nav-menu, .toast, .tip, .coach, .coach-pill, .upnext, .support-nudge,
+  .dlg, .lyrics-bar, .style-chip, .cq-ghost, .app.exploring .video-card, .explore-head { border: 1px solid CanvasText; }
+  .app.exploring .mini-bar { border-bottom: 1px solid CanvasText; }
+  .toast-action, .ibtn.play { border: 1px solid ButtonText; }
+
+  /* El color de las luces y las paletas es contenido: se conserva */
+  .seg-part, .big-bulb, .bulb, .sim, .dot, .g-globe, .g-dot, .swatches i, .lib-dots, .art, .filter-chip.member::before,
+  .style-chip::before, .lights-glyph, .sp-stick { forced-color-adjust: none; }
+}

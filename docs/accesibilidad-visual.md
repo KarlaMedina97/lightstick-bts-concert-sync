@@ -18,6 +18,18 @@ Este documento distingue dos grupos con necesidades distintas (a veces opuestas)
 Lo que ayuda a uno puede estorbar al otro (un aviso hablado de cada cambio de luz es útil para quien no ve, pero
 ruido para quien usa lupa). Por eso varias propuestas son **opcionales y apagadas por defecto**.
 
+## Estado de la implementación (2026-11-05)
+
+Hecho: A-01 a A-11, A-13 a A-17, A-18 (ajuste "Interfaz tranquila" + `prefers-reduced-transparency`), A-19 a A-22,
+A-26 (pruebas estáticas en `tests/a11y.test.js`) y los tamaños táctiles de 2.13. Parcial: A-12 (scroll-padding y dock
+compacto; el mini reproductor sigue flotando), A-24 (la cola mantiene Alt+↑/↓; falta "Subir/Bajar" en el menú).
+Pendiente: A-23 (tono guía para la cámara), A-25 (prueba de espaciado de texto) y **todas las pruebas manuales con
+lectores de pantalla reales** de la sección 3.2.
+
+Piezas nuevas: `src/announce.js` (`say()`), `src/earcons.js` (sonidos y vibración), `colorName()` en
+`src/palette.js`, ajustes en Ajustes → Accesibilidad, botón y tecla **L** "¿Cómo están las luces?", atajos con
+**Alt+Mayús** que funcionan aunque se apaguen los de una tecla.
+
 ---
 
 ## 1. Resumen de prioridades

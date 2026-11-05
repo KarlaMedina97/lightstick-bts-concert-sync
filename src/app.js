@@ -19,6 +19,9 @@ import { songTheme } from "./palette.js";
 import { PlayQueue } from "./queue.js";
 import { initTooltips } from "./tooltip.js";
 import { lang, t } from "./i18n.js";
+import { say } from "./announce.js";
+import { earcon, buzz, configureEarcons } from "./earcons.js";
+import { colorName } from "./palette.js";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app");
@@ -37,7 +40,7 @@ const store = {
 };
 
 const SETTINGS_KEY = "pws.settings.v1";
-const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, lyrics: false, lyricsLang: "ko", lyricsMode: "lyrics", chant: true, chantVoice: true, bpm: {} };
+const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, lyrics: false, lyricsLang: "ko", lyricsMode: "lyrics", chant: true, chantVoice: true, sounds: true, describe: false, keys: true, calm: false, bpm: {} };
 const settings = { ...defaults, ...store.get(SETTINGS_KEY, {}) };
 if (matchMedia("(prefers-reduced-motion: reduce)").matches) settings.safeMode = true;
 const saveSettings = () => store.set(SETTINGS_KEY, settings);
@@ -71,12 +74,14 @@ let chantFlashAt = -1e9;
 const sticks = [];
 
 // ---------- Utilidades ----------
-function toast(msg, ms = 4500) {
-  const t = $("toast");
-  t.textContent = msg;
-  t.hidden = false;
+/** Aviso visible breve; también se dice por la región viva (el #toast no es región viva: aparece y se va). */
+function toast(msg, ms = 4500, { assertive = false } = {}) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.hidden = false;
+  say(msg, { assertive });
   clearTimeout(toast.timer);
-  toast.timer = setTimeout(() => (t.hidden = true), ms);
+  toast.timer = setTimeout(() => (el.hidden = true), ms);
 }
 const fmt = (s) => {
   s = Math.max(0, Math.floor(s || 0));
@@ -88,6 +93,21 @@ const thumbUrl = (yt) => `https://i.ytimg.com/vi/${yt}/mqdefault.jpg`;
 // ---------- Paneles ----------
 let openPanel = null;
 let panelTrigger = null;
+const phoneLayout = () => matchMedia("(max-width: 640px)").matches;
+/** Con un panel o el cajón tapando la pantalla, lo de atrás queda inerte (VoiceOver/TalkBack no salen sin querer). */
+let inerted = [];
+function setModal(el, on) {
+  for (const n of inerted) n.inert = false;
+  inerted = [];
+  el.toggleAttribute("aria-modal", on);
+  if (on) el.setAttribute("aria-modal", "true");
+  if (!on) return;
+  for (const n of app.children) {
+    if (n === el || n.contains(el) || n.matches("#toast, #sr-polite, #sr-assertive, .skip, dialog, #song-menu, .tip")) continue;
+    n.inert = true;
+    inerted.push(n);
+  }
+}
 function showPanel(id, trigger) {
   if (openPanel === id) return closePanel();
   closePanel(false);
@@ -99,13 +119,19 @@ function showPanel(id, trigger) {
   const pop = panelTrigger?.closest?.("[data-menu-for]");
   if (pop) panelTrigger = $(pop.dataset.menuFor);
   closeMenus();
-  p.querySelector(".close")?.focus();
+  if (phoneLayout()) setModal(p, true);
+  // Se enfoca el título: se oye el nombre del panel antes que "Cerrar".
+  const h = p.querySelector("h2");
+  if (h) { h.tabIndex = -1; h.focus(); } else p.querySelector(".close")?.focus();
 }
 function closePanel(restoreFocus = true) {
   if (!openPanel) return;
-  $(openPanel).hidden = true;
+  const p = $(openPanel);
+  const hadFocus = p.contains(document.activeElement);
+  p.hidden = true;
+  setModal(p, false);
   openPanel = null;
-  if (restoreFocus) panelTrigger?.focus?.();
+  if (restoreFocus || hadFocus) panelTrigger?.focus?.();
 }
 function bindPanels() {
   document.querySelectorAll(".panel .close").forEach((b) => (b.onclick = () => closePanel()));
@@ -222,6 +248,9 @@ async function onConnect() {
   const btn = $("btn-connect");
   btn.disabled = true;
   btn.textContent = "Conectando…";
+  $("panel-bt").setAttribute("aria-busy", "true");
+  say("Se abrirá la lista de dispositivos del navegador: elige el que empieza con BTS LIGHTSTICK o BBOMB.", { delay: 0 });
+  earcon("searching");
   try {
     const stick = await requestStick({ showAll: $("chk-all").checked });
     if (sticks.some((s) => s.id === stick.id)) return toast("Ese ARMY Bomb ya está conectado.");
@@ -229,15 +258,22 @@ async function onConnect() {
       const i = sticks.indexOf(stick);
       if (i >= 0) sticks.splice(i, 1);
       renderSticks();
-      toast(`${stick.name} se desconectó.`);
+      // Inesperado y sin pistas visuales para quien no ve: aviso urgente, sonido y vibración.
+      toast(`${stick.name} se desconectó.`, 6000, { assertive: true });
+      earcon("disconnected");
+      buzz([60, 40, 60]);
     });
     sticks.push(stick);
     renderSticks();
     stick.setColor(hexToRgb(PURPLE));
     toast(`¡${stick.name} conectado! Borahae 💜`);
+    earcon("connected");
+    buzz(40);
   } catch (e) {
-    if (e?.name !== "NotFoundError") toast("No pudimos conectar. Revisa que parpadee y prueba otra vez.");
+    if (e?.name !== "NotFoundError") { toast("No pudimos conectar. Revisa que parpadee y prueba otra vez."); earcon("error"); }
+    else say("Lista cerrada sin elegir un dispositivo.");
   } finally {
+    $("panel-bt").removeAttribute("aria-busy");
     btn.disabled = false;
     btn.textContent = sticks.length ? "Conectar otro" : "Conectar ARMY Bomb";
   }
@@ -442,6 +478,7 @@ function setSide(open) {
     $("side").hidden = !show;
     app.classList.remove("with-side");
     app.classList.toggle("side-drawer", show);
+    setModal($("side"), show);
     $("btn-side").setAttribute("aria-expanded", String(show));
     if (show) requestAnimationFrame(() => $("side").querySelector(".lib-item")?.focus());
     return;
@@ -596,6 +633,7 @@ function loadIndex(i, { autoplay = true } = {}) {
   if (i < 0 || i >= queue.length) return;
   current = i;
   const { album, song } = queue[i];
+  if (autoplay) say(`${t("Ahora suena")}: ${song.title}, ${album.id === "mine" ? song.channel ?? t("Mis videos") : album.title}`);
   setNowTitle(song.title);
   applySongTheme(album.palette);
   app.classList.remove("home");
@@ -614,6 +652,7 @@ function loadIndex(i, { autoplay = true } = {}) {
   startChallenge();
   renderRanking();
   player.load(videoFor(song), autoplay);
+  player.setTitle(song.title);
   $("mini-title").textContent = song.title;
   if (firstSongPending) {
     firstSongPending = false;
@@ -750,11 +789,52 @@ function bindTimeline() {
   tl.addEventListener("pointermove", (e) => dragging && seekTo(e.clientX));
   tl.addEventListener("pointerup", () => (dragging = false));
   tl.addEventListener("keydown", (e) => {
-    const step = { ArrowRight: 5, ArrowLeft: -5, PageUp: 30, PageDown: -30 }[e.key];
-    if (step) { e.preventDefault(); player.seek(Math.max(0, player.time() + step)); }
-    if (e.key === "Home") player.seek(0);
+    const step = { ArrowRight: 5, ArrowLeft: -5, ArrowUp: 5, ArrowDown: -5, PageUp: 30, PageDown: -30 }[e.key];
+    let to = null;
+    if (step) to = Math.max(0, player.time() + step);
+    if (e.key === "Home") to = 0;
+    if (e.key === "End") to = Math.max(0, player.duration() - 2);
+    if (to == null) return;
+    e.preventDefault();
+    player.seek(to);
+    setTimelineValue(to, player.duration());
   });
 }
+
+/** Valor accesible de la barra de tiempo: "1:23 de 3:45, coro". */
+function setTimelineValue(time, dur) {
+  const tl = $("timeline");
+  tl.setAttribute("aria-valuemax", Math.round(dur));
+  tl.setAttribute("aria-valuenow", Math.round(time));
+  const sec = pattern?.sectionAt?.(time)?.label;
+  tl.setAttribute("aria-valuetext", `${fmt(time)} de ${fmt(dur)}${sec ? `, ${sec}` : ""}`);
+}
+
+function applyAccess() {
+  app.classList.toggle("calm", settings.calm);
+  configureEarcons({ volume: settings.sounds ? 0.5 : 0, muted: () => Boolean(mic) });
+}
+
+// ---------- Luces en palabras (A-15) ----------
+let lastColors = null;
+let lastDescribed = 0;
+/** "Rosa intenso, coro, estilo Ola. 2 ARMY Bomb conectados." (en el idioma actual) */
+function describeLights() {
+  const c = lastColors?.[0];
+  const parts = [];
+  if (mic) parts.push(t("Las luces siguen el micrófono"));
+  else if (cam) parts.push(t("Las luces copian el color de la cámara"));
+  if (c && player?.state === "playing") parts.push(colorName(c.map((v) => v * (settings.brightness / 100)), lang));
+  else parts.push(t(current >= 0 ? "En pausa" : "Luces listas"));
+  if (pattern && player?.state === "playing" && !mic && !cam) {
+    const sec = pattern.sectionAt(player.time());
+    parts.push(t(sec.label), `${t("estilo")} ${t(STYLES[sec.style].label)}`);
+  }
+  const n = sticks.length;
+  const conn = n ? (lang === "en" ? `${n} ARMY Bomb connected` : `${n} ARMY Bomb conectado${n > 1 ? "s" : ""}`) : t("Sin ARMY Bomb conectado");
+  return `${parts.join(", ")}. ${conn}.`;
+}
+function announceLights() { lastDescribed = performance.now(); say(describeLights(), { delay: 0 }); }
 
 // ---------- Modo micrófono ----------
 // ---------- "Estoy en un concierto" ----------
@@ -891,9 +971,9 @@ function frame(now) {
   $("t-dur").textContent = fmt(dur);
   $("playhead").style.left = dur ? `${(t / dur) * 100}%` : "0";
   const tl = $("timeline");
-  tl.setAttribute("aria-valuemax", Math.round(dur));
-  tl.setAttribute("aria-valuenow", Math.round(t));
-  tl.setAttribute("aria-valuetext", `${fmt(t)} de ${fmt(dur)}`);
+  // Con el foco en la barra no se reescribe el valor (el lector lo leería cada segundo): solo tras una tecla.
+  if (document.activeElement !== tl) setTimelineValue(t, dur);
+  lastColors = colors;
 
   // El océano del fondo "escala" con la canción: tenue en la intro, máximo en los coros.
   let energy = 0.35;
@@ -905,7 +985,7 @@ function frame(now) {
   }
   app.style.setProperty("--energy", energy.toFixed(2));
   app.classList.toggle("chorus", energy >= 0.85);
-  if (now - lastSave > 5000 && player.state === "playing") { lastSave = now; saveQueue(); }
+  if (now - lastSave > 5000 && player.state === "playing") { lastSave = now; saveQueue(); updateMediaPosition(); }
   updateUpNextCard(t, dur);
   crowd?.setEnergy(energy);
 
@@ -916,6 +996,8 @@ function frame(now) {
     label = `Luces: ${STYLES[sec.style].label} · ${sec.label}`;
   } else label = current >= 0 ? "En pausa" : "Luces listas";
   if (label !== lastLabel) {
+    // Modo opcional "Describir las luces": un aviso por sección, nunca más de uno cada 8 s ni al empezar.
+    if (settings.describe && pattern && player.state === "playing" && t > 5 && now - lastDescribed > 8000) announceLights();
     lastLabel = label;
     $("style-chip").textContent = label;
     $("now-section").textContent = label;
@@ -968,8 +1050,22 @@ function updateMediaSession() {
     album: album.title,
     artwork: [{ src: thumbUrl(song.yt), sizes: "320x180", type: "image/jpeg" }],
   });
-  navigator.mediaSession.setActionHandler("nexttrack", () => next(false));
-  navigator.mediaSession.setActionHandler("previoustrack", prev);
+  const on = (action, fn) => { try { navigator.mediaSession.setActionHandler(action, fn); } catch {} };
+  on("nexttrack", () => next(false));
+  on("previoustrack", prev);
+  on("play", () => player.play());
+  on("pause", () => player.pause());
+  on("seekbackward", (d) => player.seek(Math.max(0, player.time() - (d?.seekOffset ?? 10))));
+  on("seekforward", (d) => player.seek(player.time() + (d?.seekOffset ?? 10)));
+  on("seekto", (d) => d?.seekTime != null && player.seek(d.seekTime));
+}
+function updateMediaPosition() {
+  if (!("mediaSession" in navigator) || !player?.ready) return;
+  const duration = player.duration();
+  try {
+    navigator.mediaSession.playbackState = player.state === "playing" ? "playing" : "paused";
+    if (duration > 0) navigator.mediaSession.setPositionState?.({ duration, position: Math.min(duration, player.time()), playbackRate: 1 });
+  } catch {}
 }
 
 // ---------- Presentación (solo clases y variables CSS) ----------
@@ -1339,7 +1435,7 @@ function railPreferred() {
 function applyRail(on) {
   app.classList.toggle("rail", on && wide()); // el cajón de tablet siempre va con etiquetas
   $("side-rail").setAttribute("aria-pressed", String(on));
-  $("side-rail").setAttribute("aria-label", on ? "Expandir biblioteca" : "Contraer biblioteca");
+  $("side-rail").setAttribute("aria-label", "Biblioteca compacta");
   $("side-rail").dataset.tip = on ? "Expandir" : "Contraer";
 }
 function libItem(index, { sub = "" } = {}) {
@@ -1710,18 +1806,21 @@ function jumpTo(uid) {
 }
 
 /** Aviso con un botón (p. ej. "Deshacer"). */
-function toastAction(msg, label, fn, ms = 6000) {
-  const t = $("toast");
-  t.replaceChildren(document.createTextNode(msg));
+/** Aviso con acción (Deshacer, Mostrar…): dura al menos 10 s y no se cierra mientras el puntero o el foco estén dentro. */
+function toastAction(msg, label, fn, ms = 10000) {
+  const el = $("toast");
+  el.replaceChildren(document.createTextNode(msg));
   const b = document.createElement("button");
   b.type = "button";
   b.className = "toast-action";
   b.textContent = label;
-  b.onclick = () => { t.hidden = true; fn(); };
-  t.append(b);
-  t.hidden = false;
+  b.onclick = () => { el.hidden = true; fn(); };
+  el.append(b);
+  el.hidden = false;
+  say(msg);
+  const hide = () => { if (!el.matches(":hover, :focus-within")) el.hidden = true; else toast.timer = setTimeout(hide, 1500); };
   clearTimeout(toast.timer);
-  toast.timer = setTimeout(() => (t.hidden = true), ms);
+  toast.timer = setTimeout(hide, Math.max(10000, ms));
 }
 function queuePlayNext(i) {
   const e = pq.playNext(queue[i].song.id);
@@ -1740,11 +1839,11 @@ function syncModes() {
   if (!pq) return;
   for (const id of ["btn-shuffle", "cq-shuffle"]) {
     $(id).setAttribute("aria-pressed", pq.shuffle);
-    $(id).setAttribute("aria-label", pq.shuffle ? "Aleatorio: sí" : "Aleatorio: no");
+    $(id).setAttribute("aria-label", "Aleatorio");
   }
   for (const id of ["btn-repeat", "cq-repeat"]) {
     const b = $(id);
-    b.setAttribute("aria-pressed", pq.repeat !== "off");
+    b.removeAttribute("aria-pressed"); // tres estados: el nombre los dice
     b.setAttribute("aria-label", REPEAT_LABEL[pq.repeat]);
     b.dataset.tip = REPEAT_LABEL[pq.repeat];
     b.querySelector("use").setAttribute("href", pq.repeat === "one" ? "#i-repeat-one" : "#i-repeat");
@@ -2067,7 +2166,6 @@ function moreButton(index, title) {
   m.className = "more-btn";
   m.dataset.index = index;
   m.setAttribute("aria-label", `Más opciones: ${title}`);
-  m.setAttribute("aria-haspopup", "true");
   m.setAttribute("aria-controls", "song-menu");
   m.setAttribute("aria-expanded", "false");
   m.innerHTML = `<svg aria-hidden="true"><use href="#i-more"/></svg>`;
@@ -2139,7 +2237,7 @@ function bindMini() {
     card.classList.toggle("mini-sm", on);
     const b = $("mini-size");
     b.setAttribute("aria-pressed", String(on));
-    b.setAttribute("aria-label", on ? "Agrandar video" : "Achicar video");
+    b.setAttribute("aria-label", "Video pequeño");
     b.querySelector("use").setAttribute("href", on ? "#i-grow" : "#i-shrink");
     requestAnimationFrame(() => placeMini(true));
   };
@@ -2195,6 +2293,17 @@ function bindSettings() {
     toast("Modo seguro desactivado.");
   };
   $("chk-wake").onchange = (e) => { settings.wake = e.target.checked; saveSettings(); if (!settings.wake) wakeLock?.release(); };
+  const access = { "chk-sounds": "sounds", "chk-describe": "describe", "chk-keys": "keys", "chk-calm": "calm" };
+  for (const [id, key] of Object.entries(access)) {
+    $(id).checked = settings[key];
+    $(id).onchange = (e) => {
+      settings[key] = e.target.checked;
+      saveSettings();
+      applyAccess();
+      if (key === "sounds" && settings.sounds) earcon("connected");
+    };
+  }
+  applyAccess();
   $("sel-album-end").onchange = (e) => { settings.albumEnd = e.target.value; saveSettings(); };
   $("btn-auto").onclick = () => { settings.autoNext = !settings.autoNext; sync(); saveSettings(); toast(settings.autoNext ? "Al terminar, sigue la siguiente." : "Al terminar, se detiene."); };
   const setBpm = (v) => {
@@ -2263,6 +2372,9 @@ function onTap() {
   if (!challenge || player.state !== "playing") return;
   const r = challenge.tap(player.time());
   if (r.id === "ignored") return;
+  // Sin mirar: un sonido por resultado (Perfecto agudo … Fuera grave) y vibración en Android.
+  if (settings.sounds && !mic) earcon(r.id === "calibrating" ? "searching" : r.id);
+  buzz(r.id === "miss" ? [30, 30, 30] : r.id === "perfect" ? 25 : 12);
   const j = $("g-judge");
   j.textContent = r.points ? `${r.label} +${r.points}${r.combo > 1 ? ` · combo ${r.combo}` : ""}` : r.label;
   j.classList.toggle("miss", r.id === "miss");
@@ -2283,6 +2395,7 @@ async function finishChallenge() {
     score: s.score, accuracy: s.accuracy, maxCombo: s.maxCombo,
   });
   toast(`🏆 ${s.score.toLocaleString("es")} puntos · ${s.accuracy}% · combo ${s.maxCombo}`, 6000);
+  say(lang === "en" ? `Challenge over: ${s.score} points, ${s.accuracy}% accuracy, best combo ${s.maxCombo}.` : `Reto terminado: ${s.score} puntos, ${s.accuracy} % de precisión, combo máximo ${s.maxCombo}.`, { delay: 600 });
   renderRanking();
 }
 async function renderRanking() {
@@ -2352,15 +2465,25 @@ function bindGame() {
     if (!$("chk-game").checked) startChallenge();
     else if (!currentHandle()) { toast("Escribe tu nickname para jugar."); inp.focus(); }
   };
-  $("tap-pad").addEventListener("pointerdown", (e) => { e.preventDefault(); onTap(); });
+  // NVDA en modo exploración, VoiceOver y TalkBack activan con "click": se acepta si no vino justo de un toque.
+  let lastPointerTap = 0;
+  $("tap-pad").addEventListener("pointerdown", (e) => { e.preventDefault(); lastPointerTap = performance.now(); onTap(); });
+  $("tap-pad").addEventListener("click", (e) => { if (e.detail === 0 || performance.now() - lastPointerTap > 500) onTap(); });
   $("tap-pad").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onTap(); } });
   bindTabs(["tab-song", "tab-all"], (id) => { rankTab = id === "tab-song" ? "song" : "all"; renderRanking(); });
   renderRanking();
 }
 
 // ---------- Inicio ----------
+let bufferTimer = 0;
 function onPlayerState(state) {
   const playing = state === "playing";
+  updateMediaPosition();
+  // YouTube vuelve a poner su propio título al iframe al cargar: se repone el nuestro.
+  if (current >= 0 && (state === "cued" || state === "playing")) player.setTitle(queue[current].song.title);
+  // Carga larga: se avisa (quien no ve no sabe si se trabó).
+  clearTimeout(bufferTimer);
+  if (state === "buffering") bufferTimer = setTimeout(() => player.state === "buffering" && say("Cargando…"), 3000);
   $("play-icon").setAttribute("href", playing ? "#i-pause" : "#i-play");
   $("btn-play").setAttribute("aria-label", playing ? "Pausar" : "Reproducir");
   // Miniatura oculta: el video no suena. Si se reanuda desde el pie de página, la miniatura vuelve.
@@ -2417,6 +2540,7 @@ async function init() {
       crowd?.flash();
     },
   });
+  $("btn-describe").onclick = () => { closeMenus(); announceLights(); };
   $("lb-lyrics").onclick = () => setLyricsMode("lyrics");
   $("lb-roman").onclick = () => setLyricsMode("roman");
   $("btn-lyrics").onclick = () => {
@@ -2439,13 +2563,16 @@ async function init() {
     if (e.key === "Escape" && document.querySelector(".menu-pop:not([hidden])")) return closeMenus();
     if (e.key === "Escape" && openPanel) return closePanel();
     if (e.key === "Escape" && app.classList.contains("side-drawer")) { setSide(false); return $("btn-side").focus(); }
-    if (e.target.closest("input, select, textarea, button, a, [role='slider']")) return;
-    const k = e.key.toLowerCase();
-    if (e.code === "Space") { e.preventDefault(); togglePlay(); }
-    else if (k === "n") next(false);
-    else if (k === "p") prev();
+    const withMod = e.altKey && e.shiftKey && !e.ctrlKey && !e.metaKey;
+    if (e.target.closest("input, select, textarea") || (!withMod && e.target.closest("button, a, [role='slider']"))) return;
+    if (!withMod && (!settings.keys || e.altKey || e.ctrlKey || e.metaKey)) return;
+    const k = withMod ? e.code.replace(/^Key/, "").toLowerCase() : e.key.toLowerCase();
+    if (e.code === "Space" || (withMod && k === "k")) { e.preventDefault(); togglePlay(); }
+    else if (k === "n") { e.preventDefault(); next(false); }
+    else if (k === "p") { e.preventDefault(); prev(); }
     else if (k === "b") onTap();
     else if (k === "f") toggleFullscreen();
+    else if (k === "l") { e.preventDefault(); announceLights(); }
   });
 
   const guide = new Guide({
@@ -2538,6 +2665,7 @@ async function init() {
       if (!settings.autoNext) return;
       const endedAt = current;
       if (settings.chant && willContinue()) {
+        say(settings.chantVoice ? "Fanchant: el público corea los nombres." : "Fanchant entre canciones.");
         await fanchant.run({ voice: settings.chantVoice });
         if (current !== endedAt) return; // la persona eligió otra canción durante el fanchant
       }

@@ -5,6 +5,8 @@ const menu = $("m-nav-menu");
 const label = $("m-nav-label");
 const tabs = ["view-video", "view-lights", "view-explore"].map($);
 const items = () => [...menu.querySelectorAll("button, a")];
+// Patrón de menú del APG: una sola parada de Tab (el botón); dentro se navega con flechas.
+for (const it of items()) it.tabIndex = -1;
 
 function sync() {
   const active = tabs.find((t) => t.getAttribute("aria-selected") === "true") ?? tabs[2];

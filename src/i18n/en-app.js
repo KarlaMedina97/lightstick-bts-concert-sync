@@ -2,6 +2,37 @@
 // Los patrones con datos (títulos de canciones o álbumes, nombres, búsquedas) usan funciones para que esos
 // datos nunca pasen por el diccionario; los que llevan partes traducibles usan "$1" (se buscan en el diccionario).
 const dict = {
+  // Accesibilidad (docs/accesibilidad-visual.md)
+  "Accesibilidad": "Accessibility",
+  "Sonidos de la app": "App sounds",
+  "Avisos cortos al conectar, desconectar y en el reto": "Short cues when connecting, disconnecting and in the challenge",
+  "Describir las luces": "Describe the lights",
+  "Dice el color y la parte al cambiar de sección": "Says the color and song part when the section changes",
+  "Atajos de una tecla": "Single-key shortcuts",
+  "Apágalos si usas lector de pantalla o control por voz": "Turn them off if you use a screen reader or voice control",
+  "Interfaz tranquila": "Calm interface",
+  "Menos brillo y movimiento en pantalla": "Less brightness and motion on screen",
+  "Con lector de pantalla también puedes usar las teclas multimedia o los auriculares para pausar y cambiar de canción.": "With a screen reader you can also use your media keys or headphones to pause and change songs.",
+  "Controles del reproductor": "Player controls",
+  "Purple Wave Sync · Reproductor": "Purple Wave Sync · Player",
+  "Reproductor de YouTube. Los controles de Purple Wave están después del video.": "YouTube player. Purple Wave controls come after the video.",
+  "Se abre la lista de dispositivos del navegador: elige el que empieza con BTS LIGHTSTICK o BBOMB.": "The browser's device list opens: pick the one starting with BTS LIGHTSTICK or BBOMB.",
+  "Se abrirá la lista de dispositivos del navegador: elige el que empieza con BTS LIGHTSTICK o BBOMB.": "The browser's device list will open: pick the one starting with BTS LIGHTSTICK or BBOMB.",
+  "Lista cerrada sin elegir un dispositivo.": "List closed without choosing a device.",
+  "¿Cómo están las luces?": "What are the lights doing?",
+  "Lo dice en palabras · tecla L": "Says it in words · L key",
+  "describir las luces ·": "describe the lights ·",
+  "Cargando…": "Loading…",
+  "Las luces siguen el micrófono": "Lights are following the microphone",
+  "Las luces copian el color de la cámara": "Lights are copying the camera color",
+  "estilo": "style",
+  "Sin ARMY Bomb conectado": "No ARMY Bomb connected",
+  "Fanchant: el público corea los nombres.": "Fanchant: the crowd chants the names.",
+  "Fanchant entre canciones.": "Fanchant between songs.",
+  "Video de YouTube": "YouTube video",
+  "Video pequeño": "Small video",
+  "Narración": "Narration",
+  "Biblioteca compacta": "Compact library",
   // Bluetooth y ARMY Bomb
   "¿Borrar tus ajustes, nickname, puntajes, Me gusta, álbumes, historial y videos de este dispositivo? No se puede deshacer.": "Delete your settings, nickname, scores, likes, albums, history and videos from this device? This can't be undone.",
   "Desconectar": "Disconnect",
@@ -225,8 +256,9 @@ const ctxLabel = (s) => {
   return q ? `Search "${q[1]}"` : dict[s] ?? s;
 };
 
+const SECTION_EN = { intro: "intro", verso: "verse", "pre-coro": "pre-chorus", coro: "chorus", puente: "bridge", "coro final": "final chorus", final: "outro" };
 export const patterns = [
-  [/^(\d+:\d{2}(?::\d{2})?) de (\d+:\d{2}(?::\d{2})?)$/, "$1 of $2"], // aria-valuetext de la línea de tiempo
+  [/^(\d+:\d{2}(?::\d{2})?) de (\d+:\d{2}(?::\d{2})?)(?:, (.+))?$/, (m, a, b, sec) => `${a} of ${b}${sec ? `, ${SECTION_EN[sec] ?? sec}` : ""}`], // aria-valuetext de la línea de tiempo
   // Nombre accesible de cada canción (songLabel), con "Reproducir" y etiqueta opcionales.
   [
     /^(Reproducir (?:(En tu cola|Después|Sigue|Te gusta|Sugerida): )?)?(.+), (video musical|cover|en vivo|coreografía|performance|film)(, con letra)?, luces (suaves|medias|intensas)(, escuchada)?$/,

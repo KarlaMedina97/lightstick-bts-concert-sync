@@ -1,4 +1,5 @@
 // Envoltura del reproductor de YouTube con reloj de alta precisión.
+import { lang, t } from "./i18n.js";
 
 let apiReady;
 function loadYouTubeApi() {
@@ -44,10 +45,12 @@ export class Player {
         host: "https://www.youtube-nocookie.com", // modo de privacidad mejorada: sin cookies de seguimiento hasta reproducir
         width: "100%",
         height: "100%",
-        playerVars: { playsinline: 1, rel: 0, modestbranding: 1 },
+        // hl: idioma de la interfaz de YouTube; iv_load_policy 3: sin anotaciones encima del video.
+        playerVars: { playsinline: 1, rel: 0, iv_load_policy: 3, hl: lang, cc_lang_pref: lang === "en" ? "en" : "ko" },
         events: {
           onReady: () => {
             this.ready = true;
+            this.setTitle("");
             resolve();
           },
           onStateChange: (e) => this.#onState(e.data),
@@ -110,6 +113,14 @@ export class Player {
     this.state = map[code] ?? "idle";
     this.cb.onState?.(this.state);
     if (this.state === "ended") this.cb.onEnded?.();
+  }
+
+  /** Nombre del iframe para lectores de pantalla: "Video de YouTube: SWIM". */
+  setTitle(title) {
+    try {
+      const f = this.yt?.getIframe?.();
+      if (f) f.title = title ? `${t("Video de YouTube")}: ${title}` : t("Video de YouTube");
+    } catch {}
   }
 
   load(videoId, autoplay = true) {

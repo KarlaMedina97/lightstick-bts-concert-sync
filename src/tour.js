@@ -23,13 +23,14 @@ export class Tour {
     this.el = document.createElement("div");
     this.el.className = "tour";
     this.el.setAttribute("role", "dialog");
-    this.el.setAttribute("aria-live", "polite");
+    this.el.setAttribute("aria-labelledby", "tour-title");
+    this.el.setAttribute("aria-describedby", "tour-text");
     this.el.hidden = true;
     this.el.innerHTML = `
       <div class="tour-arrow" aria-hidden="true"></div>
       <p class="tour-step"></p>
-      <h2 class="tour-title" tabindex="-1"></h2>
-      <p class="tour-text"></p>
+      <h2 id="tour-title" class="tour-title" tabindex="-1"></h2>
+      <p id="tour-text" class="tour-text"></p>
       <div class="tour-actions">
         <button type="button" class="tour-skip">Saltar</button>
         <button type="button" class="tour-next">Siguiente</button>

@@ -64,6 +64,7 @@
     <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5.5c0 4.3 3 7.9 7 9.5 4-1.6 7-5.2 7-9.5V6l-7-3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
   </svg>
 
+  <a class="skip" href="#main">Saltar al contenido</a>
   <a class="skip" href="#dock">Saltar a los controles</a>
 
   <div id="app" class="app home">
@@ -99,7 +100,7 @@
       <div class="m-nav">
         <button id="m-nav-btn" class="m-nav-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="m-nav-menu"><span id="m-nav-label">Explorar</span><svg aria-hidden="true"><use href="#i-min"/></svg></button>
         <div id="m-nav-menu" class="m-nav-menu" role="menu" aria-label="Menú principal" hidden>
-          <p class="m-nav-h" role="presentation">Ver</p>
+          <p class="m-nav-h" id="m-nav-h" role="presentation">Ver</p>
           <button role="menuitemradio" type="button" data-proxy="view-video" aria-checked="false"><svg aria-hidden="true"><use href="#i-tv"/></svg>Video</button>
           <button role="menuitemradio" type="button" data-proxy="view-lights" aria-checked="false"><svg aria-hidden="true"><use href="#i-stick"/></svg>Luces</button>
           <button role="menuitemradio" type="button" data-proxy="view-explore" aria-checked="true"><svg aria-hidden="true"><use href="#i-explore"/></svg>Explorar</button>
@@ -148,11 +149,13 @@
       </div>
     </aside>
 
-    <main id="main" class="stage">
-      <p id="style-chip" class="style-chip" aria-live="polite">Luces listas</p>
+    <main id="main" class="stage" tabindex="-1">
+      <h1 class="sr">Purple Wave Sync · Reproductor</h1>
+      <p id="style-chip" class="style-chip">Luces listas</p>
 
       <button id="btn-min" class="video-min" type="button" aria-label="Minimizar video"><svg aria-hidden="true"><use href="#i-min"/></svg><span>Minimizar</span></button>
       <div id="video-view" class="video-card" role="tabpanel" aria-label="Video">
+        <p class="sr">Reproductor de YouTube. Los controles de Purple Wave están después del video.</p>
         <div class="video-box"><div id="yt"></div></div>
         <div id="mini-bar" class="mini-bar">
           <span class="mini-grip" aria-hidden="true"></span>
@@ -178,7 +181,7 @@
         <div class="home-hero">
           <div class="hero-text">
             <p class="eyebrow">Proyecto de fans · no oficial</p>
-            <h1 id="home-title" class="hero-title">¿Qué suena hoy?</h1>
+            <h2 id="home-title" class="hero-title">¿Qué suena hoy?</h2>
             <p class="hero-sub">Elige una canción y tus luces la siguen.</p>
           </div>
         </div>
@@ -263,9 +266,9 @@
         <a id="lb-link" href="#" target="_blank" rel="noopener noreferrer">Ver la letra en Genius ↗</a>
       </div>
 
-      <div id="chant" class="chant" aria-live="polite" hidden>
+      <div id="chant" class="chant" hidden>
         <p class="chant-label">Fanchant · ¡A corear!</p>
-        <p id="chant-name" class="chant-name"></p>
+        <p id="chant-name" class="chant-name" lang="ko"></p>
         <p id="chant-roman" class="chant-roman"></p>
         <button id="chant-skip" class="btn small" type="button">Saltar fanchant</button>
       </div>
@@ -285,8 +288,8 @@
       </div>
     </main>
 
-    <nav id="dock" class="dock" aria-label="Reproductor" tabindex="-1">
-      <button id="np-open" class="np" type="button" aria-haspopup="true" aria-controls="np-side" aria-expanded="false" data-tip="Ahora suena: detalles">
+    <section id="dock" class="dock" aria-label="Controles del reproductor" tabindex="-1">
+      <button id="np-open" class="np" type="button" aria-controls="np-side" aria-expanded="false" data-tip="Ahora suena: detalles">
         <span id="np-art" class="art" aria-hidden="true"></span>
         <span class="np-text">
           <span id="now-title" class="np-title">Nada sonando aún</span>
@@ -310,17 +313,18 @@
       <div class="dock-actions">
         <button id="btn-cola" class="dbtn" type="button" title="Cola de reproducción" aria-haspopup="dialog" aria-controls="panel-cola"><svg aria-hidden="true"><use href="#i-queue"/></svg><span>Cola</span></button>
         <button id="btn-lyrics" class="dbtn" type="button" aria-pressed="false" title="Muestra la letra (video o subtítulos oficiales)"><svg aria-hidden="true"><use href="#i-lyrics"/></svg><span>Letra</span></button>
-        <button id="btn-live" class="dbtn" type="button" title="Concierto" aria-expanded="false" aria-controls="menu-live" aria-haspopup="true"><svg aria-hidden="true"><use href="#i-live"/></svg><span>Concierto</span></button>
+        <button id="btn-live" class="dbtn" type="button" title="Concierto" aria-expanded="false" aria-controls="menu-live"><svg aria-hidden="true"><use href="#i-live"/></svg><span>Concierto</span></button>
         <button id="btn-fs" class="dbtn dbtn-icon" type="button" aria-label="Pantalla completa" data-tip="Pantalla completa (F)"><svg aria-hidden="true"><use href="#i-expand"/></svg><span>Pantalla</span></button>
         <button id="dock-bt" class="dbtn phone-only" type="button" aria-haspopup="dialog" aria-controls="panel-bt"><svg aria-hidden="true"><use href="#i-bt"/></svg><span id="dock-bt-label">Conectar</span></button>
       </div>
-    </nav>
+    </section>
 
     <!-- Menú "Concierto": dos formas de usar las luces fuera del video -->
     <div id="menu-live" class="menu-pop" data-menu-for="btn-live" role="group" aria-label="Concierto" hidden>
       <p class="mp-title">¿Dónde es el concierto?</p>
       <button id="btn-concert" class="mi" type="button" aria-pressed="false"><svg aria-hidden="true"><use href="#i-camera"/></svg><span class="mi-text"><span class="mi-label">En el estadio</span><small>La cámara copia el color de los ARMY Bomb</small></span></button>
       <button id="btn-mic" class="mi" type="button" aria-pressed="false"><svg aria-hidden="true"><use href="#i-tv"/></svg><span class="mi-text"><span class="mi-label">En la TV</span><small>Las luces siguen la música</small></span></button>
+      <button id="btn-describe" class="mi" type="button" aria-keyshortcuts="L"><svg aria-hidden="true"><use href="#i-info"/></svg><span class="mi-text"><span class="mi-label">¿Cómo están las luces?</span><small>Lo dice en palabras · tecla L</small></span></button>
     </div>
 
     <!-- Ahora suena: columna derecha en escritorio, hoja inferior en teléfono -->
@@ -470,9 +474,10 @@
         <p class="hint">Pon tu ARMY Bomb en modo Bluetooth y conéctalo.</p>
         <div id="bt-warning" class="warning" hidden></div>
         <div class="row wrap">
-          <button id="btn-connect" class="btn primary" type="button">Conectar ARMY Bomb</button>
+          <button id="btn-connect" class="btn primary" type="button" aria-describedby="bt-help">Conectar ARMY Bomb</button>
           <label class="check"><input id="chk-all" type="checkbox"> Mostrar todos los dispositivos</label>
         </div>
+        <p id="bt-help" class="hint small">Se abre la lista de dispositivos del navegador: elige el que empieza con BTS LIGHTSTICK o BBOMB.</p>
         <ul id="stick-list" class="sticks" aria-label="ARMY Bomb conectados"></ul>
         <button id="btn-guide" class="btn secondary" type="button"><svg aria-hidden="true"><use href="#i-guide"/></svg>Ver la guía</button>
         <p class="hint">¿Sin ARMY Bomb? Usa la vista <strong>Luces</strong>.</p>
@@ -540,6 +545,15 @@
           <label class="check switch"><input id="chk-wake" type="checkbox" checked><span>Mantener la pantalla encendida</span></label>
         </section>
 
+        <section class="group" aria-labelledby="sg-access">
+          <h3 id="sg-access" class="group-title"><svg aria-hidden="true"><use href="#i-info"/></svg>Accesibilidad</h3>
+          <label class="check switch"><input id="chk-sounds" type="checkbox" checked><span>Sonidos de la app<small>Avisos cortos al conectar, desconectar y en el reto</small></span></label>
+          <label class="check switch"><input id="chk-describe" type="checkbox"><span>Describir las luces<small>Dice el color y la parte al cambiar de sección</small></span></label>
+          <label class="check switch"><input id="chk-keys" type="checkbox" checked><span>Atajos de una tecla<small>Apágalos si usas lector de pantalla o control por voz</small></span></label>
+          <label class="check switch"><input id="chk-calm" type="checkbox"><span>Interfaz tranquila<small>Menos brillo y movimiento en pantalla</small></span></label>
+          <p class="hint">Con lector de pantalla también puedes usar las teclas multimedia o los auriculares para pausar y cambiar de canción.</p>
+        </section>
+
         <section class="group" aria-labelledby="sg-privacy">
           <h3 id="sg-privacy" class="group-title"><svg aria-hidden="true"><use href="#i-shield"/></svg>Privacidad</h3>
           <p class="hint">Todo se queda en este dispositivo. <a href="../privacy/">Privacidad</a></p>
@@ -553,7 +567,7 @@
           <p class="hint">Gratis, de código abierto y hecho por ARMY.</p>
           <div id="donations" class="row wrap"></div>
           <p class="hint"><a id="repo-link" href="#" target="_blank" rel="noopener noreferrer">Código en GitHub</a></p>
-          <p class="hint shortcuts">Atajos: <kbd>Espacio</kbd> reproduce o pausa · <kbd>N</kbd> siguiente · <kbd>P</kbd> anterior · <kbd>B</kbd> reto · <kbd>F</kbd> pantalla completa · <kbd>/</kbd> buscar</p>
+          <p class="hint shortcuts">Atajos: <kbd>Espacio</kbd> reproduce o pausa · <kbd>N</kbd> siguiente · <kbd>P</kbd> anterior · <kbd>B</kbd> reto · <kbd>F</kbd> pantalla completa · <kbd>L</kbd> describir las luces · <kbd>/</kbd> buscar</p>
         </section>
         <p class="hint small legal">Proyecto de fans no oficial, sin afiliación con HYBE, BIGHIT MUSIC ni BTS.
           Videos desde YouTube; luces creadas en tu navegador.</p>
@@ -671,7 +685,9 @@
     </section>
     <button id="coach-pill" class="coach-pill" type="button" hidden></button>
 
-    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+    <div id="toast" class="toast" hidden></div>
+    <div id="sr-polite" class="sr" role="status" aria-live="polite" translate="no"></div>
+    <div id="sr-assertive" class="sr" role="alert" aria-live="assertive" translate="no"></div>
   </div>
 
   <!-- Confirmación al desactivar el modo seguro (docs/copy.md P-111) -->

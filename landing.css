@@ -187,7 +187,7 @@ main { position: relative; z-index: 2; overflow-x: clip; }
 /* Pasos */
 .steps { list-style: none; margin: 0; padding: 0 0 6px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 74%); gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; }
 .step { scroll-snap-align: start; display: grid; gap: .35rem; align-content: start; padding: 16px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); position: relative; cursor: default; transition: border-color .3s, transform .4s var(--ease); }
-.step:hover, .step:focus-visible, .step.is-hot { border-color: var(--a1); transform: translateY(-2px); }
+.step:hover, .step.is-hot { border-color: var(--a1); transform: translateY(-2px); }
 .step b { font-family: var(--display); font-weight: 600; font-size: .95rem; letter-spacing: -.02em; }
 .step > span:last-child { color: var(--muted); font-size: .85rem; line-height: 1.4; }
 .st-n { position: absolute; top: 10px; right: 14px; font: 200 2rem/1 var(--display); color: #ffffff2a; }
@@ -438,4 +438,42 @@ section[id], #contenido { scroll-margin-top: 76px; }
 @media (max-height: 500px) {
   .mini { left: auto; right: 8px; bottom: 8px; max-width: 320px; }
   .mini[data-state="expanded"] .mini-video { position: absolute; right: 0; bottom: calc(100% + 8px); }
+}
+
+/* ---------- Accesibilidad visual (A-06, A-22) ---------- */
+/* Movimiento reducido: ningún texto queda oculto o desplazado por una entrada de GSAP (aunque el ajuste
+   cambie con la página abierta o el script falle a medias). !important gana a los estilos en línea de GSAP. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-up, .reveal-up > *, .kt .c { opacity: 1 !important; transform: none !important; filter: none !important; }
+}
+
+/* Más contraste: superficies opacas, bordes visibles (≥ 3:1) y enlaces subrayados. */
+@media (prefers-contrast: more) {
+  :root { --muted: #e4dff0; --line: rgba(255, 255, 255, .5); --card: #120f24; --glass: #100e20; }
+  .part-card, .step, .ver-card, .feat, .chip, .mock-btn, .btn, .mini, .tip, .ver-tag { border-color: rgba(255, 255, 255, .55); }
+  .part-card, .step, .ver-card, .feat, .tip, .ver-tag { background: #120f24; }
+  .mini, .landing .nav.scrolled { background: #0d0b1c; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .copy a:not(.btn):not(.orb-cta):not(.feat-link), .foot a, .doc-body a { text-decoration: underline; text-underline-offset: 3px; }
+  .chip[aria-pressed="true"], .mock-btn[aria-pressed="true"], .btn[aria-pressed="true"] { outline: 2px solid var(--a1); outline-offset: 2px; }
+}
+
+/* Colores forzados (Contraste alto de Windows): el navegador quita fondos y sombras, así que el foco, los
+   estados y los límites de las tarjetas se dibujan con bordes y colores del sistema. */
+@media (forced-colors: active) {
+  :focus-visible { outline: 3px solid Highlight !important; outline-offset: 2px; }
+  .part-card, .step, .ver-card, .feat, .chip, .mock-btn, .btn, .mini, .mini-btn, .mini-play, .tip, .ver-tag, .nav-cta, .rt-pad { border: 1px solid CanvasText; }
+  .landing .nav, .landing .nav.scrolled { border-bottom: 1px solid CanvasText; }
+  .part-card.is-hot, .step.is-hot, .ver-card.is-hot { border: 2px solid Highlight; }
+  /* Estados pulsado/activado: fondo del sistema, que sí se conserva con forced-color-adjust: none. */
+  [aria-pressed="true"], [aria-checked="true"] { forced-color-adjust: none; background: Highlight !important; color: HighlightText !important; border-color: Highlight; outline: 2px solid CanvasText; outline-offset: 1px; }
+  /* Interruptor del modo seguro: pista con borde y bolita visible en ambos estados. */
+  .ms-toggle { forced-color-adjust: none; border: 2px solid ButtonText; background: ButtonFace; }
+  .ms-toggle b { background: ButtonText; }
+  .ms-toggle[aria-checked="true"] { background: Highlight !important; border-color: Highlight; }
+  .ms-toggle[aria-checked="true"] b { background: HighlightText; }
+  /* Las muestras de color son contenido (qué color elige cada chip, partes de la canción). */
+  .chip i, .mv-segs i { forced-color-adjust: none; outline: 1px solid CanvasText; }
+  .mv-head { forced-color-adjust: none; background: CanvasText; }
+  .grad, .kt .grad .c { background: none !important; color: CanvasText !important; -webkit-text-fill-color: CanvasText; }
+  .mq-outline { -webkit-text-stroke-color: CanvasText; }
 }

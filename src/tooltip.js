@@ -51,6 +51,7 @@ export function initTooltips(root = document) {
     const t = textOf(el);
     if (!t || el === suppressed) return;
     target = el;
+    text.textContent = t; // antes de enlazar aria-describedby: el lector nunca lee un texto viejo o vacío
     // Solo describe si agrega información (no repetir el nombre visible).
     if (!nameOf(el).includes(t.toLowerCase())) {
       const ids = new Set((el.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean));
@@ -86,9 +87,11 @@ export function initTooltips(root = document) {
     const el = tipTarget(e);
     if (el && el !== target) show(el, SHOW_DELAY);
   });
+  // WCAG 1.4.13: se puede pasar el puntero sobre el tooltip (útil con lupa) sin que se cierre.
+  tip.addEventListener("pointerleave", (e) => { if (target && !target.contains(e.relatedTarget)) hide(); });
   root.addEventListener("pointerout", (e) => {
     const el = tipTarget(e);
-    if (!el || el.contains(e.relatedTarget)) return;
+    if (!el || el.contains(e.relatedTarget) || tip.contains(e.relatedTarget)) return;
     if (suppressed === el) suppressed = null;
     hide(el);
   });
