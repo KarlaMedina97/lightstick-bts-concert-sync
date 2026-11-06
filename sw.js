@@ -1,6 +1,6 @@
 // Service worker: guarda la app para abrirla sin conexión (los videos sí necesitan internet).
 // Solo guarda archivos propios del sitio; nunca respuestas de terceros ni con errores.
-const CACHE = "pws-v48";
+const CACHE = "pws-v49";
 const SHELL = [
   "./",
   "index.html",
@@ -113,6 +113,8 @@ self.addEventListener("fetch", (e) => {
         }
         return res;
       })
-      .catch(() => caches.match(e.request, { ignoreSearch: true })),
+      .catch(async () => (await caches.match(e.request, { ignoreSearch: true }))
+        // Sin conexión, una canción (/player/dynamite) abre el reproductor guardado.
+        ?? (e.request.mode === "navigate" && /\/player\/[a-z0-9-]+$/.test(url.pathname) ? caches.match(new URL("player/", self.registration.scope)) : undefined)),
   );
 });

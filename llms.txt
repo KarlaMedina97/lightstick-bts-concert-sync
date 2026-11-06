@@ -4,7 +4,7 @@
 > por Web Bluetooth con videos oficiales de YouTube. Sin cuentas ni servidores propios; todo corre en el navegador.
 
 - Inicio: https://lumiparty.com/
-- Reproductor: https://lumiparty.com/player/ (`?guide=1` abre la guía de conexión, `?song=<id>` abre una canción)
+- Reproductor: https://lumiparty.com/player/ (`?guide=1` abre la guía de conexión, `/player/<id>` abre una canción, por ejemplo https://lumiparty.com/player/dynamite)
 - Privacidad: https://lumiparty.com/privacy/
 - Términos de uso: https://lumiparty.com/terms/
 - Política de IA: https://lumiparty.com/ai/

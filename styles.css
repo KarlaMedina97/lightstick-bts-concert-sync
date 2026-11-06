@@ -2545,3 +2545,11 @@ html {
 
 /* Video sin nada sonando: deshabilitada a la vista (sigue siendo enfocable y avisa al tocarla) */
 [role="tab"][aria-disabled="true"], [role="menuitemradio"][aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; }
+
+/* Luces 3D: la vista se reparte el alto (el ARMY Bomb toma lo que sobra) y nunca se monta sobre el dock (iPad) */
+.lights-view.model { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-3); padding-block: var(--s-2); overflow: hidden; }
+.lights-view.model .lv-stage { flex: 1 1 0; min-height: 160px; width: 100%; }
+.lights-view.model .stick3d { height: 100%; max-height: none; }
+.lights-view.model > * { flex-shrink: 0; }
+.lights-view.model > .lv-stage { flex-shrink: 1; }
+@media (max-height: 760px) { .lights-view.model #lv-hint { display: none; } }

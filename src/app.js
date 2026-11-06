@@ -2250,11 +2250,15 @@ function bindTheme() {
   });
 }
 
-/** La dirección dice qué suena: /player/?song=dynamite (sin apilar historial; conserva #me-gusta o #mis-videos). */
+/**
+ * Dirección amigable con lo que suena: /player/dynamite (sin apilar historial; conserva #me-gusta o #mis-videos).
+ * La carpeta sigue siendo /player/, así que las rutas relativas (../, ../assets/…) no cambian.
+ */
+const playerBase = () => location.pathname.replace(/[^/]*$/, "");
 function syncSongUrl(id) {
-  const q = id && /^[a-z0-9-]{1,80}$/.test(id) ? `?song=${id}` : "";
-  if (location.search === q) return;
-  try { history.replaceState(history.state, "", location.pathname + q + location.hash); } catch {}
+  const next = playerBase() + (id && /^[a-z0-9-]{1,80}$/.test(id) ? id : "");
+  if (location.pathname === next && !location.search) return;
+  try { history.replaceState(history.state, "", next + location.hash); } catch {}
 }
 
 /** Los contadores de la biblioteca en 0 no se muestran (ni en la barra compacta). */
@@ -3406,7 +3410,7 @@ async function init() {
   syncOnboard();
   if (params.has("guide") || params.has("guia")) guide.open();
   // Parámetros de un solo uso (?guide=1, ?song=…): se leen y se quitan, así la dirección no los arrastra.
-  // La canción que suena se refleja después como ?song=<id> (enlace para compartir; recargar la retoma).
+  // La canción que suena se refleja después como /player/<id> (enlace para compartir; recargar la retoma).
   if (["guide", "guia", "song"].some((k) => params.has(k))) {
     try { history.replaceState(history.state, "", location.pathname + location.hash); } catch {}
   }
@@ -3417,8 +3421,8 @@ async function init() {
   addEventListener("pws:lang", (e) => track("idioma", { idioma: e.detail }));
   // Compartido desde YouTube (botón Compartir → LumiParty).
   if (params.has("text") || params.has("url")) setTimeout(() => handleShared(params), 600);
-  // Enlace directo a una canción: /player/?song=dynamite
-  const songParam = params.get("song");
+  // Enlace directo a una canción: /player/dynamite (y el formato viejo /player/?song=dynamite)
+  const songParam = params.get("song") ?? location.pathname.match(/\/player\/([a-z0-9-]{1,80})$/)?.[1] ?? null;
   if (songParam && /^[a-z0-9-]{1,80}$/.test(songParam)) {
     const idx = queue.findIndex((q) => q.song.id === songParam);
     if (idx >= 0) setTimeout(() => playIndex(idx), 800);

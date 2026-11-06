@@ -188,6 +188,12 @@ for (const [vp, w, h] of VIEWPORTS) {
   if (lights) fail(ap, lights);
   if (exceptions.length) fail(ap, `excepciones: ${[...new Set(exceptions)].join(" | ")}`);
 
+  // Dirección amigable de una canción: /player/<id> abre el reproductor (sin 404) y la conserva.
+  await open("/player/dynamite", w, h, 3500);
+  const friendly = await evaluate(`document.getElementById("main") ? (location.pathname.endsWith("/player/dynamite") ? "" : "la dirección cambió a " + location.pathname) : "no abrió el reproductor"`);
+  if (friendly) fail(`/player/dynamite (${vp})`, friendly);
+  if (exceptions.length) fail(`/player/dynamite (${vp})`, `excepciones: ${[...new Set(exceptions)].join(" | ")}`);
+
   // ---------- Páginas de texto ----------
   for (const path of ["/privacy/", "/terms/", "/ai/", "/404.html"]) {
     await open(path, w, h, 1500);
