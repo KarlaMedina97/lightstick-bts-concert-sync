@@ -1,5 +1,12 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Todo el concierto, ": "O show inteiro, ",
+  "en tu navegador": "no seu navegador",
+  "Cambia en la intro, el coro y el puente.": "Muda na intro, no refrão e na ponte.",
+  "Las luces siguen la música; nada se graba.": "As luzes seguem a música; nada é gravado.",
+  "Los nombres a tiempo, en hangul.": "Os nomes no tempo certo, em hangul.",
+  "Modo seguro, teclado y lector de pantalla.": "Modo seguro, teclado e leitor de tela.",
+  "Destellos/s máx.": "Flashes/s máx.",
   "▶ Escuchar la canción del momento": "▶ Ouvir a música do momento",
   "🔊 Sonando la canción del momento": "🔊 Tocando a música do momento",
   "Special Edition (SE)": "Special Edition (SE)",

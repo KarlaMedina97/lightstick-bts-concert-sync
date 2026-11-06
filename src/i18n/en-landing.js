@@ -1,5 +1,12 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
+  "Todo el concierto, ": "The whole concert, ",
+  "en tu navegador": "in your browser",
+  "Cambia en la intro, el coro y el puente.": "Changes in the intro, chorus and bridge.",
+  "Las luces siguen la música; nada se graba.": "The lights follow the music; nothing is recorded.",
+  "Los nombres a tiempo, en hangul.": "The names on time, in Hangul.",
+  "Modo seguro, teclado y lector de pantalla.": "Safe mode, keyboard and screen reader.",
+  "Destellos/s máx.": "Max flashes/s",
   "▶ Escuchar la canción del momento": "▶ Play the song of the moment",
   "🔊 Sonando la canción del momento": "🔊 Playing the song of the moment",
   "Special Edition (SE)": "Special Edition (SE)",

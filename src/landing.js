@@ -125,7 +125,8 @@ if (reduceMotion) safeMode = true;
     const bar = mobileQ() ? 56 : 70;
     return [...document.querySelectorAll("main > section, main > .chapter")].map((el) => {
       const top = el.getBoundingClientRect().top + scrollY - bar;
-      return { top: Math.max(0, top), h: el.offsetHeight, long: el.offsetHeight > innerHeight * 1.35 };
+      // "Larga": más alta que la pantalla (contenido que hay que poder leer entero, o animación por scroll).
+      return { top: Math.max(0, top), h: el.offsetHeight, long: el.offsetHeight > innerHeight - bar + 8 };
     });
   }
   // Dirección del último gesto: con un poco de scroll hacia abajo (o arriba) se pasa a la sección siguiente (o
@@ -134,7 +135,7 @@ if (reduceMotion) safeMode = true;
   let restY = scrollY;
   function settle() {
     if (touching || reduceMotion || document.documentElement.classList.contains("dragging")) return;
-    if (snapping) { snapping = false; restY = scrollY; return; }
+    if (snapping || glide) return; // es nuestro propio acomodo
     const y = scrollY, vh = innerHeight, moved = y - restY;
     const maxY = document.documentElement.scrollHeight - vh;
     if (Math.abs(moved) < 24 || y >= maxY - 4) { restY = y; return; }
@@ -161,8 +162,24 @@ if (reduceMotion) safeMode = true;
       target = here.long && y >= here.top + Math.max(0, here.h - vh) - 2 ? here.top + Math.max(0, here.h - vh) : here.top;
     }
     if (target == null || Math.abs(target - y) < 6) { restY = y; return; }
+    glideTo(Math.min(maxY, target));
+  }
+  // Acomodo suave y pausado (~0,8 s, entra y sale despacio). Cualquier gesto nuevo lo cancela: nunca pelea con la persona.
+  let glide = 0;
+  function glideTo(to) {
+    const from = scrollY, dist = to - from, dur = Math.min(1000, 560 + Math.abs(dist) * 0.35), t0 = performance.now();
+    cancelAnimationFrame(glide);
     snapping = true;
-    scrollTo({ top: Math.min(maxY, target), behavior: "smooth" });
+    const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+    const stop = () => { cancelAnimationFrame(glide); glide = 0; snapping = false; restY = scrollY; for (const t of ["wheel", "touchstart", "keydown", "pointerdown"]) removeEventListener(t, stop); };
+    for (const t of ["wheel", "touchstart", "keydown", "pointerdown"]) addEventListener(t, stop, { passive: true, once: true });
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / dur);
+      scrollTo({ top: from + dist * ease(k), behavior: "instant" });
+      if (k < 1) glide = requestAnimationFrame(step);
+      else { glide = 0; restY = scrollY; setTimeout(() => (snapping = false), 60); for (const t of ["wheel", "touchstart", "keydown", "pointerdown"]) removeEventListener(t, stop); }
+    };
+    glide = requestAnimationFrame(step);
   }
   function schedule() { clearTimeout(timer); timer = setTimeout(settle, 140); }
   if ("onscrollend" in window) addEventListener("scrollend", schedule);
@@ -231,7 +248,28 @@ function whenPaintedAndIdle(fn) {
   const idle = () => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 1200 }) : setTimeout(fn, 50));
   requestAnimationFrame(() => setTimeout(idle, 0)); // después del primer cuadro pintado
 }
-if (SHOT !== null) setTimeout(buildScene, 0); else whenPaintedAndIdle(buildScene);
+// Sin GPU (WebGL por software: equipos muy viejos, máquinas virtuales, los servidores de PageSpeed) armar la escena
+// traba el procesador varios segundos. Ahí la portada queda con la silueta luminosa y el 3D se arma recién cuando la
+// persona interactúa (toca, hace scroll o usa el teclado). Con GPU, como siempre.
+function softwareGL() {
+  try {
+    const c = document.createElement("canvas");
+    c.width = c.height = 1;
+    const gl = c.getContext("webgl", { failIfMajorPerformanceCaveat: false, powerPreference: "low-power" });
+    if (!gl) return false;
+    const ext = gl.getExtension("WEBGL_debug_renderer_info");
+    const name = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    return /swiftshader|llvmpipe|softpipe|software|basic render/i.test(name);
+  } catch { return false; }
+}
+function whenUserActs(fn) {
+  const evs = ["pointerdown", "keydown", "wheel", "touchstart", "scroll"];
+  const go = () => { for (const t of evs) removeEventListener(t, go, true); fn(); };
+  for (const t of evs) addEventListener(t, go, { capture: true, passive: true, once: true });
+}
+if (SHOT !== null) setTimeout(buildScene, 0);
+else whenPaintedAndIdle(() => (softwareGL() ? whenUserActs(() => whenPaintedAndIdle(buildScene)) : buildScene()));
 
 async function buildScene() {
   try { await loadScene(); } catch { canvas.remove(); document.documentElement.classList.add("gl-ready"); return; } // sin red no hay 3D: fuera la silueta

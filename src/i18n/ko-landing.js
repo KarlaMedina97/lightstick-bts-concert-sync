@@ -1,5 +1,12 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Todo el concierto, ": "콘서트의 모든 것을, ",
+  "en tu navegador": "브라우저에서",
+  "Cambia en la intro, el coro y el puente.": "인트로, 후렴, 브릿지마다 바뀌어요.",
+  "Las luces siguen la música; nada se graba.": "불빛이 음악을 따라가요. 아무것도 녹음하지 않아요.",
+  "Los nombres a tiempo, en hangul.": "멤버 이름을 박자에 맞춰 한글로.",
+  "Modo seguro, teclado y lector de pantalla.": "안전 모드, 키보드, 스크린 리더 지원.",
+  "Destellos/s máx.": "초당 최대 깜빡임",
   "▶ Escuchar la canción del momento": "▶ 지금 가장 핫한 곡 듣기",
   "🔊 Sonando la canción del momento": "🔊 지금 가장 핫한 곡 재생 중",
   "Special Edition (SE)": "스페셜 에디션 (SE)",

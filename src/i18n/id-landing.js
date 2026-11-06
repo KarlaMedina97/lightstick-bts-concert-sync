@@ -1,5 +1,12 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Todo el concierto, ": "Seluruh konser, ",
+  "en tu navegador": "di browsermu",
+  "Cambia en la intro, el coro y el puente.": "Berubah di intro, reff, dan bridge.",
+  "Las luces siguen la música; nada se graba.": "Lampu mengikuti musik; tidak ada yang direkam.",
+  "Los nombres a tiempo, en hangul.": "Nama-nama tepat waktu, dalam Hangul.",
+  "Modo seguro, teclado y lector de pantalla.": "Mode aman, keyboard, dan pembaca layar.",
+  "Destellos/s máx.": "Kilatan/dtk maks.",
   "▶ Escuchar la canción del momento": "▶ Dengarkan lagu yang sedang hits",
   "🔊 Sonando la canción del momento": "🔊 Memutar lagu yang sedang hits",
   "Special Edition (SE)": "Special Edition (SE)",
