@@ -147,6 +147,7 @@ try {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: !LOW_END, powerPreference: "high-performance" });
 } catch {
   canvas.remove();
+  document.documentElement.classList.add("gl-ready"); // sin WebGL no habrá ARMY Bomb 3D: fuera la silueta de carga
 }
 
 const color = PALETTE[0].clone();
@@ -1429,7 +1430,7 @@ if (renderer) {
   // ---------- Animación ----------
   const clock = new THREE.Clock();
   const tmp = new THREE.Color(), liveTmp = new THREE.Color(), liveC = new THREE.Color();
-  let frameN = 0, lastLive = "";
+  let frameN = 0, lastLive = "", firstFrame = false;
   let crowdPainted = "", lastSide = "", lastPal = "", climaxDone = false, liveT = 0, beatPulse = 0;
   const root = document.documentElement;
   function loop() {
@@ -1661,6 +1662,8 @@ if (renderer) {
     const t0 = performance.now();
     if (DEBUG) renderer.info.reset();
     if (useBloom) composer.render(); else renderer.render(scene, camera);
+    // Primer cuadro dibujado: se desvanece la silueta que ocupaba su lugar mientras cargaba (landing.css, .gl-ready).
+    if (!firstFrame) { firstFrame = true; root.classList.add("gl-ready"); }
     placeGrabHint();
     perfTick(dt, performance.now() - t0);
   }
@@ -1796,9 +1799,14 @@ for (const tr of document.querySelectorAll(".mq-track")) tr.innerHTML += tr.inne
 
 if (gsap && !reduceMotion && !SHOT) {
   // Portada: letras con desenfoque, inclinación y subida escalonada.
-  const heroChars = document.querySelectorAll("#hero-title .c");
-  gsap.from(heroChars, { yPercent: 70, opacity: 0, skewX: 14, filter: "blur(10px)", duration: 1.1, stagger: 0.022, ease: "expo.out", delay: 0.1, clearProps: "filter" });
-  gsap.from(".reveal", { y: 26, opacity: 0, duration: 1, stagger: 0.08, ease: "expo.out", delay: 0.45 });
+  // Con red lenta este código llega cuando la portada ya lleva rato a la vista (el CSS crítico va en el HTML):
+  // esconderla para animar su entrada parecería un fallo, así que se queda quieta.
+  const fcp = performance.getEntriesByName("first-contentful-paint")[0]?.startTime;
+  if (!(fcp >= 0 && performance.now() - fcp > 1200)) {
+    const heroChars = document.querySelectorAll("#hero-title .c");
+    gsap.from(heroChars, { yPercent: 70, opacity: 0, skewX: 14, filter: "blur(10px)", duration: 1.1, stagger: 0.022, ease: "expo.out", delay: 0.1, clearProps: "filter" });
+    gsap.from(".reveal", { y: 26, opacity: 0, duration: 1, stagger: 0.08, ease: "expo.out", delay: 0.45 });
+  }
   // Respiración del espaciado en las etiquetas.
   if (innerWidth >= 720) gsap.to(".kicker, .eyebrow", { letterSpacing: "0.22em", duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1 });
   if (ScrollTrigger) {
@@ -1886,3 +1894,4 @@ if (gsap && !reduceMotion && !SHOT) {
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && owner) hideTip(); });
   addEventListener("scroll", () => { if (owner) place(owner); }, { passive: true });
 }
+

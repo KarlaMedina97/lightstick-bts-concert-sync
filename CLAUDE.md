@@ -106,6 +106,10 @@ Las páginas dentro de carpetas usan rutas relativas con `../`. No uses `<base>`
 - **Modo seguro por defecto**: máximo 3 destellos por segundo (WCAG 2.3.1). Respeta `prefers-reduced-motion`.
 - Responsivo desde 360 px; prueba 390×844 y escritorio. Áreas táctiles ≥ 44 px.
 - Textos breves; sin pasos redundantes en guías.
+- **Carga en red lenta**: `index.html` lleva en `<style id="critico">` una copia literal de las reglas de `landing.css`
+  y `fonts/fonts.css` que pintan la portada, y `landing.css` se enlaza después de la portada; `player/index.html` pinta una
+  pantalla de carga (`.boot`) que `styles.css` oculta, y estantes esqueleto que reemplaza el JS. Si cambias una regla
+  copiada, actualiza la copia: lo exige `tests/critical-css.test.js`. Nada de contenido oculto hasta que corra el JS.
 
 ### Git
 - **Conventional Commits** en todos los commits: `tipo(alcance): descripción` en español
