@@ -67,6 +67,9 @@ Las páginas dentro de carpetas usan rutas relativas con `../`. No uses `<base>`
   la implementación es propia.
 - Videos solo de canales oficiales (HYBE LABELS, BANGTANTV, 1theK, Coldplay, UNIVERSAL MUSIC JAPAN…). Verifica cada
   ID nuevo con oEmbed antes de añadirlo (ver `.claude/commands/agregar-cancion.md`).
+- **Luces ricas en toda canción o video nuevo**: intensidad continua, combinaciones de colores y transiciones. CI lo
+  exige con el control de calidad de `tests/looks.test.js` (cada canción ≥ 55, promedio ≥ 75). Si una canción nueva
+  sale plana, dale un look en `SONG_LOOKS` (paleta de 2–3 tonos y plan por sección); ver `docs/patrones-luces.md`.
 
 ### Seguridad
 - **Nada de CDNs ni scripts en línea.** Toda librería va en `vendor/` desde `npm pack`. Los únicos scripts en línea

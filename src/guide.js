@@ -80,9 +80,32 @@ export class Guide {
     };
 
     this.actionBtn.onclick = () => this.connect();
+    // La burbuja (y su flecha) se ubican según dónde está de verdad el botón Conectar: cambia con el ancho de la
+    // ventana, el idioma y el panel lateral. Antes la flecha tenía una distancia fija y apuntaba a la nada.
+    this.anchor = document.getElementById("btn-bt");
+    addEventListener("resize", () => this.place());
+    if (this.anchor && "ResizeObserver" in window) new ResizeObserver(() => this.place()).observe(this.anchor);
     this.el.addEventListener("keydown", (e) => {
       if (e.key === "Escape") this.minimize();
     });
+  }
+
+  /** Coloca la burbuja bajo el botón Conectar, con la flecha a su centro (solo cuando flota con flecha). */
+  place() {
+    const el = this.el, pill = this.pill, a = this.anchor;
+    const clear = () => ["--coach-top", "--coach-right", "--arrow-right"].forEach((k) => { el.style.removeProperty(k); pill.style.removeProperty(k); });
+    const r = a?.getBoundingClientRect();
+    if (!r || !r.width || a.closest("[hidden]")) return clear();
+    const host = el.offsetParent?.getBoundingClientRect() ?? { left: 0, top: 0, right: innerWidth };
+    const top = `${Math.round(r.bottom - host.top + 18)}px`; // deja aire para la flecha (7 px)
+    const right = Math.max(8, Math.round(host.right - r.right));
+    for (const n of [el, pill]) { n.style.setProperty("--coach-top", top); n.style.setProperty("--coach-right", `${right}px`); }
+    if (el.hidden) return;
+    const box = el.getBoundingClientRect();
+    if (!box.width) return;
+    // Flecha al centro del botón, sin salirse de las esquinas redondeadas de la burbuja.
+    const ax = Math.min(box.width - 28, Math.max(16, box.right - (r.left + r.width / 2) - 6));
+    el.style.setProperty("--arrow-right", `${Math.round(ax)}px`);
   }
 
   get seen() {
@@ -96,6 +119,7 @@ export class Guide {
     this.el.hidden = false;
     this.el.classList.remove("done");
     this.go(this.hooks.hasSticks() ? STEPS.length - 1 : step);
+    this.place();
     this.titleEl.focus({ preventScroll: true });
   }
 
@@ -106,6 +130,7 @@ export class Guide {
     if (!this.hooks.hasSticks()) {
       this.pill.hidden = false;
       this.pill.textContent = `Seguir conectando · paso ${this.i + 1} de ${STEPS.length}`;
+      this.place();
       if (this.el.contains(document.activeElement) || document.activeElement === document.body) this.pill.focus();
     } else this.returnFocus();
   }
@@ -120,6 +145,7 @@ export class Guide {
     this.pill.hidden = true;
     this.el.hidden = false;
     this.go(this.i);
+    this.place();
   }
 
   close() {

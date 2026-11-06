@@ -1,5 +1,5 @@
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
-import { PURPLE, STYLES, generateConcertPattern, generatePattern, hexToRgb, rgbToHex, ledLevel } from "./patterns.js";
+import { PURPLE, STYLES, generateConcertPattern, generatePattern, hexToRgb, rgbToHex, ledLevel, lightColors } from "./patterns.js";
 import { bluetoothSupport, requestStick, LOW_BATTERY, isBrave, classifyBtError } from "./ble.js";
 import { Player } from "./player.js";
 import { DONATIONS, PROJECT } from "./config.js";
@@ -179,17 +179,33 @@ function bindTabs(tabIds, onSelect) {
 }
 
 // ---------- Vista: video / luces ----------
+let page = "home"; // dentro de Explorar: "home" (inicio) o "likes" (página Me gusta)
 function setView(v) {
   view = v;
   const exploring = v === "explore";
   $("lights-view").hidden = v !== "lights";
   // En Explorar el video sigue sonando en un mini reproductor; sin canción, Video y Explorar muestran el inicio.
   $("video-view").hidden = v === "lights"; // sin canción, .app.home lo deja invisible (el iframe de YouTube sigue cargando)
-  $("home").hidden = !(exploring || (v === "video" && current < 0));
+  const showHome = exploring || (v === "video" && current < 0);
+  $("home").hidden = !showHome || page === "likes";
+  $("likes-page").hidden = !showHome || page !== "likes";
   app.classList.toggle("exploring", exploring && current >= 0);
   app.dataset.view = v;
   if (!exploring) app.classList.remove("mini-off");
+  syncMiniButton();
   requestAnimationFrame(() => placeMini(false));
+}
+/** Botón del pie de página junto a pantalla completa: Minimizar (en Video) o Expandir (con el video en la ventanita). */
+function syncMiniButton() {
+  const b = $("btn-mini");
+  if (!b) return;
+  const canMin = view === "video" && current >= 0, canGrow = view === "explore" && current >= 0;
+  b.hidden = !(canMin || canGrow);
+  const label = canMin ? "Minimizar video" : "Expandir video";
+  b.setAttribute("aria-label", label);
+  b.dataset.tip = label;
+  b.querySelector("span").textContent = canMin ? "Minimizar" : "Expandir";
+  b.querySelector("use").setAttribute("href", canMin ? "#i-pip" : "#i-pip-out");
 }
 /** Cambio de vista (la transición entre video grande y mini es CSS). */
 function switchView(v) { setView(v); }
@@ -327,27 +343,38 @@ function showBtWarning(reason) {
       ? "Brave tiene el Bluetooth web desactivado, por eso no se abre la lista de dispositivos."
       : "¿Usas Brave? Trae el Bluetooth web desactivado: si al tocar Conectar no pasa nada, actívalo así:";
     const ol = document.createElement("ol");
+    ol.className = "brave-steps";
     for (const step of ["Copia esta dirección y pégala en la barra de Brave:", "En «Web Bluetooth API», elige Enabled.", "Toca Relaunch (Brave se reinicia) y vuelve a esta página."]) {
       const li = document.createElement("li");
       li.textContent = step;
       ol.append(li);
     }
-    const row = document.createElement("div");
-    row.className = "row wrap";
-    const code = document.createElement("code");
-    code.textContent = flag;
+    // La dirección va DENTRO del paso 1, justo después de «Copia esta dirección…» (antes quedaba al final de la
+    // lista y en pantallas angostas no se veía). Si el portapapeles está bloqueado, el campo queda seleccionado.
+    const box = document.createElement("div");
+    box.className = "copy-field";
+    const field = document.createElement("input");
+    field.type = "text";
+    field.readOnly = true;
+    field.value = flag;
+    field.spellcheck = false;
+    field.setAttribute("aria-label", "Dirección para activar el Bluetooth en Brave");
+    field.onfocus = () => field.select();
+    field.onclick = () => field.select();
     const copy = document.createElement("button");
     copy.type = "button";
-    copy.className = "btn small";
-    copy.textContent = "Copiar dirección";
+    copy.className = "btn small primary";
+    copy.textContent = "Copiar";
     copy.onclick = async () => {
-      try { await navigator.clipboard.writeText(flag); copy.textContent = "Copiada ✓"; } catch { copy.textContent = "Selecciónala y cópiala"; }
+      try { await navigator.clipboard.writeText(flag); copy.textContent = "Copiada ✓"; }
+      catch { field.focus(); field.select(); try { document.execCommand("copy"); copy.textContent = "Copiada ✓"; } catch { copy.textContent = "Selecciónala y cópiala"; } }
     };
-    row.append(code, copy);
+    box.append(field, copy);
+    ol.firstElementChild.append(box);
     const p2 = document.createElement("p");
     p2.className = "hint small";
     p2.textContent = "También puedes usar Chrome o Edge, que lo traen activado.";
-    w.replaceChildren(p1, ol, row, p2);
+    w.replaceChildren(p1, ol, p2);
     if (reason === "brave-hint") return; // solo informativo: no desactiva Conectar
   } else if (reason === "disabled") {
     w.textContent = "Este navegador tiene el Bluetooth web desactivado. Ábrela en Chrome o Edge, o actívalo en la configuración del navegador.";
@@ -738,6 +765,7 @@ async function onAddVideo(e) {
 }
 
 function markCurrent() {
+  syncMiniButton();
   const heard = new Set(playedHistory);
   document.querySelectorAll(".song, .sg-play").forEach((b) => {
     const item = queue[Number(b.dataset.index)];
@@ -1312,7 +1340,18 @@ function suggestCard(index, { compact = false, tag = "", uid = 0, ctx = null } =
   const icon = document.createElement("span");
   icon.className = "sg-icon";
   icon.innerHTML = `<svg aria-hidden="true"><use href="#i-play"/></svg>`;
-  th.append(img, icon);
+  // Los colores que verás en tu ARMY Bomb con esta canción (la combinación real del patrón, no solo uno).
+  const colors = document.createElement("span");
+  colors.className = "sg-colors";
+  colors.setAttribute("aria-hidden", "true");
+  colors.title = "Colores de tu ARMY Bomb en esta canción";
+  lightColors(song, queue[index].album).forEach((c, k) => {
+    const dot = document.createElement("i");
+    dot.style.setProperty("--c", c);
+    dot.style.setProperty("--k", k);
+    colors.append(dot);
+  });
+  th.append(img, icon, colors);
   const title = document.createElement("span");
   title.className = "sg-title";
   title.textContent = song.title;
@@ -1526,23 +1565,27 @@ function setExploreType(type) {
 
 function renderCollections() {
   const { ids, derived } = myAlbums(queue, { saved: savedAlbums, likes: favorites.list() });
-  $("ma-row").replaceChildren(...ids.slice(0, 12).map(albumCard));
+  $("ma-row").replaceChildren(...ids.map(albumCard));
   $("ma-row").hidden = !ids.length;
   $("ma-sub").hidden = !derived;
   $("ma-empty").hidden = ids.length > 0;
   const liked = likedIndices();
-  const ctxIds = liked.map((i) => queue[i].song.id);
-  $("ls-row").replaceChildren(...liked.slice(0, 24).map((i, k) => suggestCard(i, { ctx: { context: ctxIds.slice(k + 1), source: ctxIds, label: "Canciones que me gustan", kind: "list" } })));
+  // Solo se arma la lista si la página está abierta (o se va a abrir): no hay que pintar 200 filas a ciegas.
+  if (page === "likes") $("ls-row").replaceChildren(...liked.map((i) => songButton(queue[i], i)));
   $("ls-row").hidden = !liked.length;
   $("as-row").replaceChildren(...catalogAlbums().slice(0, 12).map((al) => albumCard(al.id)));
-  $("ls-actions").hidden = !liked.length;
+  $("ls-actions").hidden = !liked.length || $("liked-songs").hidden;
   $("ls-empty").hidden = liked.length > 0;
+  const nS = liked.length, nA = ids.length;
+  $("lp-n-songs").textContent = nS || "";
+  $("lp-n-albums").textContent = nA || "";
+  $("lp-meta").textContent = `${nS} ${nS === 1 ? "canción" : "canciones"} · ${nA} ${nA === 1 ? "álbum" : "álbumes"}`;
   markCurrent();
 }
 function bindCollections() {
   $("ls-play").onclick = () => playLiked(false);
   $("ls-shuffle").onclick = () => playLiked(true);
-  const showAllAlbums = () => { exploreAll = false; listFilter = "all"; setExploreType("albums"); requestAnimationFrame(() => $("explore-results").scrollIntoView({ block: "start", behavior: "smooth" })); };
+  const showAllAlbums = () => { closeLikes(); exploreAll = false; listFilter = "all"; setExploreType("albums"); requestAnimationFrame(() => $("explore-results").scrollIntoView({ block: "start", behavior: "smooth" })); };
   $("ma-explore").onclick = showAllAlbums;
   $("as-all").onclick = showAllAlbums;
   $("type-songs").onclick = () => setExploreType("songs");
@@ -1573,7 +1616,7 @@ function applyRail(on) {
   $("side-rail").setAttribute("aria-label", "Biblioteca compacta");
   $("side-rail").dataset.tip = on ? "Expandir" : "Contraer";
 }
-function libItem(index, { sub = "" } = {}) {
+function libItem(index, { sub = "", actions = false } = {}) {
   const { album, song } = queue[index];
   const li = document.createElement("li");
   const b = document.createElement("button");
@@ -1596,6 +1639,18 @@ function libItem(index, { sub = "" } = {}) {
   b.append(th, t);
   b.onclick = () => { fanchant?.stop(); playIndex(index); };
   li.append(b);
+  if (actions) {
+    li.className = "lib-li";
+    const like = document.createElement("button");
+    like.type = "button";
+    like.className = "like-btn lib-like";
+    like.dataset.song = song.id;
+    like.setAttribute("aria-pressed", String(favorites.has(song.id)));
+    like.setAttribute("aria-label", `Me gusta: ${song.title}`);
+    like.innerHTML = `<svg aria-hidden="true"><use href="#i-heart"/></svg>`;
+    like.onclick = (e) => { e.stopPropagation(); toggleLike(song, like); };
+    li.append(like, moreButton(index, song.title));
+  }
   return li;
 }
 function renderLibrary() {
@@ -1629,22 +1684,63 @@ function renderLibrary() {
   }));
   $("lib-albums-empty").hidden = albums.length > 0;
   const recent = playedHistory.slice(-6).reverse().filter((id) => id !== queue[current]?.song.id).slice(0, 5).map(idxOf).filter((i) => i >= 0);
-  $("lib-recent").replaceChildren(...recent.map((i) => libItem(i)));
+  $("lib-recent").replaceChildren(...recent.map((i) => libItem(i, { actions: true })));
   $("lib-recent-empty").hidden = recent.length > 0;
 }
+/** Me gusta como página propia. `tab`: "songs" o "albums". */
+function openLikes(tab = "songs", { push = true } = {}) {
+  setLikesTab(tab);
+  if (page !== "likes") {
+    page = "likes";
+    if (push) try { history.pushState({ page: "likes" }, "", "#me-gusta"); } catch {}
+  }
+  // Directo (sin "tocar" la pestaña Explorar, que desde Me gusta significa volver al inicio).
+  if (view !== "explore") { selectViewTab("view-explore"); switchView("explore"); } else setView("explore");
+  renderCollections();
+  $("likes-page").scrollTop = 0;
+  requestAnimationFrame(() => { const h = $("lp-title"); h.tabIndex = -1; h.focus({ preventScroll: true }); });
+}
+function closeLikes({ fromHistory = false } = {}) {
+  if (page !== "likes") return;
+  page = "home";
+  if (!fromHistory && history.state?.page === "likes") { try { history.back(); } catch {} }
+  else if (!fromHistory && location.hash === "#me-gusta") { try { history.replaceState(null, "", location.pathname + location.search); } catch {} }
+  setView(view);
+}
+function setLikesTab(tab) {
+  const songs = tab !== "albums";
+  $("lp-songs").setAttribute("aria-pressed", String(songs));
+  $("lp-albums").setAttribute("aria-pressed", String(!songs));
+  $("liked-songs").hidden = !songs;
+  $("my-albums").hidden = songs;
+  $("ls-actions").hidden = !songs || !favorites.count();
+}
+/** La tarjetita de la leyenda se cierra al tocar fuera o con Escape. */
+function bindLegend() {
+  const d = $("ll-pop");
+  document.addEventListener("pointerdown", (e) => { if (d.open && !d.contains(e.target)) d.open = false; });
+  d.addEventListener("keydown", (e) => { if (e.key === "Escape" && d.open) { d.open = false; d.querySelector("summary").focus(); } });
+}
+function bindLikesPage() {
+  bindLegend();
+  $("lp-back").onclick = () => closeLikes();
+  $("lp-songs").onclick = () => setLikesTab("songs");
+  $("lp-albums").onclick = () => setLikesTab("albums");
+  $("ls-explore").onclick = () => { closeLikes(); requestAnimationFrame(() => $("search-explore").focus()); };
+  addEventListener("popstate", (e) => {
+    if (e.state?.page === "likes") openLikes(undefined, { push: false });
+    else closeLikes({ fromHistory: true });
+  });
+  if (location.hash === "#me-gusta") openLikes("songs", { push: false });
+}
+
 /** Acciones de la biblioteca (también los accesos de Explorar en teléfono). */
 function goLibrary(where, trigger) {
-  const toExplore = (then) => { if (view !== "explore") $("view-explore").click(); requestAnimationFrame(then); };
+  const toExplore = (then) => { closeLikes(); if (view !== "explore") $("view-explore").click(); requestAnimationFrame(then); };
   if (where === "explore") return toExplore(() => {});
   if (where === "search") return toExplore(() => $("search-explore").focus());
-  if (where === "likes" || where === "albums") {
-    exploreAll = false;
-    listFilter = "all";
-    renderFilters();
-    applySearch();
-    // Me gusta reúne canciones y álbumes: "albums" (enlaces viejos) lleva a su parte de álbumes.
-    return toExplore(() => $(where === "likes" ? "likes-hub" : "my-albums").scrollIntoView({ block: "start", behavior: "smooth" }));
-  }
+  // Me gusta es su propia página (canciones y álbumes); "albums" abre directo la pestaña de álbumes.
+  if (where === "likes" || where === "albums") return openLikes(where === "albums" ? "albums" : "songs");
   if (where === "cola") return openSide("cola", trigger);
   if (where === "mine") return openSide("videos", trigger, () => $("inp-url").focus());
   if (where === "concerts") return openSide("videos", trigger, () => $("rv-concerts").scrollIntoView({ block: "start", behavior: "smooth" }));
@@ -1949,6 +2045,11 @@ function albumContext(i) {
 const FILTER_NAMES = { all: "Todas las canciones", likes: "Me gusta", mine: "Mis videos" };
 /** Contexto desde una lista: si hay filtro o búsqueda, lo que se ve; si no, el resto del álbum. */
 function contextFromRow(btn, i) {
+  if (btn.closest("#ls-row")) {
+    const ids = likedIndices().map((k) => queue[k].song.id);
+    const k = ids.indexOf(queue[i].song.id);
+    return { context: ids.slice(k + 1), source: ids, label: "Canciones que me gustan", kind: "list" };
+  }
   const list = btn.closest(".albums");
   if (list && (listFilter !== "all" || searchQuery.trim())) {
     const rows = [...list.children].filter((el) => el.classList.contains("song-row") && !el.hidden);
@@ -2327,7 +2428,7 @@ function bindSongMenu() {
     if ($("song-menu").hidden || songMenuIndex !== i) openSongMenu(i, more); else closeSongMenu(true);
   });
   document.addEventListener("contextmenu", (e) => {
-    const b = e.target.closest(".song, .sg-play");
+    const b = e.target.closest(".song, .sg-play, .lib-row[data-index]");
     if (!b) return;
     e.preventDefault();
     openSongMenu(Number(b.dataset.index), b, { x: e.clientX, y: e.clientY });
@@ -2335,7 +2436,7 @@ function bindSongMenu() {
   // Pulsación larga en pantallas táctiles (iOS no dispara contextmenu).
   let timer = 0, startX = 0, startY = 0, longPressed = false;
   document.addEventListener("pointerdown", (e) => {
-    const b = e.target.closest(".song, .sg-play");
+    const b = e.target.closest(".song, .sg-play, .lib-row[data-index]");
     if (!b || e.pointerType !== "touch") return;
     longPressed = false;
     startX = e.clientX; startY = e.clientY;
@@ -2371,6 +2472,7 @@ function showMini() {
   app.classList.remove("mini-off");
   requestAnimationFrame(() => placeMini(false));
 }
+let minimizeVideo = () => {};
 function placeMini(animate) {
   const card = $("video-view");
   if (!app.classList.contains("exploring")) { card.style.removeProperty("--mx"); card.style.removeProperty("--my"); return; }
@@ -2421,6 +2523,7 @@ function bindMini() {
   });
   $("mini-hide").onclick = () => hideMini();
   $("mini-back").onclick = () => $("view-video").click();
+  $("btn-mini").onclick = () => (view === "video" ? minimizeVideo() : $("view-video").click());
   const setSmall = (on) => {
     card.classList.toggle("mini-sm", on);
     const b = $("mini-size");
@@ -2431,7 +2534,7 @@ function bindMini() {
   };
   $("mini-size").onclick = () => setSmall(!card.classList.contains("mini-sm"));
   // Minimizar desde la vista Video: el video sigue sonando en un mini reproductor chico, abajo a la derecha.
-  $("btn-min").onclick = () => { MINI.corner = "br"; setSmall(true); $("view-explore").click(); };
+  minimizeVideo = () => { MINI.corner = "br"; setSmall(true); $("view-explore").click(); };
   // El escenario cambia de tamaño sin que cambie la ventana (abrir, cerrar o compactar la biblioteca, el dock,
   // la barra de desplazamiento): se recoloca con cada cambio real de tamaño, no solo con "resize".
   if ("ResizeObserver" in window) new ResizeObserver(() => placeMini(false)).observe($("main"));
@@ -2727,9 +2830,13 @@ async function init() {
   renderDonations();
   bindGame();
   bindTimeline();
-  bindTabs(["view-explore", "view-video", "view-lights"], (id) => switchView({ "view-video": "video", "view-lights": "lights", "view-explore": "explore" }[id]));
+  bindTabs(["view-explore", "view-video", "view-lights"], (id) => {
+    if (id === "view-explore" && page === "likes" && view === "explore") return closeLikes(); // estando en Me gusta, Explorar vuelve al inicio
+    switchView({ "view-video": "video", "view-lights": "lights", "view-explore": "explore" }[id]);
+  });
   // Sin canción, lo que se ve es Explorar: la pestaña lo dice.
   if (current < 0) { selectViewTab("view-explore"); setView("explore"); }
+  bindLikesPage();
   addEventListener("resize", () => requestAnimationFrame(markTitleOverflow));
   bindTabs(["rs-now", "rs-cola", "rs-videos"], (id) => setSideTab(id.slice(3), false));
 

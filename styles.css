@@ -352,6 +352,44 @@ kbd {
 .shelf-title.sub { font-size: var(--fs-18, 1.125rem); }
 .shelf-head .shelf-more { justify-self: start; margin-top: var(--s-1); }
 
+/* Página Me gusta */
+.likes-page { gap: var(--s-4); }
+.lp-top { display: flex; align-items: center; padding-top: var(--s-1); }
+.lp-back svg { width: 18px; height: 18px; }
+.lp-hero {
+  display: flex; align-items: flex-end; gap: var(--s-4); padding: var(--s-4); border-radius: var(--r-xl);
+  background: radial-gradient(80% 160% at 0% 0%, color-mix(in srgb, #ff6fb5 30%, transparent), transparent 60%),
+    radial-gradient(70% 140% at 100% 100%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 60%), var(--surface-1);
+  border: 1px solid var(--border); box-shadow: var(--hairline-top), var(--e-2);
+}
+.lp-cover { flex: none; display: grid; place-items: center; width: clamp(72px, 12cqw, 132px); aspect-ratio: 1; border-radius: var(--r-lg);
+  background: linear-gradient(135deg, #8a2be2, #ff6fb5); color: #fff; box-shadow: 0 16px 40px -16px #ff6fb5; }
+.lp-cover svg { width: 44%; height: 44%; }
+.lp-id { display: grid; gap: var(--s-1); min-width: 0; }
+.lp-title { margin: 0; font-family: var(--font-display); font-size: clamp(1.75rem, 5cqw, 3.25rem); line-height: 1; letter-spacing: -0.035em; }
+.lp-meta { font-size: var(--fs-14); color: var(--text-2); }
+.lp-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); }
+.lp-bar .ls-actions { display: flex; gap: var(--s-2); }
+.lp-n { font-weight: 600; opacity: 0.7; margin-inline-start: 2px; }
+.lp-n:empty { display: none; }
+.likes-list { gap: 2px; }
+@media (max-width: 640px) {
+  .lp-hero { padding: var(--s-3); gap: var(--s-3); }
+  .lp-bar { flex-direction: column; align-items: stretch; }
+  .lp-bar .type-seg { align-self: flex-start; }
+}
+/* Escuchadas recientemente: ♡ y ⋯ sin saturar (aparecen al pasar el puntero o con el foco) */
+.lib-li { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; border-radius: var(--r-md); }
+.lib-li:hover { background: var(--surface-hover); }
+.lib-li .lib-row:hover { background: none; }
+.lib-li > .like-btn, .lib-li > .more-btn { width: 32px; height: 32px; min-height: 0; opacity: 0; transition: opacity var(--dur-2); }
+.lib-li > .like-btn svg, .lib-li > .more-btn svg { width: 16px; height: 16px; }
+.lib-li:hover > .like-btn, .lib-li:hover > .more-btn, .lib-li:focus-within > .like-btn, .lib-li:focus-within > .more-btn,
+.lib-li > .like-btn[aria-pressed="true"], .lib-li > .more-btn[aria-expanded="true"] { opacity: 1; }
+@media (pointer: coarse) { .lib-li > .more-btn { opacity: 1; } .lib-li > .like-btn:not([aria-pressed="true"]) { display: none; } }
+.app.rail .lib-li > .like-btn, .app.rail .lib-li > .more-btn { display: none; }
+.app.rail .lib-li { grid-template-columns: minmax(0, 1fr); }
+
 /* Nota "¿Por qué no están todos los videos?" en el inicio */
 .info-note { margin: 0 0 var(--s-4); padding: var(--s-2) var(--s-4); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); font-size: var(--fs-14); }
 .info-note summary { min-height: var(--tap); display: flex; align-items: center; gap: var(--s-2); cursor: pointer; font-weight: 700; color: var(--text); list-style: none; }
@@ -454,7 +492,7 @@ kbd {
 .dock {
   justify-self: center; width: min(1180px, 100%); min-height: var(--dock-h);
   display: grid; align-items: center; column-gap: var(--s-4); row-gap: 2px;
-  grid-template-columns: minmax(140px, 1fr) minmax(260px, 1.3fr) auto;
+  grid-template-columns: minmax(140px, 1fr) minmax(260px, 1.3fr) minmax(140px, 1fr); /* columnas laterales iguales: controles al centro, como Spotify */
   grid-template-areas: "np transport actions" "np progress actions";
   background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--r-xl); padding: var(--s-2) var(--s-3);
   backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
@@ -733,6 +771,12 @@ output { color: var(--accent); font-size: var(--fs-14); font-weight: 700; font-v
 .select select, .select input { font-weight: 400; }
 .warning { background: var(--warn-bg); color: var(--warn-text); padding: var(--s-3) var(--s-4); border-radius: var(--r-md); border: 1px solid rgba(255, 203, 92, 0.25); font-size: var(--fs-14); }
 .warning a { color: inherit; font-weight: 700; }
+.brave-steps { margin: var(--s-2) 0; padding-inline-start: 1.3em; display: grid; gap: var(--s-2); }
+.copy-field { display: flex; gap: var(--s-2); align-items: center; margin-top: var(--s-2); }
+.copy-field input { flex: 1 1 auto; min-width: 0; min-height: 40px; padding: 0 var(--s-3); border-radius: var(--r-md); border: 1px solid rgba(255, 203, 92, 0.45);
+  background: rgba(0, 0, 0, 0.25); color: inherit; font: 600 var(--fs-12)/1 ui-monospace, SFMono-Regular, Consolas, monospace; }
+:root[data-theme="light"] .copy-field input { background: #fff; }
+.copy-field .btn { flex: none; }
 
 /* Deslizadores (el relleno usa --p, que pone app.js) */
 input[type="range"] {
@@ -874,7 +918,8 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
    ===================================================================== */
 .coach {
   position: absolute; z-index: var(--z-coach);
-  top: calc(var(--pad) + var(--hud-h) + var(--s-3) + var(--safe-t)); right: calc(var(--pad) + var(--safe-r));
+  /* --coach-top/--coach-right los calcula src/guide.js desde el botón Conectar (la flecha queda en su centro). */
+  top: var(--coach-top, calc(var(--pad) + var(--hud-h) + var(--s-3) + var(--safe-t))); right: var(--coach-right, calc(var(--pad) + var(--safe-r)));
   width: min(440px, calc(100% - 2 * var(--pad)));
   display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: var(--s-4); align-items: center;
   padding: var(--s-3) var(--s-4) var(--s-3) var(--s-3); border-radius: var(--r-xl);
@@ -887,7 +932,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .coach[hidden] { opacity: 0; transform: translateY(-8px) scale(0.97); }
 @starting-style { .coach:not([hidden]) { opacity: 0; transform: translateY(-8px) scale(0.97); } }
 .coach::before { /* flecha hacia el botón Conectar */
-  content: ""; position: absolute; top: -7px; right: 96px; width: 12px; height: 12px; rotate: 45deg;
+  content: ""; position: absolute; top: -7px; right: var(--arrow-right, 96px); width: 12px; height: 12px; rotate: 45deg;
   background: #17142d; border-left: 1px solid var(--border-strong); border-top: 1px solid var(--border-strong); border-radius: 3px 0 0 0;
 }
 .c-scene {
@@ -915,7 +960,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .coach.done { box-shadow: var(--hairline-top), var(--e-3), 0 24px 70px -24px rgba(79, 224, 160, 0.55); }
 .coach .spotlight { animation: g-spot 1.6s infinite; }
 .coach-pill {
-  position: absolute; z-index: var(--z-coach); top: calc(var(--pad) + var(--hud-h) + var(--s-3) + var(--safe-t)); right: calc(var(--pad) + var(--safe-r));
+  position: absolute; z-index: var(--z-coach); top: var(--coach-top, calc(var(--pad) + var(--hud-h) + var(--s-3) + var(--safe-t))); right: var(--coach-right, calc(var(--pad) + var(--safe-r)));
   display: inline-flex; align-items: center; gap: var(--s-2);
   font-size: var(--fs-14); font-weight: 700; color: var(--accent-ink); background: var(--accent); border: 0; border-radius: var(--r-pill);
   padding: 0 var(--s-4); cursor: pointer; box-shadow: 0 10px 30px -10px var(--accent); min-height: var(--tap);
@@ -1198,7 +1243,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .app.home .progress { visibility: hidden; }
 .home-view {
   position: absolute; inset: 0; z-index: 3; overflow: auto; overscroll-behavior: contain;
-  display: flex; flex-direction: column; gap: var(--s-6); padding: 0 var(--s-1) var(--s-5);
+  display: flex; flex-direction: column; gap: var(--s-4); padding: 0 var(--s-1) var(--s-5); /* compacto: las canciones a la vista antes */
   scrollbar-gutter: stable;
   -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), transparent);
   animation: view-in var(--dur-4) var(--ease-out);
@@ -1207,7 +1252,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .home-hero {
   position: relative; overflow: hidden;
   display: flex; justify-content: space-between; align-items: flex-end; gap: var(--s-4) var(--s-5); flex-wrap: wrap;
-  padding: var(--s-5); border-radius: var(--r-xl);
+  padding: var(--s-3) var(--s-4); border-radius: var(--r-xl);
   background:
     radial-gradient(70% 140% at 0% 0%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 60%),
     radial-gradient(60% 120% at 100% 100%, color-mix(in srgb, var(--song-accent-2) 18%, transparent), transparent 60%),
@@ -1217,7 +1262,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 }
 .hero-text { display: grid; gap: var(--s-1); min-width: 0; }
 .hero-title {
-  margin: 0; font-family: var(--font-display); font-size: clamp(1.75rem, 4.6cqw, 3rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.035em;
+  margin: 0; font-family: var(--font-display); font-size: clamp(1.5rem, 3.4cqw, 2.25rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.035em;
   background-image: var(--title-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
   animation: hero-in 1s var(--ease-out) both;
 }
@@ -1344,7 +1389,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
    · teléfono (≤ 640 px de pantalla): título + transporte / progreso / fila de acciones
    · teléfono en horizontal: una sola fila tipo píldora, acciones solo con ícono (nombre accesible intacto)
    --------------------------------------------------------------------- */
-.dock { container: dock / inline-size; grid-template-columns: minmax(160px, 1fr) minmax(240px, 1.3fr) auto; }
+.dock { container: dock / inline-size; grid-template-columns: minmax(160px, 1fr) minmax(240px, 1.3fr) minmax(max-content, 1fr); }
 .transport { gap: var(--s-2); }
 .dock-actions { gap: var(--s-1); }
 /* Pantalla completa: ícono con tooltip en pantallas anchas (es un símbolo conocido) */
@@ -1419,8 +1464,8 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 @media (max-width: 640px) {
   #btn-side, .top-actions { display: none; }
   .hud-top { justify-content: space-between; }
-  .home-view { padding: 0 0 var(--s-4); gap: var(--s-5); }
-  .home-hero { padding: var(--s-4); gap: var(--s-3); }
+  .home-view { padding: 0 0 var(--s-4); gap: var(--s-4); }
+  .home-hero { padding: var(--s-3) var(--s-4); gap: var(--s-3); }
   .hero-cta { width: 100%; }
   .hero-cta .btn { flex: 1 1 auto; min-height: var(--tap); font-size: var(--fs-14); padding: 0 var(--s-3); }
   .shelves { gap: var(--s-5); }
@@ -1471,12 +1516,23 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .lights-glyph[data-level="3"] .lg-rays { opacity: 0.9; }
 .sg-meta { display: flex; }
 .sg-meta .lights-glyph { margin-left: auto; }
-/* "Escuchada": punto discreto en la miniatura */
-.was-played .thumb::before, .sg-play.was-played .sg-thumb::before {
-  content: ""; position: absolute; z-index: 1; left: 5px; bottom: 5px; width: 7px; height: 7px; border-radius: 50%;
-  background: var(--text-2); box-shadow: 0 0 0 2px rgba(8, 6, 20, 0.7);
+/* Colores de la canción en el ARMY Bomb: círculos que se encienden (sustituyen al punto de «escuchada», que no se
+   entendía; «escuchada» sigue en el nombre accesible). Al pasar el puntero se separan y respiran, como la luz. */
+.sg-colors {
+  position: absolute; z-index: 1; left: 8px; bottom: 8px; display: flex; align-items: center; gap: 4px; padding: 4px 5px;
+  border-radius: 999px; background: rgba(8, 6, 20, 0.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
 }
-.song.playing .thumb::before { display: none; }
+.sg-colors i {
+  width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff8 0 18%, var(--c) 55%);
+  box-shadow: 0 0 0 1.5px rgba(8, 6, 20, 0.85), 0 0 8px color-mix(in srgb, var(--c) 80%, transparent);
+  transition: transform var(--dur-3) var(--ease-out);
+}
+/* Separados (no encimados); al pasar el puntero crecen un poco y respiran. */
+.sg-play:hover .sg-colors i, .sg-play:focus-visible .sg-colors i { transform: scale(1.12); }
+.sg-play:hover .sg-colors i, .sg-play:focus-visible .sg-colors i { animation: sg-glow 1.8s ease-in-out infinite; animation-delay: calc(var(--k) * 0.3s); }
+@keyframes sg-glow { 50% { box-shadow: 0 0 0 1.5px rgba(8, 6, 20, 0.85), 0 0 14px 3px var(--c); } }
+@media (prefers-reduced-motion: reduce) { .sg-play:hover .sg-colors i, .sg-play:focus-visible .sg-colors i { animation: none; } }
+@media (forced-colors: active) { .sg-colors { display: none; } }
 .shelf-sub { font-size: var(--fs-14); color: var(--text-2); margin-top: 2px; }
 
 /* Diálogo de confirmación (modo seguro) */
@@ -1811,7 +1867,6 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
   .app.with-np .stage { margin-right: calc(var(--np-w) + var(--s-4)); }
   .app.with-np.fs .np-side { display: none; }
   .app.with-np.fs .stage { margin-right: 0; }
-  .app.with-np .coach, .app.with-np .coach-pill { right: calc(var(--pad) + var(--np-w) + var(--s-4)); }
 }
 
 /* Ajustes: interruptor "Seguir al terminar" con el mismo ritmo que los demás */
@@ -1945,24 +2000,36 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 @media (max-width: 480px) { .shelf-ko { display: none; } }
 /* V-06 · glifo de intensidad: neutro (no parece un estado activo) */
 .lights-glyph { color: var(--text-2); }
-.lights-legend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); padding: 0 var(--s-1); font-size: var(--fs-12); font-weight: 600; color: var(--text-2); }
+/* Leyenda de intensidad: botón chico al final de los filtros que abre una tarjetita */
+.ll-pop { position: relative; flex: none; }
+.ll-btn { list-style: none; display: inline-flex; align-items: center; gap: 4px; min-height: 36px; padding: 0 var(--s-3) 0 var(--s-2); border-radius: var(--r-pill);
+  border: 1px solid var(--border); background: var(--surface-field, var(--surface-0)); color: var(--text-2); font-size: var(--fs-12); font-weight: 700; cursor: pointer; white-space: nowrap; }
+.ll-btn::-webkit-details-marker { display: none; }
+.ll-btn:hover, .ll-pop[open] > .ll-btn { color: var(--text); border-color: var(--brand-line); }
+.ll-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (pointer: coarse) { .ll-btn { min-height: 44px; } }
+.ll-card { position: absolute; right: 0; top: calc(100% + 6px); z-index: 6; width: max-content; max-width: min(300px, 80vw); display: grid; gap: var(--s-2);
+  padding: var(--s-3); border-radius: var(--r-lg); background: var(--surface-solid, var(--surface-2)); border: 1px solid var(--border-strong); box-shadow: var(--e-3); }
+.ll-h { font-size: var(--fs-12); font-weight: 800; letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--muted); }
+.ll-note { font-size: var(--fs-12); color: var(--muted); }
+.lights-legend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); font-size: var(--fs-12); font-weight: 600; color: var(--text-2); }
 .ll-item { display: inline-flex; align-items: center; gap: var(--s-1); }
 /* UI-02 · primera visita: una tarjeta para conectar (sin guía automática) */
 /* Bienvenida (reproductor): un aviso, sin preguntas, con una sola acción opcional. */
 .onboard {
   display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: var(--s-3) var(--s-4);
-  margin: 0 0 var(--s-5); padding: var(--s-3) var(--s-3) var(--s-3) var(--s-4); border-radius: var(--r-xl);
+  margin: 0; padding: var(--s-2) var(--s-2) var(--s-2) var(--s-3); border-radius: var(--r-xl);
   background: var(--surface-1); border: 1px solid var(--brand-line, var(--border-strong)); box-shadow: var(--e-1);
 }
 .onboard[hidden] { display: none; }
-.ob-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--r-md); background: var(--accent-soft); color: var(--accent); }
+.ob-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--r-md); background: var(--accent-soft); color: var(--accent); }
 .ob-ico svg { width: 26px; height: 26px; }
 .ob-text { display: grid; gap: 2px; min-width: 0; }
 .ob-title { font-size: var(--fs-16); font-weight: 800; letter-spacing: -0.01em; }
 .ob-text p { font-size: var(--fs-14); color: var(--text-2); }
 .ob-cta { white-space: nowrap; }
 @media (max-width: 640px) {
-  .onboard { grid-template-columns: auto 1fr auto; padding: var(--s-3); gap: var(--s-2) var(--s-3); margin-bottom: var(--s-4); }
+  .onboard { grid-template-columns: auto 1fr auto; padding: var(--s-3); gap: var(--s-2) var(--s-3); }
   .ob-ico { width: 40px; height: 40px; }
   .ob-cta { grid-column: 1 / -1; grid-row: 2; justify-content: center; min-height: var(--tap); }
   .ob-close { grid-column: 3; grid-row: 1; }
@@ -2015,17 +2082,6 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 .sg-item > .like-btn.sg-like:hover { background: rgba(8, 6, 20, 0.85); color: #fff; }
 .sg-item > .like-btn.sg-like[aria-pressed="true"] { color: #ff6fb5; }
 .al-item > .like-btn.sg-like { opacity: 1; }
-/* Minimizar video (teléfono): píldora en el hueco sobre el video, fuera de los controles de YouTube */
-.video-min { display: none; }
-@media (max-width: 640px) {
-  .app[data-view="video"]:not(.home) .video-min {
-    display: inline-flex; align-items: center; gap: 4px; position: absolute; top: 2px; left: var(--s-1); z-index: 3;
-    min-height: 36px; padding: 0 var(--s-3) 0 var(--s-2); border-radius: 999px; border: 1px solid var(--border-strong);
-    background: var(--surface-1); color: var(--text); font: 700 var(--fs-12)/1 inherit; cursor: pointer; box-shadow: var(--e-1);
-  }
-  .video-min svg { width: 18px; height: 18px; }
-  .video-min::before { content: ""; position: absolute; inset: -4px; } /* área táctil ≥ 44 px */
-}
 #mini-size svg, #mini-back svg { width: 18px; height: 18px; }
 /* Mini reproductor chico: 200 × 200 px (el mínimo que pide YouTube) en una esquina */
 .app.exploring .video-card.mini-sm { --mini-w: 200px; }
@@ -2073,7 +2129,8 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
   .m-nav-h { margin: var(--s-1) var(--s-3) 2px; font-size: var(--fs-12); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
   .m-nav-menu hr { border: 0; border-top: 1px solid var(--border); margin: var(--s-1) var(--s-2); }
   /* Explorar en teléfono: solo las miniaturas de las canciones */
-  .lights-legend { display: none !important; }
+  .ll-btn > span:not(.lights-glyph) { display: none; } /* teléfono: solo el ícono */
+  .ll-btn { padding: 0 var(--s-2); }
 }
 @keyframes m-nav-in { from { opacity: 0; transform: translateY(-6px) scale(0.97); } }
 @media (prefers-reduced-motion: reduce) { .m-nav-menu { animation: none; } }

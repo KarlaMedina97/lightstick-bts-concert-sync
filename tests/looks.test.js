@@ -179,3 +179,130 @@ test("Euphoria fluye: sin saltos bruscos en versos y puente, sin verdes, y el co
   }
   assert.ok(avg["coro final"] > avg.verso && avg.coro > avg.verso, "los coros brillan más que los versos");
 });
+
+import { withCompanion, hexToRgb } from "../src/patterns.js";
+
+test("intensidad continua: el pre-coro se construye, toma aire antes del coro y el coro entra con impacto", () => {
+  const s = songs.find((x) => x.id === "dope");
+  const p = generatePattern(s, s.album, 200, { safeMode: true });
+  const pre = p.sections.find((x) => x.label === "pre-coro"), coro = p.sections.find((x) => x.label === "coro");
+  const fin = p.sections.find((x) => x.label === "coro final");
+  assert.ok(p.energyAt(pre.end - pre.end * 0.02 - 1) > p.energyAt(pre.start + 0.1), "el pre-coro sube");
+  assert.ok(p.energyAt(pre.end - 0.05) < p.energyAt(coro.start + 0.05), "respiro y luego golpe del coro");
+  // En el coro final, al tope de brillo, crece la cresta blanca del 1 de cada compás (más blanco al final).
+  const white = (t) => { const c = p.colorAt(t); return Math.min(...c) / Math.max(1, ...c); };
+  const crestAt = (from) => { let m = 0; for (let t = from; t < from + p.beat * 4; t += 0.01) m = Math.max(m, white(t)); return m; };
+  assert.ok(crestAt(fin.end - p.beat * 5) > crestAt(fin.start + p.beat * 4), "el coro final sigue subiendo");
+});
+
+test("combinaciones: cada sección tiene principal y acento distintos, y el latido usa los dos", () => {
+  const s = songs.find((x) => x.id === "idol");
+  const p = generatePattern(s, s.album, 200, { safeMode: true, styleOverride: "pulse" });
+  for (const sec of p.sections) assert.notDeepEqual(sec.accent, sec.color, sec.label);
+  const coro = p.sections.find((x) => x.label === "coro");
+  const seen = new Set();
+  for (let t = coro.start + 1; t < coro.end; t += 0.02) seen.add(p.colorAt(t).map((v) => Math.round(v / 40)).join());
+  assert.ok(seen.size > 6, "el coro mezcla colores, no es un solo tono");
+});
+
+test("variedad: canciones de la misma energía sin look propio no reciben todas el mismo plan", () => {
+  const plain = songs.filter((x) => x.energy === "high" && !lookFor(x.id) && x.kind !== "concert");
+  const plans = new Set(plain.map((x) => generatePattern(x, x.album, 200, { safeMode: true }).sections.map((sec) => sec.style).join()));
+  assert.ok(plans.size >= 3, `solo ${plans.size} planes distintos`);
+});
+
+test("paletas de un solo tono reciben un compañero análogo; las que ya combinan quedan igual", () => {
+  const red = withCompanion([hexToRgb("#ff1744"), hexToRgb("#ffffff")]);
+  assert.equal(red.length, 3); // rojo + blanco → suma un naranja
+  const [r, g, b] = red[2];
+  assert.ok(r > 200 && g > 60 && b < 80, `compañero del rojo: ${red[2].map(Math.round)}`);
+  const ok = [hexToRgb("#ff2e88"), hexToRgb("#00c2a8")];
+  assert.equal(withCompanion(ok).length, 2);
+  assert.equal(withCompanion([hexToRgb("#ffffff")]).length, 1); // solo blanco: no inventa
+});
+
+// ---------- Control de calidad: ninguna canción (ni las nuevas) con luces planas o aburridas ----------
+// Puntaje 0–100: variedad de color (tonos distintos), rango de brillo, contraste coro/verso y movimiento.
+function lightScore(p, dur = 210) {
+  const hue = ([r, g, b]) => { const mx = Math.max(r, g, b), d = mx - Math.min(r, g, b); if (d < 25 || mx < 30) return -1; const h = mx === r ? ((g - b) / d + 6) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; return h * 60; };
+  const L = [], H = new Set(), by = {};
+  let prev = null, moves = 0;
+  for (let t = 0; t < dur * 0.95; t += 0.1) {
+    const c = ledLevel(p.colorAt(t), p.floorAt(t), 2), l = Math.max(...c) / 255;
+    L.push(l);
+    const h = hue(c); if (h >= 0) H.add(Math.round(h / 20));
+    if (prev && Math.hypot(c[0] - prev[0], c[1] - prev[1], c[2] - prev[2]) > 18) moves++;
+    prev = c;
+    (by[p.sectionAt(t).label] ??= []).push(l);
+  }
+  const n = L.length, s = [...L].sort((a, b) => a - b), avg = (a) => a.reduce((x, y) => x + y, 0) / Math.max(1, a.length);
+  const range = s[Math.floor(n * 0.9)] - s[Math.floor(n * 0.1)];
+  const contrast = avg([...(by.coro ?? []), ...(by["coro 2"] ?? []), ...(by["coro final"] ?? [])]) - avg([...(by.verso ?? []), ...(by["verso 2"] ?? [])]);
+  return Math.round(25 * Math.min(1, H.size / 6) + 25 * Math.min(1, range / 0.5) + 25 * Math.min(1, Math.max(0, contrast) / 0.15) + 25 * Math.min(1, moves / n / 0.35));
+}
+
+test("calidad de luces: cada canción del catálogo puntúa ≥ 55 y el promedio ≥ 75 (las nuevas también)", () => {
+  const scores = songs.filter((s) => s.kind !== "concert").map((s) => [s.id, lightScore(generatePattern(s, s.album, 210, { safeMode: true }))]);
+  const flat = scores.filter(([, v]) => v < 55);
+  assert.deepEqual(flat, [], `luces planas (agrega un look en SONG_LOOKS o ajusta su paleta): ${flat.map(([id, v]) => `${id}=${v}`).join(", ")}`);
+  const mean = scores.reduce((a, [, v]) => a + v, 0) / scores.length;
+  assert.ok(mean >= 75, `promedio ${mean.toFixed(1)}`);
+});
+
+test("calidad de luces: un video agregado por enlace (sin look propio) también aprovecha combinaciones e intensidad", () => {
+  const mine = { palette: ["#8a2be2", "#ff80ab", "#4fc3f7"] }; // paleta de «Mis videos»
+  for (const [id, energy, bpm] of [["mine-a1b2c3", "high", 110], ["mine-x9y8z7", "mid", 96], ["mine-q1w2e3", "ballad", 72]]) {
+    const v = lightScore(generatePattern({ id, title: "Mi video", bpm, energy }, mine, 210, { safeMode: true }));
+    assert.ok(v >= 60, `${energy}: ${v}`);
+  }
+});
+
+import { lightColors } from "../src/patterns.js";
+
+test("colores en las carátulas: la combinación real del ARMY Bomb (2–4, sin repetidos, FIRE con su fuego)", () => {
+  const find = (id) => songs.find((x) => x.id === id);
+  const fire = lightColors(find("fire"), find("fire").album);
+  assert.deepEqual(fire, ["#ff1a00", "#ffd000", "#ffffff"]);
+  const dope = lightColors(find("dope"), find("dope").album);
+  assert.ok(dope.length === 3, `dope: ${dope}`); // blanco + rojo + compañero naranja
+  for (const s of songs) {
+    const c = lightColors(s, s.album);
+    assert.ok(c.length >= 1 && c.length <= 4, s.id);
+    for (const h of c) assert.match(h, /^#[0-9a-f]{6}$/, s.id);
+  }
+});
+
+test("concierto: FIRE y Hooligan abren en blanco tenue y el verso cambia de golpe a rojo", () => {
+  for (const id of ["fire", "hooligan"]) {
+    const s = songs.find((x) => x.id === id);
+    const p = generatePattern(s, s.album, 200, { safeMode: true });
+    const intro = p.sections[0], verso = p.sections[1];
+    assert.deepEqual(intro.color, [255, 255, 255], id);
+    const [r, g, b] = p.colorAt(verso.start + 2);
+    assert.ok(r > g && r > b, `${id}: el verso es rojo (${[r, g, b].map(Math.round)})`);
+  }
+});
+
+test("concierto: apagón (brasa) 1 tiempo antes del coro en FIRE, sin pasar el límite de destellos", () => {
+  const s = songs.find((x) => x.id === "fire");
+  const p = generatePattern(s, s.album, 200, { safeMode: true });
+  const coro = p.sections.find((x) => x.label === "coro");
+  assert.ok(p.energyAt(coro.start - p.beat * 0.5) < 0.1, "casi apagado justo antes");
+  assert.ok(p.floorAt(coro.start - p.beat * 0.5) > 0, "brasa, nunca negro total");
+  assert.ok(maxFlashesPerSecond(p, 200) <= 3);
+});
+
+test("concierto: las canciones de cierre terminan en el océano Borahae (morado largo que se apaga)", () => {
+  for (const id of ["spring-day", "yet-to-come", "epilogue-young-forever", "make-it-right", "ptd"]) {
+    const s = songs.find((x) => x.id === id);
+    const p = generatePattern(s, s.album, 210, { safeMode: true });
+    const fin = p.sections[8];
+    assert.equal(fin.style, "borahae", id);
+    assert.ok(fin.end - fin.start > 20, `${id}: ${(fin.end - fin.start).toFixed(1)} s`);
+    const [r, g, b] = p.colorAt(fin.start + (fin.end - fin.start) * 0.5);
+    assert.ok(b > g && r > g, `${id}: morado a la mitad (${[r, g, b].map(Math.round)})`);
+    const end = p.colorAt(fin.end - 0.05);
+    assert.ok(Math.max(...end) < 20, `${id}: se apaga al final`);
+    assert.ok(maxFlashesPerSecond(p, 210) <= 3, id);
+  }
+});

@@ -2,6 +2,19 @@
 // Los patrones con datos (títulos de canciones o álbumes, nombres, búsquedas) usan funciones para que esos
 // datos nunca pasen por el diccionario; los que llevan partes traducibles usan "$1" (se buscan en el diccionario).
 const dict = {
+  "Océano Borahae": "Borahae ocean",
+  "Cierre de concierto: todo el público en morado que respira despacio, con olas lentas, hasta apagarse.": "Concert ending: the whole crowd in purple, breathing slowly with gentle waves, until it fades out.",
+  "Colores de tu ARMY Bomb en esta canción": "Your ARMY Bomb colors for this song",
+  "Dirección para activar el Bluetooth en Brave": "Address to turn on Bluetooth in Brave",
+  "Copiar": "Copy",
+  "Explorar canciones": "Explore songs",
+  "Toca ♡ en una canción para guardarla aquí.": "Tap ♡ on a song to save it here.",
+  "canción": "song",
+  "canciones": "songs",
+  "álbum": "album",
+  "álbumes": "albums",
+  "Minimizar video": "Minimize video",
+  "Expandir video": "Expand video",
   "Canciones": "Songs",
   "Álbumes": "Albums",
   "Discografía": "Discography",
@@ -186,6 +199,8 @@ const dict = {
   "Florecer": "Bloom",
   "Secciones": "Sections",
   "Chispas": "Sparkles",
+  "Dúo": "Duo",
+  "Dos colores de la canción se reparten las ARMY Bomb y se intercambian en cada compás; con una sola, va y viene entre los dos.": "Two of the song's colors split the ARMY Bombs and swap every bar; with just one, it goes back and forth between them.",
   "Respiración": "Breathing",
   "Latido": "Heartbeat",
   "Ola de colores": "Color wave",
@@ -321,6 +336,7 @@ const ctxLabel = (s) => {
 
 const SECTION_EN = { intro: "intro", verso: "verse", "pre-coro": "pre-chorus", coro: "chorus", puente: "bridge", "coro final": "final chorus", final: "outro" };
 export const patterns = [
+  [/^(\d+) (canción|canciones) · (\d+) (álbum|álbumes)$/, (_, a, s1, b, s2) => `${a} ${s1 === "canción" ? "song" : "songs"} · ${b} ${s2 === "álbum" ? "album" : "albums"}`],
   [/^Álbumes · (.+)$/, (_, who) => `Albums · ${who}`],
   [/^Estás en el navegador de (.+?): aquí no se puede conectar el ARMY Bomb \(los videos y tu pantalla sí funcionan\)\.$/, "You're in the $1 browser: the ARMY Bomb can't connect here (videos and your screen still work)."],
   [/^(\d+) BPM, luces alineadas al ritmo\.$/, "$1 BPM, lights lined up with the rhythm."],

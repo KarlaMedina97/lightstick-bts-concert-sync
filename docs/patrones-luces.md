@@ -161,6 +161,10 @@ Las secciones siguen siendo fracciones fijas de la duración.
 **Cómo se forman las olas, las secciones y las imágenes (deducción razonable, no documentada en detalle):** cada
 lightstick sabe en qué asiento está. El controlador central manda un único mensaje, y cada stick calcula su color a
 partir de su asiento (o se le asigna un grupo). Así, el público entero funciona como una pantalla de baja resolución.
+
+> **V4 (gira ARIRANG, 2026):** el aviso oficial dice que los efectos se activan solos al encender el ARMY Bomb, **sin
+> registrar el asiento**, y que V3/SE no son compatibles con ese control ([Weverse, aviso 40173](https://weverse.io/bts/notice/40173?hl=es)).
+> Lo de arriba (registro de asiento, cabinas) describe el sistema de V3/SE.
 Las olas son animaciones que se desplazan por las coordenadas de los asientos.
 
 ### Sin confirmar
@@ -360,3 +364,51 @@ Abiertas en esta investigación:
 - bora-waves.com, Butter (shows hechos por fans): https://bora-waves.com/albums/butter
 - YouTube, «rainbow army bomb ocean»: https://www.youtube.com/watch?v=RoCqQFAjdAI
 - TikTok, «Rainbow army ocean» (PTD Las Vegas): https://www.tiktok.com/@shmems96/video/7085542421211204910
+
+## Intensidad continua y combinaciones (2026-11-05)
+
+- **Intensidad (`energyAt`)**: ya no es un número fijo por sección. El pre-coro se construye y toma aire en los
+  últimos tiempos antes del coro; el coro entra con impacto; el último compás de cada frase de 8 compases remata;
+  el puente baja y vuelve a crecer; en el coro final crece la cresta blanca del 1 de cada compás (≤ 1 por segundo).
+  Manda el brillo y el piso del LED (`floorAt`).
+- **Combinaciones**: cada sección tiene `color`, `accent` y `third`. El latido pega con el acento en el 1 del compás
+  (en lo culminante, principal y acento se turnan); la respiración se tiñe del acento al exhalar (con el mismo
+  brillo: cambia el tono, no la luz); los golpes alternan principal/acento; el océano asoma el acento en la cresta.
+- **Dúo** (estilo nuevo): dos colores que se reparten las ARMY Bomb (pares e impares opuestas) y se intercambian
+  cada compás; con una sola, va y viene entre los dos. En lo intenso entra el tercer color cada 4 compases.
+- **Color compañero** (`withCompanion`): las paletas de un solo tono (rojo y blanco, beige y café…) reciben un
+  análogo a 30–35° (dentro del filtro del concepto): los cálidos hacia el naranja o ámbar, el resto hacia el violeta.
+  No se aplica a los looks con `lock` (FIRE).
+- **Variedad**: las canciones sin look propio eligen variantes de verso, verso 2 y puente con una semilla estable
+  del id (la misma canción siempre se ve igual; dos canciones de la misma energía, no).
+- **Rap**: los versos suben a 0,78 (antes 0,85) para que el coro se siga sintiendo.
+- Barrido del catálogo (183 canciones, puntaje de variedad de color, rango, contraste coro/verso y movimiento):
+  promedio 75 → 79; canciones bajo 60: 29 → 2 (las restantes son de golpes, oscuras entre golpes a propósito).
+
+
+## Conciertos reales: qué hacía el océano de luces (estudio del 2026-11-05)
+
+Casi ninguna fuente pública describe el ARMY Bomb canción por canción; esto es lo que se puede respaldar
+(C = prensa u oficial, F = relato de fans).
+
+| Momento | Qué pasaba | Fuente | En LumiParty |
+| --- | --- | --- | --- |
+| Canción de apertura | El estadio pasa de multicolor o blanco a un solo color, todos a la vez | F: [Pearl Post](https://thepearlpost.com/22622/showcase/korean-boy-band-bts-sells-out-concert-at-rose-bowl-stadium) (Dionysus, 2019); C: [Nocut](https://nocutnews.co.kr/news/6500742) (Hooligan, 2026) | `intro`: blanco tenue → rojo de golpe en el verso (FIRE, Hooligan); Dionysus de ola multicolor a golpes rojos |
+| FIRE | Todo en rojo; los sticks pasan de blanco a rojo | C: [isplus](https://isplus.com/article/625/24172625.html), Las Vegas Weekly | Paleta de fuego bloqueada, apertura blanca, apagón antes de cada coro (`drop`) |
+| Hooligan (ARIRANG) | ARMY Bomb rojos, llamas y bengala roja | C: Nocut | Look propio rojo/blanco con fuego, subida y golpes |
+| Baladas (Singularity, Epiphany, Blue & Grey) | Balanceo suave, silencio, luz azul sobria | C: [London Korean Links](https://londonkoreanlinks.net/2019/09/22/concert-review-bts-love-yourself-speak-yourself-at-wembley-stadium/), isplus | Ya coincide: respiración lenta (BALLAD_PLAN) |
+| Cierre | Océano morado (Busan: de rojo a morado; ARIRANG: cierre en morado) | F: [kbizoom](https://kbizoom.com/?p=242301), [Hallyuism](https://hallyuism.com/2026/04/29/k-event-coverage-bts-world-tour-arirang-2026-in-goyang-south-korea/) | `finale: "borahae"` en Spring Day, Yet To Come, Epilogue, Make It Right y PTD |
+| Charlas (ment) | Los miembros piden una ola de lightsticks | F: Daily Titan; C: [Weverse Magazine](https://magazine.weverse.io/article/view/283?lang=en) | Pendiente: botón «Ola» entre canciones |
+
+Sin respaldo público: el amarillo de Butter, el arcoíris de Dynamite y PTD, el celeste de Spring Day. Quedan como
+**propuesta** (así lo dice su `source`).
+
+### Momentos de concierto (opciones del look)
+
+- **`intro: "#hex"`**: la intro usa ese color (blanco tenue) y en el primer verso todo cambia de golpe, como la
+  apertura de un show. Un solo cambio.
+- **`drop: true`**: apagón de 1 tiempo antes de cada coro. Brasa (piso del LED), nunca negro total: el paso de rojo
+  saturado a negro cuenta como destello rojo (WCAG). Un solo destello por entrada.
+- **`finale: "borahae"`**: el final ocupa del 88 % al 100 % de la canción (≈ 25 s) con el estilo **Océano Borahae**:
+  morado que respira en ciclos de 5 s, olas lentas entre ARMY Bomb, un recuerdo del color de la canción al empezar
+  y se apaga en el último 30 %.

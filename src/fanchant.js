@@ -15,11 +15,14 @@ const FINAL = { ko: "방탄소년단!", roman: "BTS!" };
 // Ritmo real del público: cada nombre ocupa 2 tiempos de la canción (unos 0,9–1 s). Referencia: guía oficial de
 // fanchant de DNA (fancafe de BTS, vía US BTS ARMY): la ronda de 7 nombres + «BTS!» empieza en 0:02 y se repite
 // dos veces antes de la primera estrofa, ≈ 1 s por grito a 130 BPM. Sin BPM, 1 s.
+// En la app se gritan con la voz del sistema, que tarda ≈ 1 s por nombre de tres sílabas: a menos de 1,1 s no
+// alcanza a decirlos y se amontonan. Por eso el paso va de 1,1 a 1,5 s (3 tiempos si 2 quedan cortos).
 export function chantStepMs(bpm) {
-  const ms = bpm > 0 ? (2 * 60000) / bpm : 1000;
-  // Tempos muy lentos o muy rápidos: el público corea a un paso cómodo (se dobla o se parte el tiempo).
-  const fit = ms > 1300 ? ms / 2 : ms < 700 ? ms * 2 : ms;
-  return Math.round(Math.min(1200, Math.max(850, fit)));
+  const beat = bpm > 0 ? 60000 / bpm : 600;
+  let ms = 2 * beat;
+  if (ms < 1100) ms = 3 * beat; // rápida: 3 tiempos por nombre
+  if (ms > 1600) ms = beat; // muy lenta: un tiempo por nombre
+  return Math.round(Math.min(1500, Math.max(1100, ms)));
 }
 
 /** Ovación corta: ruido filtrado con una envolvente, sin archivos de audio. */
@@ -97,16 +100,29 @@ export class Fanchant {
         this.nameEl.classList.add("pop");
         this.hooks.onBeat(i);
         if (ctx) cheer(ctx, { length: i === items.length - 1 ? 1.4 : 0.45, gain: i === items.length - 1 ? 0.25 : 0.16 });
-        if (voice && "speechSynthesis" in window) {
-          const u = new SpeechSynthesisUtterance(it.ko);
-          u.lang = "ko-KR";
-          u.rate = 1; // tres sílabas por nombre, marcadas, como lo grita el público
-          u.volume = 0.9;
-          speechSynthesis.speak(u);
-        }
+        const t0 = performance.now();
         i++;
         // «BTS!» es el remate: dura el doble antes de que empiece la canción.
-        this.timer = setTimeout(step, i === items.length ? STEP_MS * 2 : STEP_MS);
+        const minMs = i === items.length ? STEP_MS * 2 : STEP_MS;
+        if (voice && "speechSynthesis" in window) {
+          // El siguiente nombre espera a que la voz termine este (y una pausa corta), nunca se encima.
+          let done = false;
+          const next = () => {
+            if (done || !this.resolve) return;
+            done = true;
+            clearTimeout(this.timer);
+            this.timer = setTimeout(step, Math.max(180, minMs - (performance.now() - t0)));
+          };
+          speechSynthesis.cancel(); // sin cola: si quedó algo pendiente, no se acumula
+          const u = new SpeechSynthesisUtterance(it.ko);
+          u.lang = "ko-KR";
+          u.rate = 0.95; // tres sílabas por nombre, marcadas, como lo grita el público
+          u.volume = 0.9;
+          u.onend = next;
+          u.onerror = next;
+          speechSynthesis.speak(u);
+          this.timer = setTimeout(next, minMs * 1.8); // respaldo si el navegador nunca avisa que terminó
+        } else this.timer = setTimeout(step, minMs);
       };
       this.timer = setTimeout(step, 500);
     });
