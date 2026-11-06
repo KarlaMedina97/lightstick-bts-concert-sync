@@ -1,5 +1,12 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Último error": "Último erro",
+  "Tu ARMY Bomb no aceptó la conexión. Si está conectado a otro celular o a la app oficial, desconéctalo, vuelve a ponerlo en modo Bluetooth y prueba otra vez.": "Seu ARMY Bomb não aceitou a conexão. Se estiver conectado a outro celular ou ao app oficial, desconecte, coloque de novo no modo Bluetooth e tente outra vez.",
+  "Ese dispositivo no es un ARMY Bomb compatible. Elige el que empieza con BTS LIGHTSTICK o BBOMB.": "Esse dispositivo não é um ARMY Bomb compatível. Escolha o que começa com BTS LIGHTSTICK ou BBOMB.",
+  "Cerraste la lista sin elegir. Toca Conectar y elige tu ARMY Bomb": "Você fechou a lista sem escolher. Toque em Conectar e escolha seu ARMY Bomb",
+  "Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial, ponlo en modo Bluetooth y vuelve a tocar Conectar": "Seu ARMY Bomb não aceitou a conexão. Desconecte de outro celular ou do app oficial, coloque no modo Bluetooth e toque em Conectar de novo",
+  "Ese dispositivo no es un ARMY Bomb. Elige el que empieza con BTS LIGHTSTICK o BBOMB": "Esse dispositivo não é um ARMY Bomb. Escolha o que começa com BTS LIGHTSTICK ou BBOMB",
+  "Sin elegir": "Nada escolhido",
   "Expandir biblioteca": "Expandir biblioteca",
   "¡Gracias, ARMY!": "Obrigado, ARMY!",
   "Tu opinión llegó. La leemos para mejorar LumiParty.": "Sua opinião chegou. Lemos para melhorar o LumiParty.",

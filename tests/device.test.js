@@ -34,7 +34,12 @@ test("errores de Bluetooth: cerrar la lista no es lo mismo que tenerlo desactiva
   assert.equal(classifyBtError(err("NotFoundError", "Web Bluetooth API globally disabled.")), "disabled");
   assert.equal(classifyBtError(err("NotFoundError", "Bluetooth adapter not available.")), "adapter-off");
   assert.equal(classifyBtError(err("SecurityError", "Origin is not allowed")), "denied");
-  assert.equal(classifyBtError(err("NetworkError", "GATT Server is disconnected")), "other");
+  // Eligió el ARMY Bomb pero no aceptó la conexión (otro celular, app oficial, fuera de alcance): mensaje propio.
+  assert.equal(classifyBtError(err("NetworkError", "GATT Server is disconnected. Cannot retrieve services.")), "gatt");
+  assert.equal(classifyBtError(err("NetworkError", "Connection attempt failed.")), "gatt");
+  assert.equal(classifyBtError(err("NotFoundError", "No Services matching UUID 0001fe01 found in Device.")), "not-stick");
+  assert.equal(classifyBtError(err("NotCompatible", "Audífonos no parece ser una lightstick compatible.")), "not-stick");
+  assert.equal(classifyBtError(err("TypeError", "algo raro")), "other");
 });
 
 import { parseYouTubeId, isOfficialChannel } from "../src/youtube.js";

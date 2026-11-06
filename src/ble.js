@@ -31,7 +31,7 @@ export const isBrave = () => typeof navigator !== "undefined" && Boolean(navigat
 /**
  * Qué significa un error de requestDevice(). Varios navegadores responden "NotFoundError" tanto si la persona cerró
  * la lista como si el Bluetooth está apagado o desactivado: se distinguen por el mensaje.
- * @returns {"cancelled" | "disabled" | "adapter-off" | "denied" | "no-chooser" | "other"}
+ * @returns {"cancelled" | "disabled" | "adapter-off" | "denied" | "no-chooser" | "gatt" | "not-stick" | "other"}
  */
 export function classifyBtError(e) {
   const msg = String(e?.message ?? "");
@@ -39,6 +39,11 @@ export function classifyBtError(e) {
   if (/adapter (is )?not available|adapter.*off|bluetooth.*(off|unavailable)|no bluetooth adapter/i.test(msg)) return "adapter-off";
   if (e?.name === "SecurityError" || e?.name === "NotAllowedError" || /permission|denied/i.test(msg)) return "denied";
   if (e?.name === "ChooserTimeout") return "no-chooser";
+  if (e?.name === "NotFoundError" && /cancel/i.test(msg)) return "cancelled";
+  // Eligió el ARMY Bomb pero no aceptó la conexión: suele estar conectado a otro celular o a la app oficial, lejos,
+  // o salió del modo Bluetooth (en Windows también pasa si quedó "emparejado" en la configuración del sistema).
+  if (e?.name === "NetworkError" || /gatt|connection (attempt )?failed|no longer in range|disconnected|connect/i.test(msg)) return "gatt";
+  if (e?.name === "NotCompatible" || /no parece ser una lightstick|característica de escritura|no services matching|no characteristics matching/i.test(msg)) return "not-stick";
   if (e?.name === "NotFoundError") return "cancelled";
   return "other";
 }
@@ -90,7 +95,7 @@ async function tryService(server, uuid) {
   }
 }
 
-async function connectGatt(device, attempts = 3) {
+async function connectGatt(device, attempts = 4) {
   let lastError;
   for (let i = 1; i <= attempts; i++) {
     try {
@@ -98,7 +103,7 @@ async function connectGatt(device, attempts = 3) {
     } catch (e) {
       lastError = e;
       try { device.gatt.disconnect(); } catch {}
-      await new Promise((r) => setTimeout(r, 400 * i));
+      await new Promise((r) => setTimeout(r, 500 * i)); // en Windows el primer intento a veces falla y el siguiente no
     }
   }
   throw lastError;
@@ -235,13 +240,13 @@ export async function connectStick(device) {
   }
   if (!family) {
     device.gatt.disconnect();
-    throw new Error(`${device.name ?? "El dispositivo"} no parece ser una lightstick compatible.`);
+    throw Object.assign(new Error(`${device.name ?? "El dispositivo"} no parece ser una lightstick compatible.`), { name: "NotCompatible" });
   }
   const characteristic =
     family === "v4"
       ? await findV4Characteristic(server)
       : await (await server.getPrimaryService(SE_SERVICE)).getCharacteristic(SE_CHAR);
-  if (!characteristic) throw new Error("No se encontró una característica de escritura.");
+  if (!characteristic) throw Object.assign(new Error("No se encontró una característica de escritura."), { name: "NotCompatible" });
   const battCh = await batteryChar(server);
   const battery = battCh ? await readLevel(battCh) : null;
   const info = await readInfo(server, family);

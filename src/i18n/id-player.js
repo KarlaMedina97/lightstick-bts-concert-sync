@@ -1,5 +1,12 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Último error": "Galat terakhir",
+  "Tu ARMY Bomb no aceptó la conexión. Si está conectado a otro celular o a la app oficial, desconéctalo, vuelve a ponerlo en modo Bluetooth y prueba otra vez.": "ARMY Bomb-mu tidak menerima koneksi. Jika terhubung ke ponsel lain atau aplikasi resmi, putuskan, aktifkan lagi mode Bluetooth, lalu coba lagi.",
+  "Ese dispositivo no es un ARMY Bomb compatible. Elige el que empieza con BTS LIGHTSTICK o BBOMB.": "Perangkat itu bukan ARMY Bomb yang kompatibel. Pilih yang diawali BTS LIGHTSTICK atau BBOMB.",
+  "Cerraste la lista sin elegir. Toca Conectar y elige tu ARMY Bomb": "Kamu menutup daftar tanpa memilih. Ketuk Hubungkan dan pilih ARMY Bomb-mu",
+  "Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial, ponlo en modo Bluetooth y vuelve a tocar Conectar": "ARMY Bomb-mu tidak menerima koneksi. Putuskan dari ponsel lain atau aplikasi resmi, aktifkan mode Bluetooth, lalu ketuk Hubungkan lagi",
+  "Ese dispositivo no es un ARMY Bomb. Elige el que empieza con BTS LIGHTSTICK o BBOMB": "Perangkat itu bukan ARMY Bomb. Pilih yang diawali BTS LIGHTSTICK atau BBOMB",
+  "Sin elegir": "Belum dipilih",
   "Expandir biblioteca": "Luaskan pustaka",
   "¡Gracias, ARMY!": "Terima kasih, ARMY!",
   "Tu opinión llegó. La leemos para mejorar LumiParty.": "Masukanmu sudah sampai. Kami membacanya untuk memperbaiki LumiParty.",

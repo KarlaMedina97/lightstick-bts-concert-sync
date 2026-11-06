@@ -1,5 +1,12 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Último error": "마지막 오류",
+  "Tu ARMY Bomb no aceptó la conexión. Si está conectado a otro celular o a la app oficial, desconéctalo, vuelve a ponerlo en modo Bluetooth y prueba otra vez.": "아미밤이 연결을 받지 않았어요. 다른 휴대폰이나 공식 앱에 연결되어 있다면 연결을 끊고, 다시 블루투스 모드로 바꾼 뒤 시도해 주세요.",
+  "Ese dispositivo no es un ARMY Bomb compatible. Elige el que empieza con BTS LIGHTSTICK o BBOMB.": "호환되는 아미밤이 아니에요. BTS LIGHTSTICK 또는 BBOMB으로 시작하는 기기를 골라 주세요.",
+  "Cerraste la lista sin elegir. Toca Conectar y elige tu ARMY Bomb": "선택하지 않고 목록을 닫았어요. 연결을 누르고 아미밤을 골라 주세요",
+  "Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial, ponlo en modo Bluetooth y vuelve a tocar Conectar": "아미밤이 연결을 받지 않았어요. 다른 휴대폰이나 공식 앱에서 연결을 끊고 블루투스 모드로 바꾼 뒤 다시 연결을 눌러 주세요",
+  "Ese dispositivo no es un ARMY Bomb. Elige el que empieza con BTS LIGHTSTICK o BBOMB": "아미밤이 아니에요. BTS LIGHTSTICK 또는 BBOMB으로 시작하는 기기를 골라 주세요",
+  "Sin elegir": "선택 안 함",
   "Expandir biblioteca": "라이브러리 펼치기",
   "¡Gracias, ARMY!": "고마워요, 아미!",
   "Tu opinión llegó. La leemos para mejorar LumiParty.": "의견이 잘 도착했어요. LumiParty를 더 좋게 만드는 데 참고할게요.",

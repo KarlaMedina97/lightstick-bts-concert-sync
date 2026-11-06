@@ -531,7 +531,9 @@ function showBtWarning(reason) {
   $("btn-connect").disabled = true;
 }
 
+let lastBtError = null; // { kind, detail, at } del último intento fallido
 async function onConnect() {
+  lastBtError = null;
   const btn = $("btn-connect");
   btn.disabled = true;
   btn.textContent = "Conectando…";
@@ -563,11 +565,16 @@ async function onConnect() {
   } catch (e) {
     // Antes, cualquier "NotFoundError" se tomaba como "cerró la lista" y no se veía nada (pasaba en Brave).
     const kind = classifyBtError(e);
+    // El motivo real queda a la vista (guía y diagnóstico) y en la consola: así se puede saber qué pasó.
+    lastBtError = { kind, detail: `${e?.name ?? "Error"}: ${String(e?.message ?? e).slice(0, 160)}`, at: Date.now() };
+    console.warn("[LumiParty] Bluetooth:", lastBtError.detail);
     if (kind === "cancelled") say("Lista cerrada sin elegir un dispositivo.");
     else if (kind === "disabled") { showBtWarning(isBrave() ? "brave" : "disabled"); showPanel("panel-bt"); earcon("error"); }
     else if (kind === "no-chooser") { showBtWarning("no-chooser"); if (openPanel !== "panel-bt") showPanel("panel-bt"); earcon("error"); }
     else if (kind === "adapter-off") { toast("El Bluetooth de tu dispositivo está apagado. Actívalo y vuelve a tocar Conectar.", 7000, { assertive: true }); earcon("error"); }
     else if (kind === "denied") { toast("El navegador no dio permiso para usar Bluetooth. Revisa los permisos del sitio y prueba otra vez.", 7000, { assertive: true }); earcon("error"); }
+    else if (kind === "gatt") { toast("Tu ARMY Bomb no aceptó la conexión. Si está conectado a otro celular o a la app oficial, desconéctalo, vuelve a ponerlo en modo Bluetooth y prueba otra vez.", 9000, { assertive: true }); earcon("error"); }
+    else if (kind === "not-stick") { toast("Ese dispositivo no es un ARMY Bomb compatible. Elige el que empieza con BTS LIGHTSTICK o BBOMB.", 8000); earcon("error"); }
     else { toast("No pudimos conectar. Revisa que parpadee y prueba otra vez."); earcon("error"); }
   } finally {
     $("panel-bt").removeAttribute("aria-busy");
@@ -2076,6 +2083,7 @@ async function renderBtDiag() {
     ["Navegador", b.name], ["Sistema", b.ios ? "iPhone / iPad" : b.android ? "Android" : "Computadora"],
     ["Bluetooth web", "bluetooth" in navigator ? "Disponible" : "No disponible"], ["Página segura (HTTPS)", window.isSecureContext ? "Sí" : "No"],
     ["Bluetooth del equipo", avail], ["Dentro de una app", inAppBrowser() ? "Sí" : "No"],
+    ...(lastBtError ? [["Último error", lastBtError.detail]] : []),
   ];
   $("bt-diag-list").replaceChildren(...rows.flatMap(([k, v]) => { const dt = document.createElement("dt"), dd = document.createElement("dd"); dt.textContent = k; dd.textContent = v; return [dt, dd]; }));
   $("bt-diag-verdict").textContent = inAppBrowser() ? "Ábrela en Chrome: dentro de las apps no hay Bluetooth."
@@ -3498,6 +3506,7 @@ async function init() {
       setTimeout(() => sticks.forEach((s) => s.setColor(purple)), 1000);
     },
     hasSticks: () => sticks.length > 0,
+    lastError: () => lastBtError,
     stickNames: () => sticks.map((s) => s.name),
     onDone: (name) => { toast(`💜 ¡${name} listo! Ahora elige una canción.`); },
   }));

@@ -200,7 +200,13 @@ export class Guide {
     this.actionBtn.disabled = false;
     const names = this.hooks.stickNames?.() ?? [];
     if (!names.length) {
-      this.showStatus("fail", "No se conectó", "Revisa que esté parpadeando y vuelve a tocar Conectar");
+      const err = this.hooks.lastError?.();
+      const sub = {
+        cancelled: "Cerraste la lista sin elegir. Toca Conectar y elige tu ARMY Bomb",
+        gatt: "Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial, ponlo en modo Bluetooth y vuelve a tocar Conectar",
+        "not-stick": "Ese dispositivo no es un ARMY Bomb. Elige el que empieza con BTS LIGHTSTICK o BBOMB",
+      }[err?.kind] ?? "Revisa que esté parpadeando y vuelve a tocar Conectar";
+      this.showStatus(err?.kind === "cancelled" ? "wait" : "fail", err?.kind === "cancelled" ? "Sin elegir" : "No se conectó", sub, err && err.kind !== "cancelled" ? err.detail : "");
       return;
     }
     // Éxito: nombre del dispositivo resaltado, prueba de luz y cierre.
@@ -221,12 +227,17 @@ export class Guide {
     }, 2600);
   }
 
-  showStatus(kind, title, sub) {
+  showStatus(kind, title, sub, detail = "") {
     const c = this.el.querySelector("#g-connected");
     c.hidden = false;
     c.className = `g-connected ${kind}`;
     c.querySelector("strong").textContent = title;
     c.querySelector("small").textContent = sub;
+    // Detalle técnico del navegador (para saber qué falló); se puede seleccionar y copiar.
+    let d = c.querySelector(".g-detail");
+    if (!d) { d = document.createElement("code"); d.className = "g-detail"; c.querySelector("small").after(d); }
+    d.textContent = detail;
+    d.hidden = !detail;
   }
 
   hideConnected() {
