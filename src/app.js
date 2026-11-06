@@ -1,6 +1,8 @@
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
 import { PURPLE, STYLES, generateConcertPattern, generatePattern, hexToRgb, rgbToHex, ledLevel, lightColors } from "./patterns.js";
 import { sequences, sanitizeSequence, exportSequence, PARTS, MIN_SEGMENT_S } from "./sequences.js";
+import { fireworks } from "./fireworks.js";
+let fx = null; // fuegos artificiales (se crean la primera vez que termina una canción)
 import { bluetoothSupport, requestStick, LOW_BATTERY, isBrave, classifyBtError } from "./ble.js";
 import { Player } from "./player.js";
 import { DONATIONS, PROJECT } from "./config.js";
@@ -3334,6 +3336,9 @@ async function init() {
   player = new Player($("yt"), {
     onState: onPlayerState,
     onEnded: async () => {
+      // Fuegos artificiales al terminar la canción, con sus colores (los del ARMY Bomb en esa canción).
+      const done = queue[current];
+      if (done) (fx ??= fireworks({ z: 30, safe: () => settings.safeMode !== false })).show({ colors: lightColors(done.song, done.album), count: 6 });
       await finishChallenge();
       if (!settings.autoNext) return;
       const endedAt = current;

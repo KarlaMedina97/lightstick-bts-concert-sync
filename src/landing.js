@@ -15,7 +15,7 @@ import { MicSync } from "./mic.js";
 import { spanishClone, localize } from "./i18n.js";
 import { showInAppNotice, redirectConnectButtons } from "./inapp.js";
 import { carousel } from "./carousel.js";
-import { hive } from "./hive.js";
+import { fireworks } from "./fireworks.js";
 import { createMaterials, glowTexture, contactShadow } from "./models/shared.js";
 import { createArmyBombV4 } from "./models/armybomb-v4.js";
 
@@ -51,8 +51,17 @@ showInAppNotice();
 redirectConnectButtons(document.querySelectorAll('a[href$="?guide=1"]'));
 // «Cómo conectar» en teléfono y tableta: carrusel que avanza solo (con rebote) y se controla con el dedo.
 carousel(document.querySelector(".steps"), { label: "Paso" });
-// Fondo de panal: en el inicio, Versiones y el océano solo en los bordes; en Conectar y Funciones se junta al centro.
-hive({ gsap, ScrollTrigger, reduceMotion, reach: { inicio: 0.18, anatomia: 0.3, conectar: 0.62, demo: 0.24, funciones: 0.72, versiones: 0.2, oceano: 0.12 } });
+// Fuegos artificiales: suaves y espaciados en el inicio; más seguidos en el océano final (el cierre del show).
+{
+  const fx = fireworks({ z: 1 });
+  const zones = [["inicio", 0.3, ["#b388ff", "#ff6fb5", "#ffd23f", "#4fd1ff", "#ffffff"]], ["oceano", 0.9, ["#8a2be2", "#b388ff", "#c084fc", "#ff6fb5", "#ffd23f", "#ffffff"]]];
+  const seen = new Map();
+  const pickRate = () => { const on = zones.find(([id]) => seen.get(id)); fx.auto(on ? on[1] : 0, { colors: on?.[2] }); };
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((ents) => { for (const e of ents) seen.set(e.target.id, e.isIntersecting); pickRate(); }, { threshold: 0.35 });
+    for (const [id] of zones) { const el = document.getElementById(id); if (el) io.observe(el); }
+  }
+}
 
 // Tarjetas de piezas y versiones: además de resaltar el modelo 3D, su texto se anuncia en #card-status
 // (lector de pantalla). Cada pieza va en su propio nodo con el texto en español de la tarjeta, así i18n.js
@@ -1749,8 +1758,10 @@ if (gsap && !reduceMotion && !SHOT) {
     }
     // Peso variable con el scroll en la palabra gigante de la portada (900 → 500) y vuelta al pasar el cursor.
     const giant = document.querySelectorAll("#hero-title .h-giant .c");
-    gsap.to(giant, { fontWeight: 480, stagger: 0.04, ease: "none", scrollTrigger: { trigger: "#inicio", start: "top top", end: "bottom 30%", scrub: 1 } });
-    for (const c of giant) c.addEventListener("pointerenter", () => gsap.to(c, { fontWeight: 900, duration: 0.25, yoyo: true, repeat: 1, ease: "power2.out" }));
+    // Solo transformaciones y opacidad: cambiar el grosor de la letra cambiaba su ancho, y el título saltaba de
+    // una a dos líneas («Tu ARMY Bomb,») al subir o bajar por la primera sección.
+    gsap.to(giant, { yPercent: -10, opacity: 0.55, stagger: 0.04, ease: "none", scrollTrigger: { trigger: "#inicio", start: "top top", end: "bottom 30%", scrub: 1 } });
+    for (const c of giant) c.addEventListener("pointerenter", () => gsap.to(c, { scale: 1.16, duration: 0.22, yoyo: true, repeat: 1, ease: "power2.out", transformOrigin: "50% 80%" }));
     for (const el of gsap.utils.toArray(".reveal-up")) {
       const kids = el.matches(".parts, .steps, .feats, .stats, .chips, .demo, .vers") ? el.querySelectorAll(":scope > *") : [el];
       gsap.from(kids, { y: 34, opacity: 0, duration: 1.1, stagger: 0.07, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 90%", once: true } });
