@@ -156,6 +156,8 @@ button { font: inherit; letter-spacing: inherit; }
 .skip { position: absolute; left: -999px; top: var(--s-2); background: var(--accent); color: var(--accent-ink); padding: var(--s-2) var(--s-4); border-radius: var(--r-sm); z-index: var(--z-skip); font-weight: 700; }
 .skip:focus { left: var(--s-4); }
 [hidden] { display: none !important; }
+/* Pantalla de carga de player/index.html: se pinta con su CSS en línea y desaparece en cuanto llega esta hoja. */
+.boot { display: none; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 kbd {
   font-family: var(--font-body); font-size: var(--fs-12); font-weight: 600; color: var(--text-2);
@@ -1349,6 +1351,15 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 .hero-cta { display: flex; gap: var(--s-2); flex-wrap: wrap; }
 
 .shelves { display: grid; gap: var(--s-6); }
+/* Esqueletos de los estantes mientras llega el catálogo (los reemplaza renderHome / renderCollections) */
+.skel-item { min-width: 0; display: grid; gap: var(--s-2); }
+.skel-line { display: block; width: 46%; height: 12px; border-radius: 6px; background: var(--surface-hover); }
+.skel-line.short { width: 22%; height: 10px; }
+.skel-line.title { width: 38%; height: 20px; }
+.skel-item .sg-thumb, .skel-line { background: linear-gradient(100deg, var(--surface-hover) 30%, var(--surface-active) 50%, var(--surface-hover) 70%) 0 0 / 200% 100%; animation: skel-shimmer 1.6s linear infinite; }
+.skel-item .sg-thumb::after { content: none; }
+@keyframes skel-shimmer { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .skel-item .sg-thumb, .skel-line { animation: none; } }
 .shelf { --shelf-c: var(--accent); display: grid; gap: var(--s-3); }
 .shelf-likes { --shelf-c: #ff8fb8; }
 .shelf-start { --shelf-c: #c3a1ff; }
