@@ -55,10 +55,16 @@ function init() {
     ...(/ga-debug/.test(location.hash) ? { debug_mode: true } : {}),
     send_page_view: false,
   });
-  const s = document.createElement("script");
-  s.async = true;
-  s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ID)}`;
-  document.head.append(s);
+  // gtag.js (~150 KB) se pide cuando la página ya cargó y el hilo está libre: no compite con la primera pintura ni
+  // con la escena 3D. Lo que se registre antes queda en dataLayer y se envía al llegar el script.
+  const load = () => {
+    const s = document.createElement("script");
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ID)}`;
+    document.head.append(s);
+  };
+  const idle = () => (window.requestIdleCallback ? requestIdleCallback(load, { timeout: 4000 }) : setTimeout(load, 1500));
+  if (document.readyState === "complete") idle(); else addEventListener("load", idle, { once: true });
   ready = true;
   return ready;
 }
