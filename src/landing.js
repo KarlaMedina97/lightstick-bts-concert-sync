@@ -1794,7 +1794,9 @@ if (gsap && !reduceMotion && !SHOT) {
       const kids = el.matches(".parts, .steps, .feats, .stats, .chips, .demo, .vers") ? el.querySelectorAll(":scope > *") : [el];
       // Dentro de un carrusel (los pasos) la tarjeta no se baja: el carrusel recorta lo que sobresale y quedaba cortada.
       const inScroller = el.matches(".steps");
-      gsap.from(kids, { y: inScroller ? 0 : 34, opacity: 0, duration: 1.1, stagger: 0.07, ease: "expo.out", clearProps: "transform,opacity", scrollTrigger: { trigger: el, start: "top 90%", once: true } });
+      // clearProps solo en los pasos: las tarjetas de la anatomía (.parts) las mueve y desvanece su propia animación,
+      // y borrarles transform/opacity las dejaba visibles y fuera de lugar.
+      gsap.from(kids, { y: inScroller ? 0 : 34, opacity: 0, duration: 1.1, stagger: 0.07, ease: "expo.out", ...(inScroller ? { clearProps: "opacity" } : {}), scrollTrigger: { trigger: el, start: "top 90%", once: true } });
     }
     // Palabra con contorno que se rellena con el color al avanzar por el clímax.
     const bw = document.querySelector(".bigword");

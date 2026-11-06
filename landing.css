@@ -23,12 +23,14 @@
 [data-pal="violet"] { --a1: #d2b0ff; --a2: #6f62ff; }
 [data-pal="gold"] { --a1: #ffd877; --a2: #a46bff; }
 * { box-sizing: border-box; }
-html { background: var(--bg); overflow-x: hidden; overscroll-behavior-x: none; } /* iPad/iPhone: sin esto Safari deja arrastrar la página de lado */
+/* Sin overflow en html: con html y body recortados, body pasa a ser el contenedor de scroll y lo «pegajoso»
+   (anatomía, capítulos) deja de funcionar. El rebote lateral de iPad se frena con overscroll-behavior. */
+html { background: var(--bg); overscroll-behavior-x: none; }
 html.dragging, html.dragging * { user-select: none !important; -webkit-user-select: none !important; }
 body {
   margin: 0; color: var(--text); background: var(--bg);
   font: 16px/1.55 var(--body);
-  overflow-x: hidden; position: relative; /* Safari iOS solo respeta overflow-x en body con position */
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 a { color: inherit; }

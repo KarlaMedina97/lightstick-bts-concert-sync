@@ -32,12 +32,12 @@ const STEPS = [
 ];
 
 const SCENES = {
-  bluetooth: `<div class="g-phone"><span class="g-bt">ᛒ</span><span class="g-toggle"><b></b></span></div>`,
+  bluetooth: `<div class="g-phone"><span class="g-bt"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10-5 4V3l5 4L7 17"/></svg></span><span class="g-toggle"><b></b></span></div>`,
   free: `<div class="g-phone list"><span class="g-cap">Vinculados</span><span class="g-forget">ARMY Bomb <em>Olvidar</em></span><span>Auriculares</span></div>`,
   // Mano con volumen (degradados y sombra): el índice y el medio llegan a los dos botones del mango,
   // los mantienen hundidos 2 s (el anillo se llena) y al soltar el ARMY Bomb parpadea en modo Bluetooth.
   power: `<div class="g-stick on-power"><span class="g-globe"></span><span class="g-handle"><b class="g-btn b1"></b><b class="g-btn b2"></b></span><svg class="g-hand" viewBox="0 0 96 70" aria-hidden="true"><defs><linearGradient id="g-skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe3d3"/><stop offset="0.55" stop-color="#f6c3a8"/><stop offset="1" stop-color="#d9957a"/></linearGradient></defs><rect class="g-palm" x="44" y="2" width="50" height="62" rx="20" fill="url(#g-skin)"/><rect x="2" y="9" width="58" height="17" rx="8.5" fill="url(#g-skin)"/><rect x="6" y="31" width="54" height="17" rx="8.5" fill="url(#g-skin)"/><ellipse cx="9" cy="17.5" rx="4.5" ry="5.5" fill="#fff6"/><ellipse cx="13" cy="39.5" rx="4.5" ry="5.5" fill="#fff6"/><path d="M28 10v15M30 32v15" stroke="#c9836a" stroke-width="1.4" opacity="0.5"/><path d="M54 52c8 10 26 12 36 4" fill="none" stroke="#c9836a" stroke-width="2" stroke-linecap="round" opacity="0.6"/></svg></div><div class="g-timer"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17"/></svg><span>2 s</span></div>`,
-  pair: `<div class="g-chooser"><span class="g-row">Auriculares</span><span class="g-row sel"><b>ᛒ</b> BBOMB-1A2B</span><span class="g-row">BTS LIGHTSTICK3</span></div>`,
+  pair: `<div class="g-chooser"><span class="g-row">Auriculares</span><span class="g-row sel"><b><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10-5 4V3l5 4L7 17"/></svg></b> BBOMB-1A2B</span><span class="g-row">BTS LIGHTSTICK3</span></div>`,
   done: `<div class="g-stick test"><span class="g-globe"></span><span class="g-handle"></span></div>`,
 };
 
