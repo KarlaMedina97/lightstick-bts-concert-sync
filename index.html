@@ -38,9 +38,8 @@
   <!-- La hoja completa y los módulos se piden ya: la hoja va al final de la portada (no bloquea la primera pintura) y
        el navegador no los descubriría hasta llegar ahí. -->
   <link rel="preload" href="landing.css" as="style">
-  <link rel="modulepreload" href="src/landing.js">
-  <link rel="modulepreload" href="src/i18n.js">
-  <link rel="modulepreload" href="src/nav-menu.js">
+  <!-- El importmap va ANTES de cualquier módulo o modulepreload: si no, el navegador lo ignora ("three" sin resolver)
+       y al recargar (con el service worker) el inicio quedaba sin JavaScript. -->
   <script type="importmap">
     {
       "imports": {
@@ -49,6 +48,9 @@
       }
     }
   </script>
+  <link rel="modulepreload" href="src/landing.js">
+  <link rel="modulepreload" href="src/i18n.js">
+  <link rel="modulepreload" href="src/nav-menu.js">
   <script src="vendor/gsap/gsap.min.js" defer></script>
   <script src="vendor/gsap/ScrollTrigger.min.js" defer></script>
   <style id="critico">
