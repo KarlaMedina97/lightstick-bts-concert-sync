@@ -67,7 +67,7 @@ export function createStick3D(mount, { reduceMotion = false } = {}) {
     dragging = true; moved = 0;
     lastX = hold.ox = e.clientX; lastY = hold.oy = e.clientY; lastT = performance.now();
     hold.tx = hold.x; hold.ty = hold.y;
-    canvas.setPointerCapture(e.pointerId);
+    try { canvas.setPointerCapture(e.pointerId); } catch {} // algunos punteros (o eventos sintéticos) no se pueden capturar
     wake();
   });
   canvas.addEventListener("pointermove", (e) => {
