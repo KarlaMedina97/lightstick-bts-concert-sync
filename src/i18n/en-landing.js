@@ -1,9 +1,8 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
   "Sin cookies y sin publicidad propia.": "No cookies and no ads of our own.",
-  "Para mejorar la app medimos el uso de forma anónima con Google Analytics,": "To improve the app we measure usage anonymously with Google Analytics,",
-  "sin cookies ni identificadores": "with no cookies or identifiers",
-  ": solo qué páginas se abren y acciones generales (reproducir, conectar, cambiar de idioma). Si tu navegador pide no ser rastreado, no se mide nada.": ": only which pages are opened and general actions (play, connect, change language). If your browser asks not to be tracked, nothing is measured.",
+  "Medimos el uso con Google Analytics 4 sin cookies (modo de consentimiento denegado). Google recibe tu IP y tipo de navegador para contar visitas, pero no se guardan identificadores en tu dispositivo. Si activas «No rastrear» o Control Global de Privacidad, no se carga.":
+    "We measure usage with Google Analytics 4 without cookies (consent mode set to denied). Google receives your IP address and browser type to count visits, but no identifiers are stored on your device. If you turn on “Do Not Track” or Global Privacy Control, it doesn't load.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "All five ARMY Bomb versions. Ver. 3, SE and Ver. 4 sync over Bluetooth; Ver. 1 and 2 have no Bluetooth, so your screen glows for them.",
   "Sin Bluetooth · con tu pantalla": "No Bluetooth · with your screen",
   "Términos de uso": "Terms of use",
@@ -16,7 +15,16 @@ export default {
   "Un proyecto de fans,": "A fan project,",
   "gratis, no oficial y de código abierto": "free, unofficial and open source",
   ", que sincroniza tu ARMY Bomb con videos oficiales de YouTube.": ", that syncs your ARMY Bomb with official YouTube videos.",
-  "No tiene afiliación con HYBE, BIGHIT MUSIC ni BTS. «BTS» y «ARMY Bomb» son marcas de sus dueños y se usan solo para describir con qué funciona la app.": "It isn't affiliated with HYBE, BIGHIT MUSIC or BTS. “BTS” and “ARMY Bomb” are trademarks of their owners and are used only to describe what the app works with.",
+  "No tiene afiliación con HYBE, BIGHIT MUSIC ni BTS. «BTS», «ARMY» y «ARMY Bomb» son marcas de sus dueños y se usan solo para describir con qué funciona la app.": "It isn't affiliated with HYBE, BIGHIT MUSIC or BTS. “BTS”, “ARMY” and “ARMY Bomb” are trademarks of their owners and are used only to describe what the app works with.",
+  "Si agregas videos por enlace, usa los de canales oficiales. Los videos que agregas se guardan solo en tu dispositivo.": "If you add videos by link, use official channels. The videos you add are saved only on your device.",
+  "Usar apps no oficiales con tu ARMY Bomb puede no estar cubierto por la garantía del fabricante.": "Using unofficial apps with your ARMY Bomb may not be covered by the manufacturer's warranty.",
+  "En la medida en que lo permita la ley, quienes hacen LumiParty no responden por daños ni pérdidas derivados de usar la app, incluidos fallos de tu dispositivo o de tu ARMY Bomb.": "To the extent permitted by law, the people who make LumiParty aren't liable for damages or losses arising from using the app, including failures of your device or your ARMY Bomb.",
+  "Donaciones": "Donations",
+  "Las donaciones cubren solo el dominio y el tiempo de desarrollo del código. No dan acceso a ningún contenido: todo es gratis. LumiParty no vende ni cobra por videos, música ni marcas de terceros.": "Donations only cover the domain and the time spent developing the code. They don't give access to any content: everything is free. LumiParty doesn't sell or charge for third-party videos, music or trademarks.",
+  "Derechos de autor y marcas": "Copyright and trademarks",
+  "Si eres titular de derechos y quieres que retiremos un video, una marca o cualquier contenido, escríbenos y lo retiramos en un máximo de 72 h.": "If you're a rights holder and want us to remove a video, a trademark or any content, write to us and we'll remove it within 72 hours at most.",
+  "Por ahora, escríbenos abriendo un tema en": "For now, write to us by opening an issue on",
+  "¿Algo no está bien? Abre un tema en": "Something wrong? Open an issue on",
   "Úsala con cuidado": "Use it with care",
   "Luces y fotosensibilidad:": "Lights and photosensitivity:",
   "el modo seguro (activado por defecto) limita los destellos a 3 por segundo. Si tienes epilepsia fotosensible, no lo desactives y deja de usar la app si te sientes mal.": "safe mode (on by default) limits flashes to 3 per second. If you have photosensitive epilepsy, don't turn it off, and stop using the app if you feel unwell.",
@@ -26,13 +34,10 @@ export default {
   "Los videos se reproducen desde YouTube y se rigen por sus": "Videos play from YouTube and are governed by its",
   "términos": "terms",
   ". LumiParty no guarda ni distribuye audio ni video.": ". LumiParty doesn't store or distribute audio or video.",
-  "Si agregas videos por enlace, usa los de canales oficiales. Lo que agregas o editas (videos y luces) se guarda solo en tu dispositivo.": "If you add videos by link, use official channels. What you add or edit (videos and lights) is saved only on your device.",
-  "Si compartes un archivo de luces, compártelo solo si lo hiciste tú o tienes permiso de quien lo hizo.": "Only share a light file if you made it or have permission from whoever did.",
   "Sin garantía": "No warranty",
   "La app se ofrece «tal cual», sin garantías, como dice su": "The app is provided “as is”, without warranties, as stated in its",
   "licencia MIT": "MIT license",
   ". Podemos cambiarla o retirar funciones en cualquier momento.": ". We may change it or remove features at any time.",
-  "¿Algo no está bien, o eres titular de derechos y quieres que retiremos algo? Abre un tema en": "Something wrong, or are you a rights holder who wants something removed? Open an issue on",
   "y lo atendemos.": "and we'll take care of it.",
   "Actualizados el 5 de noviembre de 2026.": "Updated November 5, 2026.",
   "Cómo se usa (y cómo no) la inteligencia artificial en LumiParty.": "How artificial intelligence is (and isn't) used in LumiParty.",
@@ -89,8 +94,8 @@ export default {
   "gratis": "free",
   // ---------- <head> ----------
   "LumiParty · Tu ARMY Bomb al ritmo de BTS": "LumiParty · Your ARMY Bomb in sync with BTS",
-  "Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos oficiales de BTS, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.":
-    "Connect your ARMY Bomb over Bluetooth and make it glow with BTS's official videos, song by song. Unofficial fan project, free and with no accounts.",
+  "Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos de los canales oficiales de YouTube, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.":
+    "Connect your ARMY Bomb over Bluetooth and make it glow with videos from official YouTube channels, song by song. Unofficial fan project, free and with no accounts.",
 
   // ---------- Navegación ----------
   "Saltar al contenido": "Skip to content",
@@ -299,8 +304,8 @@ export default {
   "se abre GitHub con tu texto listo; solo se publica si tú lo confirmas allí.":
     "GitHub opens with your text ready; it's only published if you confirm it there.",
   "Medidas de seguridad": "Security measures",
-  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio y de YouTube.":
-    "A Content Security Policy (CSP) that only allows code from the site itself and from YouTube.",
+  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio, de YouTube y de Google Analytics.":
+    "A Content Security Policy (CSP) that only allows code from the site itself, YouTube and Google Analytics.",
   "Las librerías (three.js y GSAP) se sirven desde el propio sitio, copiadas de paquetes verificados de npm.":
     "The libraries (three.js and GSAP) are served from the site itself, copied from verified npm packages.",
   "Todo lo que escriben las personas se valida y se muestra como texto, nunca como código.":

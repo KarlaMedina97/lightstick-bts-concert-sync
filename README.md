@@ -30,8 +30,6 @@ App web progresiva (PWA), gratuita y de código abierto, para sincronizar tu lig
 - **Landing 3D** (three.js + GSAP): una lightstick gigante que cambia de color, reacciona al toque y gira al ritmo
   de la intro de la canción del grupo más escuchada del momento (configurable en `src/config.js`).
 - **Multitud de fans** con lightsticks detrás del video, que se ilumina con el color y la energía de la canción.
-- **Letra opcional** con los subtítulos oficiales del video en YouTube (hangul, español, inglés, japonés o portugués).
-  El proyecto no incluye letras: se muestran solo si el video tiene esa pista.
 - **Fanchant entre canciones:** como en los conciertos, aparecen los nombres de los integrantes (hangul y romanización)
   con ovación y destellos antes de la siguiente canción. Se puede saltar o desactivar.
 - **Menú fijo y lista lateral** con miniaturas de las canciones por álbum, y sección **Opinar** (calificación,
@@ -45,7 +43,6 @@ App web progresiva (PWA), gratuita y de código abierto, para sincronizar tu lig
 
 - **131 canciones** de canales oficiales: grupo y solistas (RM, Jin, SUGA, j-hope, Jimin, V, Jung Kook), con filtros por integrante.
 - **Me gusta:** arma tu lista con ♡ (se guarda en tu dispositivo).
-- **Letra:** cambia al video oficial con la letra en pantalla cuando existe.
 - **Estoy en un concierto:** la cámara copia el color de un ARMY Bomb real cercano y el micrófono marca el ritmo.
 - **Recorrido de bienvenida** con globos sobre los controles reales.
 - Rutas: `/`, `/player/`, `/privacy/`.
@@ -115,3 +112,6 @@ Si te gusta, puedes apoyarlo desde el botón **Sponsor** del repositorio o los e
 ## Licencia
 
 [MIT](LICENSE). Los nombres de artistas y álbumes se usan solo para identificar la música; pertenecen a sus dueños.
+
+La licencia MIT cubre solo el código propio del proyecto. **No cubre `vendor/gsap/`**: GSAP 3.13.0 se usa con la
+licencia Standard «sin costo» de GreenSock (ver [`vendor/gsap/LICENSE.txt`](vendor/gsap/LICENSE.txt) y https://gsap.com/standard-license).

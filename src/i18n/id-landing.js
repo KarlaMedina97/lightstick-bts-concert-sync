@@ -1,9 +1,8 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
   "Sin cookies y sin publicidad propia.": "Tanpa cookie dan tanpa iklan sendiri.",
-  "Para mejorar la app medimos el uso de forma anónima con Google Analytics,": "Untuk meningkatkan aplikasi, kami mengukur penggunaan secara anonim dengan Google Analytics,",
-  "sin cookies ni identificadores": "tanpa cookie maupun pengenal",
-  ": solo qué páginas se abren y acciones generales (reproducir, conectar, cambiar de idioma). Si tu navegador pide no ser rastreado, no se mide nada.": ": hanya halaman yang dibuka dan aksi umum (memutar, menyambung, ganti bahasa). Kalau browser-mu meminta tidak dilacak, tidak ada yang diukur.",
+  "Medimos el uso con Google Analytics 4 sin cookies (modo de consentimiento denegado). Google recibe tu IP y tipo de navegador para contar visitas, pero no se guardan identificadores en tu dispositivo. Si activas «No rastrear» o Control Global de Privacidad, no se carga.":
+    "Kami mengukur penggunaan dengan Google Analytics 4 tanpa cookie (mode persetujuan ditolak). Google menerima IP dan jenis browser-mu untuk menghitung kunjungan, tetapi tidak ada pengenal yang disimpan di perangkatmu. Kalau kamu mengaktifkan «Jangan Lacak» atau Global Privacy Control, analitik tidak dimuat.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "Kelima versi ARMY Bomb. Ver. 3, SE, dan Ver. 4 sinkron lewat Bluetooth; Ver. 1 dan 2 tidak punya Bluetooth, jadi layarmu yang bersinar untuk mereka.",
   "Sin Bluetooth · con tu pantalla": "Tanpa Bluetooth · pakai layarmu",
   "Términos de uso": "Ketentuan penggunaan",
@@ -16,7 +15,16 @@ export default {
   "Un proyecto de fans,": "Proyek buatan fans,",
   "gratis, no oficial y de código abierto": "gratis, tidak resmi, dan open source",
   ", que sincroniza tu ARMY Bomb con videos oficiales de YouTube.": ", yang menyinkronkan ARMY Bomb kamu dengan video resmi YouTube.",
-  "No tiene afiliación con HYBE, BIGHIT MUSIC ni BTS. «BTS» y «ARMY Bomb» son marcas de sus dueños y se usan solo para describir con qué funciona la app.": "Tidak berafiliasi dengan HYBE, BIGHIT MUSIC, maupun BTS. “BTS” dan “ARMY Bomb” adalah merek milik pemiliknya dan hanya dipakai untuk menjelaskan app ini bekerja dengan apa.",
+  "No tiene afiliación con HYBE, BIGHIT MUSIC ni BTS. «BTS», «ARMY» y «ARMY Bomb» son marcas de sus dueños y se usan solo para describir con qué funciona la app.": "Tidak berafiliasi dengan HYBE, BIGHIT MUSIC, maupun BTS. «BTS», «ARMY», dan «ARMY Bomb» adalah merek dagang pemiliknya dan hanya dipakai untuk menjelaskan dengan apa aplikasi ini bekerja.",
+  "Si agregas videos por enlace, usa los de canales oficiales. Los videos que agregas se guardan solo en tu dispositivo.": "Kalau kamu menambahkan video lewat tautan, pakai video dari kanal resmi. Video yang kamu tambahkan hanya disimpan di perangkatmu.",
+  "Usar apps no oficiales con tu ARMY Bomb puede no estar cubierto por la garantía del fabricante.": "Memakai aplikasi tidak resmi dengan ARMY Bomb-mu mungkin tidak ditanggung garansi produsen.",
+  "En la medida en que lo permita la ley, quienes hacen LumiParty no responden por daños ni pérdidas derivados de usar la app, incluidos fallos de tu dispositivo o de tu ARMY Bomb.": "Sejauh diizinkan hukum, pembuat LumiParty tidak bertanggung jawab atas kerusakan atau kerugian akibat memakai aplikasi ini, termasuk kerusakan perangkatmu atau ARMY Bomb-mu.",
+  "Donaciones": "Donasi",
+  "Las donaciones cubren solo el dominio y el tiempo de desarrollo del código. No dan acceso a ningún contenido: todo es gratis. LumiParty no vende ni cobra por videos, música ni marcas de terceros.": "Donasi hanya menutup biaya domain dan waktu pengembangan kode. Donasi tidak memberi akses ke konten apa pun: semuanya gratis. LumiParty tidak menjual atau memungut biaya untuk video, musik, maupun merek dagang pihak ketiga.",
+  "Derechos de autor y marcas": "Hak cipta dan merek dagang",
+  "Si eres titular de derechos y quieres que retiremos un video, una marca o cualquier contenido, escríbenos y lo retiramos en un máximo de 72 h.": "Kalau kamu pemegang hak dan ingin kami menghapus video, merek dagang, atau konten apa pun, hubungi kami dan kami hapus paling lambat dalam 72 jam.",
+  "Por ahora, escríbenos abriendo un tema en": "Untuk sekarang, hubungi kami dengan membuka issue di",
+  "¿Algo no está bien? Abre un tema en": "Ada yang tidak beres? Buka issue di",
   "Úsala con cuidado": "Pakai dengan hati-hati",
   "Luces y fotosensibilidad:": "Cahaya dan fotosensitivitas:",
   "el modo seguro (activado por defecto) limita los destellos a 3 por segundo. Si tienes epilepsia fotosensible, no lo desactives y deja de usar la app si te sientes mal.": "mode aman (aktif secara default) membatasi kedipan maksimal 3 per detik. Kalau kamu punya epilepsi fotosensitif, jangan matikan, dan berhenti pakai app ini kalau merasa tidak enak badan.",
@@ -26,13 +34,10 @@ export default {
   "Los videos se reproducen desde YouTube y se rigen por sus": "Video diputar dari YouTube dan tunduk pada",
   "términos": "ketentuannya",
   ". LumiParty no guarda ni distribuye audio ni video.": ". LumiParty tidak menyimpan atau menyebarkan audio maupun video.",
-  "Si agregas videos por enlace, usa los de canales oficiales. Lo que agregas o editas (videos y luces) se guarda solo en tu dispositivo.": "Kalau kamu menambah video lewat link, pakai video dari channel resmi. Yang kamu tambah atau edit (video dan lampu) hanya tersimpan di perangkatmu.",
-  "Si compartes un archivo de luces, compártelo solo si lo hiciste tú o tienes permiso de quien lo hizo.": "Bagikan file lampu hanya kalau kamu sendiri yang membuatnya atau sudah dapat izin dari pembuatnya.",
   "Sin garantía": "Tanpa jaminan",
   "La app se ofrece «tal cual», sin garantías, como dice su": "App ini disediakan “apa adanya”, tanpa jaminan, sesuai",
   "licencia MIT": "lisensi MIT",
   ". Podemos cambiarla o retirar funciones en cualquier momento.": ". Kami bisa mengubahnya atau menghapus fitur kapan saja.",
-  "¿Algo no está bien, o eres titular de derechos y quieres que retiremos algo? Abre un tema en": "Ada yang salah, atau kamu pemegang hak dan ingin sesuatu dihapus? Buka issue di",
   "y lo atendemos.": "dan kami akan menanganinya.",
   "Actualizados el 5 de noviembre de 2026.": "Diperbarui 5 November 2026.",
   "Cómo se usa (y cómo no) la inteligencia artificial en LumiParty.": "Bagaimana kecerdasan buatan dipakai (dan tidak dipakai) di LumiParty.",
@@ -89,8 +94,8 @@ export default {
   "gratis": "gratis",
   // ---------- <head> ----------
   "LumiParty · Tu ARMY Bomb al ritmo de BTS": "LumiParty · ARMY Bomb kamu mengikuti irama BTS",
-  "Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos oficiales de BTS, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.":
-    "Hubungkan ARMY Bomb kamu lewat Bluetooth dan buat bersinar mengikuti video resmi BTS, lagu demi lagu. Proyek fans tidak resmi, gratis, dan tanpa akun.",
+  "Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos de los canales oficiales de YouTube, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.":
+    "Hubungkan ARMY Bomb kamu lewat Bluetooth dan buat bersinar mengikuti video dari kanal YouTube resmi, lagu demi lagu. Proyek fans tidak resmi, gratis, dan tanpa akun.",
 
   // ---------- Navegación ----------
   "Saltar al contenido": "Langsung ke konten",
@@ -299,8 +304,8 @@ export default {
   "se abre GitHub con tu texto listo; solo se publica si tú lo confirmas allí.":
     "GitHub terbuka dengan teksmu yang sudah siap; baru dipublikasikan kalau kamu konfirmasi di sana.",
   "Medidas de seguridad": "Langkah keamanan",
-  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio y de YouTube.":
-    "Content Security Policy (CSP) yang hanya mengizinkan kode dari situs ini sendiri dan dari YouTube.",
+  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio, de YouTube y de Google Analytics.":
+    "Content Security Policy (CSP) yang hanya mengizinkan kode dari situs ini sendiri, YouTube, dan Google Analytics.",
   "Las librerías (three.js y GSAP) se sirven desde el propio sitio, copiadas de paquetes verificados de npm.":
     "Library (three.js dan GSAP) disajikan dari situs ini sendiri, disalin dari paket npm yang terverifikasi.",
   "Todo lo que escriben las personas se valida y se muestra como texto, nunca como código.":

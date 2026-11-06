@@ -48,7 +48,7 @@ Si agregas una sección o flujo importante, súmale su comprobación en `scripts
 | `src/ble.js` | Web Bluetooth: descubrimiento, familias V4/SE, paquetes de color, ritmo de escritura |
 | `src/player.js` | Envoltura del reproductor de YouTube (reloj interpolado, subtítulos oficiales) |
 | `src/patterns.js` | Generador de patrones de luz por secciones, looks por canción (`SONG_LOOKS`, ver `docs/patrones-luces.md`) y modo concierto |
-| `src/catalog.js` | Álbumes (`artist`: BTS o integrante), canciones (`yt` oficial, `lyricVideo` oficial con letra si existe), películas de concierto |
+| `src/catalog.js` | Álbumes (`artist`: BTS o integrante), canciones (`yt` oficial; `lyricVideo` se retiró con la función de letra), películas de concierto |
 | `src/guide.js` | Guía de conexión integrada (4 pasos) |
 | `src/fanchant.js`, `src/crowd.js`, `src/mic.js` | Fanchant entre canciones, multitud en canvas, modo micrófono |
 | `src/rhythm.js`, `src/leaderboard.js`, `src/feedback.js` | Reto de ritmo, rankings por nickname, opiniones |

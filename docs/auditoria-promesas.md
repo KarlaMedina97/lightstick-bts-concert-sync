@@ -7,7 +7,7 @@ contrastados con el código del reproductor. Análisis estático más estas comp
 - `npm run check`: las pruebas pasan, pero `check:csp` falla en local solo porque `git diff` ve cambios sin commit
   de otra sesión. La CSP regenerada es idéntica a la actual.
 - Conteo del catálogo con node: 71 álbumes, 259 entradas de canción y 3 `CONCERT_FILMS`.
-- oEmbed de YouTube para los 266 IDs (`yt` + `lyricVideo`): 266/266 responden y todos vienen de canales oficiales.
+- oEmbed de YouTube para los 248 IDs (`yt`; `lyricVideo` se retiró): 248/248 responden y todos vienen de canales oficiales.
 - Medición del ritmo de destellos en modo seguro: un script recorre todos los estilos de 60 a 240 BPM.
 - Enlaces probados con `curl`: GitHub, la política de seguridad, GitHub Pages (301 a HTTPS, con HSTS) y localhost:5173 responden 200.
 
@@ -27,7 +27,7 @@ Estados: **Cumple** · **Parcial** · **No cumple** · **No verificable sin hard
 | 5 | "Hecho por ARMY · no oficial", "sin afiliación con HYBE, BIGHIT MUSIC ni BTS" | Portada, pie | Cumple | `index.html:69,296`. El emblema es propio (`index.html:104`) | — |
 | 6 | "Dale play a un video de BTS y tu ARMY Bomb cambia de color" | Portada (lead) | No verificable sin hardware | Bucle de color en `src/app.js:985-1007`, envío en `src/ble.js:224-258`. Los paquetes tienen pruebas (`tests/core.test.js:7-15`) | Probar con un ARMY Bomb real de cada familia |
 | 7 | "En iPhone, con Bluefy" / "En iPhone o iPad, con la app Bluefy" | Portada, Cómo conectar | No verificable sin hardware | Detección de iOS en `src/ble.js:28-35`. Aviso y enlace en `src/app.js:290` y `src/guide.js:11` | Probar en Bluefy: `writeValueWithoutResponse` en SE/V3 |
-| 8 | "los videos oficiales de BTS" | `<meta description>` | Cumple | oEmbed 266/266 OK: BANGTANTV 138, HYBE LABELS 85, 1theK 8, BTS JAPAN OFFICIAL 6, más canales de TV y de artistas colaboradores (Coldplay, Charlie Puth, FIFA, ONU…) | Opcional: "videos oficiales" (no todos son de canales de BTS) |
+| 8 | "los videos oficiales de BTS" | `<meta description>` | Cumple | oEmbed 248/248 OK (desglose medido cuando eran 266 IDs): BANGTANTV 138, HYBE LABELS 85, 1theK 8, BTS JAPAN OFFICIAL 6, más canales de TV y de artistas colaboradores (Coldplay, Charlie Puth, FIFA, ONU…) | Opcional: "videos oficiales" (no todos son de canales de BTS) |
 | 9 | "al ritmo de cada canción" / "canción por canción" | Título h1, meta, og:title | Parcial | Durante la auditoría otra sesión añadió `SONG_LOOKS`: paleta y plan por canción, heredados por las variantes (`src/patterns.js:29-75,126`). El propio código dice que casi todo es "PROPUESTA CREATIVA". El resto usa BPM aproximado, energía y paleta del álbum (`src/config.js:17`). No hay alineación al primer tiempo real y la rejilla se reinicia en cada sección (`src/patterns.js:149`) | Suavizar: "con luces para cada canción", o alinear la fase a un offset por canción |
 | 10 | "Color en la intro, el coro y el puente." | Funciones, Videos + luces | Parcial | Las secciones siguen siendo fracciones fijas de la duración (intro 0-8 %, coro 30-43 %, puente 68-80 %) en `src/patterns.js:79-89`. Ninguna canción del catálogo trae marcas de sección reales | "Cambia de color a lo largo de la canción", o añadir marcas de sección reales por canción |
 | 11 | "Sin conectar nada: mira cómo reaccionan el lightstick y el público." | Pruébalo aquí | Cumple | Demo en `src/landing.js:893-907`. Sin WebGL se borra el canvas y solo cambia el texto de estado (`src/landing.js:109-113`) | Opcional: mensaje de respaldo si no hay WebGL |

@@ -1,9 +1,8 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
   "Sin cookies y sin publicidad propia.": "Sem cookies e sem anúncios próprios.",
-  "Para mejorar la app medimos el uso de forma anónima con Google Analytics,": "Para melhorar o app, medimos o uso de forma anônima com o Google Analytics,",
-  "sin cookies ni identificadores": "sem cookies nem identificadores",
-  ": solo qué páginas se abren y acciones generales (reproducir, conectar, cambiar de idioma). Si tu navegador pide no ser rastreado, no se mide nada.": ": só quais páginas são abertas e ações gerais (tocar, conectar, mudar de idioma). Se o seu navegador pedir para não ser rastreado, nada é medido.",
+  "Medimos el uso con Google Analytics 4 sin cookies (modo de consentimiento denegado). Google recibe tu IP y tipo de navegador para contar visitas, pero no se guardan identificadores en tu dispositivo. Si activas «No rastrear» o Control Global de Privacidad, no se carga.":
+    "Medimos o uso com o Google Analytics 4 sem cookies (modo de consentimento negado). O Google recebe seu IP e o tipo de navegador para contar visitas, mas nenhum identificador é salvo no seu dispositivo. Se você ativar «Não rastrear» ou o Controle Global de Privacidade, ele não é carregado.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "As cinco versões do ARMY Bomb. Ver. 3, SE e Ver. 4 sincronizam por Bluetooth; Ver. 1 e 2 não têm Bluetooth: sua tela brilha por elas.",
   "Sin Bluetooth · con tu pantalla": "Sem Bluetooth · com a sua tela",
   "Términos de uso": "Termos de uso",
@@ -16,7 +15,16 @@ export default {
   "Un proyecto de fans,": "Um projeto de fãs,",
   "gratis, no oficial y de código abierto": "gratuito, não oficial e de código aberto",
   ", que sincroniza tu ARMY Bomb con videos oficiales de YouTube.": ", que sincroniza seu ARMY Bomb com vídeos oficiais do YouTube.",
-  "No tiene afiliación con HYBE, BIGHIT MUSIC ni BTS. «BTS» y «ARMY Bomb» son marcas de sus dueños y se usan solo para describir con qué funciona la app.": "Não tem afiliação com HYBE, BIGHIT MUSIC nem BTS. “BTS” e “ARMY Bomb” são marcas de seus donos e são usadas só para descrever com o que o app funciona.",
+  "No tiene afiliación con HYBE, BIGHIT MUSIC ni BTS. «BTS», «ARMY» y «ARMY Bomb» son marcas de sus dueños y se usan solo para describir con qué funciona la app.": "Não tem afiliação com a HYBE, a BIGHIT MUSIC nem o BTS. «BTS», «ARMY» e «ARMY Bomb» são marcas de seus donos e são usadas só para descrever com o que o app funciona.",
+  "Si agregas videos por enlace, usa los de canales oficiales. Los videos que agregas se guardan solo en tu dispositivo.": "Se você adicionar vídeos por link, use os de canais oficiais. Os vídeos que você adiciona ficam salvos só no seu dispositivo.",
+  "Usar apps no oficiales con tu ARMY Bomb puede no estar cubierto por la garantía del fabricante.": "Usar apps não oficiais com o seu ARMY Bomb pode não ser coberto pela garantia do fabricante.",
+  "En la medida en que lo permita la ley, quienes hacen LumiParty no responden por daños ni pérdidas derivados de usar la app, incluidos fallos de tu dispositivo o de tu ARMY Bomb.": "Na medida permitida pela lei, quem faz o LumiParty não responde por danos nem perdas decorrentes do uso do app, incluindo falhas do seu dispositivo ou do seu ARMY Bomb.",
+  "Donaciones": "Doações",
+  "Las donaciones cubren solo el dominio y el tiempo de desarrollo del código. No dan acceso a ningún contenido: todo es gratis. LumiParty no vende ni cobra por videos, música ni marcas de terceros.": "As doações cobrem só o domínio e o tempo de desenvolvimento do código. Não dão acesso a nenhum conteúdo: tudo é grátis. O LumiParty não vende nem cobra por vídeos, músicas nem marcas de terceiros.",
+  "Derechos de autor y marcas": "Direitos autorais e marcas",
+  "Si eres titular de derechos y quieres que retiremos un video, una marca o cualquier contenido, escríbenos y lo retiramos en un máximo de 72 h.": "Se você é titular de direitos e quer que retiremos um vídeo, uma marca ou qualquer conteúdo, escreva para nós e retiramos em no máximo 72 h.",
+  "Por ahora, escríbenos abriendo un tema en": "Por enquanto, escreva para nós abrindo um tópico no",
+  "¿Algo no está bien? Abre un tema en": "Algo não está certo? Abra um tópico no",
   "Úsala con cuidado": "Use com cuidado",
   "Luces y fotosensibilidad:": "Luzes e fotossensibilidade:",
   "el modo seguro (activado por defecto) limita los destellos a 3 por segundo. Si tienes epilepsia fotosensible, no lo desactives y deja de usar la app si te sientes mal.": "o modo seguro (ativado por padrão) limita os flashes a 3 por segundo. Se você tem epilepsia fotossensível, não desative e pare de usar o app se se sentir mal.",
@@ -26,13 +34,10 @@ export default {
   "Los videos se reproducen desde YouTube y se rigen por sus": "Os vídeos são reproduzidos pelo YouTube e seguem os",
   "términos": "termos",
   ". LumiParty no guarda ni distribuye audio ni video.": ". O LumiParty não guarda nem distribui áudio ou vídeo.",
-  "Si agregas videos por enlace, usa los de canales oficiales. Lo que agregas o editas (videos y luces) se guarda solo en tu dispositivo.": "Se você adicionar vídeos por link, use os de canais oficiais. O que você adiciona ou edita (vídeos e luzes) fica salvo só no seu dispositivo.",
-  "Si compartes un archivo de luces, compártelo solo si lo hiciste tú o tienes permiso de quien lo hizo.": "Só compartilhe um arquivo de luzes se foi você que fez ou se tem permissão de quem fez.",
   "Sin garantía": "Sem garantia",
   "La app se ofrece «tal cual», sin garantías, como dice su": "O app é oferecido “no estado em que se encontra”, sem garantias, como diz a sua",
   "licencia MIT": "licença MIT",
   ". Podemos cambiarla o retirar funciones en cualquier momento.": ". Podemos alterá-lo ou remover funções a qualquer momento.",
-  "¿Algo no está bien, o eres titular de derechos y quieres que retiremos algo? Abre un tema en": "Algo não está certo, ou você é titular de direitos e quer que a gente remova algo? Abra uma issue no",
   "y lo atendemos.": "e a gente resolve.",
   "Actualizados el 5 de noviembre de 2026.": "Atualizados em 5 de novembro de 2026.",
   "Cómo se usa (y cómo no) la inteligencia artificial en LumiParty.": "Como a inteligência artificial é (e não é) usada no LumiParty.",
@@ -89,8 +94,8 @@ export default {
   "gratis": "grátis",
   // ---------- <head> ----------
   "LumiParty · Tu ARMY Bomb al ritmo de BTS": "LumiParty · Seu ARMY Bomb no ritmo do BTS",
-  "Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos oficiales de BTS, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.":
-    "Conecte seu ARMY Bomb por Bluetooth e faça ele brilhar com os vídeos oficiais do BTS, música por música. Projeto de fãs não oficial, grátis e sem contas.",
+  "Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos de los canales oficiales de YouTube, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.":
+    "Conecte seu ARMY Bomb por Bluetooth e faça ele brilhar com os vídeos dos canais oficiais do YouTube, música por música. Projeto de fãs não oficial, grátis e sem contas.",
 
   // ---------- Navegación ----------
   "Saltar al contenido": "Pular para o conteúdo",
@@ -299,8 +304,8 @@ export default {
   "se abre GitHub con tu texto listo; solo se publica si tú lo confirmas allí.":
     "o GitHub abre com seu texto pronto; só é publicado se você confirmar lá.",
   "Medidas de seguridad": "Medidas de segurança",
-  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio y de YouTube.":
-    "Política de segurança de conteúdo (CSP) que só permite código do próprio site e do YouTube.",
+  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio, de YouTube y de Google Analytics.":
+    "Política de segurança de conteúdo (CSP) que só permite código do próprio site, do YouTube e do Google Analytics.",
   "Las librerías (three.js y GSAP) se sirven desde el propio sitio, copiadas de paquetes verificados de npm.":
     "As bibliotecas (three.js e GSAP) são servidas pelo próprio site, copiadas de pacotes verificados do npm.",
   "Todo lo que escriben las personas se valida y se muestra como texto, nunca como código.":

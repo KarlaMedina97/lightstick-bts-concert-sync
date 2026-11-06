@@ -21,7 +21,7 @@ export const STYLES = {
   bloom: { label: "Florecer", description: "En cada compás la luz se abre y se apaga despacio, con destellos suaves." },
   hit: { label: "Golpes", description: "Oscuro entre golpes y una explosión de luz en cada golpe fuerte, como en el concierto." },
   sparkle: { label: "Chispas", description: "Base tenue con chispas breves, como estrellas (máximo 2 por segundo en modo seguro)." },
-  borahae: { label: "Océano Borahae", description: "Cierre de concierto: todo el público en morado que respira despacio, con olas lentas, hasta apagarse." },
+  borahae: { label: "Océano morado (cierre)", description: "Cierre de concierto: todo el público en morado que respira despacio, con olas lentas, hasta apagarse." },
   duo: { label: "Dúo", description: "Dos colores de la canción se reparten las ARMY Bomb y se intercambian en cada compás; con una sola, va y viene entre los dos." },
 };
 
@@ -503,7 +503,7 @@ export function generatePattern(song, album, duration, opts = {}) {
         return step % 2 === 0 ? sec.color : scale(sec.color, 0.08);
       }
       case "borahae": {
-        // Océano Borahae: morado que respira en ciclos de 5 s, con olas lentas que recorren las ARMY Bomb (desfase
+        // Océano morado (cierre): morado que respira en ciclos de 5 s, con olas lentas que recorren las ARMY Bomb (desfase
         // por lightstick), un recuerdo del color de la canción al empezar, y se apaga en el último 30 %.
         const len = Math.max(0.1, sec.end - sec.start), k = clamp01(local / len);
         const breath = 0.7 + 0.3 * Math.sin(2 * Math.PI * (t / 5 - phase * 0.6));

@@ -63,7 +63,7 @@ const dict = {
   "Ese archivo no es de luces de LumiParty.": "That file isn't a LumiParty light file.",
   "Estas luces son de otra canción. ¿Aplicarlas a esta igual?": "These lights are from another song. Apply them to this one anyway?",
   "Luces importadas ✓": "Lights imported ✓",
-  "Océano Borahae": "Borahae ocean",
+  "Océano morado (cierre)": "Purple ocean (finale)",
   "Cierre de concierto: todo el público en morado que respira despacio, con olas lentas, hasta apagarse.": "Concert ending: the whole crowd in purple, breathing slowly with gentle waves, until it fades out.",
   "Colores de tu ARMY Bomb en esta canción": "Your ARMY Bomb colors for this song",
   "Dirección para activar el Bluetooth en Brave": "Address to turn on Bluetooth in Brave",
