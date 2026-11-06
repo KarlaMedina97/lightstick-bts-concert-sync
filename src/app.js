@@ -45,7 +45,7 @@ const store = {
 };
 
 const SETTINGS_KEY = "pws.settings.v1";
-const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, chant: true, chantVoice: true, sounds: true, describe: false, keys: true, calm: false, bpm: {}, phase: {} };
+const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, chant: true, chantVoice: true, lightsModel: "orb", stickVer: "", sounds: true, describe: false, keys: true, calm: false, bpm: {}, phase: {} };
 const settings = { ...defaults, ...store.get(SETTINGS_KEY, {}) };
 if (matchMedia("(prefers-reduced-motion: reduce)").matches) settings.safeMode = true;
 const saveSettings = () => store.set(SETTINGS_KEY, settings);
@@ -262,6 +262,7 @@ function setView(v) {
   view = v;
   const exploring = v === "explore";
   $("lights-view").hidden = v !== "lights";
+  stick3d?.setActive(v === "lights" && settings.lightsModel === "stick");
   // En Explorar el video sigue sonando en un mini reproductor; sin canción, Video y Explorar muestran el inicio.
   $("video-view").hidden = v === "lights"; // sin canción, .app.home lo deja invisible (el iframe de YouTube sigue cargando)
   const showHome = exploring || (v === "video" && current < 0);
@@ -512,6 +513,7 @@ async function onConnect() {
       buzz([60, 40, 60]);
     });
     sticks.push(stick);
+    if (stick3d && !settings.stickVer) { stick3d.setVersion(stickVersion()); syncVersionButtons(); } // el 3D muestra la versión conectada
     stick.onBattery = () => { renderSticks(); checkBattery(stick); };
     track("conectar_army_bomb", { familia: stick.family ?? "" });
     renderSticks();
@@ -1293,6 +1295,7 @@ function step(now) {
   const hex = (c) => rgbToHex(c.map((v) => v * k));
   for (let i = 0; i < SIM_COUNT; i++) simEls[i].style.setProperty("--c", hex(colors[i]));
   $("big-bulb").style.setProperty("--c", hex(colors[0]));
+  stick3d?.setColor(colors[0].map((v) => v * k));
   // --glow tiñe fondos enormes (haces, neblina, sombras): cambiarlo 20 veces/s obliga a repintar toda la pantalla.
   // Se actualiza como mucho 5 veces/s y solo si el color cambió de verdad (los cambios son de una paleta, no saltos bruscos).
   const glow = rgbToHex(colors[0].map((v) => Math.round(Math.max(30, v * 0.8) / 8) * 8));
@@ -2212,6 +2215,53 @@ function bindTheme() {
     try { saved = localStorage.getItem(THEME_KEY); } catch {}
     if (!saved) applyTheme(currentTheme());
   });
+}
+
+// ---------- Vista Luces: bola o ARMY Bomb 3D ----------
+let stick3d = null;
+/** Versión a mostrar: la que eligió la persona, o la del ARMY Bomb conectado, o Ver. 4. */
+function stickVersion() {
+  if (settings.stickVer) return settings.stickVer;
+  const fam = sticks[0]?.family, name = sticks[0]?.name ?? "";
+  return fam === "v4" ? "v4" : /LIGHTSTICK3/.test(name) ? "v3" : fam === "se" ? "se" : "v4";
+}
+async function setLightsModel(mode, { save = true } = {}) {
+  const model = mode === "stick";
+  if (save) { settings.lightsModel = model ? "stick" : "orb"; saveSettings(); }
+  $("lv-orb").setAttribute("aria-pressed", String(!model));
+  $("lv-stick").setAttribute("aria-pressed", String(model));
+  $("lights-view").classList.toggle("model", model);
+  $("stick3d").hidden = !model;
+  $("lv-vers").hidden = !model;
+  $("lv-hint").textContent = t(model ? "Arrastra para girarlo · doble toque lo endereza" : "Sin ARMY Bomb, tu pantalla brilla. Sube el brillo.");
+  if (model && !stick3d) {
+    try {
+      const { createStick3D } = await import("./stick3d.js");
+      stick3d = createStick3D($("stick3d"), { reduceMotion: matchMedia("(prefers-reduced-motion: reduce)").matches });
+    } catch {
+      toast("No se pudo mostrar el ARMY Bomb 3D en este dispositivo.");
+      return setLightsModel("orb");
+    }
+  }
+  if (model) { stick3d.setVersion(stickVersion()); syncVersionButtons(); }
+  stick3d?.setActive(model && view === "lights");
+}
+function syncVersionButtons() {
+  const v = stickVersion();
+  for (const b of $("lv-vers").querySelectorAll("[data-ver]")) b.setAttribute("aria-pressed", String(b.dataset.ver === v));
+}
+function bindLightsView() {
+  $("lv-orb").onclick = () => setLightsModel("orb");
+  $("lv-stick").onclick = () => setLightsModel("stick");
+  $("lv-vers").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-ver]");
+    if (!b) return;
+    settings.stickVer = b.dataset.ver;
+    saveSettings();
+    syncVersionButtons();
+    stick3d?.setVersion(b.dataset.ver);
+  });
+  if (settings.lightsModel === "stick") setLightsModel("stick", { save: false });
 }
 
 // ---------- Pedir la opinión en un buen momento ----------
@@ -3167,6 +3217,7 @@ async function init() {
   // Sin canción, lo que se ve es Explorar: la pestaña lo dice.
   if (current < 0) { selectViewTab("view-explore"); setView("explore"); }
   bindLikesPage();
+  bindLightsView();
   bindFiltersToggle();
   addEventListener("resize", () => requestAnimationFrame(markTitleOverflow));
   bindTabs(["rs-now", "rs-cola"], (id) => setSideTab(id.slice(3), false));

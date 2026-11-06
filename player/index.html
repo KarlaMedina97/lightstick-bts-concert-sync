@@ -2,7 +2,15 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; worker-src 'self'; manifest-src 'self'; media-src 'self'; font-src 'self'; upgrade-insecure-requests; connect-src 'self' https://www.youtube.com https://*.supabase.co https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; form-action 'self'; script-src 'self' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; worker-src 'self'; manifest-src 'self'; media-src 'self'; font-src 'self'; upgrade-insecure-requests; connect-src 'self' https://www.youtube.com https://*.supabase.co https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; form-action 'self'; script-src 'self' 'sha256-I3biwaeX55sOfsrBqADReTljv+J49QJhdWG6c93zALc=' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "../vendor/three/build/three.module.js",
+        "three/addons/": "../vendor/three/examples/jsm/"
+      }
+    }
+  </script>
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>LumiParty</title>
@@ -380,10 +388,25 @@
       </div>
 
       <div id="lights-view" class="lights-view" role="tabpanel" aria-label="Luces" hidden>
-        <div id="big-bulb" class="big-bulb" aria-hidden="true"></div>
+        <!-- Vista Luces: la bola grande (minimalista) o el ARMY Bomb en 3D, con el mismo color en vivo -->
+        <div class="lv-mode" role="group" aria-label="Cómo ver las luces">
+          <button id="lv-orb" class="type-opt" type="button" aria-pressed="true">Bola</button>
+          <button id="lv-stick" class="type-opt" type="button" aria-pressed="false">ARMY Bomb 3D</button>
+        </div>
+        <div class="lv-stage">
+          <div id="big-bulb" class="big-bulb" aria-hidden="true"></div>
+          <div id="stick3d" class="stick3d" hidden></div>
+        </div>
+        <div id="lv-vers" class="lv-vers" role="group" aria-label="Versión del ARMY Bomb" hidden>
+          <button class="type-opt" type="button" data-ver="v4" aria-pressed="true">Ver. 4</button>
+          <button class="type-opt" type="button" data-ver="se" aria-pressed="false">SE</button>
+          <button class="type-opt" type="button" data-ver="v3" aria-pressed="false">Ver. 3</button>
+          <button class="type-opt" type="button" data-ver="v2" aria-pressed="false">Ver. 2</button>
+          <button class="type-opt" type="button" data-ver="v1" aria-pressed="false">Ver. 1</button>
+        </div>
         <div id="sim" class="sim" aria-hidden="true"></div>
         <p id="now-section" class="section-label">—</p>
-        <p class="hint">Sin ARMY Bomb, tu pantalla brilla. Sube el brillo.</p>
+        <p id="lv-hint" class="hint">Sin ARMY Bomb, tu pantalla brilla. Sube el brillo.</p>
         <div id="concert-cam" class="concert-cam" hidden>
           <div class="cam-frame">
             <video id="cam-video" playsinline muted aria-label="Vista de la cámara para apuntar a un lightstick"></video>

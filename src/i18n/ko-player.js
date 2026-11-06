@@ -1,5 +1,11 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Cómo ver las luces": "불빛 보기 방식",
+  "Bola": "구슬",
+  "ARMY Bomb 3D": "3D 아미밤",
+  "Versión del ARMY Bomb": "아미밤 버전",
+  "Arrastra para girarlo · doble toque lo endereza": "드래그해서 돌리기 · 두 번 탭하면 원위치",
+  "No se pudo mostrar el ARMY Bomb 3D en este dispositivo.": "이 기기에서는 3D 아미밤을 표시할 수 없어요.",
   "Califica LumiParty": "LumiParty 평가하기",
   "¿La usarías en una fiesta, una pijamada o un concierto?": "파티나 파자마 파티, 콘서트에서 쓸 것 같나요?",
   "Toca una estrella": "별을 눌러 주세요",

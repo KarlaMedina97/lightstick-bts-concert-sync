@@ -1,5 +1,11 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Cómo ver las luces": "Cara melihat lampu",
+  "Bola": "Bola",
+  "ARMY Bomb 3D": "ARMY Bomb 3D",
+  "Versión del ARMY Bomb": "Versi ARMY Bomb",
+  "Arrastra para girarlo · doble toque lo endereza": "Geser untuk memutar · ketuk dua kali untuk meluruskan",
+  "No se pudo mostrar el ARMY Bomb 3D en este dispositivo.": "ARMY Bomb 3D tidak bisa ditampilkan di perangkat ini.",
   "Califica LumiParty": "Beri nilai LumiParty",
   "¿La usarías en una fiesta, una pijamada o un concierto?": "Apakah kamu akan memakainya di pesta, pesta piyama, atau konser?",
   "Toca una estrella": "Ketuk bintang",

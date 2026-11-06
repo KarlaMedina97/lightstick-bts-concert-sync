@@ -1,5 +1,11 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Cómo ver las luces": "Como ver as luzes",
+  "Bola": "Bola",
+  "ARMY Bomb 3D": "ARMY Bomb 3D",
+  "Versión del ARMY Bomb": "Versão do ARMY Bomb",
+  "Arrastra para girarlo · doble toque lo endereza": "Arraste para girar · toque duas vezes para endireitar",
+  "No se pudo mostrar el ARMY Bomb 3D en este dispositivo.": "Não foi possível mostrar o ARMY Bomb 3D neste dispositivo.",
   "Califica LumiParty": "Avalie o LumiParty",
   "¿La usarías en una fiesta, una pijamada o un concierto?": "Você usaria numa festa, numa festa do pijama ou num show?",
   "Toca una estrella": "Toque em uma estrela",

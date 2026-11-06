@@ -1,5 +1,11 @@
 // Inglés del reproductor (player/index.html) y sus módulos, salvo src/app.js.
 export default {
+  "Cómo ver las luces": "How to see the lights",
+  "Bola": "Orb",
+  "ARMY Bomb 3D": "3D ARMY Bomb",
+  "Versión del ARMY Bomb": "ARMY Bomb version",
+  "Arrastra para girarlo · doble toque lo endereza": "Drag to spin it · double-tap to reset",
+  "No se pudo mostrar el ARMY Bomb 3D en este dispositivo.": "The 3D ARMY Bomb could not be shown on this device.",
   "Califica LumiParty": "Rate LumiParty",
   "¿La usarías en una fiesta, una pijamada o un concierto?": "Would you use it at a party, a sleepover or a concert?",
   "Toca una estrella": "Tap a star",
