@@ -1360,8 +1360,22 @@ function toggleFullscreen() {
 function onFsChange() {
   const on = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
   app.classList.toggle("fs", on);
+  syncOrientation(on);
   $("btn-fs").setAttribute("aria-label", on ? "Salir de pantalla completa" : "Pantalla completa");
   $("btn-fs").querySelector("span").textContent = on ? "Salir" : "Pantalla";
+}
+
+/**
+ * En el teléfono el reproductor va siempre en vertical; solo la pantalla completa (la del video de YouTube o la
+ * nuestra) puede girar a horizontal, y al salir vuelve a vertical aunque el teléfono tenga la rotación activada.
+ * Funciona en Android (Chrome, Samsung) y con la app instalada; Safari de iPhone/iPad no permite bloquear el giro.
+ */
+const phoneLike = () => matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) < 600;
+function syncOrientation(fullscreen) {
+  const o = screen.orientation;
+  if (!o?.lock || !phoneLike()) return;
+  if (fullscreen) o.lock("landscape").catch(() => {});
+  else o.lock("portrait").catch(() => {}); // fuera de pantalla completa solo funciona con la app instalada
 }
 
 let idleTimer;
@@ -2905,6 +2919,8 @@ function bindMini() {
       bar.removeEventListener("pointermove", move);
       bar.removeEventListener("pointerup", up);
       card.classList.remove("dragging");
+      // Un toque sin arrastrar abre el video (en el teléfono no hay botón de expandir: estorbaba).
+      if (Math.hypot(ev.clientX - sx, ev.clientY - sy) < 8) { placeMini(false); $("view-video").click(); return; }
       const cx = x0 + ev.clientX - sx + card.offsetWidth / 2;
       const cy = y0 + ev.clientY - sy + card.offsetHeight / 2;
       MINI.corner = `${cy < stage.height / 2 ? "t" : "b"}${cx < stage.width / 2 ? "l" : "r"}`;

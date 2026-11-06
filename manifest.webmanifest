@@ -6,6 +6,7 @@
   "start_url": "player/",
   "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#060818",
   "theme_color": "#070a1a",
   "icons": [

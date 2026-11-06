@@ -2509,3 +2509,15 @@ html {
 .song-search { text-overflow: ellipsis; }
 /* Panel de ajustes: se nota que hay más abajo y el último renglón no queda cortado */
 .panel-body { scroll-padding-bottom: var(--s-5); }
+
+/* Teléfono: la miniatura del video no lleva los botones "achicar" y "expandir" (parecían de imagen en imagen, que la
+   app no permite, y eran dos botones más encima del video). Tocar la barra abre el video; ✕ la oculta. */
+@media (max-width: 640px) {
+  #mini-size, #mini-back, #btn-mini { display: none !important; }
+}
+
+/* Vista Luces 3D: el lienzo ocupa todo el ancho para agitarlo sin que se corte; la luz la da el propio ARMY Bomb */
+.lv-stage { width: 100%; }
+.stick3d { width: 100%; height: min(64cqh, 120cqw); aspect-ratio: auto; }
+@media (max-width: 640px) { .stick3d { width: 100%; height: min(60cqh, 150cqw); } }
+.lights-view.model .big-bulb { display: none; }

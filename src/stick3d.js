@@ -3,7 +3,7 @@
 // de versión. Dibuja solo mientras se ve: sin la vista Luces o con la pestaña oculta no gasta batería.
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import { createMaterials, contactShadow } from "./models/shared.js";
+import { createMaterials, contactShadow, glowTexture } from "./models/shared.js";
 
 export const VERSIONS = [
   ["v4", "Ver. 4"], ["se", "SE"], ["v3", "Ver. 3"], ["v2", "Ver. 2"], ["v1", "Ver. 1"],
@@ -44,14 +44,18 @@ export function createStick3D(mount, { reduceMotion = false } = {}) {
   key.position.set(0, 1.2, 3.5);
   const fill = new THREE.DirectionalLight("#ffffff", 1.1);
   fill.position.set(-4, 6, 8);
-  scene.add(key, fill, new THREE.AmbientLight("#ffffff", 0.5));
+  scene.add(fill, new THREE.AmbientLight("#ffffff", 0.5));
 
   // Como en el inicio: se sostiene con el mouse o el dedo y se agita. La mano sigue al puntero con un resorte, el
   // ARMY Bomb se inclina con la velocidad (pivota en el agarre del mango), un movimiento rápido lo sacude y al
   // soltarlo vuelve a su lugar con un vaivén. Un toque sin arrastrar lo hace latir; doble toque lo endereza.
   const hand = new THREE.Group();   // posición (sigue al puntero) e inclinación; su origen es el agarre
+  // Halo con mezcla normal (no aditiva): sobre un lienzo transparente la aditiva no se ve.
+  const aura = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture(128), color: color.clone(), transparent: true, opacity: 0.7, depthWrite: false, depthTest: false }));
+  aura.renderOrder = -1;
   const spin = new THREE.Group();   // giro sobre su eje
-  hand.add(spin);
+  hand.add(spin, aura);
+  hand.add(key);
   scene.add(hand);
   const shadow = contactShadow(mats, 1.3);
   scene.add(shadow);
@@ -109,6 +113,11 @@ export function createStick3D(mount, { reduceMotion = false } = {}) {
     group.position.y = -metrics.grip;
     built.light && (built.light.intensity = 0); // la luz la pone `key`
     spin.add(group);
+    // Resplandor del globo: va dentro de la mano (se mueve, se inclina y se agita con el ARMY Bomb).
+    globeY = metrics.top - metrics.radius * 1.05 - metrics.grip;
+    aura.position.set(0, globeY, 0);
+    aura.scale.setScalar(metrics.radius * 4.2); // sin llegar al borde del lienzo (se veía cortado en recto)
+    key.position.set(0, globeY, 1.2);
     restY = metrics.grip - (metrics.top + metrics.bottom) / 2;
     shadow.position.y = -(metrics.top - metrics.bottom) / 2 - 0.35;
     current = { key: wanted, obj: group, metrics };
@@ -116,17 +125,17 @@ export function createStick3D(mount, { reduceMotion = false } = {}) {
     wake();
   }
 
-  let w = 0, h = 0, restY = 0;
+  let w = 0, h = 0, restY = 0, globeY = 0;
   function fit() {
     const r = mount.getBoundingClientRect();
     w = Math.max(1, Math.round(r.width)); h = Math.max(1, Math.round(r.height));
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     // Que entre entero a lo alto (y a lo ancho en pantallas angostas).
-    const tall = current ? current.metrics.top - current.metrics.bottom + 2.2 : 9.6; // aire para moverlo y agitarlo
+    const tall = current ? current.metrics.top - current.metrics.bottom + 2.6 : 10; // aire para moverlo y agitarlo
     const fov = (camera.fov * Math.PI) / 180;
     const byH = tall / 2 / Math.tan(fov / 2);
-    const byW = (5.2 / 2) / (Math.tan(fov / 2) * camera.aspect);
+    const byW = (5.4 / 2) / (Math.tan(fov / 2) * camera.aspect); // ancho para el vaivén (±1,6) más el globo
     camera.position.z = Math.max(byH, byW);
     camera.updateProjectionMatrix();
   }
@@ -152,6 +161,8 @@ export function createStick3D(mount, { reduceMotion = false } = {}) {
     mats.update(color, glow + beat * 0.5);
     key.color.copy(color);
     key.intensity = 6 * glow;
+    aura.material.color.copy(color);
+    aura.material.opacity = Math.min(0.95, 0.35 + 0.4 * (glow + beat * 0.5));
     // Mano: resorte hacia el puntero (o de vuelta al centro al soltar).
     const K = dragging ? 140 : 70, D = dragging ? 18 : 9;
     hold.vx += ((hold.tx - hold.x) * K - hold.vx * D) * dt;
