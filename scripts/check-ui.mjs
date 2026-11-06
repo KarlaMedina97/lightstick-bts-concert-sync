@@ -278,7 +278,7 @@ for (const [vp, w, h] of VIEWPORTS) {
     await open(path, w, h, 1500);
     if (!(await evaluate(noOverflow))) fail(`${path} (${vp})`, "hay scroll horizontal");
     // Todos los enlaces visibles se pueden tocar (no hay nada encima que se lleve el clic).
-    const dead = await evaluate(`(() => { const bad = []; for (const a of document.querySelectorAll("a[href]")) { a.scrollIntoView({ block: "center" }); const r = a.getBoundingClientRect(); if (!r.width) continue; const el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); if (!(el === a || a.contains(el))) bad.push(a.textContent.trim().slice(0, 24)); } return bad.join(", "); })()`);
+    const dead = await evaluate(`(() => { const bad = []; for (const a of document.querySelectorAll("a[href]")) { a.scrollIntoView({ block: "center" }); const r = a.getClientRects()[0]; if (!r || !r.width) continue; /* primera línea: un enlace partido en dos líneas no tiene nada en el centro de su caja */ const el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); if (!(el === a || a.contains(el))) bad.push(a.textContent.trim().slice(0, 24)); } return bad.join(", "); })()`);
     if (dead) fail(`${path} (${vp})`, `enlaces que no se pueden tocar: ${dead}`);
     if (exceptions.length) fail(`${path} (${vp})`, `excepciones: ${[...new Set(exceptions)].join(" | ")}`);
   }
