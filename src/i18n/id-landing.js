@@ -1,5 +1,6 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Special Edition (SE)": "Special Edition (SE)",
   "Por Bluetooth": "Lewat Bluetooth",
   "Con tu pantalla": "Dengan layarmu",
   "La más nueva": "Paling baru",

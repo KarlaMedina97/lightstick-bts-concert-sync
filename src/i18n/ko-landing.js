@@ -1,5 +1,6 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Special Edition (SE)": "스페셜 에디션 (SE)",
   "Por Bluetooth": "블루투스 연결",
   "Con tu pantalla": "화면으로",
   "La más nueva": "최신",

@@ -51,6 +51,8 @@ function init() {
   gtag("js", new Date());
   gtag("config", ID, {
     allow_google_signals: false, allow_ad_personalization_signals: false,
+    // lumiparty.com/#ga-debug: las visitas aparecen en Analytics › Administrar › DebugView (para comprobar que llegan).
+    ...(/ga-debug/.test(location.hash) ? { debug_mode: true } : {}),
     send_page_view: false,
   });
   const s = document.createElement("script");

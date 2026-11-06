@@ -1,5 +1,6 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Special Edition (SE)": "Special Edition (SE)",
   "Por Bluetooth": "Por Bluetooth",
   "Con tu pantalla": "Com sua tela",
   "La más nueva": "A mais nova",

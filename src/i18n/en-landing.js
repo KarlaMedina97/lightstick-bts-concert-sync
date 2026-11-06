@@ -1,5 +1,6 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
+  "Special Edition (SE)": "Special Edition (SE)",
   "Por Bluetooth": "Via Bluetooth",
   "Con tu pantalla": "With your screen",
   "La más nueva": "The newest",

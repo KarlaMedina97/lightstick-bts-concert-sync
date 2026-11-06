@@ -721,6 +721,26 @@ if (renderer) {
     const cr = canvas.getBoundingClientRect();
     hint.style.transform = `translate(${Math.round((_hintP.x + 1) / 2 * cr.width)}px, ${Math.round((1 - _hintP.y) / 2 * cr.height + cr.top)}px) translate(-50%, -100%)`;
   }
+  // Ronda de versiones: un círculo "de dedo" que se desliza y un destello invitan a girarla (hasta el primer giro).
+  const RING_HINT_KEY = "pws.landing.spun";
+  const ringHint = document.getElementById("ring-hint");
+  let ringHintOn = false;
+  try { ringHintOn = Boolean(ringHint) && localStorage.getItem(RING_HINT_KEY) !== "1"; } catch { ringHintOn = Boolean(ringHint); }
+  function placeRingHint() {
+    if (!ringHintOn) return;
+    const el = slots.find((S) => S.lineup)?.el;
+    const r = el?.getBoundingClientRect();
+    const show = Boolean(r) && ring.othersIn > 0.6 && r.top < innerHeight * 0.5 && r.bottom > innerHeight * 0.5;
+    ringHint.classList.toggle("in", show);
+    if (show) ringHint.style.transform = `translate(${Math.round(r.left + r.width / 2)}px, ${Math.round(r.top + r.height * 0.22)}px) translate(-50%, -50%)`;
+  }
+  function dismissRingHint() {
+    if (!ringHintOn) return;
+    ringHintOn = false;
+    try { localStorage.setItem(RING_HINT_KEY, "1"); } catch {}
+    ringHint.classList.add("gone");
+    setTimeout(() => ringHint.remove(), 500);
+  }
   function dismissGrabHint() {
     if (!hintOn) return;
     hintOn = false;
@@ -816,6 +836,7 @@ if (renderer) {
     const onRing = !onStick && (ringHit() || inRingArea(e));
     if (!onStick && !onRing) return;
     ring.dragging = ring.mainIn > 0.3 || onRing;
+    if (ring.dragging) dismissRingHint();
     if (ring.dragging) ring.vel = 0; // al tocarla se "atrapa"
     e.preventDefault(); // sin selección de texto ni arrastre de imágenes
     dragging = true;
@@ -1666,6 +1687,7 @@ if (renderer) {
     if (DEBUG) renderer.info.reset();
     if (useBloom) composer.render(); else renderer.render(scene, camera);
     placeGrabHint();
+    placeRingHint();
     perfTick(dt, performance.now() - t0);
   }
   // ---------- Rendimiento: calidad adaptativa y medición con ?debug=1 ----------
