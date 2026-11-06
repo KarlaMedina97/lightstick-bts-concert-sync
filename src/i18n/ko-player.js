@@ -1,5 +1,8 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Métricas de uso": "사용 통계",
+  "Nos ayudan a saber qué mejorar. Sin publicidad": "무엇을 개선할지 알 수 있어요. 광고 없음",
+  "Inicio": "홈",
   "Ilustración 3D propia y no oficial: puede diferir del ARMY Bomb real.": "직접 만든 비공식 3D 일러스트로, 실제 아미밤과 다를 수 있어요.",
   "Sostenlo y agítalo · también con el teléfono": "잡고 흔들거나 휴대폰을 움직여 보세요",
   "Elige una canción primero": "먼저 곡을 골라 주세요",

@@ -107,6 +107,20 @@ export class Crowd {
         layer.rows.push({ depth, fans });
       }
     }
+    // Gradas del estadio: filas de lucecitas que suben en curva (más altas a los lados) por detrás del público.
+    // Son solo puntos de luz con un poco de silueta: lejos no se distinguen personas, se ve el mar de luces.
+    this.stands = [];
+    const tiers = phone ? 7 : 11, top = h * (phone ? 0.2 : 0.14);
+    for (let k = 0; k < tiers; k++) {
+      const f = k / (tiers - 1);                    // 0 = fila más baja (cerca del público), 1 = la más alta
+      const baseY = mix(horizon - h * 0.015, top, f);
+      const gap = mix(phone ? 7 : 8, phone ? 4.5 : 5, f); // las de arriba, más chicas y juntas
+      for (let x = -gap * rand(); x < w + gap; x += gap * (0.8 + rand() * 0.5)) {
+        const u = (x - w / 2) / (w / 2);           // -1 izquierda … 1 derecha
+        const bowl = (u * u) * h * mix(0.05, 0.11, f); // el estadio sube hacia los costados
+        this.stands.push({ x, y: baseY - bowl + (rand() - 0.5) * 3, r: mix(2.3, 1.2, f) * (0.8 + rand() * 0.5), f, phase: u * 3.2 + k * 0.35 + rand() * 0.3, on: rand() > 0.12 });
+      }
+    }
   }
 
   /** @param {number[]} rgb */
@@ -157,6 +171,7 @@ export class Crowd {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
     this.drawSpill(ctx, e);
+    this.drawStands(ctx, t, e);
 
     for (const layer of this.layers) {
       const lc = layer.ctx;
@@ -177,6 +192,36 @@ export class Crowd {
     floor.addColorStop(1, this.light ? "rgba(244,240,251,.6)" : "rgba(4,4,12,.55)");
     ctx.fillStyle = floor;
     ctx.fillRect(0, h * 0.72, w, h * 0.28);
+  }
+
+  /** Gradas: lucecitas que respiran con la ola (barata: rectángulos con transparencia, sin sprites). */
+  drawStands(ctx, t, e) {
+    if (!this.stands?.length) return;
+    const [r, g, b] = this.lit;
+    const { h } = this;
+    // Banda oscura detrás de las gradas (estructura del estadio) para que se lean como filas y no como estrellas.
+    const band = ctx.createLinearGradient(0, h * 0.1, 0, h * 0.52);
+    band.addColorStop(0, this.light ? "rgba(120,100,170,0)" : "rgba(10,8,24,0)");
+    band.addColorStop(1, this.light ? "rgba(120,100,170,.12)" : "rgba(10,8,24,.35)");
+    ctx.fillStyle = band;
+    ctx.fillRect(0, h * 0.1, this.w, h * 0.42);
+    // Siluetas: una cabeza y hombros mínimos debajo de cada luz (se leen como personas en filas, no estrellas).
+    ctx.fillStyle = this.light ? "rgba(96,72,150,.28)" : "rgba(6,4,16,.75)";
+    for (const p of this.stands) {
+      const s = p.r * 2.2;
+      ctx.fillRect(p.x - s * 0.5, p.y + p.r * 1.4, s, s * 1.3);
+    }
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    for (const p of this.stands) {
+      if (!p.on) continue;
+      // Ola que recorre las gradas + brillo general con la energía de la canción.
+      const wave = 0.5 + 0.5 * Math.sin(p.phase - t * 1.6);
+      const a = (0.32 + 0.6 * wave * (0.55 + 0.45 * e) + this.flashT * 0.3) * mix(1, 0.6, p.f);
+      ctx.globalAlpha = Math.min(1, a);
+      const d = p.r * 2;
+      ctx.fillRect(p.x - p.r, p.y - p.r, d, d);
+    }
+    ctx.globalAlpha = 1;
   }
 
   /** Luz del escenario que se derrama sobre el horizonte del público. */

@@ -111,6 +111,8 @@
            En teléfono, el menú principal es el desplegable de la derecha. -->
       <div class="hud-start">
         <a class="m-brand" href="./" aria-label="LumiParty: ir a Explorar" data-tip="Explorar"><img src="../icons/logo-mark.svg" alt="" width="30" height="30"><span>LumiParty</span></a>
+        <!-- El logo lleva a Explorar; esto vuelve a la página de inicio (la presentación) -->
+        <a class="home-link" href="../" data-tip="Página de inicio"><svg aria-hidden="true"><use href="#i-home"/></svg><span>Inicio</span></a>
         <nav class="menu" aria-label="Menú principal">
           <button id="btn-side" class="menu-item" type="button" aria-expanded="false" aria-controls="side" data-tip="Biblioteca"><svg aria-hidden="true"><use href="#i-rail"/></svg><span class="menu-label">Biblioteca</span></button>
         </nav>
@@ -637,6 +639,7 @@
           <label class="check switch"><input id="chk-describe" type="checkbox"><span>Describir las luces<small>Dice el color y la parte al cambiar de sección</small></span></label>
           <label class="check switch"><input id="chk-keys" type="checkbox" checked><span>Atajos de una tecla<small>Apágalos si usas lector de pantalla o control por voz</small></span></label>
           <label class="check switch"><input id="chk-calm" type="checkbox"><span>Interfaz tranquila<small>Menos brillo y movimiento en pantalla</small></span></label>
+          <label class="check switch"><input id="chk-metrics" type="checkbox" checked><span>Métricas de uso<small>Nos ayudan a saber qué mejorar. Sin publicidad</small></span></label>
           <p class="hint">Con lector de pantalla también puedes usar las teclas multimedia o los auriculares para pausar y cambiar de canción.</p>
         </section>
 

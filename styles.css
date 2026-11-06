@@ -2573,3 +2573,16 @@ html {
    Alto visible real (dvh) en vez del de la ventana, y un poco más de aire abajo en pantallas táctiles grandes. */
 @supports (height: 100dvh) { .app { bottom: auto; height: 100dvh; } }
 @media (pointer: coarse) and (min-width: 641px) { .app { padding-bottom: calc(var(--pad) + var(--safe-b) + 14px); } }
+
+/* Fanchant: pausa de 1 s entre nombres (el nombre se apaga y vuelve con el siguiente) */
+.chant-name, .chant-roman { transition: opacity 0.25s ease; }
+.chant-name.rest, .chant-roman.rest { opacity: 0; }
+
+/* Sin "Describir las luces": sin el chip de sección/estilo bajo la navegación ni el rótulo en Luces */
+.app.no-describe .style-chip, .app.no-describe #now-section { display: none; }
+
+/* Volver a la página de inicio: discreto, junto al logo (en el teléfono está en el menú) */
+.home-link { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 10px; margin-left: -4px; border-radius: var(--r-pill); color: var(--text-2); font-size: var(--fs-12); font-weight: 600; text-decoration: none; opacity: 0.8; transition: opacity var(--dur-2), background var(--dur-2), color var(--dur-2); }
+.home-link svg { width: 15px; height: 15px; }
+.home-link:hover, .home-link:focus-visible { opacity: 1; color: var(--text); background: var(--surface-1); }
+@media (max-width: 640px) { .home-link { display: none; } }

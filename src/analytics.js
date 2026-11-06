@@ -1,6 +1,5 @@
-// Métricas de uso con Google Analytics 4 SIN cookies (decisión del proyecto, ver docs/seguridad.md y /privacy/).
-// - client_storage: "none": no se guarda nada en el dispositivo (sin cookies ni identificador persistente).
-// - Sin señales de Google ni personalización de anuncios; IP anonimizada.
+// Métricas de uso con Google Analytics 4 (ver /privacy/): cookie propia de analítica fuera de Europa, sin cookies en
+// Europa salvo permiso, nunca publicidad ni señales de Google, y se puede apagar en Ajustes.
 // - Solo la ruta de la página (sin ?song=… ni parámetros) y eventos con nombres fijos del código.
 // - No se carga nada si el navegador pide no ser rastreado (Do Not Track / Global Privacy Control), en localhost o
 //   en la red local, ni si ANALYTICS.ga4 está vacío en src/config.js.
@@ -9,10 +8,27 @@ import { ANALYTICS } from "./config.js";
 
 const ID = /^G-[A-Z0-9]{4,20}$/.test(ANALYTICS?.ga4 ?? "") ? ANALYTICS.ga4 : "";
 let ready = false;
+// UE/EEE + Reino Unido + Suiza: ahí las cookies de analítica necesitan permiso.
+const EU_REGIONS = ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "IS", "LI", "NO", "GB", "CH"];
+const OPT_OUT_KEY = "pws.analytics.off";
+/** La persona apagó las métricas en Ajustes. */
+export function analyticsOff() { try { return localStorage.getItem(OPT_OUT_KEY) === "1"; } catch { return false; } }
+/** Prende o apaga las métricas (al apagar, se borran las cookies _ga y no se vuelve a cargar). */
+export function setAnalyticsOff(off) {
+  try { off ? localStorage.setItem(OPT_OUT_KEY, "1") : localStorage.removeItem(OPT_OUT_KEY); } catch {}
+  if (off) {
+    if (ID) window[`ga-disable-${ID}`] = true;
+    for (const c of document.cookie.split(";")) {
+      const name = c.split("=")[0].trim();
+      if (/^_ga/.test(name)) for (const d of ["", `; domain=${location.hostname}`, `; domain=.${location.hostname.replace(/^www\./, "")}`]) document.cookie = `${name}=; Max-Age=0; path=/${d}`;
+    }
+  }
+}
 
 function allowed() {
   if (!ID || typeof navigator === "undefined" || typeof location === "undefined" || typeof document === "undefined") return false;
   if (navigator.doNotTrack === "1" || window.doNotTrack === "1" || navigator.globalPrivacyControl === true) return false;
+  if (analyticsOff()) return false;
   const h = location.hostname;
   if (h === "localhost" || h === "127.0.0.1" || h === "[::1]" || /^(10|192\.168|172\.(1[6-9]|2\d|3[01]))\./.test(h)) return false;
   return true;
@@ -24,12 +40,17 @@ function init() {
   if (ready || !allowed()) return ready;
   window.dataLayer = window.dataLayer || [];
   window.gtag = gtag;
-  // analytics_storage "denied": gtag.js NO escribe cookies (_ga) y manda solo visitas anónimas sin identificador.
-  // (client_storage: "none" no basta en GA4: igual crea las cookies; se comprobó en producción el 2026-11-05.)
-  gtag("consent", "default", { ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", analytics_storage: "denied", functionality_storage: "denied", personalization_storage: "denied" });
+  // Métricas reales: GA4 con su cookie propia (_ga, solo de lumiparty.com) para contar visitantes y sesiones.
+  // Sin cookies Google recibe las visitas pero no las muestra en los informes (se comprobó: todo en cero).
+  // - Europa (UE/EEE, Reino Unido, Suiza): sin cookies salvo permiso, como pide su ley (consentimiento denegado).
+  // - Nunca publicidad: ad_storage, ad_user_data y ad_personalization siempre denegados; sin señales de Google.
+  // - La persona puede apagarlo en Ajustes («Métricas de uso»); con «No rastrear» o GPC ni se carga.
+  const denied = { ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" };
+  gtag("consent", "default", { ...denied, analytics_storage: "granted", functionality_storage: "denied", personalization_storage: "denied" });
+  gtag("consent", "default", { ...denied, analytics_storage: "denied", region: EU_REGIONS });
   gtag("js", new Date());
   gtag("config", ID, {
-    client_storage: "none", anonymize_ip: true, allow_google_signals: false, allow_ad_personalization_signals: false,
+    allow_google_signals: false, allow_ad_personalization_signals: false,
     send_page_view: false,
   });
   const s = document.createElement("script");

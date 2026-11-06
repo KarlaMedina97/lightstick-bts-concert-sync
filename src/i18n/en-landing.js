@@ -1,8 +1,8 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
-  "Sin cookies y sin publicidad propia.": "No cookies and no ads of our own.",
-  "Medimos el uso con Google Analytics 4 sin cookies (modo de consentimiento denegado). Google recibe tu IP y tipo de navegador para contar visitas, pero no se guardan identificadores en tu dispositivo. Si activas «No rastrear» o Control Global de Privacidad, no se carga.":
-    "We measure usage with Google Analytics 4 without cookies (consent mode set to denied). Google receives your IP address and browser type to count visits, but no identifiers are stored on your device. If you turn on “Do Not Track” or Global Privacy Control, it doesn't load.",
+  "Métricas de uso, sin publicidad.": "Usage metrics, no ads.",
+  "Medimos el uso con Google Analytics 4: qué páginas y funciones se usan, con una cookie propia de analítica (_ga) que no sirve para publicidad. En la Unión Europea, el Reino Unido y Suiza no se guardan cookies. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se carga.":
+    "We measure usage with Google Analytics 4: which pages and features are used, with a first-party analytics cookie (_ga) that is not used for advertising. In the European Union, the UK and Switzerland no cookies are stored. You can turn it off in Settings › Usage metrics; if you enable “Do Not Track” or Global Privacy Control, it doesn't load.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "All five ARMY Bomb versions. Ver. 3, SE and Ver. 4 sync over Bluetooth; Ver. 1 and 2 have no Bluetooth, so your screen glows for them.",
   "Sin Bluetooth · con tu pantalla": "No Bluetooth · with your screen",
   "Términos de uso": "Terms of use",

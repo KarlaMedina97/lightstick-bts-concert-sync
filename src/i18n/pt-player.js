@@ -1,5 +1,8 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Métricas de uso": "Métricas de uso",
+  "Nos ayudan a saber qué mejorar. Sin publicidad": "Ajudam a saber o que melhorar. Sem publicidade",
+  "Inicio": "Início",
   "Ilustración 3D propia y no oficial: puede diferir del ARMY Bomb real.": "Ilustração 3D própria e não oficial: pode ser diferente do ARMY Bomb real.",
   "Sostenlo y agítalo · también con el teléfono": "Segure e agite · ou mexa o celular",
   "Elige una canción primero": "Escolha uma música primeiro",

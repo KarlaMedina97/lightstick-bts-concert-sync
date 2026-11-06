@@ -1,7 +1,7 @@
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
 import { PURPLE, STYLES, generateConcertPattern, generatePattern, hexToRgb, rgbToHex, ledLevel, lightColors } from "./patterns.js";
 import { fireworks } from "./fireworks.js";
-import { pageview, event as track } from "./analytics.js";
+import { pageview, event as track, analyticsOff, setAnalyticsOff } from "./analytics.js";
 let fx = null; // fuegos artificiales (se crean la primera vez que termina una canción)
 import { bluetoothSupport, requestStick, LOW_BATTERY, isBrave, classifyBtError, browserInfo } from "./ble.js";
 import { Player } from "./player.js";
@@ -1114,6 +1114,8 @@ function setTimelineValue(time, dur) {
 
 function applyAccess() {
   app.classList.toggle("calm", settings.calm);
+  // "Describir las luces" apagado: tampoco se muestra el chip con la sección y el estilo (ni en Luces).
+  app.classList.toggle("no-describe", !settings.describe);
   configureEarcons({ volume: settings.sounds ? 0.5 : 0, muted: () => Boolean(mic) });
 }
 
@@ -3074,6 +3076,9 @@ function bindSettings() {
     toast("Modo seguro desactivado.");
   };
   $("chk-wake").onchange = (e) => { settings.wake = e.target.checked; saveSettings(); if (!settings.wake) wakeLock?.release(); };
+  // Métricas de uso (Google Analytics): se pueden apagar; queda guardado en este dispositivo.
+  $("chk-metrics").checked = !analyticsOff();
+  $("chk-metrics").onchange = (e) => { setAnalyticsOff(!e.target.checked); if (e.target.checked) pageview(); };
   const access = { "chk-sounds": "sounds", "chk-describe": "describe", "chk-keys": "keys", "chk-calm": "calm" };
   for (const [id, key] of Object.entries(access)) {
     $(id).checked = settings[key];

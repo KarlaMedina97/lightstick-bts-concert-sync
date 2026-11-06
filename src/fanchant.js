@@ -17,12 +17,17 @@ const FINAL = { ko: "방탄소년단!", roman: "BTS!" };
 // dos veces antes de la primera estrofa, ≈ 1 s por grito a 130 BPM. Sin BPM, 1 s.
 // En la app se gritan con la voz del sistema, que tarda ≈ 1 s por nombre de tres sílabas: a menos de 1,1 s no
 // alcanza a decirlos y se amontonan. Por eso el paso va de 1,1 a 1,5 s (3 tiempos si 2 quedan cortos).
+/** Pausa entre un nombre y el siguiente (el público toma aire). */
+export const CHANT_PAUSE_MS = 1000;
+/**
+ * Cuánto se ve (y se dice) cada nombre: unos 3 s, ajustados a un número entero de tiempos de la canción que viene
+ * para que el público siga en compás (entre 2,6 y 3,4 s).
+ */
 export function chantStepMs(bpm) {
-  const beat = bpm > 0 ? 60000 / bpm : 600;
-  let ms = 2 * beat;
-  if (ms < 1100) ms = 3 * beat; // rápida: 3 tiempos por nombre
-  if (ms > 1600) ms = beat; // muy lenta: un tiempo por nombre
-  return Math.round(Math.min(1500, Math.max(1100, ms)));
+  if (!(bpm > 0)) return 3000;
+  const beat = 60000 / bpm;
+  const ms = Math.max(1, Math.round(3000 / beat)) * beat;
+  return Math.round(Math.min(3400, Math.max(2600, ms)));
 }
 
 /** Ovación corta: ruido filtrado con una envolvente, sin archivos de audio. */
@@ -113,7 +118,7 @@ export class Fanchant {
             if (done || !this.resolve) return;
             done = true;
             clearTimeout(this.timer);
-            this.timer = setTimeout(step, Math.max(180, minMs - (performance.now() - t0)));
+            this.timer = setTimeout(rest, Math.max(180, minMs - (performance.now() - t0)));
           };
           speechSynthesis.cancel(); // sin cola: si quedó algo pendiente, no se acumula
           const u = new SpeechSynthesisUtterance(it.ko);
@@ -124,7 +129,15 @@ export class Fanchant {
           u.onerror = next;
           speechSynthesis.speak(u);
           this.timer = setTimeout(next, minMs * 1.8); // respaldo si el navegador nunca avisa que terminó
-        } else this.timer = setTimeout(step, minMs);
+        } else this.timer = setTimeout(rest, minMs);
+      };
+      // Entre nombres: se apaga un segundo (sin pausa después del último, «BTS!», que da paso a la canción).
+      const rest = () => {
+        if (!this.resolve) return;
+        if (i >= items.length) return step();
+        this.nameEl.classList.add("rest");
+        this.romanEl.classList.add("rest");
+        this.timer = setTimeout(() => { this.nameEl.classList.remove("rest"); this.romanEl.classList.remove("rest"); step(); }, CHANT_PAUSE_MS);
       };
       this.timer = setTimeout(step, 500);
     });

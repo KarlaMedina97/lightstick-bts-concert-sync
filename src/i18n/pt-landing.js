@@ -1,8 +1,8 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
-  "Sin cookies y sin publicidad propia.": "Sem cookies e sem anúncios próprios.",
-  "Medimos el uso con Google Analytics 4 sin cookies (modo de consentimiento denegado). Google recibe tu IP y tipo de navegador para contar visitas, pero no se guardan identificadores en tu dispositivo. Si activas «No rastrear» o Control Global de Privacidad, no se carga.":
-    "Medimos o uso com o Google Analytics 4 sem cookies (modo de consentimento negado). O Google recebe seu IP e o tipo de navegador para contar visitas, mas nenhum identificador é salvo no seu dispositivo. Se você ativar «Não rastrear» ou o Controle Global de Privacidade, ele não é carregado.",
+  "Métricas de uso, sin publicidad.": "Métricas de uso, sem publicidade.",
+  "Medimos el uso con Google Analytics 4: qué páginas y funciones se usan, con una cookie propia de analítica (_ga) que no sirve para publicidad. En la Unión Europea, el Reino Unido y Suiza no se guardan cookies. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se carga.":
+    "Medimos o uso com o Google Analytics 4: quais páginas e funções são usadas, com um cookie próprio de análise (_ga) que não serve para publicidade. Na União Europeia, no Reino Unido e na Suíça não são salvos cookies. Você pode desativar em Ajustes › Métricas de uso; se ativar «Não rastrear» ou o Controle Global de Privacidade, ele não é carregado.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "As cinco versões do ARMY Bomb. Ver. 3, SE e Ver. 4 sincronizam por Bluetooth; Ver. 1 e 2 não têm Bluetooth: sua tela brilha por elas.",
   "Sin Bluetooth · con tu pantalla": "Sem Bluetooth · com a sua tela",
   "Términos de uso": "Termos de uso",

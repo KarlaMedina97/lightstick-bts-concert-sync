@@ -1,5 +1,8 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Métricas de uso": "Statistik penggunaan",
+  "Nos ayudan a saber qué mejorar. Sin publicidad": "Membantu kami tahu apa yang perlu diperbaiki. Tanpa iklan",
+  "Inicio": "Beranda",
   "Ilustración 3D propia y no oficial: puede diferir del ARMY Bomb real.": "Ilustrasi 3D buatan sendiri dan tidak resmi: bisa berbeda dari ARMY Bomb asli.",
   "Sostenlo y agítalo · también con el teléfono": "Pegang dan goyangkan · atau gerakkan ponselmu",
   "Elige una canción primero": "Pilih lagu dulu",

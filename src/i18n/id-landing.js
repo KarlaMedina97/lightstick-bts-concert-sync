@@ -1,8 +1,8 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
-  "Sin cookies y sin publicidad propia.": "Tanpa cookie dan tanpa iklan sendiri.",
-  "Medimos el uso con Google Analytics 4 sin cookies (modo de consentimiento denegado). Google recibe tu IP y tipo de navegador para contar visitas, pero no se guardan identificadores en tu dispositivo. Si activas «No rastrear» o Control Global de Privacidad, no se carga.":
-    "Kami mengukur penggunaan dengan Google Analytics 4 tanpa cookie (mode persetujuan ditolak). Google menerima IP dan jenis browser-mu untuk menghitung kunjungan, tetapi tidak ada pengenal yang disimpan di perangkatmu. Kalau kamu mengaktifkan «Jangan Lacak» atau Global Privacy Control, analitik tidak dimuat.",
+  "Métricas de uso, sin publicidad.": "Statistik penggunaan, tanpa iklan.",
+  "Medimos el uso con Google Analytics 4: qué páginas y funciones se usan, con una cookie propia de analítica (_ga) que no sirve para publicidad. En la Unión Europea, el Reino Unido y Suiza no se guardan cookies. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se carga.":
+    "Kami mengukur penggunaan dengan Google Analytics 4: halaman dan fitur yang dipakai, dengan cookie analitik milik sendiri (_ga) yang tidak dipakai untuk iklan. Di Uni Eropa, Inggris, dan Swiss tidak ada cookie yang disimpan. Kamu bisa mematikannya di Pengaturan › Statistik penggunaan; jika kamu mengaktifkan «Jangan Lacak» atau Global Privacy Control, tidak dimuat.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "Kelima versi ARMY Bomb. Ver. 3, SE, dan Ver. 4 sinkron lewat Bluetooth; Ver. 1 dan 2 tidak punya Bluetooth, jadi layarmu yang bersinar untuk mereka.",
   "Sin Bluetooth · con tu pantalla": "Tanpa Bluetooth · pakai layarmu",
   "Términos de uso": "Ketentuan penggunaan",
