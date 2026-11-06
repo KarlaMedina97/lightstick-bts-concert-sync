@@ -7,10 +7,11 @@
 const SHAPES = ["peony", "ring", "willow", "palm", "heart", "crossette", "glitter"];
 
 /**
- * @param {{ mount?: HTMLElement, z?: number, safe?: () => boolean, max?: number }} o
+ * @param {{ mount?: HTMLElement, z?: number, safe?: () => boolean, max?: number, avoid?: () => DOMRect | null }} o
+ *   avoid: rectángulo de pantalla que queda siempre limpio (el reproductor de YouTube no se tapa).
  * @returns {{ burst: (opts?: object) => void, show: (opts?: object) => void, auto: (perSecond: number, opts?: object) => void, stop: () => void }}
  */
-export function fireworks({ mount = document.body, z = 1, safe = () => true, max } = {}) {
+export function fireworks({ mount = document.body, z = 1, safe = () => true, max, avoid } = {}) {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)");
   const canvas = document.createElement("canvas");
   canvas.className = "fireworks";
@@ -130,6 +131,8 @@ export function fireworks({ mount = document.body, z = 1, safe = () => true, max
       ctx.arc(p.x, p.y, p.r * (p.trail ? 0.9 : 1), 0, Math.PI * 2);
       ctx.fill();
     }
+    const keep = avoid?.();
+    if (keep) ctx.clearRect(keep.left - 2, keep.top - 2, keep.width + 4, keep.height + 4);
     if (P.length || autoRate) raf = requestAnimationFrame(frame);
     else ctx.clearRect(0, 0, canvas.width, canvas.height);
   }

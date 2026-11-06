@@ -340,6 +340,7 @@ const dict = {
   "Agregar a Me gusta": "Adicionar às Curtidas",
 
   // Mini reproductor
+  "Este video no es de un canal oficial que conozcamos. Si es una copia de un concierto de pago, no lo agregues.": "Este vídeo não é de um canal oficial que a gente conheça. Se for uma cópia de um show pago, não o adicione.",
   "Miniatura oculta, video en pausa": "Miniplayer oculto, vídeo pausado",
   "Mostrar": "Mostrar",
   "Agrandar video": "Aumentar vídeo",

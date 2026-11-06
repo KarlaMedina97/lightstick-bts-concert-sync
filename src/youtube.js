@@ -18,6 +18,16 @@ export function parseYouTubeId(input) {
 }
 const valid = (id) => (/^[\w-]{11}$/.test(id) ? id : null);
 
+/** Canales oficiales que conocemos (author_name de oEmbed). Si un video agregado no es de aquí, se avisa. */
+export const OFFICIAL_CHANNELS = [
+  "HYBE LABELS", "BANGTANTV", "BTS", "BTS JAPAN OFFICIAL", "1theK (원더케이)", "UNIVERSAL MUSIC JAPAN",
+  "Mnet K-POP", "M2", "MBCkpop", "KBS Kpop", "SBSKPOP", "Big Hit Labels", "ibighit",
+];
+const norm = (s) => String(s ?? "").normalize("NFKC").toLowerCase().replace(/\s+/g, " ").trim();
+const OFFICIAL = new Set(OFFICIAL_CHANNELS.map(norm));
+/** ¿El canal (author_name) está en la lista de oficiales? Sin distinguir mayúsculas ni espacios de más. */
+export const isOfficialChannel = (name) => OFFICIAL.has(norm(name));
+
 /** Busca el título del video (oEmbed público de YouTube). */
 export async function fetchTitle(id) {
   try {

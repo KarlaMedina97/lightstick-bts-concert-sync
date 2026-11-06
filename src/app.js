@@ -10,7 +10,7 @@ import { RhythmChallenge, MIN_TAPS_FOR_RANKING } from "./rhythm.js";
 import { NETWORKS, clearAllLocalData, loadProfile, normalizeHandle, profileUrl, saveProfile, submitScore, topScores } from "./leaderboard.js";
 import { buildFeedback, sendFeedback } from "./feedback.js";
 import { MicSync } from "./mic.js";
-import { fetchTitle, parseYouTubeId } from "./youtube.js";
+import { fetchTitle, parseYouTubeId, isOfficialChannel } from "./youtube.js";
 import { Guide } from "./guide.js";
 import { Crowd } from "./crowd.js";
 import { Fanchant } from "./fanchant.js";
@@ -89,9 +89,28 @@ function toast(msg, ms = 4500, { assertive = false } = {}) {
   const el = $("toast");
   el.textContent = msg;
   fadeIn(el);
+  dodgeVideo(el);
   say(msg, { assertive });
   clearTimeout(toast.timer);
   toast.timer = setTimeout(() => fadeOut(el), ms);
+}
+/** Rectángulo del reproductor de YouTube a la vista, o null. Sus políticas: nada encima del video ni de sus controles. */
+function videoRect() {
+  const card = $("video-view");
+  if (current < 0 || card.hidden || app.classList.contains("home") || (app.classList.contains("mini-mode") && app.classList.contains("mini-off"))) return null;
+  const r = card.querySelector(".video-box").getBoundingClientRect();
+  return r.width > 0 && r.height > 0 ? r : null;
+}
+const overlaps = (a, b, m = 10) => a.left < b.right + m && b.left < a.right + m && a.top < b.bottom + m && b.top < a.bottom + m;
+/** Si el aviso tapa el video, prueba otra franja: arriba (sobre la cabecera) o abajo (sobre el pie de página). */
+function dodgeVideo(el) {
+  delete el.dataset.at;
+  const v = videoRect();
+  if (!v) return;
+  for (const at of ["top", "bottom"]) {
+    if (!overlaps(el.getBoundingClientRect(), v)) return;
+    el.dataset.at = at;
+  }
 }
 /** Aparecer / desvanecerse de verdad: [hidden] es display:none, así que primero se apaga la opacidad y luego se oculta. */
 function fadeIn(el) {
@@ -270,18 +289,21 @@ function setView(v) {
   $("lights-view").hidden = v !== "lights";
   stick3d?.setActive(v === "lights" && settings.lightsModel === "stick");
   // En Explorar el video sigue sonando en un mini reproductor; sin canción, Video y Explorar muestran el inicio.
-  $("video-view").hidden = v === "lights"; // sin canción, .app.home lo deja invisible (el iframe de YouTube sigue cargando)
+  // En Luces también, si hay canción: YouTube no permite que suene un video oculto (sin canción, .app.home lo deja invisible).
+  $("video-view").hidden = v === "lights" && current < 0;
   const showHome = exploring || (v === "video" && current < 0);
   $("home").hidden = !showHome || page !== "home";
   $("likes-page").hidden = !showHome || page !== "likes";
   $("videos-page").hidden = !showHome || page !== "videos";
   syncPageItems();
   app.classList.toggle("exploring", exploring && current >= 0);
+  app.classList.toggle("mini-mode", (exploring || v === "lights") && current >= 0); // video en el mini reproductor
   app.dataset.view = v;
   if (!exploring) app.classList.remove("mini-off");
   syncMiniButton();
   syncVideoTab();
   syncRoute();
+  placeMini(false); // ya, sin esperar al cuadro siguiente: el mini nunca aparece donde tape algo
   requestAnimationFrame(() => placeMini(false));
 }
 /** Botón del pie de página junto a pantalla completa: Minimizar (en Video) o Expandir (con el video en la ventanita). */
@@ -944,7 +966,9 @@ async function addVideoById(id, kind = "song") {
   buildQueue();
   current = queue.findIndex((q) => q.song.id === playingId);
   renderAlbums();
-  toast(`Video agregado: ${song.title}`);
+  // Aviso que no bloquea: el canal (author_name de oEmbed) no está entre los oficiales que conocemos.
+  if (meta?.channel && !isOfficialChannel(meta.channel)) toast("Este video no es de un canal oficial que conozcamos. Si es una copia de un concierto de pago, no lo agregues.", 9000);
+  else toast(`Video agregado: ${song.title}`);
   playIndex(queue.findIndex((q) => q.song.id === song.id));
 }
 /**
@@ -2587,6 +2611,7 @@ function toastAction(msg, label, fn, ms = 6000) {
   b.onclick = () => { fadeOut(el); fn(); };
   el.append(b);
   fadeIn(el);
+  dodgeVideo(el);
   say(msg);
   const hide = () => { if (!el.matches(":hover, :focus-within")) fadeOut(el); else toast.timer = setTimeout(hide, 1500); };
   clearTimeout(toast.timer);
@@ -2961,8 +2986,13 @@ function showMini() {
 let minimizeVideo = () => {};
 function placeMini(animate) {
   const card = $("video-view");
-  if (!app.classList.contains("exploring")) { card.style.removeProperty("--mx"); card.style.removeProperty("--my"); return; }
-  const stage = $("main").getBoundingClientRect();
+  const main = $("main");
+  if (!app.classList.contains("mini-mode")) {
+    card.style.removeProperty("--mx"); card.style.removeProperty("--my");
+    for (const k of "trbl") main.style.removeProperty(`--mini-res-${k}`);
+    return;
+  }
+  const stage = main.getBoundingClientRect();
   const head = $("explore-head").getBoundingClientRect();
   const w = card.offsetWidth, h = card.offsetHeight, g = 12;
   // Si Explorar le reserva una columna (teléfono en horizontal), el mini va arriba de todo, junto al buscador.
@@ -2975,8 +3005,19 @@ function placeMini(animate) {
   card.classList.toggle("snapping", Boolean(animate));
   // Siempre dentro del escenario, aunque el mini sea más ancho que el hueco disponible.
   const maxX = Math.max(0, stage.width - w - g), maxY = Math.max(top, stage.height - h - g);
-  card.style.setProperty("--mx", `${Math.min(maxX, Math.max(0, pos[0]))}px`);
-  card.style.setProperty("--my", `${Math.min(maxY, Math.max(top, pos[1]))}px`);
+  const x = Math.min(maxX, Math.max(0, pos[0])), y = Math.min(maxY, Math.max(top, pos[1]));
+  card.style.setProperty("--mx", `${x}px`);
+  card.style.setProperty("--my", `${y}px`);
+  // Lo que comparte el escenario con el mini (vista Luces, fanchant) le deja su franja: a un lado si sobra ancho,
+  // si no, arriba o abajo. Así nada tapa el video ni el video tapa los controles de Luces.
+  const res = { t: 0, r: 0, b: 0, l: 0 };
+  if (!app.classList.contains("mini-off")) {
+    if (stage.width - w - g * 2 >= 480) { if (x + w / 2 > stage.width / 2) res.r = stage.width - x + g; else res.l = x + w + g; }
+    else if (y + h / 2 > stage.height / 2) res.b = stage.height - y + g;
+    else res.t = y + h + g;
+  }
+  for (const k of "trbl") main.style.setProperty(`--mini-res-${k}`, `${Math.round(res[k])}px`);
+  dispatchEvent(new Event("pws:layout"));
   // Explorar deja al final solo el espacio que tapa la miniatura (si está abajo y a la vista), no 280 px fijos.
   const bottomCorner = MINI.corner.startsWith("b") && !app.classList.contains("mini-off");
   $("home").style.setProperty("--mini-pad", `${bottomCorner ? h + g * 2 : 24}px`);
@@ -3443,7 +3484,7 @@ async function init() {
   });
   $("btn-concert").onclick = toggleConcert;
   const firstLike = () => [...document.querySelectorAll("#home .sg-like, #albums .like-btn")].find((b) => b.getBoundingClientRect().width > 0);
-  const tour = new Tour();
+  const tour = new Tour({ avoid: videoRect });
   const startTour = () => {
     document.querySelectorAll("[data-tour='like']").forEach((el) => el.removeAttribute("data-tour"));
     firstLike()?.setAttribute("data-tour", "like");
@@ -3491,7 +3532,7 @@ async function init() {
       // Fuegos artificiales al terminar la canción, con sus colores (los del ARMY Bomb en esa canción).
       const done = queue[current];
       noteSongFinished();
-      if (done) (fx ??= fireworks({ z: 30, safe: () => settings.safeMode !== false })).show({ colors: lightColors(done.song, done.album), count: 6 });
+      if (done) (fx ??= fireworks({ z: 30, safe: () => settings.safeMode !== false, avoid: videoRect })).show({ colors: lightColors(done.song, done.album), count: 6 });
       await finishChallenge();
       if (!settings.autoNext) return;
       const endedAt = current;

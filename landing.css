@@ -470,6 +470,8 @@ body.doc { overflow-x: hidden; }
 
 /* El lienzo 3D recibe el puntero donde no hay contenido (para girar el lightstick). */
 main, main section, .anat-stage, .marquee { pointer-events: none; }
+/* Páginas de texto (privacidad, términos, IA, 404): todo es contenido, no hay lienzo 3D que necesite los gestos. */
+body.doc main, body.doc main * { pointer-events: auto; }
 .copy, .anat-head, .parts, .marquee * { pointer-events: auto; }
 .marquee * { pointer-events: none; }
 

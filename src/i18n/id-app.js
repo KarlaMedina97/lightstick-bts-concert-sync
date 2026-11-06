@@ -340,6 +340,7 @@ const dict = {
   "Agregar a Me gusta": "Tambah ke Disukai",
 
   // Mini reproductor
+  "Este video no es de un canal oficial que conozcamos. Si es una copia de un concierto de pago, no lo agregues.": "Video ini bukan dari channel resmi yang kami kenal. Kalau ini salinan konser berbayar, jangan ditambahkan.",
   "Miniatura oculta, video en pausa": "Pemutar mini disembunyikan, video dijeda",
   "Mostrar": "Tampilkan",
   "Agrandar video": "Perbesar video",

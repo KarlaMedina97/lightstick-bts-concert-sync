@@ -115,7 +115,7 @@ export default {
   "Algunos videos y conciertos no vienen incluidos por derechos de autor. Pega su enlace y tus luces se sincronizan igual.": "Some videos and concerts aren't included because of copyright. Paste the link and your lights still sync.",
   "Enlace del video": "Video link",
   "Agregar y reproducir": "Add and play",
-  "Usa enlaces de canales oficiales. Se guardan solo en este dispositivo.": "Use links from official channels. They're saved only on this device.",
+  "Solo enlaces de canales oficiales (HYBE LABELS, BANGTANTV…). No agregues copias de conciertos de pago.": "Only links from official channels (HYBE LABELS, BANGTANTV…). Don't add copies of paid concerts.",
   "Conciertos completos": "Full concerts",
   "Son de pago y no se pueden insertar. Míralos en la TV y activa el micrófono: las luces siguen la música.": "They're paid and can't be embedded. Watch them on your TV and turn on the mic: the lights follow the music.",
   "Tus videos y conciertos": "Your videos and concerts",
