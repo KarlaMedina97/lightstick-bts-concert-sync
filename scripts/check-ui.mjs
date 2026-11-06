@@ -73,7 +73,14 @@ ws.addEventListener("message", (e) => {
 });
 const send = (method, params = {}) => new Promise((r) => { const i = ++seq; pending.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
 const evaluate = async (expression) => {
-  const r = await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true });
+  if (process.env.UI_DEBUG) console.log("·", expression.slice(0, 70).replace(/\s+/g, " "));
+  const r = await Promise.race([
+    send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true }),
+    sleep(20000).then(async () => {
+      const where = await Promise.race([send("Runtime.evaluate", { expression: "String(window.__p)", returnByValue: true }).then((x) => x.result?.result?.value), sleep(3000).then(() => "(congelada)")]);
+      return { result: { exceptionDetails: { exception: { description: `la página no respondió en 20 s (último paso: ${where})` } } } };
+    }),
+  ]);
   if (r.result?.exceptionDetails) throw new Error(r.result.exceptionDetails.exception?.description ?? "error al evaluar");
   return r.result?.result?.value;
 };
@@ -130,6 +137,9 @@ for (const [vp, w, h] of VIEWPORTS) {
 
   // ---------- Reproductor ----------
   const ap = `reproductor (${vp})`;
+  await open("/player/", w, h, 1500);
+  // Cada tamaño empieza de cero (sin la canción ni los ajustes que dejó la prueba anterior).
+  await evaluate(`localStorage.clear(); localStorage.setItem("pws.tour.v1", "1"); 1`);
   await open("/player/", w, h, 4000);
   if (!(await evaluate(noOverflow))) fail(ap, "hay scroll horizontal");
   const glyphsP = await evaluate(missingGlyphs);
@@ -167,11 +177,15 @@ for (const [vp, w, h] of VIEWPORTS) {
   // Luces: el ARMY Bomb 3D carga, cambia de versión y se puede arrastrar sin errores.
   const lights = await evaluate(`(async () => {
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    window.__p = "inicio";
     document.querySelector("#panel-feedback .close")?.click();
     document.getElementById("view-lights").click();
+    window.__p = "luces";
     await wait(400);
     document.getElementById("lv-stick").click();
+    window.__p = "3d pedido";
     await wait(2500);
+    window.__p = "3d listo";
     const c = document.querySelector(".s3d-canvas");
     if (!c) return "el ARMY Bomb 3D no se creó";
     document.querySelector('[data-ver="v2"]').click();
@@ -179,7 +193,8 @@ for (const [vp, w, h] of VIEWPORTS) {
     const r = c.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
     const ev = (t, px) => c.dispatchEvent(new PointerEvent(t, { clientX: px, clientY: y, pointerId: 7, bubbles: true }));
     ev("pointerdown", x);
-    for (let i = 0; i < 20; i++) { ev("pointermove", x + Math.sin(i / 2) * 120); await wait(16); }
+    // Sin pausas entre movimientos: sin ventana, el navegador frena los temporizadores (20 × 16 ms ≈ 20 s).
+    for (let i = 0; i < 20; i++) ev("pointermove", x + Math.sin(i / 2) * 120);
     ev("pointerup", x);
     await wait(600);
     document.getElementById("lv-orb").click();
