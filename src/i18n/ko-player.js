@@ -111,7 +111,7 @@ export default {
   "Algunos videos y conciertos no vienen incluidos por derechos de autor. Pega su enlace y tus luces se sincronizan igual.": "일부 영상과 콘서트는 저작권 때문에 포함되어 있지 않아요. 링크를 붙여 넣으면 조명은 똑같이 동기화돼요.",
   "Enlace del video": "영상 링크",
   "Agregar y reproducir": "추가하고 재생",
-  "Usa enlaces de canales oficiales. Se guardan solo en este dispositivo.": "공식 채널 링크를 사용해 주세요. 이 기기에만 저장돼요.",
+  "Solo enlaces de canales oficiales (HYBE LABELS, BANGTANTV…). No agregues copias de conciertos de pago.": "공식 채널 링크만 사용해 주세요 (HYBE LABELS, BANGTANTV…). 유료 콘서트 복사본은 추가하지 마세요.",
   "Conciertos completos": "콘서트 전체 영상",
   "Son de pago y no se pueden insertar. Míralos en la TV y activa el micrófono: las luces siguen la música.": "유료라서 삽입할 수 없어요. TV로 보면서 마이크를 켜면 조명이 음악을 따라가요.",
   "Tus videos y conciertos": "내 영상과 콘서트",

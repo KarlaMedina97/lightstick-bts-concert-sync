@@ -342,6 +342,7 @@ const dict = {
   "Agregar a Me gusta": "Add to Liked",
 
   // Mini reproductor
+  "Este video no es de un canal oficial que conozcamos. Si es una copia de un concierto de pago, no lo agregues.": "This video isn't from an official channel we know. If it's a copy of a paid concert, please don't add it.",
   "Miniatura oculta, video en pausa": "Mini player hidden, video paused",
   "Mostrar": "Show",
   "Agrandar video": "Enlarge video",

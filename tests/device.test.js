@@ -37,8 +37,13 @@ test("errores de Bluetooth: cerrar la lista no es lo mismo que tenerlo desactiva
   assert.equal(classifyBtError(err("NetworkError", "GATT Server is disconnected")), "other");
 });
 
-import { parseYouTubeId } from "../src/youtube.js";
+import { parseYouTubeId, isOfficialChannel } from "../src/youtube.js";
 import { readFileSync } from "node:fs";
+
+test("Mis videos: reconoce los canales oficiales y avisa con los demás", () => {
+  for (const c of ["HYBE LABELS", "hybe labels", " BANGTANTV ", "1theK (원더케이)", "UNIVERSAL MUSIC JAPAN", "ibighit", "BTS"]) assert.equal(isOfficialChannel(c), true, c);
+  for (const c of ["BTS Fan Uploads", "Concierto completo HD", "", null, undefined]) assert.equal(isOfficialChannel(c), false, String(c));
+});
 
 test("compartir desde YouTube: la app es destino y entiende el texto que manda YouTube", () => {
   const m = JSON.parse(readFileSync(new URL("../manifest.webmanifest", import.meta.url), "utf8"));

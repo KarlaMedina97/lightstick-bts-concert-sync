@@ -340,6 +340,7 @@ const dict = {
   "Agregar a Me gusta": "좋아요에 추가",
 
   // Mini reproductor
+  "Este video no es de un canal oficial que conozcamos. Si es una copia de un concierto de pago, no lo agregues.": "우리가 아는 공식 채널의 영상이 아니에요. 유료 콘서트 복사본이라면 추가하지 마세요.",
   "Miniatura oculta, video en pausa": "미니 플레이어를 숨기고 영상을 일시정지했어요",
   "Mostrar": "보기",
   "Agrandar video": "영상 크게 보기",

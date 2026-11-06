@@ -10,7 +10,7 @@ import { RhythmChallenge, MIN_TAPS_FOR_RANKING } from "./rhythm.js";
 import { NETWORKS, clearAllLocalData, loadProfile, normalizeHandle, profileUrl, saveProfile, submitScore, topScores } from "./leaderboard.js";
 import { buildFeedback, sendFeedback } from "./feedback.js";
 import { MicSync } from "./mic.js";
-import { fetchTitle, parseYouTubeId } from "./youtube.js";
+import { fetchTitle, parseYouTubeId, isOfficialChannel } from "./youtube.js";
 import { Guide } from "./guide.js";
 import { Crowd } from "./crowd.js";
 import { Fanchant } from "./fanchant.js";
@@ -943,7 +943,9 @@ async function addVideoById(id, kind = "song") {
   buildQueue();
   current = queue.findIndex((q) => q.song.id === playingId);
   renderAlbums();
-  toast(`Video agregado: ${song.title}`);
+  // Aviso que no bloquea: el canal (author_name de oEmbed) no está entre los oficiales que conocemos.
+  if (meta?.channel && !isOfficialChannel(meta.channel)) toast("Este video no es de un canal oficial que conozcamos. Si es una copia de un concierto de pago, no lo agregues.", 9000);
+  else toast(`Video agregado: ${song.title}`);
   playIndex(queue.findIndex((q) => q.song.id === song.id));
 }
 /**

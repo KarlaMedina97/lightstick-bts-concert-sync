@@ -111,7 +111,7 @@ export default {
   "Algunos videos y conciertos no vienen incluidos por derechos de autor. Pega su enlace y tus luces se sincronizan igual.": "Beberapa video dan konser tidak disertakan karena hak cipta. Tempel link-nya dan lampumu tetap sinkron.",
   "Enlace del video": "Link video",
   "Agregar y reproducir": "Tambah dan putar",
-  "Usa enlaces de canales oficiales. Se guardan solo en este dispositivo.": "Pakai link dari channel resmi. Hanya tersimpan di perangkat ini.",
+  "Solo enlaces de canales oficiales (HYBE LABELS, BANGTANTV…). No agregues copias de conciertos de pago.": "Hanya link dari channel resmi (HYBE LABELS, BANGTANTV…). Jangan tambahkan salinan konser berbayar.",
   "Conciertos completos": "Konser lengkap",
   "Son de pago y no se pueden insertar. Míralos en la TV y activa el micrófono: las luces siguen la música.": "Konser ini berbayar dan tidak bisa disematkan. Tonton di TV dan nyalakan mikrofon: lampu akan mengikuti musik.",
   "Tus videos y conciertos": "Video dan konsermu",
