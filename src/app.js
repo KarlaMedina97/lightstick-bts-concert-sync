@@ -47,6 +47,8 @@ const store = {
 const SETTINGS_KEY = "pws.settings.v1";
 const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, chant: true, chantVoice: true, lightsModel: "orb", stickVer: "", sounds: true, describe: false, keys: true, calm: false, bpm: {}, phase: {} };
 const settings = { ...defaults, ...store.get(SETTINGS_KEY, {}) };
+// 2026-11-05: la descripción de las luces queda apagada para todos (una sola vez; después cada quien la activa en Ajustes).
+if (!store.get("pws.migr.describeOff", false)) { settings.describe = false; store.set("pws.migr.describeOff", true); store.set(SETTINGS_KEY, settings); }
 if (matchMedia("(prefers-reduced-motion: reduce)").matches) settings.safeMode = true;
 const saveSettings = () => store.set(SETTINGS_KEY, settings);
 
