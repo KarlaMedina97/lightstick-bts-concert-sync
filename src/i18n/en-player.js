@@ -1,5 +1,6 @@
 // Inglés del reproductor (player/index.html) y sus módulos, salvo src/app.js.
 export default {
+  "Expandir biblioteca": "Expand library",
   "¡Gracias, ARMY!": "Thank you, ARMY!",
   "Tu opinión llegó. La leemos para mejorar LumiParty.": "Your feedback arrived. We read it to improve LumiParty.",
   "Enviar otra": "Send another",

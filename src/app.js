@@ -811,14 +811,28 @@ function setSide(open) {
     if (show) requestAnimationFrame(() => $("side").querySelector(".lib-item")?.focus());
     return;
   }
+  // Escritorio: la biblioteca siempre está (compacta o expandida); el botón Biblioteca la expande o la compacta.
   app.classList.remove("side-drawer");
-  $("side").hidden = !open;
-  app.classList.toggle("with-side", open);
-  $("btn-side").setAttribute("aria-expanded", String(open));
-  store.set(SIDE_KEY, open);
+  $("side").hidden = false;
+  app.classList.add("with-side");
+  syncSideButton();
+}
+/** El botón Biblioteca de la cabecera dice lo mismo que hace: en escritorio, expandir o contraer. */
+function syncSideButton() {
+  const b = $("btn-side");
+  if (!wide()) { b.dataset.tip = "Biblioteca"; b.setAttribute("aria-label", "Biblioteca"); return; }
+  const expanded = !app.classList.contains("rail");
+  b.setAttribute("aria-expanded", String(expanded));
+  b.setAttribute("aria-label", expanded ? "Contraer biblioteca" : "Expandir biblioteca");
+  b.dataset.tip = expanded ? "Contraer biblioteca" : "Expandir biblioteca";
+  b.classList.toggle("on", expanded);
 }
 function bindMenu() {
-  $("btn-side").onclick = () => setSide($("side").hidden);
+  // Escritorio: igual que el botón de adentro (expandir / contraer y queda así). Tablet: abre o cierra el cajón.
+  $("btn-side").onclick = () => {
+    if (wide()) { const on = !app.classList.contains("rail"); store.set(RAIL_KEY, on); applyRail(on); $("side").classList.remove("peek"); return; }
+    setSide($("side").hidden);
+  };
   $("side-close").onclick = () => { setSide(false); $("btn-side").focus(); };
   // El cajón se cierra al tocar fuera o al elegir algo dentro.
   document.addEventListener("pointerdown", (e) => {
@@ -1928,6 +1942,7 @@ function railPreferred() {
 }
 function applyRail(on) {
   app.classList.toggle("rail", on && wide()); // el cajón de tablet siempre va con etiquetas
+  requestAnimationFrame(syncSideButton);
   $("side-rail").setAttribute("aria-pressed", String(on));
   $("side-rail").setAttribute("aria-label", "Biblioteca compacta");
   $("side-rail").dataset.tip = on ? "Expandir" : "Contraer";

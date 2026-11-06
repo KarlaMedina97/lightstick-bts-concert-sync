@@ -2652,3 +2652,6 @@ html {
 .fbt-actions { display: flex; gap: var(--s-2); margin-top: var(--s-3); flex-wrap: wrap; justify-content: center; }
 @keyframes fbt-pop { from { transform: scale(.3); opacity: 0; } 70% { transform: scale(1.15); } }
 @media (prefers-reduced-motion: reduce) { .fbt-heart { animation: none; } }
+
+/* Biblioteca expandida: el botón de la cabecera lo indica */
+#btn-side.on { background: var(--accent-soft); color: var(--accent); }

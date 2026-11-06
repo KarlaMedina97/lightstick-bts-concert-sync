@@ -1,5 +1,6 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Expandir biblioteca": "Expandir biblioteca",
   "¡Gracias, ARMY!": "Obrigado, ARMY!",
   "Tu opinión llegó. La leemos para mejorar LumiParty.": "Sua opinião chegou. Lemos para melhorar o LumiParty.",
   "Enviar otra": "Enviar outra",
