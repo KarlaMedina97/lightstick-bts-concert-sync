@@ -1,5 +1,7 @@
 // Inglés del reproductor (player/index.html) y sus módulos, salvo src/app.js.
 export default {
+  "Estadio": "Stadium",
+  "Micrófono": "Microphone",
   "Métricas de uso": "Usage metrics",
   "Nos ayudan a saber qué mejorar. Sin publicidad": "They help us know what to improve. No ads",
   "Inicio": "Home",

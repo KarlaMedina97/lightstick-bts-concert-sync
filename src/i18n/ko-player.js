@@ -1,5 +1,7 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Estadio": "공연장",
+  "Micrófono": "마이크",
   "Métricas de uso": "사용 통계",
   "Nos ayudan a saber qué mejorar. Sin publicidad": "무엇을 개선할지 알 수 있어요. 광고 없음",
   "Inicio": "홈",

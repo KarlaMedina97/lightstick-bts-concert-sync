@@ -1,5 +1,7 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Estadio": "Estádio",
+  "Micrófono": "Microfone",
   "Métricas de uso": "Métricas de uso",
   "Nos ayudan a saber qué mejorar. Sin publicidad": "Ajudam a saber o que melhorar. Sem publicidade",
   "Inicio": "Início",

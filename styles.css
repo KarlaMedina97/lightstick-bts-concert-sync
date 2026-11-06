@@ -2593,7 +2593,9 @@ html {
 @media (prefers-reduced-motion: reduce) { .live-btn.on .live-ico { animation: none; } }
 /* Teléfono: en el dock va como los demás (ícono arriba, texto abajo), con el círculo de color */
 @media (max-width: 640px) { .live-btn { background: none; border: 0; padding: 0; border-radius: var(--r-md); } .live-ico { width: 28px; height: 28px; }
-  .dock .live-btn span:last-child { white-space: normal; overflow: visible; text-overflow: clip; max-width: 7ch; font-size: 0.625rem; line-height: 1.1; text-align: center; } }
+  .dock .live-btn .lv-long { display: none; } }
+.live-btn .lv-short { display: none; }
+@media (max-width: 640px) { .dock .live-btn .lv-short { display: inline; } }
 
 /* Video sin nada sonando: deshabilitada a la vista (sigue siendo enfocable y avisa al tocarla) */
 [role="tab"][aria-disabled="true"], [role="menuitemradio"][aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; }

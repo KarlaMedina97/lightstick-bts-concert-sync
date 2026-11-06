@@ -1,5 +1,7 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Estadio": "Stadion",
+  "Micrófono": "Mikrofon",
   "Métricas de uso": "Statistik penggunaan",
   "Nos ayudan a saber qué mejorar. Sin publicidad": "Membantu kami tahu apa yang perlu diperbaiki. Tanpa iklan",
   "Inicio": "Beranda",

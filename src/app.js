@@ -2504,7 +2504,10 @@ function bindMenus() {
 function syncLiveButton() {
   const on = Boolean(cam || mic);
   $("btn-live").classList.toggle("on", on);
-  $("btn-live").querySelector("span:last-child").textContent = cam ? "En el estadio" : mic ? "Con micrófono" : "Modo concierto";
+  // En el teléfono dice solo «Concierto» (con «Modo» no cabía); en pantallas anchas, «Modo concierto».
+  const lbl = $("btn-live").querySelector(".lv-label");
+  lbl.querySelector(".lv-long").textContent = cam ? "En el estadio" : mic ? "Con micrófono" : "Modo concierto";
+  lbl.querySelector(".lv-short").textContent = cam ? "Estadio" : mic ? "Micrófono" : "Concierto";
 }
 
 // ---------- Cola tipo Spotify (modelo en src/queue.js) ----------

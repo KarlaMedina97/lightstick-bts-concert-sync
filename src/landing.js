@@ -117,23 +117,41 @@ if (reduceMotion) safeMode = true;
       return { top: Math.max(0, top), h: el.offsetHeight, long: el.offsetHeight > innerHeight * 1.35 };
     });
   }
+  // Dirección del último gesto: con un poco de scroll hacia abajo (o arriba) se pasa a la sección siguiente (o
+  // anterior) completa, como en las presentaciones. En las secciones largas animadas, el scroll de adentro es libre
+  // y al llegar a su final se ancla a la siguiente.
+  let restY = scrollY;
   function settle() {
     if (touching || reduceMotion || document.documentElement.classList.contains("dragging")) return;
-    if (snapping) { snapping = false; return; }
-    const y = scrollY, vh = innerHeight, near = vh * 0.32;
+    if (snapping) { snapping = false; restY = scrollY; return; }
+    const y = scrollY, vh = innerHeight, moved = y - restY;
     const maxY = document.documentElement.scrollHeight - vh;
-    if (y >= maxY - 4) return; // al final de la página, quieto
+    if (Math.abs(moved) < 24 || y >= maxY - 4) { restY = y; return; }
     const pts = points();
-    // Dentro de una sección larga (pasada su entrada y antes de su salida) se queda donde está: es la parte animada.
-    if (pts.some((p) => p.long && y > p.top + near && y < p.top + p.h - vh - near)) return;
-    let best = null;
-    for (const p of pts) {
-      const d = p.top - y;
-      if (Math.abs(d) <= near && (!best || Math.abs(d) < Math.abs(best.d))) best = { d, top: p.top };
+    // ¿En qué sección estaba al empezar el gesto?
+    let i = pts.length - 1;
+    while (i > 0 && pts[i].top > restY + 2) i--;
+    const cur = pts[i], next = pts[i + 1];
+    let target = null;
+    if (moved > 0) {
+      const end = cur.top + Math.max(0, cur.h - vh); // donde termina la parte animada de una sección larga
+      if (cur.long && y < end) { restY = y; return; } // adentro de la sección larga: libre
+      target = next ? next.top : null;
+      if (next && y > next.top + 24) { // pasó de largo: se queda en la que llegó
+        let j = i + 1; while (j + 1 < pts.length && pts[j + 1].top <= y + 2) j++;
+        target = pts[j].top;
+      }
+    } else {
+      // Hacia arriba: a la vista completa de la sección donde quedó (o de la anterior si estaba en su borde).
+      let j = pts.length - 1;
+      while (j > 0 && pts[j].top > y + 2) j--;
+      const here = pts[j];
+      if (here.long && y > here.top + 24 && y < here.top + Math.max(0, here.h - vh)) { restY = y; return; }
+      target = here.long && y >= here.top + Math.max(0, here.h - vh) - 2 ? here.top + Math.max(0, here.h - vh) : here.top;
     }
-    if (!best || Math.abs(best.d) < 6) return;
+    if (target == null || Math.abs(target - y) < 6) { restY = y; return; }
     snapping = true;
-    scrollTo({ top: best.top, behavior: "smooth" });
+    scrollTo({ top: Math.min(maxY, target), behavior: "smooth" });
   }
   function schedule() { clearTimeout(timer); timer = setTimeout(settle, 140); }
   if ("onscrollend" in window) addEventListener("scrollend", schedule);

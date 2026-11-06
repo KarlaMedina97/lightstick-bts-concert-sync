@@ -2,6 +2,8 @@
 # Antes de subir a main (= desplegar): pruebas, CSP y build; y si cambió algo de la interfaz, la prueba en navegador.
 # Se activa una vez por clon con:  git config core.hooksPath .githooks
 set -e
+# Mensajes de commit (Conventional Commits, título corto): CI los rechaza, mejor saberlo antes de subir.
+node scripts/check-commits.mjs origin/main..HEAD
 npm run --silent check
 changed=$(git diff --name-only origin/main...HEAD 2>/dev/null || git diff --name-only HEAD~1)
 if echo "$changed" | grep -Eq '\.(html|css)$|^src/|^sw\.js$|^vendor/'; then
