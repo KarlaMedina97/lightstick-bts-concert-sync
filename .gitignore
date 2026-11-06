@@ -10,3 +10,4 @@ _site/
 *.key
 *.p12
 *.pfx
+.ui-check/

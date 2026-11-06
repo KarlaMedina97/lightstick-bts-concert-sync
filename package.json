@@ -36,6 +36,7 @@
     "check": "npm test && npm run check:csp && npm run build",
     "check-commits": "npm run check:commits",
     "check:embeds": "node scripts/check-embeds.mjs",
+    "check:ui": "node scripts/check-ui.mjs",
     "build": "node scripts/build-site.mjs"
   },
   "engines": {

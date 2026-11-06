@@ -23,9 +23,18 @@ Se publica en GitHub Pages con dominio propio: https://lumiparty.com/ (DNS en Ho
 | `npm run check` | Pruebas + verifica que la CSP esté al día (lo mismo que corre CI) |
 | `npm run check:commits` | Verifica mensajes de commit contra `origin/main` |
 | `npm run build` | Arma `_site/` con solo lo que se publica (lista en `scripts/build-site.mjs`); CI despliega esa carpeta |
+| `npm run check:ui` | Prueba en navegador real (inicio, reproductor, páginas): excepciones, desbordes, anatomía pegajosa, íconos |
 | `npm run check:embeds` | Comprueba que cada video del catálogo se pueda ver dentro de la página (bloqueos por derechos, error 150) |
 
 Antes de dar algo por terminado: `npm run check` y probar en el navegador (escritorio y 390×844).
+
+**Validación antes de desplegar (obligatoria si el cambio puede romper la interfaz):** todo cambio en HTML, CSS,
+`src/` o `sw.js` pasa `npm run check:ui` antes del push. Abre el inicio, el reproductor y las páginas de texto en un
+navegador real sin ventana (390 y 1440 px) y falla si hay excepciones, scroll horizontal, la anatomía deja de ser
+«pegajosa», un ícono no es SVG o hay caracteres sin fuente en iPhone/iPad (ᛒ, ⏻…). Deja capturas en `.ui-check/`:
+míralas. El gancho `.githooks/pre-push` la corre solo (actívalo una vez con `git config core.hooksPath .githooks`).
+Si agregas una sección o flujo importante, súmale su comprobación en `scripts/check-ui.mjs`.
+- Nunca `overflow` en `html`: con `html` y `body` recortados, `body` pasa a ser el contenedor de scroll y lo `sticky` (anatomía, capítulos) deja de funcionar. En otros ancestros de algo `sticky`, usa `overflow-x: clip`, no `hidden`.
 
 ## Mapa del código
 
