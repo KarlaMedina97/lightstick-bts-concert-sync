@@ -1895,3 +1895,10 @@ if (gsap && !reduceMotion && !SHOT) {
   addEventListener("scroll", () => { if (owner) place(owner); }, { passive: true });
 }
 
+// Service worker también desde el inicio (antes solo lo registraba el reproductor): la segunda visita abre la página,
+// three.js y las fuentes desde la copia guardada. Se registra al terminar de cargar para que bajar el shell no compita
+// con la primera visita en una red lenta.
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  const registerSW = () => setTimeout(() => navigator.serviceWorker.register("sw.js", { scope: "./" }).catch(() => {}), 2000);
+  if (document.readyState === "complete") registerSW(); else addEventListener("load", registerSW, { once: true });
+}
