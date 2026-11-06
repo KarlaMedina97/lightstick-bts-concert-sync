@@ -1,5 +1,7 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
+  "▶ Escuchar la canción del momento": "▶ Play the song of the moment",
+  "🔊 Sonando la canción del momento": "🔊 Playing the song of the moment",
   "Special Edition (SE)": "Special Edition (SE)",
   "Por Bluetooth": "Via Bluetooth",
   "Con tu pantalla": "With your screen",

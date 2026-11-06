@@ -1,5 +1,7 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "▶ Escuchar la canción del momento": "▶ Dengarkan lagu yang sedang hits",
+  "🔊 Sonando la canción del momento": "🔊 Memutar lagu yang sedang hits",
   "Special Edition (SE)": "Special Edition (SE)",
   "Por Bluetooth": "Lewat Bluetooth",
   "Con tu pantalla": "Dengan layarmu",

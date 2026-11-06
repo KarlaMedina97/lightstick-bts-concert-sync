@@ -1176,7 +1176,7 @@ if (renderer) {
     player = new window.YT.Player("yt", {
       host: "https://www.youtube-nocookie.com",
       width: 200, height: 200, videoId: FEATURED.yt,
-      playerVars: { autoplay: 1, mute: muted ? 1 : 0, playsinline: 1, start: FEATURED.introStart, end: FEATURED.introStart + FEATURED.introSeconds, rel: 0, controls: 1 },
+      playerVars: { autoplay: 1, mute: muted ? 1 : 0, playsinline: 1, start: FEATURED.introStart, rel: 0, controls: 1 }, // suena completa (antes se cortaba a los 30 s)
       events: {
         onReady: () => { ytReady = true; if (mini.dataset.state === "expanded") player.playVideo(); },
         onStateChange: (e) => { if (e.data === 0) setIntroButton(false); syncPlayButtons(); },
@@ -1188,7 +1188,7 @@ if (renderer) {
   function setIntroButton(on) {
     for (const b of introButtons) {
       b.setAttribute("aria-pressed", on);
-      b.textContent = on ? "🔊 Sonando la intro" : "▶ Escuchar la intro";
+      b.textContent = on ? "🔊 Sonando la canción del momento" : "▶ Escuchar la canción del momento";
     }
   }
   function syncPlayButtons() {

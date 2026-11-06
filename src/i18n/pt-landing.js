@@ -1,5 +1,7 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "▶ Escuchar la canción del momento": "▶ Ouvir a música do momento",
+  "🔊 Sonando la canción del momento": "🔊 Tocando a música do momento",
   "Special Edition (SE)": "Special Edition (SE)",
   "Por Bluetooth": "Por Bluetooth",
   "Con tu pantalla": "Com sua tela",
