@@ -29,6 +29,24 @@ export const FEATURED = {
 
 // Ranking global (opcional). Sin estos datos, los rankings se guardan solo en el dispositivo.
 // Ver docs/ranking-global.md para crear la tabla en Supabase (plan gratuito).
+// Opiniones a un Formulario de Google (las respuestas quedan en una Hoja de cálculo del responsable).
+// La app NO muestra el formulario de Google: manda lo que la persona respondió en el panel «Dar mi opinión».
+// Para activarlo: en el formulario, ⋮ › «Obtener vínculo previamente completado», llenar cualquier valor en cada
+// campo y copiar el vínculo; de ahí salen el id del formulario (después de /d/e/) y los entry.NNN de cada campo.
+export const FEEDBACK_FORM = {
+  id: "", // p. ej. "1FAIpQLSe…" (vacío: sin formulario; las opiniones abren GitHub como hasta ahora)
+  fields: {
+    rating: "", // entry.NNN de «Calificación (1-5)»
+    tags: "", // «Etiquetas»
+    ease: "", // «Facilidad para conectar (0-5)»
+    would_use: "", // «¿La usaría?»
+    comment: "", // «Comentario»
+    device: "", // «Dispositivo»
+    song_id: "", // «Canción»
+    app_version: "", // «Versión de la app»
+  },
+};
+
 export const LEADERBOARD = {
   supabaseUrl: "",
   supabaseAnonKey: "",

@@ -1,5 +1,7 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
+  "Opiniones:": "Feedback:",
+  "lo que respondes en «Dar mi opinión» (estrellas, opciones, comentario y, si lo dejas marcado, el tipo de dispositivo y navegador) se guarda en un Formulario de Google del proyecto, sin tu nombre ni correo. Si no está configurado, se abre GitHub con tu texto listo y solo se publica si tú lo confirmas allí.": "what you answer in “Give feedback” (stars, options, comment and, if you leave it checked, your device and browser type) is stored in the project’s Google Form, without your name or email. If it isn’t set up, GitHub opens with your text ready and it is only published if you confirm it there.",
   "Todo el concierto, ": "The whole concert, ",
   "en tu navegador": "in your browser",
   "Cambia en la intro, el coro y el puente.": "Changes in the intro, chorus and bridge.",

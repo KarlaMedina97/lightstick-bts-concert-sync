@@ -1,5 +1,7 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Opiniones:": "의견:",
+  "lo que respondes en «Dar mi opinión» (estrellas, opciones, comentario y, si lo dejas marcado, el tipo de dispositivo y navegador) se guarda en un Formulario de Google del proyecto, sin tu nombre ni correo. Si no está configurado, se abre GitHub con tu texto listo y solo se publica si tú lo confirmas allí.": "「의견 보내기」에서 답한 내용(별점, 선택지, 댓글, 체크해 둔 경우 기기와 브라우저 종류)은 이름이나 이메일 없이 프로젝트의 Google 설문지에 저장돼요. 설정되어 있지 않으면 내용이 채워진 GitHub가 열리고, 거기서 직접 확인해야만 게시돼요.",
   "Todo el concierto, ": "콘서트의 모든 것을, ",
   "en tu navegador": "브라우저에서",
   "Cambia en la intro, el coro y el puente.": "인트로, 후렴, 브릿지마다 바뀌어요.",

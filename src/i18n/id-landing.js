@@ -1,5 +1,7 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Opiniones:": "Masukan:",
+  "lo que respondes en «Dar mi opinión» (estrellas, opciones, comentario y, si lo dejas marcado, el tipo de dispositivo y navegador) se guarda en un Formulario de Google del proyecto, sin tu nombre ni correo. Si no está configurado, se abre GitHub con tu texto listo y solo se publica si tú lo confirmas allí.": "jawabanmu di «Beri masukan» (bintang, pilihan, komentar, dan jika dibiarkan tercentang, jenis perangkat serta browser) disimpan di Google Formulir proyek, tanpa nama atau emailmu. Jika belum diatur, GitHub terbuka dengan teksmu siap dan hanya dipublikasikan jika kamu mengonfirmasinya di sana.",
   "Todo el concierto, ": "Seluruh konser, ",
   "en tu navegador": "di browsermu",
   "Cambia en la intro, el coro y el puente.": "Berubah di intro, reff, dan bridge.",

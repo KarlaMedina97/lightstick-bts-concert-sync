@@ -1,7 +1,7 @@
 // Opiniones anónimas para medir si la experiencia es agradable y cómo escala.
 // Con Supabase configurado se guardan en una tabla de solo escritura (nadie puede leerlas desde la web).
 // Sin servidor, se abre una propuesta de "issue" en GitHub con el texto ya escrito.
-import { LEADERBOARD, PROJECT } from "./config.js";
+import { FEEDBACK_FORM, LEADERBOARD, PROJECT } from "./config.js";
 
 const MAX_COMMENT = 1000;
 const COOLDOWN_MS = 60000;
@@ -55,6 +55,25 @@ export function toRow({ tags = [], ...rest }) {
 export async function sendFeedback(entry) {
   if (Date.now() - lastSent < COOLDOWN_MS) {
     return { ok: false, via: "none", message: "Gracias. Espera un minuto antes de enviar otra opinión." };
+  }
+  // Formulario de Google: se manda por detrás (sin abrir nada) a su dirección de respuestas. La respuesta es opaca
+  // (no-cors), así que si la red no falla se da por recibida.
+  if (/^[\w-]{20,}$/.test(FEEDBACK_FORM?.id ?? "")) {
+    try {
+      const f = FEEDBACK_FORM.fields, body = new URLSearchParams();
+      const put = (k, v) => { if (f[k] && v !== null && v !== undefined && v !== "") body.append(f[k], String(v)); };
+      put("rating", entry.rating);
+      put("tags", entry.tags?.join(", "));
+      put("ease", entry.ease);
+      put("would_use", { yes: "Sí", maybe: "Tal vez", no: "No" }[entry.would_use]);
+      put("comment", entry.comment);
+      put("device", [entry.os, entry.browser, entry.bluetooth === null ? "" : entry.bluetooth ? "Bluetooth web: sí" : "Bluetooth web: no"].filter(Boolean).join(" · "));
+      put("song_id", entry.song_id);
+      put("app_version", entry.app_version);
+      await fetch(`https://docs.google.com/forms/d/e/${FEEDBACK_FORM.id}/formResponse`, { method: "POST", mode: "no-cors", body });
+      lastSent = Date.now();
+      return { ok: true, via: "server", message: "¡Gracias! Tu opinión llegó 💜" };
+    } catch {}
   }
   if (LEADERBOARD.supabaseUrl?.startsWith("https://") && LEADERBOARD.supabaseAnonKey) {
     try {
