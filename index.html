@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; worker-src 'self'; manifest-src 'self'; media-src 'self'; font-src 'self'; upgrade-insecure-requests; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; form-action 'none'; script-src 'self' 'sha256-5e+5iQmJApUe+MsWP+WRUcswRZOyimpos6MO5AMkSIE=' 'sha256-gB2Jox7UETAA0hIUyDydweE3XiP47xsOcFmb+wcMIIo=' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; worker-src 'self'; manifest-src 'self'; media-src 'self'; font-src 'self'; upgrade-insecure-requests; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; form-action 'none'; script-src 'self' 'sha256-5e+5iQmJApUe+MsWP+WRUcswRZOyimpos6MO5AMkSIE=' 'sha256-8oN2IKB4B/xTptozY37gySQWkCbQjbsKy/a8hcN31eU=' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>LumiParty · Tu ARMY Bomb al ritmo de BTS</title>
@@ -43,7 +43,7 @@
   <script type="importmap">
     {
       "imports": {
-        "three": "./vendor/three/build/three.module.js",
+        "three": "./vendor/three/build/three.module.min.js",
         "three/addons/": "./vendor/three/examples/jsm/"
       }
     }
@@ -51,6 +51,19 @@
   <link rel="modulepreload" href="src/landing.js">
   <link rel="modulepreload" href="src/i18n.js">
   <link rel="modulepreload" href="src/nav-menu.js">
+  <!-- three.js y el modelo 3D: los importa src/landing.js después de la primera pintura; se piden ya, con prioridad baja,
+       para que estén listos sin quitarle red a lo que pinta la portada. -->
+  <link rel="modulepreload" href="vendor/three/build/three.module.min.js" fetchpriority="low">
+  <link rel="modulepreload" href="src/models/shared.js" fetchpriority="low">
+  <link rel="modulepreload" href="src/models/armybomb-v4.js" fetchpriority="low">
+  <link rel="modulepreload" href="src/fanchant.js" fetchpriority="low">
+  <link rel="modulepreload" href="src/mic.js" fetchpriority="low">
+  <link rel="modulepreload" href="vendor/three/examples/jsm/postprocessing/EffectComposer.js" fetchpriority="low">
+  <link rel="modulepreload" href="vendor/three/examples/jsm/postprocessing/RenderPass.js" fetchpriority="low">
+  <link rel="modulepreload" href="vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js" fetchpriority="low">
+  <link rel="modulepreload" href="vendor/three/examples/jsm/postprocessing/Pass.js" fetchpriority="low">
+  <link rel="modulepreload" href="vendor/three/examples/jsm/utils/BufferGeometryUtils.js" fetchpriority="low">
+  <link rel="modulepreload" href="vendor/three/examples/jsm/environments/RoomEnvironment.js" fetchpriority="low">
   <script src="vendor/gsap/gsap.min.js" defer></script>
   <script src="vendor/gsap/ScrollTrigger.min.js" defer></script>
   <style id="critico">

@@ -2,24 +2,35 @@
 // canción destacada; con el scroll (GSAP + ScrollTrigger) se desarma, viaja entre capítulos, se junta con las
 // otras versiones y termina en el océano de lightsticks. Ilustraciones inspiradas, no los diseños oficiales:
 // los emblemas son originales (una ola), nunca el logo de BTS.
-import * as THREE from "three";
-import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
-import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { FEATURED } from "./config.js";
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
-import { MEMBERS, chantStepMs } from "./fanchant.js";
-import { MicSync } from "./mic.js";
 import { spanishClone, localize } from "./i18n.js";
 import { showInAppNotice, redirectConnectButtons } from "./inapp.js";
 import { carousel } from "./carousel.js";
 import { fireworks } from "./fireworks.js";
 import { pageview } from "./analytics.js";
 pageview();
-import { createMaterials, glowTexture, contactShadow } from "./models/shared.js";
-import { createArmyBombV4 } from "./models/armybomb-v4.js";
+// three.js y el modelo se importan aparte, cuando la portada ya se pintó (ver buildScene): así no compiten con el
+// HTML, el CSS y las fuentes. index.html los pide desde el principio con prioridad baja (modulepreload).
+let THREE, EffectComposer, RenderPass, UnrealBloomPass, mergeGeometries, RoomEnvironment;
+let createMaterials, glowTexture, contactShadow, createArmyBombV4, MEMBERS, chantStepMs, MicSync; // fanchant y micrófono: solo los usa la escena
+const loadScene = () => Promise.all([
+  import("three"),
+  import("three/addons/postprocessing/EffectComposer.js"),
+  import("three/addons/postprocessing/RenderPass.js"),
+  import("three/addons/postprocessing/UnrealBloomPass.js"),
+  import("three/addons/utils/BufferGeometryUtils.js"),
+  import("three/addons/environments/RoomEnvironment.js"),
+  import("./models/shared.js"),
+  import("./models/armybomb-v4.js"),
+  import("./fanchant.js"),
+  import("./mic.js"),
+]).then(([three, ec, rp, ub, bgu, re, shared, v4m, fc, mic]) => {
+  THREE = three;
+  ({ EffectComposer } = ec); ({ RenderPass } = rp); ({ UnrealBloomPass } = ub); ({ mergeGeometries } = bgu); ({ RoomEnvironment } = re);
+  ({ createMaterials, glowTexture, contactShadow } = shared); ({ createArmyBombV4 } = v4m);
+  ({ MEMBERS, chantStepMs } = fc); ({ MicSync } = mic);
+});
 
 const gsap = window.gsap;
 const ScrollTrigger = window.ScrollTrigger;
@@ -91,9 +102,9 @@ carousel(document.querySelector(".steps"), { label: "Paso" });
 }
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 
-const PALETTE = ["#8a2be2", "#4fc3f7", "#ff80ab", "#ffd600", "#7c4dff", "#00e5ff", "#ff3d00", "#e0f7fa"].map((c) => new THREE.Color(c));
 const featuredAlbum = ALBUMS.find((a) => a.songs.some((s) => s.id === FEATURED.songId));
-if (featuredAlbum) PALETTE.splice(1, 0, ...featuredAlbum.palette.map((c) => new THREE.Color(c)));
+const PALETTE_HEX = ["#8a2be2", "#4fc3f7", "#ff80ab", "#ffd600", "#7c4dff", "#00e5ff", "#ff3d00", "#e0f7fa"];
+if (featuredAlbum) PALETTE_HEX.splice(1, 0, ...featuredAlbum.palette);
 
 // ---------- Modo seguro (por defecto: máximo 3 cambios/destellos por segundo, sin sacudidas) ----------
 const SAFE_KEY = "pws.landing.safe";
@@ -203,22 +214,47 @@ const STATS = { albums: ALBUMS.length, songs: ALBUMS.reduce((n, a) => n + a.song
 for (const [k, v] of Object.entries(STATS)) { const el = document.querySelector(`[data-stat="${k}"]`); if (el) { el.textContent = String(v); el.dataset.count = String(v); } }
 
 // ---------- Escena ----------
-let renderer;
-try {
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: !LOW_END, powerPreference: "high-performance" });
-} catch {
-  canvas.remove();
-  document.documentElement.classList.add("gl-ready"); // sin WebGL no habrá ARMY Bomb 3D: fuera la silueta de carga
-}
-
-const color = PALETTE[0].clone();
+// Estado de la escena (colores de three.js): se crea al llegar three.js, en buildScene.
+let PALETTE, color, demo;
 const glow = { intensity: 1 };
 const show = { live: 0, progress: 0, step: 0, burst: 0, burstT: -10, beatKick: 0 };
-const demo = { active: false, color: new THREE.Color("#8a2be2"), energy: 0.55, gesture: "sway", until: 0 };
 let api = null; // funciones de la escena que usa la interfaz (si hay WebGL)
+let renderer;
 
-if (renderer) {
-  renderer.setPixelRatio(VERY_LOW ? 1 : Math.min(devicePixelRatio, mobileQ() ? 1.25 : 1.5));
+// Cede el hilo entre etapas de la construcción de la escena: cada etapa es una tarea corta y la página sigue
+// respondiendo (toques, scroll) mientras se arma el 3D.
+const yieldToMain = () => (globalThis.scheduler?.yield ? scheduler.yield() : new Promise((r) => setTimeout(r, 0)));
+
+// La escena 3D se arma después de la primera pintura y con el hilo libre: la portada (texto, botones y la silueta
+// del ARMY Bomb del CSS crítico) se ve y responde ya, y el lightstick aparece en cuanto está listo.
+function whenPaintedAndIdle(fn) {
+  const idle = () => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 1200 }) : setTimeout(fn, 50));
+  requestAnimationFrame(() => setTimeout(idle, 0)); // después del primer cuadro pintado
+}
+if (SHOT !== null) setTimeout(buildScene, 0); else whenPaintedAndIdle(buildScene);
+
+async function buildScene() {
+  try { await loadScene(); } catch { canvas.remove(); document.documentElement.classList.add("gl-ready"); return; } // sin red no hay 3D: fuera la silueta
+  PALETTE = PALETTE_HEX.map((c) => new THREE.Color(c));
+  color = PALETTE[0].clone();
+  demo = { active: false, color: new THREE.Color("#8a2be2"), energy: 0.55, gesture: "sway", until: 0 };
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: !LOW_END, powerPreference: "high-performance" });
+  } catch {
+    canvas.remove();
+    document.documentElement.classList.add("gl-ready"); // sin WebGL no habrá ARMY Bomb 3D: fuera la silueta de carga
+    return;
+  }
+  // WebGL por software (sin GPU: SwiftShader, llvmpipe…): cada cuadro lo dibuja el procesador y traba la página.
+  // Ahí se dibuja a 1×, a ~30 cuadros por segundo, con materiales de gama baja, un cuarto del público, sin bloom
+  // y sin subir de calidad.
+  const SOFT_GL = (() => {
+    try {
+      const gl = renderer.getContext(), ext = gl.getExtension("WEBGL_debug_renderer_info");
+      return /swiftshader|llvmpipe|softpipe|software|basic render/i.test(String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER)));
+    } catch { return false; }
+  })();
+  renderer.setPixelRatio(VERY_LOW || SOFT_GL ? 1 : Math.min(devicePixelRatio, mobileQ() ? 1.25 : 1.5));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -229,10 +265,29 @@ if (renderer) {
   scene.fog = new THREE.Fog("#070823", 18, 74);
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 140);
   camera.position.set(0, 0.4, 11);
+  // Tamaño del lienzo desde ya: cambiarlo después obliga a esperar a que la GPU termine todo lo pendiente.
+  renderer.setSize(innerWidth, VH(), false);
+  camera.aspect = innerWidth / VH();
+  camera.updateProjectionMatrix();
+  // Espera sin bloquear a que la GPU termine lo encargado (WebGL2: una valla que se consulta entre tareas). Sin esto,
+  // la siguiente llamada que necesita un resultado (cambiar el tamaño, leer un sombreador) congela la página mientras
+  // la GPU trabaja: con WebGL por software, más de un segundo.
+  const gpuDone = async () => {
+    const gl = renderer.getContext();
+    if (typeof WebGL2RenderingContext === "undefined" || !(gl instanceof WebGL2RenderingContext)) return;
+    const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+    if (!sync) return;
+    gl.flush();
+    const until = performance.now() + 4000;
+    while (gl.getSyncParameter(sync, gl.SYNC_STATUS) !== gl.SIGNALED && performance.now() < until) await new Promise((r) => setTimeout(r, 16));
+    gl.deleteSync(sync);
+  };
+  await yieldToMain(); // crear el contexto WebGL ya es una tarea larga
   // Reflejos reales: entorno de estudio filtrado (PMREM). En teléfonos, menos resolución.
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
   pmrem.dispose();
+  await gpuDone();
 
   scene.add(new THREE.AmbientLight("#8090ff", 0.22));
   const key = new THREE.DirectionalLight("#ffffff", 1.2);
@@ -413,9 +468,11 @@ if (renderer) {
     }
   }
 
+  await yieldToMain();
   // ---------- Lightstick principal (Ver. 4) ----------
-  const mats = createMaterials({ lowEnd: LOW_END, color });
-  const v4 = createArmyBombV4(mats, { lowEnd: LOW_END });
+  // Con WebGL por software, los materiales y la malla de gama baja (sin transmisión: cada cuadro la redibuja entera).
+  const mats = createMaterials({ lowEnd: LOW_END || SOFT_GL, color });
+  const v4 = createArmyBombV4(mats, { lowEnd: LOW_END || SOFT_GL });
   const stick = v4.group;
   const PARTS = v4.parts, partByName = v4.partByName, R = v4.metrics.radius;
   // Jerarquía: pivote (pose del scroll) → mano (agarre en el tercio inferior del mango) → lightstick.
@@ -437,6 +494,7 @@ if (renderer) {
     return s;
   });
   const trailHist = [];
+  await yieldToMain();
 
   // ---------- Océano de luces (público) ----------
   // Cada luz del público es un lightstick reconocible (globo redondo con brillo, corona oscura y mango),
@@ -499,9 +557,9 @@ if (renderer) {
   const TOUCH = matchMedia("(pointer: coarse)").matches; // tablets (iPad) también: GPU de teléfono en pantalla grande
   const CROWD_CAP = mobileQ() || TOUCH ? 2100 : 3000; // geometría liviana en teléfonos: alcanza para llenar el estadio
   while (seats.length > CROWD_CAP) seats.splice((Math.random() * seats.length) | 0, 1);
-  // Orden intercalado (pares primero, luego impares): si el equipo va lento y se dibuja solo la mitad del público,
-  // se ralea parejo en todo el estadio. Antes la mitad eran las filas de adelante y las gradas quedaban vacías (iPad).
-  seats.splice(0, seats.length, ...seats.filter((_, i) => i % 2 === 0), ...seats.filter((_, i) => i % 2 === 1));
+  // Orden intercalado (de 4 en 4: 0, 2, 1, 3): si el equipo va lento y se dibuja solo la mitad (o un cuarto) del
+  // público, se ralea parejo en todo el estadio. Antes la mitad eran las filas de adelante y las gradas quedaban vacías (iPad).
+  seats.splice(0, seats.length, ...[0, 2, 1, 3].flatMap((k) => seats.filter((_, i) => i % 4 === k)));
   const N = seats.length;
   // Las luces del público NO se apagan con la niebla: en un estadio las gradas del fondo siguen brillando a través
   // de la bruma (con niebla se veía un «black ocean»). La distancia solo las hace un poco más tenues (ver hk).
@@ -547,7 +605,7 @@ if (renderer) {
   const LAP = 10;
   function placeCrowd(t, energy, pumpAmt, beatPos, live) {
     const band = t / LAP;
-    for (let i = 0; i < N; i++) {
+    for (let i = 0, n = crowd.count; i < n; i++) { // solo las que se dibujan (en calidad baja, la mitad)
       const rowAmp = 1.25 - rowN[i] * 0.85, sd = seed[i];
       // (1) Ola que viaja por ángulo de asiento (con un poco de retraso por fila).
       let d = ((crowdAng[i] + 1.3) / 2.6 + rowN[i] * 0.08 - band) % 1;
@@ -579,7 +637,10 @@ if (renderer) {
     halo.instanceMatrix.needsUpdate = true;
   }
   const _hp = new THREE.Vector3(), _hs = new THREE.Vector3();
-  placeCrowd(0, 0, 0, 0, 0);
+  // Teléfonos: empiezan con la mitad del público (orden intercalado: se ralea parejo) y sin bloom; si los cuadros
+  // salen holgados se sube a la calidad completa (ver perfTick).
+  placeCrowd(0, 0, 0, 0, 0); // todas (con movimiento reducido no se vuelven a colocar)
+  if ((LOW_END || SOFT_GL) && !SHOT) crowd.count = halo.count = fans.count = Math.floor(N / (SOFT_GL ? 4 : 2));
   scene.add(fans, crowd, halo);
   const CROWD_PALETTE = (featuredAlbum?.palette ?? ["#8a2be2", "#b388ff", "#ff80ab"]).map((c) => {
     const k = new THREE.Color(c), hsl = {};
@@ -588,15 +649,23 @@ if (renderer) {
   });
   const IDLE_PURPLE = reduceMotion ? new THREE.Color("#a06cf0") : new THREE.Color("#7a35e8"); // cálido y quieto con movimiento reducido
 
+  await yieldToMain();
   // ---------- Bloom ----------
-  const composer = new EffectComposer(renderer);
-  composer.addPass(new RenderPass(scene, camera));
-  const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.42, 0.62);
-  composer.addPass(bloom);
+  // El compositor (varios búferes y sombreadores) se crea la primera vez que hace falta: en teléfonos y equipos
+  // lentos puede que nunca.
+  let composer = null, bloom = null;
+  function ensureComposer() {
+    if (composer) return;
+    composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.42, 0.62);
+    composer.addPass(bloom);
+    composer.setSize(innerWidth, VH());
+  }
   function resize() {
     const w = innerWidth, h = VH();
     renderer.setSize(w, h, false);
-    composer.setSize(w, h);
+    composer?.setSize(w, h);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
@@ -1050,7 +1119,7 @@ if (renderer) {
     const [{ createArmyBombV3 }, { createArmyBombSE }, { createArmyBombV1 }, { createArmyBombV2 }] = await Promise.all([
       import("./models/armybomb-v3.js"), import("./models/armybomb-se.js"), import("./models/armybomb-v1.js"), import("./models/armybomb-v2.js"),
     ]);
-    const o = { lowEnd: LOW_END };
+    const o = { lowEnd: LOW_END || SOFT_GL };
     const v3 = createArmyBombV3(mats, o), se = createArmyBombSE(mats, o), v1 = createArmyBombV1(mats, o), v2 = createArmyBombV2(mats, o);
     // Las cinco versiones en la ronda: el principal (Ver. 4) + Ver. 3, SE, Ver. 2 y Ver. 1, repartidas a 72°.
     const entries = [["v3", v3.group, v3.metrics, "Ver. 3"], ["se", se.group, se.metrics, "SE"], ["v2", v2.group, v2.metrics, "Ver. 2"], ["v1", v1.group, v1.metrics, "Ver. 1"]];
@@ -1548,9 +1617,13 @@ if (renderer) {
   let frameN = 0, lastLive = "", firstFrame = false;
   let crowdPainted = "", lastSide = "", lastPal = "", climaxDone = false, liveT = 0, beatPulse = 0;
   const root = document.documentElement;
-  function loop() {
+  let lastDraw = 0;
+  function loop(now = 0) {
     requestAnimationFrame(loop);
     if (document.hidden) return;
+    // Por software, a lo sumo ~30 cuadros por segundo: cada cuadro ocupa al procesador (que también mueve la página).
+    if (SOFT_GL && now - lastDraw < 30) return;
+    lastDraw = now;
     const dt = Math.min(0.05, clock.getDelta());
     const t = clock.elapsedTime;
 
@@ -1705,7 +1778,7 @@ if (renderer) {
     mats.update(liveC.copy(color).multiplyScalar(ringDim), glow.intensity * ringDim);
     v4.light.color.copy(color);
     v4.light.intensity = 12 + 10 * glow.intensity;
-    bloom.strength = (0.38 + 0.22 * glow.intensity) * (1 - 0.6 * Math.max(view.lineup, ring.othersIn));
+    if (bloom) bloom.strength = (0.38 + 0.22 * glow.intensity) * (1 - 0.6 * Math.max(view.lineup, ring.othersIn));
     // Estela del globo en movimientos fuertes.
     partByName.emblem.getWorldPosition(_v);
     trailHist.unshift(_v.clone());
@@ -1744,7 +1817,7 @@ if (renderer) {
       const front = (t - show.burstT) * 0.8;
       const mixB = L * (0.1 + 0.45 * P);
       const ic = crowd.instanceColor.array, hc = halo.instanceColor.array;
-      for (let i = 0; i < N; i++) {
+      for (let i = 0, n = crowd.count; i < n; i++) {
         const lit = Math.min(1, Math.max(0.06, (litEdge - rowN[i]) / 0.1));
         const wave = Math.sin(t * speedW - phase[i]);
         const d = rowN[i] - front;
@@ -1776,7 +1849,7 @@ if (renderer) {
 
     const t0 = performance.now();
     if (DEBUG) renderer.info.reset();
-    if (useBloom) composer.render(); else renderer.render(scene, camera);
+    if (useBloom) { ensureComposer(); composer.render(); } else renderer.render(scene, camera);
     // Primer cuadro dibujado: se desvanece la silueta que ocupaba su lugar mientras cargaba (landing.css, .gl-ready).
     if (!firstFrame) { firstFrame = true; root.classList.add("gl-ready"); }
     placeGrabHint();
@@ -1785,7 +1858,12 @@ if (renderer) {
   }
   // ---------- Rendimiento: calidad adaptativa y medición con ?debug=1 ----------
   // Si el cuadro tarda > 22 ms durante 2 s, se baja un escalón: sin transmisión → sin bloom → menos público.
-  let useBloom = !VERY_LOW, slowFor = 0, qTier = VERY_LOW ? 2 : 0, frames = 0, acc = 0, accCpu = 0, lastReport = 0;
+  // Teléfonos: empiezan en el escalón más liviano (sin bloom, mitad del público) para que la carga no trabe la
+  // página, y suben (público completo → bloom) si los cuadros salen a tiempo (≤ 22 ms, como pide la bajada) durante 1,5 s. Si
+  // después de subir vuelve a ir lento, baja y ya no sube más.
+  const START_TIER = (LOW_END || SOFT_GL) && !SHOT ? 3 : VERY_LOW ? 2 : 0;
+  const BEST_TIER = VERY_LOW ? 2 : 1; // subir nunca vuelve a encender la transmisión del vidrio (recompila sombreadores)
+  let useBloom = START_TIER < 2, slowFor = 0, fastFor = 0, upgraded = false, settled = START_TIER !== 3 || SOFT_GL, qTier = START_TIER, frames = 0, acc = 0, accCpu = 0, lastReport = 0;
   const DEBUG = params.has("debug");
   if (DEBUG) renderer.info.autoReset = false;
   const dbg = DEBUG ? Object.assign(document.createElement("pre"), { className: "perf" }) : null;
@@ -1799,7 +1877,18 @@ if (renderer) {
       if (qTier === 1 && mats.glass.transmission > 0) { mats.glass.transmission = 0; mats.glass.transparent = true; mats.glass.opacity = 0.16; mats.glass.needsUpdate = true; }
       else if (qTier === 2) useBloom = false;
       else if (qTier === 3) crowd.count = halo.count = fans.count = Math.floor(N / 2);
+      if (upgraded) settled = true;
+      fastFor = 0;
       if (DEBUG) console.info("[pws] calidad ↓", qTier);
+    }
+    fastFor = dt < 0.022 ? fastFor + dt : Math.max(0, fastFor - dt * 2); // el mismo umbral que para bajar; un cuadro lento suelto no lo anula
+    if (fastFor > 1.5 && !settled && qTier > BEST_TIER) {
+      fastFor = 0; slowFor = 0;
+      upgraded = true;
+      qTier--;
+      if (qTier === 2) { crowd.count = halo.count = fans.count = N; crowdPainted = ""; }
+      else if (qTier === 1) warmTargets(true).catch(() => {}).then(() => { if (qTier <= 1) useBloom = true; }); // sin trabar al encender el bloom
+      if (DEBUG) console.info("[pws] calidad ↑", qTier);
     }
     const now = performance.now();
     if (DEBUG && now - lastReport > 1000) {
@@ -1846,7 +1935,49 @@ if (renderer) {
   }
   computeTarget();
   Object.assign(view, target);
+  // Sombreadores compilados antes de usarlos: sin esto, el primer cuadro traba la página más de un segundo.
+  // compile() solo encarga el trabajo a la GPU; después se espera sin bloquear (con KHR_parallel_shader_compile se
+  // consulta si cada programa está listo; sin él, gpuDone() y leer cada programa de a uno por tarea reparte la espera).
+  // Hay dos variantes de cada programa: a la pantalla y a un búfer (bloom y transmisión del vidrio dibujan la escena
+  // en un búfer: sin mapeo de tonos y en color lineal).
+  async function warmPrograms(root, target = null) {
+    const parallel = renderer.extensions.has("KHR_parallel_shader_compile");
+    const prev = renderer.getRenderTarget();
+    renderer.setRenderTarget(target);
+    renderer.compile(root, camera, scene);
+    renderer.setRenderTarget(prev);
+    if (!parallel) await gpuDone();
+    for (const p of renderer.info.programs ?? []) {
+      while (parallel && !p.isReady()) await new Promise((r) => setTimeout(r, 16));
+      p.getUniforms(); p.getAttributes();
+      if (!parallel) await yieldToMain();
+    }
+  }
+  async function warmTargets(withBloom) {
+    const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType });
+    try {
+      await warmPrograms(scene, rt);
+      if (withBloom) {
+        // Los sombreadores del propio bloom (desenfoques y mezcla), en una escena de prueba.
+        ensureComposer();
+        const fx = new THREE.Scene(), quad = new THREE.PlaneGeometry(1, 1);
+        for (const v of Object.values(bloom)) for (const m of [v].flat()) if (m?.isMaterial) fx.add(new THREE.Mesh(quad, m));
+        await warmPrograms(fx, rt);
+        quad.dispose();
+      }
+    } finally { rt.dispose(); }
+  }
+  if (!SHOT) {
+    try {
+      await warmPrograms(scene);
+      let transmission = false;
+      scene.traverse((o) => { if (o.material?.transmission > 0) transmission = true; });
+      if (useBloom || transmission) await warmTargets(useBloom);
+    } catch {}
+  }
   loop();
+  // La escena llega después de las animaciones de la página: recalcula dónde empieza cada una.
+  if (!SHOT) ScrollTrigger?.refresh();
 }
 
 // ---------- Tipografía cinética ----------
@@ -1917,15 +2048,19 @@ if (gsap && !reduceMotion && !SHOT) {
   // Portada: letras con desenfoque, inclinación y subida escalonada.
   // Con red lenta este código llega cuando la portada ya lleva rato a la vista (el CSS crítico va en el HTML):
   // esconderla para animar su entrada parecería un fallo, así que se queda quieta.
+  // Sin desvanecer desde opacidad 0: el texto de la portada es lo más grande de la primera pantalla (su LCP) y debe
+  // verse desde la primera pintura; la entrada solo lo mueve, lo inclina y lo enfoca.
   const fcp = performance.getEntriesByName("first-contentful-paint")[0]?.startTime;
   if (!(fcp >= 0 && performance.now() - fcp > 1200)) {
     const heroChars = document.querySelectorAll("#hero-title .c");
-    gsap.from(heroChars, { yPercent: 70, opacity: 0, skewX: 14, filter: "blur(10px)", duration: 1.1, stagger: 0.022, ease: "expo.out", delay: 0.1, clearProps: "filter" });
-    gsap.from(".reveal", { y: 26, opacity: 0, duration: 1, stagger: 0.08, ease: "expo.out", delay: 0.45 });
+    gsap.from(heroChars, { yPercent: 70, skewX: 14, filter: "blur(10px)", duration: 1.1, stagger: 0.022, ease: "expo.out", delay: 0.1, clearProps: "filter" });
+    gsap.from(".reveal", { y: 26, duration: 1, stagger: 0.08, ease: "expo.out", delay: 0.45 });
   }
   // Respiración del espaciado en las etiquetas.
   if (innerWidth >= 720) gsap.to(".kicker, .eyebrow", { letterSpacing: "0.22em", duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1 });
-  if (ScrollTrigger) {
+  // Las animaciones con el scroll (todo lo que está debajo de la portada) se preparan después de la primera pintura:
+  // crear cada ScrollTrigger mide la página, y hacerlo de entrada retrasaba que la portada respondiera.
+  if (ScrollTrigger) whenPaintedAndIdle(() => {
     // Títulos de capítulo: entran letra por letra al aparecer.
     for (const { el } of kts) {
       if (el.id === "hero-title") continue;
@@ -1963,7 +2098,7 @@ if (gsap && !reduceMotion && !SHOT) {
       const tw = gsap.to(tr, { xPercent: i % 2 ? 0 : -50, startAt: { xPercent: i % 2 ? -50 : 0 }, duration: 38, ease: "none", repeat: -1 });
       ScrollTrigger.create({ trigger: tr, start: "top bottom", end: "bottom top", onUpdate: (s) => { tw.timeScale(1 + Math.min(4, Math.abs(s.getVelocity()) / 600)); } });
     }
-  }
+  });
 }
 
 // ---------- Tooltips propios (en lugar de "title"): burbuja accesible con flecha ----------

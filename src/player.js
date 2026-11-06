@@ -31,7 +31,10 @@ export class Player {
     this.lastRawAt = 0;
   }
 
-  async init() {
+  /** Carga la API de YouTube y crea el reproductor (una sola vez; lo pide quien lo necesite primero). */
+  init() { return (this.initP ??= this.#create()); }
+
+  async #create() {
     const YT = await loadYouTubeApi();
     await new Promise((resolve) => {
       this.yt = new YT.Player(this.mount, {
@@ -43,7 +46,9 @@ export class Player {
         events: {
           onReady: () => {
             this.ready = true;
-            this.setTitle("");
+            this.setTitle(this.title ?? "");
+            // Lo que se pidió antes de que YouTube estuviera listo.
+            if (this.pending) { const [id, autoplay] = this.pending; this.pending = null; this.load(id, autoplay); }
             resolve();
           },
           onStateChange: (e) => this.#onState(e.data),
@@ -62,6 +67,7 @@ export class Player {
 
   /** Nombre del iframe para lectores de pantalla: "Video de YouTube: SWIM". */
   setTitle(title) {
+    this.title = title;
     try {
       const f = this.yt?.getIframe?.();
       if (f) f.title = title ? `${t("Video de YouTube")}: ${title}` : t("Video de YouTube");
@@ -69,7 +75,8 @@ export class Player {
   }
 
   load(videoId, autoplay = true) {
-    if (!this.ready) return;
+    // Antes de que YouTube esté listo se recuerda el video; si hay que reproducirlo ya, se carga YouTube ahora.
+    if (!this.ready) { this.pending = [videoId, autoplay]; if (autoplay) this.init(); return; }
     this.lastRaw = 0;
     this.lastRawAt = performance.now();
     if (autoplay) this.yt.loadVideoById(videoId);

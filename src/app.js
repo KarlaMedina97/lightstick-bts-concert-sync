@@ -12,7 +12,6 @@ import { buildFeedback, sendFeedback } from "./feedback.js";
 import { MicSync } from "./mic.js";
 import { fetchTitle, parseYouTubeId, isOfficialChannel } from "./youtube.js";
 import { Guide } from "./guide.js";
-import { Crowd } from "./crowd.js";
 import { Fanchant } from "./fanchant.js";
 import { favorites } from "./favorites.js";
 import { Tour } from "./tour.js";
@@ -1257,6 +1256,18 @@ function syncMicButtons() {
   $("btn-mic-sync").setAttribute("aria-pressed", Boolean(mic?.hybrid));
   syncLiveButton();
   $("btn-mic-2").textContent = mic ? "Apagar micrófono" : "Activar micrófono";
+}
+
+// ---------- Trabajo diferido ----------
+/** Después del primer cuadro pintado y con el hilo libre. */
+function afterPaintIdle(fn) {
+  const idle = () => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 1000 }) : setTimeout(fn, 50));
+  requestAnimationFrame(() => setTimeout(idle, 0));
+}
+/** Después del evento load y con el hilo libre. */
+function afterLoadIdle(fn) {
+  const idle = () => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 200));
+  if (document.readyState === "complete") idle(); else addEventListener("load", idle, { once: true });
 }
 
 // ---------- Bucle de sincronía ----------
@@ -3363,8 +3374,13 @@ async function init() {
   bindTheme();
   initTooltips();
   pq = new PlayQueue({ onContextEnd: contextEnd });
-  crowd = new Crowd($("crowd"), { reduceMotion: matchMedia("(prefers-reduced-motion: reduce)").matches });
-  crowd.setTheme?.(document.documentElement.dataset.theme);
+  // El público del fondo (canvas) se arma después de la primera pintura y con el hilo libre: primero se ven el
+  // catálogo y los controles; el fondo aparece enseguida.
+  afterPaintIdle(async () => {
+    const { Crowd } = await import("./crowd.js");
+    crowd = new Crowd($("crowd"), { reduceMotion: matchMedia("(prefers-reduced-motion: reduce)").matches });
+    crowd.setTheme?.(document.documentElement.dataset.theme);
+  });
   renderAlbums();
   renderFilms();
   renderSticks();
@@ -3560,6 +3576,9 @@ async function init() {
     },
   });
   requestAnimationFrame(frame);
+  // YouTube (la API y el reproductor pesan cerca de 1 MB) se carga cuando la página terminó de cargar y el hilo está
+  // libre; si antes alguien elige una canción, Player.load lo pide en ese momento.
+  await new Promise((r) => afterLoadIdle(r));
   await player.init();
   // Retoma la cola guardada (en pausa) si no se pidió una canción por enlace.
   if (!isSongSlug(startSlug)) restoreQueue();
