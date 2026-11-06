@@ -94,8 +94,8 @@ export default {
   "gratis": "grátis",
   // ---------- <head> ----------
   "LumiParty · Tu ARMY Bomb al ritmo de BTS": "LumiParty · Seu ARMY Bomb no ritmo do BTS",
-  "Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos oficiales de BTS, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.":
-    "Conecte seu ARMY Bomb por Bluetooth e faça ele brilhar com os vídeos oficiais do BTS, música por música. Projeto de fãs não oficial, grátis e sem contas.",
+  "Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos de los canales oficiales de YouTube, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.":
+    "Conecte seu ARMY Bomb por Bluetooth e faça ele brilhar com os vídeos dos canais oficiais do YouTube, música por música. Projeto de fãs não oficial, grátis e sem contas.",
 
   // ---------- Navegación ----------
   "Saltar al contenido": "Pular para o conteúdo",
