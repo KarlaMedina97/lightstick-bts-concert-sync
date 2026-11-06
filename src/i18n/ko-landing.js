@@ -1,5 +1,6 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Mantén presionado y agítalo": "꾹 누른 채로 흔들어 보세요",
   "Presiónalo y agítalo": "꾹 누르고 흔들어 보세요",
   "Tócalo y agítalo": "눌러서 흔들어 보세요",
   "Código en GitHub (se abre en otra pestaña)": "GitHub 코드 (새 탭에서 열림)",

@@ -1,5 +1,6 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Mantén presionado y agítalo": "Segure e agite",
   "Presiónalo y agítalo": "Pressione e agite",
   "Tócalo y agítalo": "Toque e agite",
   "Código en GitHub (se abre en otra pestaña)": "Código no GitHub (abre em outra aba)",
