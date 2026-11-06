@@ -1,5 +1,6 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Sostenlo y agítalo · también con el teléfono": "잡고 흔들거나 휴대폰을 움직여 보세요",
   "Elige una canción primero": "먼저 곡을 골라 주세요",
   "Modo concierto": "콘서트 모드",
   "Modo concierto: estadio, TV o micrófono": "콘서트 모드: 공연장, TV 또는 마이크",

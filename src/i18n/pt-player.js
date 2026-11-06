@@ -1,5 +1,6 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Sostenlo y agítalo · también con el teléfono": "Segure e agite · ou mexa o celular",
   "Elige una canción primero": "Escolha uma música primeiro",
   "Modo concierto": "Modo show",
   "Modo concierto: estadio, TV o micrófono": "Modo show: estádio, TV ou microfone",

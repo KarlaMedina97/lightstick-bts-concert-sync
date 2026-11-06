@@ -1,5 +1,6 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Sostenlo y agítalo · también con el teléfono": "Pegang dan goyangkan · atau gerakkan ponselmu",
   "Elige una canción primero": "Pilih lagu dulu",
   "Modo concierto": "Mode konser",
   "Modo concierto: estadio, TV o micrófono": "Mode konser: stadion, TV, atau mikrofon",

@@ -1,5 +1,6 @@
 // Inglés del reproductor (player/index.html) y sus módulos, salvo src/app.js.
 export default {
+  "Sostenlo y agítalo · también con el teléfono": "Hold it and shake it · or move your phone",
   "Elige una canción primero": "Pick a song first",
   "Modo concierto": "Concert mode",
   "Modo concierto: estadio, TV o micrófono": "Concert mode: stadium, TV or microphone",

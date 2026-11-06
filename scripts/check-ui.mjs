@@ -10,7 +10,7 @@
 //   - inicio: la anatomía queda fija (sticky) mientras se hace scroll por ella; los íconos de los pasos son SVG y no hay
 //     caracteres sin fuente en iPhone/iPad (runas ᛒ, ⏻ … salían como un cuadro con X);
 //   - reproductor: Video sin canción avisa y no cambia de vista; Mis videos abre su página; la opinión empieza con
-//     estrellas.
+//     estrellas; el ARMY Bomb 3D de Luces carga, cambia de versión y se arrastra sin errores.
 // Deja capturas en .ui-check/ para mirarlas (no se publican ni se suben al repo).
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -164,6 +164,28 @@ for (const [vp, w, h] of VIEWPORTS) {
   })()`);
   if (fb) fail(ap, fb);
   await shot(`reproductor-opinion-${w}`);
+  // Luces: el ARMY Bomb 3D carga, cambia de versión y se puede arrastrar sin errores.
+  const lights = await evaluate(`(async () => {
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    document.querySelector("#panel-feedback .close")?.click();
+    document.getElementById("view-lights").click();
+    await wait(400);
+    document.getElementById("lv-stick").click();
+    await wait(2500);
+    const c = document.querySelector(".s3d-canvas");
+    if (!c) return "el ARMY Bomb 3D no se creó";
+    document.querySelector('[data-ver="v2"]').click();
+    await wait(800);
+    const r = c.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    const ev = (t, px) => c.dispatchEvent(new PointerEvent(t, { clientX: px, clientY: y, pointerId: 7, bubbles: true }));
+    ev("pointerdown", x);
+    for (let i = 0; i < 20; i++) { ev("pointermove", x + Math.sin(i / 2) * 120); await wait(16); }
+    ev("pointerup", x);
+    await wait(600);
+    document.getElementById("lv-orb").click();
+    return "";
+  })()`);
+  if (lights) fail(ap, lights);
   if (exceptions.length) fail(ap, `excepciones: ${[...new Set(exceptions)].join(" | ")}`);
 
   // ---------- Páginas de texto ----------

@@ -2282,7 +2282,7 @@ async function setLightsModel(mode, { save = true } = {}) {
   $("lights-view").classList.toggle("model", model);
   $("stick3d").hidden = !model;
   $("lv-vers").hidden = !model;
-  $("lv-hint").textContent = t(model ? "Sostenlo y agítalo · doble toque lo endereza" : "Sin ARMY Bomb, tu pantalla brilla. Sube el brillo.");
+  $("lv-hint").textContent = t(model ? "Sostenlo y agítalo · también con el teléfono" : "Sin ARMY Bomb, tu pantalla brilla. Sube el brillo.");
   if (model && !stick3d) {
     try {
       const { createStick3D } = await import("./stick3d.js");
