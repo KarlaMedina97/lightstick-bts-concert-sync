@@ -639,7 +639,9 @@ kbd {
 }
 
 .films, .mine { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
-.mine > li.row { gap: var(--s-1); }
+/* Cada fila de Mis videos ocupa todo el ancho: ♡, ⋯ y ✕ quedan alineados en columna sin importar el título */
+.mine > li.row { gap: 0; } /* ✕ es más ancho (44 px): sin hueco extra queda al mismo paso que ♡ y ⋯ */
+.mine > li.row > .song-row { flex: 1; min-width: 0; }
 .mine > li.row .song { flex: 1; min-width: 0; }
 .mine > li.hint { padding: var(--s-5) var(--s-4); text-align: center; border: 1px dashed var(--border-strong); border-radius: var(--r-lg); }
 .film { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-3) var(--s-3) var(--s-4); background: var(--surface-field); border: 1px solid var(--border); border-radius: var(--r-md); }
