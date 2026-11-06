@@ -679,10 +679,10 @@
         <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-chat"/></svg></span><h2 id="pf-title">Tu opinión</h2></div>
         <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
       </div>
-      <form id="form-feedback" class="panel-body" novalidate>
-        <p class="hint">Es anónimo: no escribas datos personales.</p>
-        <fieldset class="stars">
-          <legend>¿Qué tal la pasaste?</legend>
+      <form id="form-feedback" class="panel-body fb" novalidate>
+        <!-- Paso 1: solo estrellas. Según la calificación aparecen preguntas con opciones visuales (sin listas desplegables) -->
+        <fieldset class="stars fb-stars">
+          <legend class="fb-q fb-big">¿Qué tal la pasaste?</legend>
           <div class="star-row">
             <input type="radio" id="fb-r5" name="rating" value="5"><label for="fb-r5" title="5 de 5">★<span class="sr">5 de 5</span></label>
             <input type="radio" id="fb-r4" name="rating" value="4"><label for="fb-r4" title="4 de 5">★<span class="sr">4 de 5</span></label>
@@ -690,34 +690,70 @@
             <input type="radio" id="fb-r2" name="rating" value="2"><label for="fb-r2" title="2 de 5">★<span class="sr">2 de 5</span></label>
             <input type="radio" id="fb-r1" name="rating" value="1"><label for="fb-r1" title="1 de 5">★<span class="sr">1 de 5</span></label>
           </div>
+          <p id="fb-mood" class="fb-mood" aria-live="polite">Toca una estrella</p>
         </fieldset>
-        <label class="select">¿Qué tan fácil fue conectar tu ARMY Bomb?
-          <select name="ease">
-            <option value="">Elige una opción</option>
-            <option value="5">Muy fácil</option>
-            <option value="4">Fácil</option>
-            <option value="3">Normal</option>
-            <option value="2">Difícil</option>
-            <option value="1">No pude conectarlo</option>
-            <option value="0">No lo intenté</option>
-          </select>
-        </label>
-        <label class="select">¿La usarías en una fiesta o un concierto?
-          <select name="would_use">
-            <option value="">Elige una opción</option>
-            <option value="yes">Sí</option>
-            <option value="maybe">Tal vez</option>
-            <option value="no">No</option>
-          </select>
-        </label>
-        <div class="field">
-          <label for="fb-comment">Comentario <output id="fb-count">0/1000</output></label>
-          <textarea id="fb-comment" name="comment" rows="4" maxlength="1000" placeholder="¿Qué te gustó? ¿Qué le falta? ¿Algo falló?"></textarea>
+        <div id="fb-more" class="fb-more" hidden>
+          <fieldset class="fb-set fb-tags" data-tier="low" hidden>
+            <legend class="fb-q">¿Qué falló? <small>Elige las que quieras</small></legend>
+            <div class="fb-chips">
+              <label class="fb-chip"><input type="checkbox" name="tags" value="conexion"><span>No conectó mi ARMY Bomb</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="sincronia"><span>Las luces no siguen la música</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="video"><span>Un video no se pudo ver</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="lento"><span>Va lento o se traba</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="confuso"><span>No entendí cómo usarla</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="otro"><span>Otra cosa</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="fb-set fb-tags" data-tier="mid" hidden>
+            <legend class="fb-q">¿Qué mejorarías? <small>Elige las que quieras</small></legend>
+            <div class="fb-chips">
+              <label class="fb-chip"><input type="checkbox" name="tags" value="conexion"><span>La conexión</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="sincronia"><span>La sincronía de las luces</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="canciones"><span>Más canciones</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="diseno"><span>El diseño</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="idiomas"><span>Más idiomas</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="otro"><span>Otra cosa</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="fb-set fb-tags" data-tier="high" hidden>
+            <legend class="fb-q">¿Qué te gustó más? <small>Elige las que quieras</small></legend>
+            <div class="fb-chips">
+              <label class="fb-chip"><input type="checkbox" name="tags" value="luces"><span>Las luces</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="facil"><span>Lo fácil que es</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="diseno"><span>El diseño</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="canciones"><span>Las canciones</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="concierto"><span>El modo concierto</span></label>
+              <label class="fb-chip"><input type="checkbox" name="tags" value="otro"><span>Otra cosa</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="fb-set">
+            <legend class="fb-q">¿Qué tan fácil fue conectar tu ARMY Bomb?</legend>
+            <div class="fb-faces">
+              <label class="fb-face"><input type="radio" name="ease" value="5"><span class="fb-emo" aria-hidden="true">😄</span><span>Muy fácil</span></label>
+              <label class="fb-face"><input type="radio" name="ease" value="4"><span class="fb-emo" aria-hidden="true">🙂</span><span>Fácil</span></label>
+              <label class="fb-face"><input type="radio" name="ease" value="3"><span class="fb-emo" aria-hidden="true">😐</span><span>Normal</span></label>
+              <label class="fb-face"><input type="radio" name="ease" value="2"><span class="fb-emo" aria-hidden="true">😣</span><span>Difícil</span></label>
+              <label class="fb-face"><input type="radio" name="ease" value="1"><span class="fb-emo" aria-hidden="true">😢</span><span>No pude</span></label>
+              <label class="fb-face"><input type="radio" name="ease" value="0"><span class="fb-emo" aria-hidden="true">🤷</span><span>No lo intenté</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="fb-set">
+            <legend class="fb-q">¿La usarías en una fiesta o un concierto?</legend>
+            <div class="fb-faces">
+              <label class="fb-face"><input type="radio" name="would_use" value="yes"><span class="fb-emo" aria-hidden="true">💜</span><span>Sí</span></label>
+              <label class="fb-face"><input type="radio" name="would_use" value="maybe"><span class="fb-emo" aria-hidden="true">🤔</span><span>Tal vez</span></label>
+              <label class="fb-face"><input type="radio" name="would_use" value="no"><span class="fb-emo" aria-hidden="true">🙅</span><span>No</span></label>
+            </div>
+          </fieldset>
+          <div class="field">
+            <label for="fb-comment">Comentario (opcional) <output id="fb-count">0/1000</output></label>
+            <textarea id="fb-comment" name="comment" rows="3" maxlength="1000" placeholder="¿Algo más que quieras contarnos?"></textarea>
+          </div>
+          <label class="check"><input type="checkbox" name="device" checked> Incluir el tipo de dispositivo y navegador (nos ayuda a arreglar fallas)</label>
+          <button class="btn primary" type="submit">Enviar opinión</button>
         </div>
-        <label class="check"><input type="checkbox" name="device" checked> Incluir el tipo de dispositivo y navegador (nos ayuda a arreglar fallas)</label>
-        <button class="btn primary" type="submit">Enviar opinión</button>
         <p id="fb-status" class="hint" role="status"></p>
-        <p class="hint"><a id="fb-community" href="#" target="_blank" rel="noopener noreferrer">Ver opiniones de otras personas en GitHub</a></p>
+        <p class="hint small">Es anónimo: no escribas datos personales. <a id="fb-community" href="#" target="_blank" rel="noopener noreferrer">Ver opiniones de otras personas en GitHub</a></p>
       </form>
     </section>
 

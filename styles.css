@@ -903,10 +903,35 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
 .stars legend { font-size: var(--fs-14); font-weight: 600; margin-bottom: var(--s-2); padding: 0; }
 .star-row { display: inline-flex; flex-direction: row-reverse; gap: 2px; }
 .star-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.star-row label { font-size: 2rem; line-height: 1; cursor: pointer; color: rgba(255, 255, 255, 0.22); padding: var(--s-1); border-radius: var(--r-sm); min-width: var(--tap); text-align: center; transition: color var(--dur-2), transform var(--dur-2) var(--ease-spring); }
+.star-row label { font-size: 2.5rem; line-height: 1; cursor: pointer; color: color-mix(in srgb, var(--text) 22%, transparent); padding: var(--s-1); border-radius: var(--r-sm); min-width: var(--tap); text-align: center; transition: color var(--dur-2), transform var(--dur-2) var(--ease-spring); }
 .star-row input:checked ~ label, .star-row label:hover, .star-row label:hover ~ label { color: var(--warn); }
 .star-row label:hover { transform: scale(1.12); }
 .star-row input:focus-visible + label { outline: 2px solid var(--focus); }
+/* Opinión en pasos: estrellas primero, luego preguntas con opciones visuales */
+.fb { gap: var(--s-4); }
+.fb-stars { display: grid; justify-items: center; text-align: center; gap: var(--s-1); }
+.fb-stars legend.fb-big { font-family: var(--font-display); font-size: 1.25rem; text-align: center; width: 100%; margin-bottom: var(--s-1); }
+.fb-mood { margin: 0; min-height: 1.4em; font-size: var(--fs-14); color: var(--text-2); font-weight: 600; }
+.fb-more { display: grid; gap: var(--s-4); animation: view-in var(--dur-3) var(--ease-out); }
+.fb-more[hidden], .fb-tags[hidden] { display: none; }
+.fb-set { border: 0; margin: 0; padding: 0; display: grid; gap: var(--s-2); min-width: 0; }
+.fb-q { padding: 0; font-size: var(--fs-14); font-weight: 700; }
+.fb-q small { display: block; font-weight: 500; color: var(--text-2); font-size: var(--fs-12); margin-top: 2px; }
+.fb-chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.fb-chip, .fb-face { position: relative; cursor: pointer; }
+.fb-chip input, .fb-face input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.fb-chip span { display: inline-flex; align-items: center; min-height: 40px; padding: 0 var(--s-3); border-radius: var(--r-pill); border: 1px solid var(--border-strong); background: var(--surface-1); font-size: var(--fs-14); transition: background var(--dur-2), border-color var(--dur-2), color var(--dur-2); }
+.fb-chip input:checked + span { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.fb-chip input:checked + span::before { content: "✓"; margin-inline-end: 6px; }
+.fb-faces { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); }
+.fb-face { display: grid; justify-items: center; align-content: center; gap: 4px; min-height: 76px; padding: var(--s-2); border-radius: var(--r-lg); border: 1px solid var(--border); background: var(--surface-1); text-align: center; font-size: var(--fs-12); font-weight: 600; color: var(--text-2); transition: background var(--dur-2), border-color var(--dur-2); }
+.fb-emo { font-size: 1.75rem; line-height: 1; filter: grayscale(0.6); transition: filter var(--dur-2), transform var(--dur-2) var(--ease-spring); }
+.fb-face:hover .fb-emo { filter: none; transform: scale(1.1); }
+.fb-face:has(input:checked) { background: var(--accent-soft); border-color: var(--accent); color: var(--text); }
+.fb-face:has(input:checked) .fb-emo { filter: none; transform: scale(1.15); }
+.fb-chip:has(input:focus-visible) span, .fb-face:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+.fb-more > .btn { justify-self: stretch; }
+@media (forced-colors: active) { .fb-face:has(input:checked), .fb-chip input:checked + span { outline: 2px solid Highlight; } }
 
 /* =====================================================================
    Overlays del escenario: fanchant y barra de letra
@@ -1133,6 +1158,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
     left: 0; right: 0; bottom: 0; width: 100%; max-height: 86dvh;
     border-radius: var(--r-xl) var(--r-xl) 0 0; border-bottom: 0; padding-bottom: var(--safe-b);
     transform-origin: 50% 100%;
+    background: var(--list-bg); isolation: isolate; /* hoja opaca: no se transparenta lo de atrás */
   }
   .panel[hidden] { transform: translateY(100%); opacity: 1; transition-duration: var(--dur-3); }
   .panel-head { padding-top: var(--s-5); }

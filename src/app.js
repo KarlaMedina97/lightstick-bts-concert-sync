@@ -787,9 +787,28 @@ function bindFeedback() {
   const comment = $("fb-comment");
   $("fb-community").href = `${PROJECT.repo}/issues?q=label%3Aopinion`;
   comment.oninput = () => ($("fb-count").textContent = `${comment.value.length}/1000`);
+  // Paso a paso: con la calificación aparecen las preguntas que tocan (qué falló / qué mejorar / qué gustó).
+  const MOOD = { 1: "Lo sentimos. Cuéntanos qué pasó", 2: "Queremos mejorarlo", 3: "Gracias. ¿Qué le falta?", 4: "¡Qué bueno!", 5: "¡Nos encanta! 💜" };
+  const HINT = { low: "Cuéntanos qué pasó para arreglarlo", mid: "¿Qué le falta?", high: "¿Algo más que quieras contarnos?" };
+  const tierOf = (r) => (r <= 2 ? "low" : r === 3 ? "mid" : "high");
+  const syncSteps = () => {
+    const r = Number(form.elements.rating.value) || 0;
+    $("fb-more").hidden = !r;
+    $("fb-mood").textContent = t(r ? MOOD[r] : "Toca una estrella");
+    const tier = r ? tierOf(r) : "";
+    for (const f of form.querySelectorAll(".fb-tags")) {
+      const on = f.dataset.tier === tier;
+      f.hidden = !on;
+      for (const i of f.querySelectorAll("input")) { i.disabled = !on; if (!on) i.checked = false; } // solo cuentan las del grupo visible
+    }
+    if (tier) comment.placeholder = t(HINT[tier]);
+  };
+  for (const i of form.querySelectorAll("input[name=rating]")) i.addEventListener("change", syncSteps);
+  syncSteps();
   form.onsubmit = async (e) => {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(form));
+    const fd = new FormData(form);
+    const data = { ...Object.fromEntries(fd), tags: fd.getAll("tags") };
     const entry = buildFeedback(data, { includeDevice: Boolean(data.device), songId: queue[current]?.song.id ?? null });
     const status = $("fb-status");
     if (!entry) {
@@ -804,6 +823,7 @@ function bindFeedback() {
     if (r.ok) {
       form.reset();
       $("fb-count").textContent = "0/1000";
+      syncSteps();
     }
   };
 }
@@ -3073,7 +3093,8 @@ async function init() {
   bindGame();
   bindTimeline();
   bindTabs(["view-explore", "view-video", "view-lights"], (id) => {
-    if (id === "view-explore" && page === "likes" && view === "explore") return closeLikes(); // estando en Me gusta, Explorar vuelve al inicio
+    // Estando en Me gusta o Mis videos, Explorar vuelve al inicio; Video y Luces salen de la página.
+    if (page !== "home" && (id !== "view-explore" || !$(PAGES[page].el).hidden)) { closeLikes(); if (id === "view-explore") return; }
     switchView({ "view-video": "video", "view-lights": "lights", "view-explore": "explore" }[id]);
   });
   // Sin canción, lo que se ve es Explorar: la pestaña lo dice.

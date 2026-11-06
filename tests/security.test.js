@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { sanitizeRow } from "../src/leaderboard.js";
-import { buildFeedback } from "../src/feedback.js";
+import { buildFeedback, toRow } from "../src/feedback.js";
 import { parseYouTubeId } from "../src/youtube.js";
 
 const ok = { handle: "army_97", network: "x", songId: "dynamite", albumId: "be", score: 1200, accuracy: 90, maxCombo: 20 };
@@ -27,6 +27,16 @@ test("las opiniones se limpian y se recortan", () => {
   assert.equal(f.browser, "Chrome");
   assert.equal(buildFeedback({ rating: "", comment: "   " }, { nav }), null);
   assert.equal(buildFeedback({ rating: "9", would_use: "hack", comment: "x" }, { nav }).would_use, null);
+});
+
+test("opiniones por pasos: solo etiquetas fijas, y en la tabla van dentro del comentario", () => {
+  const nav = { userAgent: "x" };
+  const f = buildFeedback({ rating: "2", tags: ["conexion", "lento", "<script>", "conexion"], comment: "no conecta" }, { nav });
+  assert.deepEqual(f.tags, ["conexion", "lento"]);
+  const row = toRow(f);
+  assert.equal(row.comment, "[conexion, lento] no conecta");
+  assert.ok(!("tags" in row));
+  assert.equal(toRow(buildFeedback({ rating: "5", tags: ["luces"] }, { nav })).comment, "[luces]");
 });
 
 test("solo acepta enlaces reales de YouTube", () => {

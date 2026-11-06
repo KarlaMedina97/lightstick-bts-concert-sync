@@ -5,6 +5,8 @@ import { LEADERBOARD, PROJECT } from "./config.js";
 
 const MAX_COMMENT = 1000;
 const COOLDOWN_MS = 60000;
+/** Etiquetas fijas de las opciones visuales (nunca texto libre). */
+export const FEEDBACK_TAGS = ["conexion", "sincronia", "video", "lento", "confuso", "canciones", "diseno", "idiomas", "luces", "facil", "concierto", "otro"];
 
 /** Resumen anónimo del dispositivo: solo familia de sistema y navegador, y capacidades. */
 export function deviceSummary(nav = navigator) {
@@ -23,6 +25,7 @@ export function buildFeedback(form, { includeDevice = true, songId = null, nav }
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
     .trim()
     .slice(0, MAX_COMMENT);
+  const tags = [...new Set((Array.isArray(form.tags) ? form.tags : []).filter((x) => FEEDBACK_TAGS.includes(x)))];
   if (!(rating >= 1 && rating <= 5) && !comment) return null;
   const d = includeDevice ? deviceSummary(nav) : {};
   return {
@@ -30,6 +33,7 @@ export function buildFeedback(form, { includeDevice = true, songId = null, nav }
     ease: ease !== null && ease >= 0 && ease <= 5 ? Math.round(ease) : null,
     would_use: wouldUse,
     comment: comment || null,
+    tags,
     song_id: typeof songId === "string" && /^[a-z0-9-]{1,60}$/.test(songId) ? songId : null,
     os: d.os ?? null,
     browser: d.browser ?? null,
@@ -39,6 +43,13 @@ export function buildFeedback(form, { includeDevice = true, songId = null, nav }
 }
 
 let lastSent = 0;
+
+/** Fila para la tabla `feedback` (docs/ranking-global.md): las etiquetas se guardan dentro del comentario. */
+export function toRow({ tags = [], ...rest }) {
+  if (!tags.length) return rest;
+  const comment = `[${tags.join(", ")}]${rest.comment ? ` ${rest.comment}` : ""}`.slice(0, MAX_COMMENT);
+  return { ...rest, comment };
+}
 
 /** @returns {Promise<{ok:boolean, via:"server"|"github"|"none", message:string}>} */
 export async function sendFeedback(entry) {
@@ -55,7 +66,8 @@ export async function sendFeedback(entry) {
           "Content-Type": "application/json",
           Prefer: "return=minimal",
         },
-        body: JSON.stringify(entry),
+        // La tabla no tiene columna de etiquetas: van al inicio del comentario ("[conexion, lento] …").
+        body: JSON.stringify(toRow(entry)),
       });
       if (res.ok) {
         lastSent = Date.now();
@@ -69,6 +81,7 @@ export async function sendFeedback(entry) {
     `**Calificación:** ${stars}`,
     `**Facilidad para conectar:** ${entry.ease ?? "—"} / 5`,
     `**¿La usaría en un concierto?:** ${{ yes: "Sí", maybe: "Tal vez", no: "No" }[entry.would_use] ?? "—"}`,
+    `**Etiquetas:** ${entry.tags?.length ? entry.tags.join(", ") : "—"}`,
     `**Dispositivo:** ${entry.os ?? "—"} · ${entry.browser ?? "—"} · Bluetooth web: ${entry.bluetooth === null ? "—" : entry.bluetooth ? "sí" : "no"}`,
     "",
     entry.comment ?? "",
