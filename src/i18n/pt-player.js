@@ -1,5 +1,7 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Sostenlo y agítalo · doble toque lo endereza": "Segure e agite · toque duas vezes para endireitar",
+  "Elige una canción para ver su video.": "Escolha uma música para ver o vídeo.",
   "Cómo ver las luces": "Como ver as luzes",
   "Bola": "Bola",
   "ARMY Bomb 3D": "ARMY Bomb 3D",

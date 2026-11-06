@@ -2235,7 +2235,7 @@ async function setLightsModel(mode, { save = true } = {}) {
   $("lights-view").classList.toggle("model", model);
   $("stick3d").hidden = !model;
   $("lv-vers").hidden = !model;
-  $("lv-hint").textContent = t(model ? "Arrastra para girarlo · doble toque lo endereza" : "Sin ARMY Bomb, tu pantalla brilla. Sube el brillo.");
+  $("lv-hint").textContent = t(model ? "Sostenlo y agítalo · doble toque lo endereza" : "Sin ARMY Bomb, tu pantalla brilla. Sube el brillo.");
   if (model && !stick3d) {
     try {
       const { createStick3D } = await import("./stick3d.js");
@@ -3212,6 +3212,12 @@ async function init() {
   bindGame();
   bindTimeline();
   bindTabs(["view-explore", "view-video", "view-lights"], (id) => {
+    // Sin canción, Video no tiene nada que mostrar (y el reproductor vacío de YouTube puede mostrar un error).
+    if (id === "view-video" && current < 0) {
+      selectViewTab(view === "lights" ? "view-lights" : "view-explore");
+      toast("Elige una canción para ver su video.", 3000);
+      return;
+    }
     // Estando en Me gusta o Mis videos, Explorar vuelve al inicio; Video y Luces salen de la página.
     if (page !== "home" && (id !== "view-explore" || !$(PAGES[page].el).hidden)) { closeLikes(); if (id === "view-explore") return; }
     switchView({ "view-video": "video", "view-lights": "lights", "view-explore": "explore" }[id]);

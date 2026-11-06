@@ -46,32 +46,53 @@ export function createStick3D(mount, { reduceMotion = false } = {}) {
   fill.position.set(-4, 6, 8);
   scene.add(key, fill, new THREE.AmbientLight("#ffffff", 0.5));
 
-  // Giro: el arrastre suma velocidad; al soltar sigue con inercia y vuelve de a poco a un vaivén suave.
-  const spin = new THREE.Group();
-  const tilt = new THREE.Group();
-  tilt.add(spin);
-  scene.add(tilt);
+  // Como en el inicio: se sostiene con el mouse o el dedo y se agita. La mano sigue al puntero con un resorte, el
+  // ARMY Bomb se inclina con la velocidad (pivota en el agarre del mango), un movimiento rápido lo sacude y al
+  // soltarlo vuelve a su lugar con un vaivén. Un toque sin arrastrar lo hace latir; doble toque lo endereza.
+  const hand = new THREE.Group();   // posición (sigue al puntero) e inclinación; su origen es el agarre
+  const spin = new THREE.Group();   // giro sobre su eje
+  hand.add(spin);
+  scene.add(hand);
   const shadow = contactShadow(mats, 1.3);
   scene.add(shadow);
-  let yaw = -0.5, vel = 0, pitch = 0, pitchT = 0, dragging = false, lastX = 0, lastY = 0, lastT = 0;
+  const hold = { x: 0, y: 0, vx: 0, vy: 0, tx: 0, ty: 0, ox: 0, oy: 0 };
+  let yaw = -0.5, spinVel = 0, lean = 0, leanV = 0, pitch = 0, pitchV = 0;
+  let dragging = false, lastX = 0, lastY = 0, lastT = 0, moved = 0, shakeT = -10, shakeAmp = 0, lastFlick = 0, beat = 0;
+  const worldPerPx = () => (2 * camera.position.z * Math.tan((camera.fov * Math.PI) / 360)) / Math.max(1, h);
   canvas.addEventListener("pointerdown", (e) => {
-    dragging = true; lastX = e.clientX; lastY = e.clientY; lastT = performance.now(); vel = 0;
+    dragging = true; moved = 0;
+    lastX = hold.ox = e.clientX; lastY = hold.oy = e.clientY; lastT = performance.now();
+    hold.tx = hold.x; hold.ty = hold.y;
     canvas.setPointerCapture(e.pointerId);
     wake();
   });
   canvas.addEventListener("pointermove", (e) => {
     if (!dragging) return;
-    const now = performance.now(), dt = Math.max(8, now - lastT);
-    const dx = e.clientX - lastX;
-    yaw += dx * 0.012;
-    vel = (dx * 0.012) / (dt / 16.7);
-    pitchT = Math.max(-0.35, Math.min(0.35, pitchT + (e.clientY - lastY) * 0.004));
+    const now = performance.now(), ddt = Math.max(1, now - lastT);
+    const dx = e.clientX - lastX, dy = e.clientY - lastY;
     lastX = e.clientX; lastY = e.clientY; lastT = now;
+    moved += Math.abs(dx) + Math.abs(dy);
+    const k = worldPerPx();
+    hold.tx = Math.max(-1.6, Math.min(1.6, (e.clientX - hold.ox) * k));
+    hold.ty = Math.max(-0.9, Math.min(0.9, -(e.clientY - hold.oy) * k));
+    spinVel = dx * 0.004; // gira un poco, pero lo principal es moverlo
+    if (!reduceMotion && Math.hypot(dx, dy) / ddt > 2.2 && now - lastFlick > 450) { lastFlick = now; shake(1); }
   });
-  const up = () => { dragging = false; };
+  const up = () => {
+    if (!dragging) return;
+    dragging = false;
+    hold.tx = hold.ty = 0;
+    if (moved < 6) shake(0.5); // toque: late
+  };
   canvas.addEventListener("pointerup", up);
   canvas.addEventListener("pointercancel", up);
-  canvas.addEventListener("dblclick", () => { yaw = -0.5; vel = 0; pitchT = 0; });
+  canvas.addEventListener("dblclick", () => { yaw = -0.5; spinVel = 0; });
+  function shake(a = 1) {
+    if (reduceMotion) a *= 0.3;
+    shakeT = performance.now() / 1000;
+    shakeAmp = a;
+    beat = 1; // destello del globo con la sacudida (suave: el modo seguro limita los destellos del ARMY Bomb real, no este)
+  }
 
   let current = null, wanted = null, loadingKey = null;
   async function setVersion(k) {
@@ -84,27 +105,28 @@ export function createStick3D(mount, { reduceMotion = false } = {}) {
     const built = make(mats, { lowEnd: true }); // la versión de alto detalle usa vidrio con transmisión, que sobre lienzo transparente sale negra
     if (current) { spin.remove(current.obj); current.obj.traverse((o) => o.geometry?.dispose?.()); }
     const { group, metrics } = built;
-    // Centrado: el centro del alto del lightstick en el origen.
-    group.position.y = -(metrics.top + metrics.bottom) / 2;
+    // Pivote en el agarre (como una mano que lo sostiene); el conjunto queda centrado en la vista.
+    group.position.y = -metrics.grip;
     built.light && (built.light.intensity = 0); // la luz la pone `key`
     spin.add(group);
-    shadow.position.y = group.position.y + metrics.bottom - 0.25;
+    restY = metrics.grip - (metrics.top + metrics.bottom) / 2;
+    shadow.position.y = -(metrics.top - metrics.bottom) / 2 - 0.35;
     current = { key: wanted, obj: group, metrics };
     fit();
     wake();
   }
 
-  let w = 0, h = 0;
+  let w = 0, h = 0, restY = 0;
   function fit() {
     const r = mount.getBoundingClientRect();
     w = Math.max(1, Math.round(r.width)); h = Math.max(1, Math.round(r.height));
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     // Que entre entero a lo alto (y a lo ancho en pantallas angostas).
-    const tall = current ? current.metrics.top - current.metrics.bottom + 1.2 : 8.6;
+    const tall = current ? current.metrics.top - current.metrics.bottom + 2.2 : 9.6; // aire para moverlo y agitarlo
     const fov = (camera.fov * Math.PI) / 180;
     const byH = tall / 2 / Math.tan(fov / 2);
-    const byW = (3.6 / 2) / (Math.tan(fov / 2) * camera.aspect);
+    const byW = (5.2 / 2) / (Math.tan(fov / 2) * camera.aspect);
     camera.position.z = Math.max(byH, byW);
     camera.updateProjectionMatrix();
   }
@@ -127,18 +149,31 @@ export function createStick3D(mount, { reduceMotion = false } = {}) {
     t0 = now;
     color.lerp(target, 1 - Math.exp(-dt * 18)); // sigue al color casi al instante, sin parpadeo de cuadros
     glow += (glowT - glow) * (1 - Math.exp(-dt * 14));
-    mats.update(color, glow);
+    mats.update(color, glow + beat * 0.5);
     key.color.copy(color);
     key.intensity = 6 * glow;
-    if (!dragging) {
-      yaw += vel;
-      vel *= Math.exp(-dt * 2.2);
-      if (!reduceMotion && Math.abs(vel) < 0.002) yaw += dt * 0.25; // giro lento de vitrina
-    }
-    pitch += (pitchT - pitch) * (1 - Math.exp(-dt * 8));
-    if (!dragging) pitchT *= Math.exp(-dt * 1.5);
+    // Mano: resorte hacia el puntero (o de vuelta al centro al soltar).
+    const K = dragging ? 140 : 70, D = dragging ? 18 : 9;
+    hold.vx += ((hold.tx - hold.x) * K - hold.vx * D) * dt;
+    hold.vy += ((hold.ty - hold.y) * K - hold.vy * D) * dt;
+    hold.x += hold.vx * dt; hold.y += hold.vy * dt;
+    // Péndulo: se inclina contra la velocidad de la mano y se asienta con un vaivén.
+    leanV += ((-hold.vx * 0.09 - lean) * 60 - leanV * 7) * dt;
+    lean += leanV * dt;
+    pitchV += ((hold.vy * 0.05 - pitch) * 60 - pitchV * 7) * dt;
+    pitch += pitchV * dt;
+    // Sacudida de concierto: unas oscilaciones rápidas que se apagan.
+    const st = now / 1000 - shakeT;
+    const sh = st < 1.2 ? Math.sin(st * 38) * Math.exp(-st * 5) * 0.32 * shakeAmp : 0;
+    yaw += spinVel;
+    spinVel *= Math.exp(-dt * 2.4);
+    if (!reduceMotion && !dragging && Math.abs(spinVel) < 0.002) yaw += dt * 0.25; // giro lento de vitrina
     spin.rotation.y = yaw;
-    tilt.rotation.x = pitch + (reduceMotion ? 0 : Math.sin(now / 1600) * 0.03);
+    hand.position.set(hold.x, restY + hold.y + (st < 1.2 ? Math.abs(sh) * 0.25 : 0), 0);
+    hand.rotation.set(Math.max(-0.5, Math.min(0.5, pitch)) + (reduceMotion ? 0 : Math.sin(now / 1600) * 0.03), 0, Math.max(-0.7, Math.min(0.7, lean)) + sh);
+    shadow.position.x = hold.x * 0.8;
+    shadow.scale.setScalar(1 - Math.min(0.4, Math.max(0, hold.y) * 0.3));
+    beat *= Math.exp(-dt * 5);
     renderer.render(scene, camera);
     raf = requestAnimationFrame(frame);
   }

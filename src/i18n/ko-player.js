@@ -1,5 +1,7 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Sostenlo y agítalo · doble toque lo endereza": "잡고 흔들어 보세요 · 두 번 탭하면 원위치",
+  "Elige una canción para ver su video.": "영상을 보려면 곡을 골라 주세요.",
   "Cómo ver las luces": "불빛 보기 방식",
   "Bola": "구슬",
   "ARMY Bomb 3D": "3D 아미밤",

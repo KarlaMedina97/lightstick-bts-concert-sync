@@ -1,5 +1,7 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Sostenlo y agítalo · doble toque lo endereza": "Pegang dan goyangkan · ketuk dua kali untuk meluruskan",
+  "Elige una canción para ver su video.": "Pilih lagu untuk menonton videonya.",
   "Cómo ver las luces": "Cara melihat lampu",
   "Bola": "Bola",
   "ARMY Bomb 3D": "ARMY Bomb 3D",
