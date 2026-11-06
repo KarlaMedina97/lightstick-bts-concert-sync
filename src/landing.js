@@ -727,13 +727,36 @@ if (renderer) {
   const ringHint = document.getElementById("ring-hint");
   let ringHintOn = false;
   try { ringHintOn = Boolean(ringHint) && localStorage.getItem(RING_HINT_KEY) !== "1"; } catch { ringHintOn = Boolean(ringHint); }
+  // El destello de verdad empuja la ronda: cada ~3,4 s el "dedo" se desliza sobre los ARMY Bomb y los hace girar
+  // más rápido; se repite hasta que la persona la gire ella misma.
+  let ringPushAt = 0, ringPushed = false;
   function placeRingHint() {
     if (!ringHintOn) return;
     const el = slots.find((S) => S.lineup)?.el;
     const r = el?.getBoundingClientRect();
     const show = Boolean(r) && ring.othersIn > 0.6 && r.top < innerHeight * 0.5 && r.bottom > innerHeight * 0.5;
     ringHint.classList.toggle("in", show);
-    if (show) ringHint.style.transform = `translate(${Math.round(r.left + r.width / 2)}px, ${Math.round(r.top + r.height * 0.22)}px) translate(-50%, -50%)`;
+    if (!show) { ringPushAt = 0; return; }
+    // Encima de los ARMY Bomb: las etiquetas de versión van sobre cada globo, así que el gesto se pone un poco más
+    // abajo que ellas (sobre los globos), al centro de la ronda.
+    const tags = [...document.querySelectorAll(".ver-tag.shown")].map((t) => t.getBoundingClientRect()).filter((b) => b.width);
+    if (tags.length) {
+      const cx = tags.reduce((s2, b) => s2 + b.left + b.width / 2, 0) / tags.length;
+      const cy = Math.max(...tags.map((b) => b.bottom)) + 70;
+      ringHint.style.transform = `translate(${Math.round(cx)}px, ${Math.round(Math.min(innerHeight - 60, cy))}px) translate(-50%, -50%)`;
+    } else ringHint.style.transform = `translate(${Math.round(r.left + r.width / 2)}px, ${Math.round(innerHeight * 0.5)}px) translate(-50%, -50%)`;
+    const now = performance.now();
+    if (!ringPushAt) ringPushAt = now + 600;
+    if (now >= ringPushAt) {
+      // Empieza un deslizamiento (la animación CSS dura 1,4 s); a mitad de camino, el empujón.
+      ringHint.classList.remove("swipe"); void ringHint.offsetWidth; ringHint.classList.add("swipe");
+      ringPushed = false;
+      ringPushAt = now + 3400; // 1,4 s de gesto + 2 s de pausa
+    }
+    if (!ringPushed && ringHint.classList.contains("swipe") && now > ringPushAt - 3400 + 450) {
+      ringPushed = true;
+      if (!reduceMotion) ring.vel = Math.min(14, ring.vel + 2.6);
+    }
   }
   function dismissRingHint() {
     if (!ringHintOn) return;
