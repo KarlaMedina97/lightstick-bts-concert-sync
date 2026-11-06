@@ -25,6 +25,23 @@ const FILTERS = [
   { namePrefix: "BBOMB-" },
 ];
 
+/** Brave trae Web Bluetooth apagado por defecto (se activa en brave://flags). */
+export const isBrave = () => typeof navigator !== "undefined" && Boolean(navigator.brave);
+
+/**
+ * Qué significa un error de requestDevice(). Varios navegadores responden "NotFoundError" tanto si la persona cerró
+ * la lista como si el Bluetooth está apagado o desactivado: se distinguen por el mensaje.
+ * @returns {"cancelled" | "disabled" | "adapter-off" | "denied" | "other"}
+ */
+export function classifyBtError(e) {
+  const msg = String(e?.message ?? "");
+  if (/globally disabled|api is disabled|not enabled|flag|blocklist|not available in this|not supported/i.test(msg)) return "disabled";
+  if (/adapter (is )?not available|adapter.*off|bluetooth.*(off|unavailable)|no bluetooth adapter/i.test(msg)) return "adapter-off";
+  if (e?.name === "SecurityError" || e?.name === "NotAllowedError" || /permission|denied/i.test(msg)) return "denied";
+  if (e?.name === "NotFoundError") return "cancelled";
+  return "other";
+}
+
 export function bluetoothSupport() {
   if (!("bluetooth" in navigator)) {
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent);

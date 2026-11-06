@@ -1,11 +1,32 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
+  "Enlace de esta página": "Link to this page",
+  "Cuatro pasos para conectar (desliza para ver todos)": "Four steps to connect (swipe to see them all)",
+  "Estás en el navegador de una app: aquí no se puede conectar el ARMY Bomb (los videos y tu pantalla sí funcionan).": "You're in an app's browser: the ARMY Bomb can't connect here (videos and your screen still work).",
+  "Para conectarlo: toca ⋯ y elige «Abrir en el navegador», o copia el enlace y ábrelo en la app Bluefy.": "To connect it: tap ⋯ and choose “Open in browser”, or copy the link and open it in the Bluefy app.",
+  "Para conectarlo, ábrela en Chrome:": "To connect it, open it in Chrome:",
+  "Abrir en Chrome": "Open in Chrome",
+  "Copiar enlace": "Copy link",
+  "Enlace copiado ✓": "Link copied ✓",
+  "Cerrar aviso": "Close notice",
+  "Estás en el navegador de una app (TikTok, Instagram…): aquí no hay Bluetooth. Usa «Abrir en Chrome» o copia el enlace y ábrelo en tu navegador (en iPhone, en Bluefy).": "You're in an app's browser (TikTok, Instagram…): there's no Bluetooth here. Use “Open in Chrome” or copy the link and open it in your browser (on iPhone, in Bluefy).",
+  "Empezar": "Get started",
+  "¿Sin ARMY Bomb? Tu pantalla brilla igual · gratis · sin instalar · sin cuentas": "No ARMY Bomb? Your screen glows too · free · nothing to install · no accounts",
+  "¿Tienes un ARMY Bomb?": "Do you have an ARMY Bomb?",
+  "Sí, conectarlo": "Yes, connect it",
+  "Te guío en 4 pasos · menos de 1 minuto": "I'll guide you in 4 steps · under a minute",
+  "No, usar mi pantalla": "No, use my screen",
+  "Tu celular o compu brilla con la música": "Your phone or computer glows with the music",
+  "Gratis · sin instalar · sin cuentas · Bluetooth en Chrome, Edge o Bluefy (iPhone)": "Free · nothing to install · no accounts · Bluetooth on Chrome, Edge or Bluefy (iPhone)",
+  "Solo ver los videos": "Just watch the videos",
+  "Sin instalar · gratis · en tu navegador · Bluetooth en Chrome, Edge o Bluefy": "Nothing to install · free · in your browser · Bluetooth on Chrome, Edge or Bluefy",
+  "Qué datos usa LumiParty (casi ninguno), qué se queda en tu dispositivo y cómo protegemos el sitio.": "What data LumiParty uses (almost none), what stays on your device and how we protect the site.",
   "Menú": "Menu",
   "Hecho por ARMY": "Made by ARMY",
   "no oficial": "unofficial",
   "gratis": "free",
   // ---------- <head> ----------
-  "Purple Wave Sync · Tu ARMY Bomb al ritmo de BTS": "Purple Wave Sync · Your ARMY Bomb in sync with BTS",
+  "LumiParty · Tu ARMY Bomb al ritmo de BTS": "LumiParty · Your ARMY Bomb in sync with BTS",
   "Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos oficiales de BTS, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.":
     "Connect your ARMY Bomb over Bluetooth and make it glow with BTS's official videos, song by song. Unofficial fan project, free and with no accounts.",
 
@@ -175,11 +196,11 @@ export default {
     "Made with 💜 by ARMY. Unofficial fan project, not affiliated with HYBE, BIGHIT MUSIC or BTS. The 3D lightstick is our own illustration. Videos from YouTube.",
 
   // ---------- privacy/index.html ----------
-  "Privacidad · Purple Wave Sync": "Privacy · Purple Wave Sync",
+  "Privacidad · LumiParty": "Privacy · LumiParty",
   "Ir a la app": "Go to the app",
   "Privacidad y seguridad": "Privacy and security",
-  "Purple Wave Sync es un proyecto de fans, gratis y de código abierto. Está hecho para guardar lo mínimo posible.":
-    "Purple Wave Sync is a free, open-source fan project. It's built to store as little as possible.",
+  "LumiParty es un proyecto de fans, gratis y de código abierto. Está hecho para guardar lo mínimo posible.":
+    "LumiParty is a free, open-source fan project. It's built to store as little as possible.",
   "Qué guardamos": "What we store",
   "Nada en servidores propios.": "Nothing on our own servers.",
   "El sitio es estático: no hay cuentas, ni contraseñas, ni base de datos de usuarios.":
@@ -235,6 +256,7 @@ const DEMO_COLORS = { Morado: "Purple", Cielo: "Sky", Rosa: "Pink", Oro: "Gold",
 const DEMO_MOODS = { intro: "intro", verso: "verse", coro: "chorus", final: "finale" };
 
 export const patterns = [
+  [/^Estás en el navegador de (.+?): aquí no se puede conectar el ARMY Bomb \(los videos y tu pantalla sí funcionan\)\.$/, "You're in the $1 browser: the ARMY Bomb can't connect here (videos and your screen still work)."],
   [/^(.+) en el (intro|verso|coro|final): así brillarían tu lightstick y el estadio\.$/,
     (_, color, mood) => `${DEMO_COLORS[color] ?? color} during the ${DEMO_MOODS[mood] ?? mood}: that's how your lightstick and the stadium would glow.`],
   [/^(¡Perfecto!|¡Genial!|Bien|Fuera de tiempo) ×(\d+)$/, "$1 ×$2"],

@@ -2,20 +2,34 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; worker-src 'self'; manifest-src 'self'; media-src 'self'; font-src 'self'; upgrade-insecure-requests; connect-src 'self'; form-action 'none'; script-src 'self' 'sha256-gB2Jox7UETAA0hIUyDydweE3XiP47xsOcFmb+wcMIIo=' https://www.youtube.com https://s.ytimg.com">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; worker-src 'self'; manifest-src 'self'; media-src 'self'; font-src 'self'; upgrade-insecure-requests; connect-src 'self'; form-action 'none'; script-src 'self' 'sha256-1Oe8WSDVlDb+swfSv3WuQrfvc0VQt+EQWbDbtKP9m2Q=' 'sha256-gB2Jox7UETAA0hIUyDydweE3XiP47xsOcFmb+wcMIIo=' https://www.youtube.com https://s.ytimg.com">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Purple Wave Sync · Tu ARMY Bomb al ritmo de BTS</title>
+  <title>LumiParty · Tu ARMY Bomb al ritmo de BTS</title>
   <meta name="description" content="Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos oficiales de BTS, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.">
   <meta name="theme-color" content="#060818">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="canonical" href="https://lumiparty.com/">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LumiParty">
   <meta property="og:url" content="https://lumiparty.com/">
   <meta property="og:locale" content="es_419">
-  <meta property="og:title" content="Tu ARMY Bomb, al ritmo de cada canción · Purple Wave Sync">
-  <meta property="og:description" content="Dale play a un video de BTS y tu lightstick cambia de color con la canción. Hecho por ARMY, no oficial, gratis.">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:title" content="Tu ARMY Bomb, al ritmo de cada canción · LumiParty">
+  <meta property="og:description" content="Dale play a un video de BTS y tu ARMY Bomb cambia de color con la canción. Hecho por ARMY, no oficial, gratis y sin cuentas.">
+  <meta property="og:image" content="https://lumiparty.com/assets/og-image.jpg">
+  <meta property="og:image:secure_url" content="https://lumiparty.com/assets/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="LumiParty: un ARMY Bomb brillando sobre un mar de luces moradas. Tu ARMY Bomb, al ritmo de cada canción.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tu ARMY Bomb, al ritmo de cada canción · LumiParty">
+  <meta name="twitter:description" content="Dale play a un video de BTS y tu ARMY Bomb cambia de color con la canción. Hecho por ARMY, no oficial, gratis y sin cuentas.">
+  <meta name="twitter:image" content="https://lumiparty.com/assets/og-image.jpg">
+  <meta name="twitter:image:alt" content="LumiParty: un ARMY Bomb brillando sobre un mar de luces moradas. Tu ARMY Bomb, al ritmo de cada canción.">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"LumiParty","url":"https://lumiparty.com/","description":"Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos oficiales de BTS, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.","applicationCategory":"MultimediaApplication","operatingSystem":"Android, Windows, macOS, ChromeOS, iOS (con Bluefy)","inLanguage":["es","en"],"isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"image":"https://lumiparty.com/assets/og-image.jpg"}</script>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -43,7 +57,7 @@
   <div class="enter-fx" aria-hidden="true"></div>
 
   <header class="nav">
-    <a class="brand" href="./" data-scroll-top><img src="icons/icon.svg" alt="" width="28" height="28" draggable="false"> <span class="brand-name">Purple Wave Sync</span></a>
+    <a class="brand" href="./" data-scroll-top><img src="icons/icon.svg" alt="" width="28" height="28" draggable="false"> <span class="brand-name">LumiParty</span></a>
     <nav aria-label="Principal">
       <button id="nav-menu-btn" class="nav-menu-btn" type="button" aria-expanded="false" aria-controls="nav-links">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="nav-menu-label">Menú</span>
@@ -73,15 +87,24 @@
         </h1>
         <p class="lead reveal">Dale play a un video de BTS y tu ARMY Bomb cambia de color. En iPhone, con Bluefy.</p>
         <div class="hero-ctas reveal">
-          <a class="orb-cta js-enter" href="player/">
-            <span class="orb-glow" aria-hidden="true"></span>
-            <span class="orb-shine" aria-hidden="true"></span>
-            <span class="orb-label">Abrir el reproductor</span>
-            <span class="orb-arrow" aria-hidden="true">→</span>
-          </a>
-          <p class="orb-micro">Sin instalar · gratis · en tu navegador</p>
+          <!-- Sin preguntar: todos empiezan igual (la pantalla brilla con la música) y conectar el ARMY Bomb es opcional,
+               con el mismo peso. Conectar abre la guía de 4 pasos, que termina con el botón Conectar. -->
+          <div class="cta-pair">
+            <a class="orb-cta js-enter" href="player/">
+              <span class="orb-glow" aria-hidden="true"></span>
+              <span class="orb-shine" aria-hidden="true"></span>
+              <span class="orb-label">Empezar</span>
+              <span class="orb-arrow" aria-hidden="true">→</span>
+            </a>
+            <a class="orb-cta orb-bt js-enter" href="player/?guide=1">
+              <span class="orb-glow" aria-hidden="true"></span>
+              <span class="orb-shine" aria-hidden="true"></span>
+              <span class="orb-label">Conectar mi ARMY Bomb</span>
+              <span class="orb-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M7 7l10 10-5 5V2l5 5L7 17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </a>
+          </div>
+          <p class="orb-micro">¿Sin ARMY Bomb? Tu pantalla brilla igual · gratis · sin instalar · sin cuentas</p>
           <div class="hero-links">
-            <a class="link-arrow" href="player/?guide=1">Cómo conectar <span aria-hidden="true">→</span></a>
             <button class="btn ghost js-intro" type="button" aria-pressed="false">▶ Escuchar la intro</button>
           </div>
         </div>
@@ -126,7 +149,7 @@
           <h2 id="t-conectar" class="title kt" tabindex="-1">Cuatro pasos <span class="grad">y a brillar</span></h2>
           <p class="sub">Chrome o Edge. En iPhone o iPad, con la app Bluefy.</p>
         </div>
-        <ol class="steps reveal-up">
+        <ol class="steps reveal-up" tabindex="0" aria-label="Cuatro pasos para conectar (desliza para ver todos)">
           <li class="step" data-focus="handle"><span class="st-n">1</span><span class="st-ico" aria-hidden="true">ᛒ</span><b>Activa el Bluetooth</b><span>En tu celular o computadora.</span></li>
           <li class="step" data-focus="handle"><span class="st-n">2</span><span class="st-ico" aria-hidden="true">⇄</span><b>Libéralo</b><span>Desconéctalo de otro celular o app.</span></li>
           <li class="step" data-focus="buttons"><span class="st-n">3</span><span class="st-ico" aria-hidden="true">⏻</span><b>Modo Bluetooth</b><span>Apagado: mantén ambos botones 2 s.</span></li>
@@ -259,7 +282,7 @@
       </div>
     </section>
 
-    <div class="marquee alt" aria-hidden="true"><div class="mq-track"><span class="mq-outline">ARMY</span><i>✦</i><span>PURPLE WAVE</span><i>✦</i><span class="ko">보라해</span><i>✦</i><span class="mq-outline">BORAHAE</span><i>✦</i><span>LIGHT UP</span><i>✦</i><span class="ko">아미</span><i>✦</i></div></div>
+    <div class="marquee alt" aria-hidden="true"><div class="mq-track"><span class="mq-outline">ARMY</span><i>✦</i><span>LUMIPARTY</span><i>✦</i><span class="ko">보라해</span><i>✦</i><span class="mq-outline">BORAHAE</span><i>✦</i><span>LIGHT UP</span><i>✦</i><span class="ko">아미</span><i>✦</i></div></div>
 
     <section id="oceano" class="chapter ocean" data-side="center" data-pal="gold" aria-labelledby="t-oceano">
       <div class="slot" data-rot="0" data-spin="0.5" data-crowd="1.6" data-gesture="pump" data-mood="climax" aria-hidden="true"></div>

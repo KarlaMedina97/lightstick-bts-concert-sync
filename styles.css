@@ -1,5 +1,5 @@
 /* =====================================================================
-   Purple Wave Sync · Reproductor
+   LumiParty · Reproductor
    Sistema visual: tokens (color, tipo, espacio, radios, elevación, movimiento)
    → base → escenario de fondo → HUD → escenario → dock → listas → paneles
    → controles → guía → overlays → responsivo → movimiento reducido.
@@ -328,7 +328,29 @@ kbd {
   .haze { animation: none; }
 }
 /* Las filas de Explorar que no se ven no se dibujan (cientos de tarjetas con imagen). */
-.shelf, .explore-list > * { content-visibility: auto; contain-intrinsic-size: auto 320px; }
+/* Pintar solo lo visible ahorra trabajo, pero el alto estimado se corrige al llegar: donde el navegador no
+   compensa el desplazamiento (Safari en iPhone, sin overflow-anchor) la lista "brinca". Ahí se pinta todo. */
+@supports (overflow-anchor: auto) {
+  .shelf, .explore-list > * { content-visibility: auto; contain-intrinsic-size: auto 320px; }
+}
+
+/* Explorar: Canciones | Álbumes junto a los filtros */
+.explore-tools { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
+.explore-tools .filters { flex: 1 1 auto; min-width: 0; }
+.type-seg { flex: none; display: inline-flex; padding: 3px; gap: 2px; border-radius: var(--r-pill); background: var(--surface-field, var(--surface-0)); border: 1px solid var(--border); }
+.type-opt { min-height: 36px; padding: 0 var(--s-3); border: 0; border-radius: var(--r-pill); background: none; color: var(--text-2); font: inherit; font-size: var(--fs-14); font-weight: 700; cursor: pointer; white-space: nowrap; }
+.type-opt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.type-opt:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (pointer: coarse) { .type-opt { min-height: 44px; } }
+@media (max-width: 640px) { .explore-tools { flex-direction: column; align-items: stretch; } .type-seg { align-self: flex-start; } }
+@media (forced-colors: active) { .type-opt[aria-pressed="true"] { outline: 2px solid Highlight; } }
+/* Resultados en modo Álbumes: cuadrícula */
+.album-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: var(--s-4) var(--s-3); }
+/* Me gusta: canciones y álbumes juntos */
+.likes-hub { display: grid; gap: var(--s-4); }
+.likes-hub > .shelf { gap: var(--s-2); }
+.shelf-title.sub { font-size: var(--fs-18, 1.125rem); }
+.shelf-head .shelf-more { justify-self: start; margin-top: var(--s-1); }
 
 /* Nota "¿Por qué no están todos los videos?" en el inicio */
 .info-note { margin: 0 0 var(--s-4); padding: var(--s-2) var(--s-4); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); font-size: var(--fs-14); }
@@ -339,6 +361,12 @@ kbd {
 .info-note[open] summary::after { rotate: -135deg; }
 .info-note summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-sm); }
 .info-note p { margin: 0 0 var(--s-2); color: var(--text-2); line-height: var(--lh-body); max-width: 70ch; }
+/* Versión discreta: nota al pie de Explorar, sin caja, texto pequeño. */
+.info-note.subtle { margin: var(--s-6) 0 var(--s-2); padding: 0; border: 0; background: none; font-size: var(--fs-12); }
+.info-note.subtle summary { min-height: var(--tap); font-weight: 600; color: var(--muted); }
+.info-note.subtle summary:hover { color: var(--text-2); }
+.info-note.subtle summary::before { color: var(--muted); }
+.info-note.subtle p { color: var(--muted); }
 .lang-btn { font-size: var(--fs-12); font-weight: 800; letter-spacing: 0.04em; }
 .pill:hover, .round:hover { background: var(--surface-active); border-color: var(--border-strong); }
 .pill:active, .round:active { transform: scale(0.97); }
@@ -436,7 +464,14 @@ kbd {
 .dock:focus { outline: none; }
 .dock:focus-visible { outline: 2px solid var(--focus); }
 .playing-now .dock { border-color: color-mix(in srgb, var(--glow) 35%, var(--border)); box-shadow: var(--hairline-top), var(--e-2), 0 -10px 50px -30px var(--glow); }
-.np { grid-area: np; display: flex; align-items: center; gap: var(--s-3); min-width: 0; }
+.np-wrap { grid-area: np; display: flex; align-items: center; gap: var(--s-1); min-width: 0; }
+.np-wrap .np { flex: 1 1 auto; }
+.dock-like { flex: none; width: var(--tap); height: var(--tap); font-size: 22px; border-radius: 50%; }
+/* En teléfono el ♡ va en la fila de botones (con su nombre) y el título conserva su espacio. */
+@media (max-width: 640px) { .np-wrap .dock-like { display: none; } }
+.dock-like-m[aria-pressed="true"] { color: #ff5c8a; }
+.dock-like-m[aria-pressed="true"] svg { fill: currentColor; }
+.np { display: flex; align-items: center; gap: var(--s-3); min-width: 0; }
 .art {
   flex: none; width: 48px; height: 48px; border-radius: 50%; position: relative;
   background: conic-gradient(from 0deg, var(--a1, #8a2be2), var(--a2, #4fc3f7), var(--a3, #ff80ab), var(--a1, #8a2be2));
@@ -576,15 +611,17 @@ kbd {
 @starting-style { .side:not([hidden]) { opacity: 0; transform: translateX(-16px); } }
 .side-head { display: flex; justify-content: space-between; align-items: center; padding: var(--s-3) var(--s-2) var(--s-2) var(--s-4); }
 .side-head h2 { font-size: var(--fs-16); }
-.app.with-side .stage, .app.with-side .dock { margin-left: calc(var(--side-w) + var(--s-4)); }
-.app.with-side .dock { width: auto; justify-self: stretch; }
+/* Como en las apps de música: el pie de página ocupa todo el ancho y las columnas terminan justo encima. */
+.app.with-side .stage { margin-left: calc(var(--side-w) + var(--s-4)); }
+.app.with-side .dock, .app.with-np .dock { width: auto; justify-self: stretch; }
+.app.with-side:not(.side-drawer) .side { bottom: calc(var(--pad) + var(--safe-b) + var(--dock-real, var(--dock-h)) + var(--s-3)); }
 .app.with-side.fs .side { display: none; }
-.app.with-side.fs .stage, .app.with-side.fs .dock { margin-left: 0; }
+.app.with-side.fs .stage { margin-left: 0; }
 /* Con la barra fija se cierra con "Biblioteca" (arriba); en el cajón no se contrae a íconos. */
 .app.with-side #side-close, .app.side-drawer #side-rail { display: none; }
 @media (max-width: 1099px) {
   .app:not(.side-drawer) .side { display: none !important; }
-  .app.with-side .stage, .app.with-side .dock { margin-left: 0; }
+  .app.with-side .stage { margin-left: 0; }
   /* Cajón (641–1099 px): flota sobre el contenido, por encima de los paneles */
   .app.side-drawer .side {
     z-index: calc(var(--z-panel) + 2); width: min(var(--side-w), calc(100% - 2 * var(--pad)));
@@ -1743,15 +1780,37 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 .nps-actions .btn[aria-pressed="true"] { color: var(--accent); border-color: var(--brand-line); background: var(--accent-soft); }
 .nps-sec { display: grid; gap: var(--s-1); }
 .nps-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+/* Panel lateral: pestañas Ahora suena · Cola · Tus videos */
+.rs-head { padding: var(--s-3) var(--s-2) var(--s-2) var(--s-3); }
+.rs-tabs { flex: 1; min-width: 0; }
+.rs-tabs button { padding: 0 var(--s-2); font-size: var(--fs-12); white-space: nowrap; }
+.np-side > .panel-body { flex: 1 1 auto; min-height: 0; }
+.rs-add-hint { display: flex; align-items: center; gap: var(--s-3); width: 100%; padding: var(--s-3); border: 1px dashed var(--border-strong); border-radius: var(--r-lg); background: none; color: var(--text); font: inherit; text-align: start; cursor: pointer; }
+.rs-add-hint:hover { background: var(--surface-hover); border-color: var(--brand-line); }
+.rs-add-hint svg { flex: none; width: 32px; height: 32px; padding: 7px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+.rs-add-hint strong { display: block; font-size: var(--fs-14); }
+.rs-add-hint small { display: block; font-size: var(--fs-12); color: var(--muted); }
+.rv-body { gap: var(--s-4); }
+.rv-add { display: grid; gap: var(--s-2); }
+.rv-title { font-size: var(--fs-16, 1rem); font-weight: 700; }
+.add-form .btn svg { width: 18px; height: 18px; }
+.cq-modes.phone-only { justify-content: flex-end; }
+.lib-item.is-on, .lib-item.is-on:hover { background: var(--accent-soft); color: var(--accent); }
+#btn-cola.on { color: var(--accent); }
+@media (forced-colors: active) { .lib-item.is-on { outline: 2px solid Highlight; } }
+
 /* Columna derecha (≥ 1280 px) */
 @media (min-width: 1280px) {
   .app.with-np .np-side {
-    top: calc(var(--pad) + var(--hud-h) + var(--s-3) + var(--safe-t)); bottom: calc(var(--pad) + var(--dock-h) + var(--s-3) + var(--safe-b));
+    /* Termina justo encima del pie de página, que ocupa todo el ancho. */
+    top: calc(var(--pad) + var(--hud-h) + var(--s-3) + var(--safe-t)); bottom: calc(var(--pad) + var(--safe-b) + var(--dock-real, var(--dock-h)) + var(--s-3));
     right: calc(var(--pad) + var(--safe-r)); width: var(--np-w); max-height: none; z-index: var(--z-side);
     transform-origin: 100% 50%; box-shadow: var(--hairline-top), var(--e-2);
   }
   .app.with-np .np-side[hidden] { transform: translateX(16px); }
   .app.with-np .stage { margin-right: calc(var(--np-w) + var(--s-4)); }
+  .app.with-np.fs .np-side { display: none; }
+  .app.with-np.fs .stage { margin-right: 0; }
   .app.with-np .coach, .app.with-np .coach-pill { right: calc(var(--pad) + var(--np-w) + var(--s-4)); }
 }
 
@@ -1889,6 +1948,25 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 .lights-legend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); padding: 0 var(--s-1); font-size: var(--fs-12); font-weight: 600; color: var(--text-2); }
 .ll-item { display: inline-flex; align-items: center; gap: var(--s-1); }
 /* UI-02 · primera visita: una tarjeta para conectar (sin guía automática) */
+/* Bienvenida (reproductor): un aviso, sin preguntas, con una sola acción opcional. */
+.onboard {
+  display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: var(--s-3) var(--s-4);
+  margin: 0 0 var(--s-5); padding: var(--s-3) var(--s-3) var(--s-3) var(--s-4); border-radius: var(--r-xl);
+  background: var(--surface-1); border: 1px solid var(--brand-line, var(--border-strong)); box-shadow: var(--e-1);
+}
+.onboard[hidden] { display: none; }
+.ob-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--r-md); background: var(--accent-soft); color: var(--accent); }
+.ob-ico svg { width: 26px; height: 26px; }
+.ob-text { display: grid; gap: 2px; min-width: 0; }
+.ob-title { font-size: var(--fs-16); font-weight: 800; letter-spacing: -0.01em; }
+.ob-text p { font-size: var(--fs-14); color: var(--text-2); }
+.ob-cta { white-space: nowrap; }
+@media (max-width: 640px) {
+  .onboard { grid-template-columns: auto 1fr auto; padding: var(--s-3); gap: var(--s-2) var(--s-3); margin-bottom: var(--s-4); }
+  .ob-ico { width: 40px; height: 40px; }
+  .ob-cta { grid-column: 1 / -1; grid-row: 2; justify-content: center; min-height: var(--tap); }
+  .ob-close { grid-column: 3; grid-row: 1; }
+}
 .connect-card { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-4); padding: var(--s-4); border-radius: var(--r-lg); background: var(--surface-1); border: 1px solid var(--brand-line); box-shadow: var(--e-1); }
 .connect-card p { flex: 1 1 200px; display: grid; gap: 2px; }
 .connect-card strong { font-size: var(--fs-16); }
@@ -1974,7 +2052,7 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
   .m-nav-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
   .m-nav-menu {
     position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: min(260px, calc(100vw - 24px)); display: grid; gap: 2px;
-    padding: var(--s-2); border-radius: var(--r-lg); background: var(--surface-2, var(--surface-1)); border: 1px solid var(--border-strong);
+    padding: var(--s-2); border-radius: var(--r-lg); background: var(--surface-solid); border: 1px solid var(--border-strong); /* opaco: sin desenfoque en teléfono */
     box-shadow: var(--e-3, 0 12px 40px rgba(0, 0, 0, 0.35)); transform-origin: 100% 0; animation: m-nav-in var(--dur-2) var(--ease-out);
   }
   .m-nav-menu[hidden] { display: none; }
@@ -1984,12 +2062,18 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
   }
   .m-nav-menu > button:hover, .m-nav-menu > a:hover, .m-nav-menu > :focus-visible { background: var(--surface-hover); }
   .m-nav-menu svg { width: 18px; height: 18px; flex: none; color: var(--text-2); }
+  /* Ícono de idioma (el texto del botón lo reescribe src/i18n.js, por eso va en CSS) */
+  .m-nav-menu [data-lang-toggle]::before {
+    content: ""; width: 18px; height: 18px; flex: none; background: var(--text-2);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
   .m-nav-menu [aria-checked="true"] { color: var(--brand, var(--text)); font-weight: 800; background: var(--brand-soft, var(--surface-hover)); }
   .m-nav-menu [aria-checked="true"] svg { color: currentColor; }
   .m-nav-h { margin: var(--s-1) var(--s-3) 2px; font-size: var(--fs-12); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
   .m-nav-menu hr { border: 0; border-top: 1px solid var(--border); margin: var(--s-1) var(--s-2); }
   /* Explorar en teléfono: solo las miniaturas de las canciones */
-  .connect-card, .lights-legend { display: none !important; }
+  .lights-legend { display: none !important; }
 }
 @keyframes m-nav-in { from { opacity: 0; transform: translateY(-6px) scale(0.97); } }
 @media (prefers-reduced-motion: reduce) { .m-nav-menu { animation: none; } }
@@ -2187,3 +2271,19 @@ html {
   .seg-part, .big-bulb, .bulb, .sim, .dot, .g-globe, .g-dot, .swatches i, .lib-dots, .art, .filter-chip.member::before,
   .style-chip::before, .lights-glyph, .sp-stick { forced-color-adjust: none; }
 }
+
+/* Aviso dentro de apps (TikTok, Instagram…): src/inapp.js. Fijo, compacto y se puede cerrar. */
+.inapp-note {
+  position: fixed; z-index: 9000; left: 8px; right: 8px; top: calc(8px + env(safe-area-inset-top));
+  display: grid; gap: 6px; padding: 12px 40px 12px 14px; border-radius: 16px;
+  background: #1b1340; color: #fff; border: 1px solid rgba(255, 255, 255, .3); box-shadow: 0 16px 40px -12px rgba(0, 0, 0, .7);
+  font: 500 .88rem/1.35 system-ui, sans-serif;
+}
+.inapp-note p { margin: 0; }
+.inapp-how { color: #d9d2ee; font-size: .82rem; }
+.inapp-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.inapp-btn { min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .4); background: transparent; color: #fff; font: 700 .85rem/1 system-ui, sans-serif; display: inline-flex; align-items: center; text-decoration: none; cursor: pointer; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.inapp-btn.primary { background: #fff; color: #1b1340; border-color: #fff; }
+.inapp-url { flex: 1 1 100%; min-height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .4); background: #0f0a28; color: #fff; font: 500 .8rem/1 system-ui, sans-serif; }
+.inapp-close { position: absolute; top: 4px; right: 4px; width: 40px; height: 40px; border: 0; background: none; color: #fff; font-size: 1.4rem; cursor: pointer; }
+.inapp-btn:focus-visible, .inapp-close:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }

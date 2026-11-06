@@ -1,11 +1,13 @@
 // Servidor estático mínimo para desarrollo (sin dependencias).
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
-import { extname, join, normalize, resolve } from "node:path";
+import { extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const port = Number(process.env.PORT) || 5173;
+// --lan: escucha en la red local para probar en el teléfono u otra PC (npm run dev:lan). Por defecto, solo esta PC.
+const lan = process.argv.includes("--lan");
 const types = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -15,6 +17,9 @@ const types = {
   ".json": "application/json",
   ".webmanifest": "application/manifest+json",
   ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".txt": "text/plain; charset=utf-8",
+  ".xml": "application/xml",
   ".woff2": "font/woff2",
   ".lrc": "text/plain; charset=utf-8",
 };
@@ -24,7 +29,9 @@ createServer(async (req, res) => {
   let file = normalize(join(root, path.endsWith("/") ? path + "index.html" : path));
   // Rutas de carpeta sin barra final (/player) → redirige a /player/, como GitHub Pages.
   if (!extname(path) && !path.endsWith("/")) return res.writeHead(301, { location: path + "/" + (req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : "") }).end();
-  if (!file.startsWith(root)) return res.writeHead(403).end();
+  if (file !== root && !file.startsWith(root + sep)) return res.writeHead(403).end();
+  // Nunca archivos ocultos (.git, .env, .claude…): importa sobre todo en modo --lan.
+  if (/[\\/]\./.test(file.slice(root.length))) return res.writeHead(403).end();
   try {
     const body = await readFile(file);
     res.writeHead(200, { "content-type": types[extname(file)] ?? "application/octet-stream", "cache-control": "no-store" });
@@ -32,4 +39,11 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404).end("No encontrado");
   }
-}).listen(port, "127.0.0.1", () => console.log(`Purple Wave Sync en http://localhost:${port}`));
+}).listen(port, lan ? "0.0.0.0" : "127.0.0.1", async () => {
+  console.log(`LumiParty en http://localhost:${port}`);
+  if (lan) {
+    const { networkInterfaces } = await import("node:os");
+    for (const a of Object.values(networkInterfaces()).flat()) if (a?.family === "IPv4" && !a.internal) console.log(`  En tu red local: http://${a.address}:${port}`);
+    console.log("  Ojo: el Bluetooth web solo funciona en localhost o HTTPS; en otros dispositivos prueba la pantalla.");
+  }
+});

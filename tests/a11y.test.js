@@ -40,3 +40,24 @@ test("color en palabras y avisos sin emojis", () => {
   assert.equal(colorName([0, 0, 0]), "apagado");
   assert.equal(speakable("¡SWIM conectado! Borahae 💜"), "¡SWIM conectado! Borahae");
 });
+
+test("cada id aparece una sola vez y las etiquetas de bloque cierran (páginas)", () => {
+  for (const page of ["index.html", "player/index.html", "privacy/index.html"]) {
+    const html = read(page);
+    const seen = new Map();
+    for (const [, id] of html.matchAll(/\bid="([^"]+)"/g)) seen.set(id, (seen.get(id) ?? 0) + 1);
+    assert.deepEqual([...seen].filter(([, n]) => n > 1).map(([id]) => id), [], `${page}: ids repetidos`);
+    const body = html.slice(html.indexOf("<body"));
+    for (const tag of ["div", "section", "aside", "ul", "ol", "form"]) {
+      const open = body.match(new RegExp(`<${tag}[\\s>]`, "g"))?.length ?? 0;
+      const close = body.match(new RegExp(`</${tag}>`, "g"))?.length ?? 0;
+      assert.equal(open, close, `${page}: <${tag}> abiertos ${open}, cerrados ${close}`);
+    }
+  }
+});
+
+test("el panel lateral reúne Ahora suena, Cola y Tus videos (sin ventanas sueltas)", () => {
+  for (const id of ["rs-now", "rs-cola", "rs-videos", "rp-now", "cola-body", "rp-videos", "form-add", "films"]) assert.match(player, new RegExp(`id="${id}"`));
+  assert.doesNotMatch(player, /id="panel-(queue|cola)"/);
+  assert.doesNotMatch(app, /panel-(queue|cola)/);
+});

@@ -1,0 +1,5 @@
+# LumiParty: todo el sitio es público.
+User-agent: *
+Allow: /
+
+Sitemap: https://lumiparty.com/sitemap.xml

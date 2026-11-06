@@ -1,4 +1,4 @@
-# 💜 Purple Wave Sync
+# 💜 LumiParty
 
 > **Lightstick BTS concert sync** · Página web no oficial para sincronizar tu lightstick (ARMY Bomb) con canciones de BTS en modo concierto.
 

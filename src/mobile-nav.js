@@ -3,13 +3,13 @@ const $ = (id) => document.getElementById(id);
 const btn = $("m-nav-btn");
 const menu = $("m-nav-menu");
 const label = $("m-nav-label");
-const tabs = ["view-video", "view-lights", "view-explore"].map($);
+const tabs = ["view-explore", "view-video", "view-lights"].map($);
 const items = () => [...menu.querySelectorAll("button, a")];
 // Patrón de menú del APG: una sola parada de Tab (el botón); dentro se navega con flechas.
 for (const it of items()) it.tabIndex = -1;
 
 function sync() {
-  const active = tabs.find((t) => t.getAttribute("aria-selected") === "true") ?? tabs[2];
+  const active = tabs.find((t) => t.getAttribute("aria-selected") === "true") ?? tabs[0];
   label.textContent = active.textContent.trim();
   menu.querySelectorAll("[role=menuitemradio]").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.proxy === active.id)));
   const theme = $("btn-theme")?.getAttribute("aria-label");

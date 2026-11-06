@@ -9,6 +9,7 @@ export const PUBLIC = [
   "index.html", "app.html", "privacidad.html", "player", "privacy",
   "src", "vendor", "fonts", "icons", "assets",
   "styles.css", "tour.css", "landing.css", "sw.js", "manifest.webmanifest", "_headers", "LICENSE",
+  "robots.txt", "sitemap.xml",
 ];
 // Nunca, aunque aparezcan dentro de una carpeta pública.
 const BLOCK = /(^|\/)(\.env|\.git|.*\.(md|map|log|pem|key)|node_modules|test|tests)(\/|$)/i;

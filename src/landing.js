@@ -13,12 +13,27 @@ import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
 import { MEMBERS, chantStepMs } from "./fanchant.js";
 import { MicSync } from "./mic.js";
 import { spanishClone, localize } from "./i18n.js";
+import { showInAppNotice, redirectConnectButtons } from "./inapp.js";
 import { createMaterials, glowTexture, contactShadow } from "./models/shared.js";
 import { createArmyBombV4 } from "./models/armybomb-v4.js";
 
 const gsap = window.gsap;
 const ScrollTrigger = window.ScrollTrigger;
-if (gsap && ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+if (gsap && ScrollTrigger) {
+  gsap.registerPlugin(ScrollTrigger);
+  // En el teléfono la barra del navegador aparece y desaparece al desplazarse: eso no debe recalcular las animaciones.
+  ScrollTrigger.config({ ignoreMobileResize: true });
+}
+// Alto estable de la pantalla (100lvh): no cambia cuando la barra del navegador se oculta. Toda la escena 3D se
+// calcula con él; con innerHeight el lightstick "brincaba" en el teléfono cada vez que la barra entraba o salía.
+const vhProbe = document.createElement("div");
+vhProbe.setAttribute("aria-hidden", "true");
+vhProbe.style.cssText = "position:fixed;top:0;left:0;width:0;height:100vh;height:100lvh;visibility:hidden;pointer-events:none";
+document.documentElement.append(vhProbe);
+let stableH = 0;
+const VH = () => stableH || (stableH = vhProbe.offsetHeight || innerHeight);
+let lastW = innerWidth;
+addEventListener("resize", () => { if (innerWidth !== lastW || Math.abs((vhProbe.offsetHeight || innerHeight) - stableH) > 1) { lastW = innerWidth; stableH = 0; } });
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const params = new URLSearchParams(location.search);
 // Solo para pruebas con capturas: ?shot=<px> salta a esa posición sin suavizado ni animaciones de entrada.
@@ -29,6 +44,9 @@ const LOW_END = innerWidth < 720 || (navigator.hardwareConcurrency || 8) <= 4 ||
 // Gama baja de verdad (pocos núcleos o poca memoria): sin bloom desde el inicio y resolución 1×.
 const VERY_LOW = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 3;
 const $ = (id) => document.getElementById(id);
+// Dentro de TikTok, Instagram…: aviso para abrir en el navegador (el Bluetooth no existe ahí).
+showInAppNotice();
+redirectConnectButtons(document.querySelectorAll('a[href$="?guide=1"]'));
 
 // Tarjetas de piezas y versiones: además de resaltar el modelo 3D, su texto se anuncia en #card-status
 // (lector de pantalla). Cada pieza va en su propio nodo con el texto en español de la tarjeta, así i18n.js
@@ -342,15 +360,43 @@ if (renderer) {
   const trailHist = [];
 
   // ---------- Océano de luces (público) ----------
+  // Cada luz del público es un lightstick reconocible (globo redondo con brillo, corona oscura y mango),
+  // con un halo suave que siempre mira a la cámara y una silueta (cabeza y hombros) que lo sostiene.
   function miniStickGeometry() {
-    const globe = new THREE.IcosahedronGeometry(0.2, 0);
-    globe.translate(0, 0.62, 0);
-    const stem = new THREE.CylinderGeometry(0.05, 0.04, 0.48, 4, 1, true).toNonIndexed();
-    stem.translate(0, 0.26, 0);
-    const paint = (g, v) => g.setAttribute("color", new THREE.Float32BufferAttribute(new Float32Array(g.attributes.position.count * 3).fill(v), 3));
-    paint(globe, 1);
-    paint(stem, 0.04);
-    return mergeGeometries([globe, stem]);
+    const globe = new THREE.IcosahedronGeometry(0.2, LOW_END ? 1 : 2).toNonIndexed(); // teléfonos: menos triángulos
+    globe.translate(0, 0.64, 0);
+    const crown = new THREE.CylinderGeometry(0.15, 0.11, 0.07, 10, 1).toNonIndexed();
+    crown.translate(0, 0.45, 0);
+    const stem = new THREE.CylinderGeometry(0.05, 0.04, 0.42, 6, 1, true).toNonIndexed();
+    stem.translate(0, 0.21, 0);
+    const paint = (g, f) => {
+      const pos = g.attributes.position, col = new Float32Array(pos.count * 3);
+      for (let i = 0; i < pos.count; i++) col.fill(f(pos.getX(i), pos.getY(i), pos.getZ(i)), i * 3, i * 3 + 3);
+      g.setAttribute("color", new THREE.Float32BufferAttribute(col, 3));
+    };
+    // Más claro arriba y hacia el frente (la cámara), más tenue abajo: se lee como una esfera de luz.
+    paint(globe, (x, y, z) => 0.8 + 0.25 * ((y - 0.44) / 0.4) + 0.75 * Math.max(0, z / 0.2)); // núcleo brillante (con el bloom, resplandece)
+    paint(crown, () => 0.07);
+    paint(stem, () => 0.035);
+    return mergeGeometries([globe, crown, stem]);
+  }
+  function fanGeometry() {
+    const head = new THREE.SphereGeometry(0.19, LOW_END ? 6 : 8, 4);
+    head.translate(-0.34, -0.06, -0.05);
+    const shoulders = new THREE.SphereGeometry(0.3, LOW_END ? 7 : 10, 4);
+    shoulders.scale(1.45, 0.75, 0.8);
+    shoulders.translate(-0.34, -0.5, -0.05);
+    return mergeGeometries([head.toNonIndexed(), shoulders.toNonIndexed()]);
+  }
+  function haloTexture() {
+    const c = document.createElement("canvas");
+    c.width = c.height = 64;
+    const g = c.getContext("2d"), r = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    r.addColorStop(0, "rgba(255,255,255,1)"); r.addColorStop(0.18, "rgba(255,255,255,.55)"); r.addColorStop(0.5, "rgba(255,255,255,.12)"); r.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = r; g.fillRect(0, 0, 64, 64);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
   }
   const seats = [];
   const STAGE_Z = 4, FLOOR_Y = -5.0, R_MIN = 9, R_MAX = 37;
@@ -377,6 +423,15 @@ if (renderer) {
   const crowd = new THREE.InstancedMesh(miniStickGeometry(), new THREE.MeshBasicMaterial({ vertexColors: true }), N);
   crowd.frustumCulled = false;
   crowd.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  // Halo de cada luz (aditivo, sin escribir profundidad) y siluetas oscuras que dan profundidad al público.
+  const halo = new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: haloTexture(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }), N);
+  halo.frustumCulled = false;
+  halo.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  halo.renderOrder = 2;
+  // Siluetas suaves (como en el reproductor): sugieren al público sin parecer íconos negros sobre la bruma clara.
+  const fans = new THREE.InstancedMesh(fanGeometry(), new THREE.MeshBasicMaterial({ color: 0x3a2d6e, transparent: true, opacity: 0.42, depthWrite: false, fog: false }), N);
+  fans.renderOrder = -1;
+  fans.frustumCulled = false;
   const crowdBase = new Float32Array(N * 3), crowdTilt = new Float32Array(N * 2), rowN = new Float32Array(N), phase = new Float32Array(N), seed = new Float32Array(N);
   seats.forEach(([x, y, z, r, a], i) => {
     crowdBase.set([x, y, z], i * 3);
@@ -386,7 +441,16 @@ if (renderer) {
     phase[i] = a * 4.5 + r * 0.32;
     seed[i] = Math.random();
     crowd.setColorAt(i, new THREE.Color(0, 0, 0));
+    halo.setColorAt(i, new THREE.Color(0, 0, 0));
   });
+  {
+    const m = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(0.42, 0.42, 0.42), v = new THREE.Vector3();
+    for (let i = 0; i < N; i++) {
+      // Algunas personas sostienen con la otra mano (espejo) para que no se vea como una fila copiada.
+      sc.x = seed[i] < 0.4 ? -0.42 : 0.42;
+      fans.setMatrixAt(i, m.compose(v.set(crowdBase[i * 3], crowdBase[i * 3 + 1], crowdBase[i * 3 + 2]), q, sc));
+    }
+  }
   const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _p = new THREE.Vector3(), _s = new THREE.Vector3(0.42, 0.42, 0.42);
   // El público se mece y, en el clímax, también "bombea" al pulso, cada quien con su desfase.
   // Cada lightstick del público pivota en el agarre (la base de su mango) y combina capas:
@@ -420,11 +484,17 @@ if (renderer) {
       _q.setFromEuler(_e);
       _p.set(crowdBase[i * 3], crowdBase[i * 3 + 1] + lift * rowAmp, crowdBase[i * 3 + 2]);
       crowd.setMatrixAt(i, _m.compose(_p, _q, _s));
+      // El halo va donde está el globo y mira a la cámara; más chico al fondo para no lavar la imagen.
+      _hp.set(0, 0.64, 0).applyQuaternion(_q).multiply(_s).add(_p);
+      _hs.setScalar(0.62 - rowN[i] * 0.22);
+      halo.setMatrixAt(i, _m.compose(_hp, camera.quaternion, _hs));
     }
     crowd.instanceMatrix.needsUpdate = true;
+    halo.instanceMatrix.needsUpdate = true;
   }
+  const _hp = new THREE.Vector3(), _hs = new THREE.Vector3();
   placeCrowd(0, 0, 0, 0, 0);
-  scene.add(crowd);
+  scene.add(fans, crowd, halo);
   const CROWD_PALETTE = (featuredAlbum?.palette ?? ["#8a2be2", "#b388ff", "#ff80ab"]).map((c) => {
     const k = new THREE.Color(c), hsl = {};
     k.getHSL(hsl);
@@ -438,7 +508,7 @@ if (renderer) {
   const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.42, 0.62);
   composer.addPass(bloom);
   function resize() {
-    const w = innerWidth, h = innerHeight;
+    const w = innerWidth, h = VH();
     renderer.setSize(w, h, false);
     composer.setSize(w, h);
     camera.aspect = w / h;
@@ -481,7 +551,7 @@ if (renderer) {
   const NAV_H = () => (mobileQ() ? 56 : 68);
   // Ajusta posición/escala para que el lightstick entero (gema a tapa + margen de gestos) quede a la vista.
   function frameFit(x, y, s, e, gest) {
-    const ppu = ppuNow(), h = innerHeight, nav = NAV_H();
+    const ppu = ppuNow(), h = VH(), nav = NAV_H();
     const margin = 0.35 + gest * 0.9;
     const top = STICK_Y + v4.metrics.top + 2.7 * e + margin, bot = STICK_Y + v4.metrics.bottom - 1.9 * e - margin * 0.6;
     const maxH = (h - nav - 20) / ppu;
@@ -492,9 +562,9 @@ if (renderer) {
     else if (yb < botLim) y += botLim - yb;
     return [x, y, s];
   }
-  const ppuNow = () => innerHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z);
+  const ppuNow = () => VH() / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z);
   function slotPose(S, rect) {
-    const w = innerWidth, h = innerHeight, ppu = ppuNow();
+    const w = innerWidth, h = VH(), ppu = ppuNow();
     const e = S.explode ? (reduceMotion ? 1 : explodeFromProgress(anat.p)) : 0;
     const tall = H_ASSEMBLED + (H_EXPLODED - H_ASSEMBLED) * e + (S.lineup ? 2 : 0); // la ronda inclinada suma profundidad
     // Margen para los gestos (que nunca se salga del encuadre) y para la fila de versiones.
@@ -515,7 +585,7 @@ if (renderer) {
     };
   }
   function computeTarget() {
-    const h = innerHeight;
+    const h = VH();
     let sum = 0, best = 0;
     const acc = Object.fromEntries(Object.keys(target).map((k) => [k, 0]));
     const poses = [];
@@ -605,9 +675,12 @@ if (renderer) {
   const raycaster = new THREE.Raycaster();
   let spinVel = 0.004, spinAngle = 0, pitch = 0, pitchVel = 0;
   let dragging = false, dragX = 0, dragY = 0, dragT = 0, moved = 0, hovered = false, lastFlick = 0;
+  // Sostenerlo con el clic (o el dedo) y agitarlo: la mano sigue al puntero con un resorte, se inclina con la
+  // velocidad como un péndulo y al soltar vuelve a su lugar con un pequeño vaivén.
+  const hold = { x: 0, y: 0, vx: 0, vy: 0, tx: 0, ty: 0, ox: 0, oy: 0 };
   let hotPart = null, hotFromUI = false;
   function pick(e) {
-    pointer.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+    pointer.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / VH()) * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
     return raycaster.intersectObject(stick, true)[0] || null;
   }
@@ -619,7 +692,7 @@ if (renderer) {
     gsap.fromTo(glow, { intensity: 1 + 0.9 * s }, { intensity: 1, duration: 0.5, ease: "power2.out" });
   }
   addEventListener("pointermove", (e) => {
-    const nx = (e.clientX / innerWidth) * 2 - 1, ny = (e.clientY / innerHeight) * 2 - 1;
+    const nx = (e.clientX / innerWidth) * 2 - 1, ny = (e.clientY / VH()) * 2 - 1;
     if (!reduceMotion) {
       gsap?.to(pivot.rotation, { x: ny * 0.14, z: -nx * 0.1, duration: 1.4, ease: "power3.out", overwrite: "auto" });
       gsap?.to(pointerOff, { x: nx * 0.16, y: -ny * 0.08, duration: 1.6, ease: "power3.out", overwrite: "auto" });
@@ -630,8 +703,11 @@ if (renderer) {
       dragX = e.clientX; dragY = e.clientY; dragT = now;
       moved += Math.abs(dx) + Math.abs(dy);
       if (ring.dragging) { ring.vel = dx * 0.25; return; }
-      spinVel = dx * 0.006;
-      if (e.pointerType !== "touch") pitchVel = dy * 0.25;
+      const k = 1 / Math.max(1e-3, ppuNow() * pivot.scale.x);
+      hold.tx = Math.max(-1.8, Math.min(1.8, (e.clientX - hold.ox) * k));
+      hold.ty = Math.max(-1.1, Math.min(1.1, -(e.clientY - hold.oy) * k));
+      spinVel = dx * 0.0025; // sigue girando un poco, pero lo principal es moverlo
+      if (e.pointerType !== "touch") pitchVel = dy * 0.08;
       // Un movimiento rápido ("flick") dispara la sacudida de concierto.
       if (Math.hypot(dx, dy) / ddt > 2.4 && now - lastFlick > 600) { lastFlick = now; triggerShake(1); }
       return;
@@ -654,6 +730,7 @@ if (renderer) {
     e.preventDefault(); // sin selección de texto ni arrastre de imágenes
     dragging = true;
     dragX = e.clientX; dragY = e.clientY; dragT = performance.now();
+    hold.ox = e.clientX; hold.oy = e.clientY; hold.tx = hold.x; hold.ty = hold.y;
     moved = 0;
     document.documentElement.classList.add("dragging");
     canvas.classList.add("grabbing");
@@ -664,6 +741,7 @@ if (renderer) {
     dragging = false;
     const wasRing = ring.dragging;
     ring.dragging = false;
+    hold.tx = hold.ty = 0;
     document.documentElement.classList.remove("dragging");
     if (wasRing) { canvas.classList.remove("grabbing"); return; }
     canvas.classList.remove("grabbing");
@@ -733,7 +811,7 @@ if (renderer) {
   const project = (part, local) => {
     _v.copy(local);
     part.localToWorld(_v).project(camera);
-    return [(_v.x + 1) / 2 * innerWidth, (1 - _v.y) / 2 * innerHeight, _v.z < 1];
+    return [(_v.x + 1) / 2 * innerWidth, (1 - _v.y) / 2 * VH(), _v.z < 1];
   };
   function updateMarkers() {
     const e = view.explode, mobile = mobileQ();
@@ -858,13 +936,13 @@ if (renderer) {
       M.obj.localToWorld(_rp);
       const z = _rp.z;
       _rp.project(camera);
-      tags.push({ el: M.tag, x: (_rp.x + 1) / 2 * innerWidth, y: (1 - _rp.y) / 2 * innerHeight, z, show: ring.othersIn > 0.6, hot: ring.hot === M.key });
+      tags.push({ el: M.tag, x: (_rp.x + 1) / 2 * innerWidth, y: (1 - _rp.y) / 2 * VH(), z, show: ring.othersIn > 0.6, hot: ring.hot === M.key });
     }
     _rp.set(0, v4.metrics.top + 0.5, 0);
     stick.localToWorld(_rp);
     const zMain = _rp.z;
     _rp.project(camera);
-    tags.push({ el: mainTag, x: (_rp.x + 1) / 2 * innerWidth, y: (1 - _rp.y) / 2 * innerHeight, z: zMain, show: ring.mainIn > 0.7, hot: ring.hot === "v4" });
+    tags.push({ el: mainTag, x: (_rp.x + 1) / 2 * innerWidth, y: (1 - _rp.y) / 2 * VH(), z: zMain, show: ring.mainIn > 0.7, hot: ring.hot === "v4" });
     tags.sort((p, q) => q.z - p.z); // primero las de adelante
     const placed = [];
     for (const T of tags) {
@@ -1184,15 +1262,19 @@ if (renderer) {
   });
 
   // ---------- CTA principal: imán, pulso al ritmo, onda al pulsar y "entrada" al reproductor ----------
-  const orb = document.querySelector(".orb-cta");
-  if (orb && !reduceMotion) {
-    addEventListener("pointermove", (e) => {
+  const orbs = [...document.querySelectorAll(".orb-cta")]; // los dos botones del hero (Empezar y Conectar)
+  // Imán: un solo listener para todos los botones (no uno por botón).
+  if (orbs.length && !reduceMotion) addEventListener("pointermove", (e) => {
+    for (const orb of orbs) {
       const r = orb.getBoundingClientRect();
       const cx = r.left + r.width / 2, cy = r.top + r.height / 2, dx = e.clientX - cx, dy = e.clientY - cy;
       const near = Math.hypot(dx / (r.width / 2 + 60), dy / (r.height / 2 + 60)) < 1;
       orb.style.setProperty("--mx", near ? `${(dx * 0.18).toFixed(1)}px` : "0px");
       orb.style.setProperty("--my", near ? `${(dy * 0.3).toFixed(1)}px` : "0px");
-    });
+    }
+  });
+  for (const orb of orbs) {
+    if (reduceMotion) break;
     orb.addEventListener("pointerdown", (e) => {
       const r = orb.getBoundingClientRect();
       const sp = document.createElement("span");
@@ -1243,7 +1325,7 @@ if (renderer) {
         show.step = Math.floor(bi / 8);
         show.beatKick = 1;
         if (bi % 4 === 0) { show.burst = (safeMode ? 0.5 : 1) * (0.6 + 0.8 * show.progress); show.burstT = t; }
-        if (orb && !reduceMotion) gsap?.fromTo(orb, { "--beat": bi % 4 === 0 ? 1 : 0.5 }, { "--beat": 0, duration: 0.5, ease: "power2.out" });
+        if (orbs.length && !reduceMotion) gsap?.fromTo(orbs, { "--beat": bi % 4 === 0 ? 1 : 0.5 }, { "--beat": 0, duration: 0.5, ease: "power2.out" });
       }
     } else if (!reduceMotion && !demo.active && !mic?.active && Math.floor(t / 3) !== lastBeat) {
       lastBeat = Math.floor(t / 3);
@@ -1304,6 +1386,16 @@ if (renderer) {
     else if (g === "pump") { gwT.pump = 1; gwT.sway = 0.3; gwT.shake = playing && !safeMode ? 0.6 : 0; }
     for (const k in gw) gw[k] += (gwT[k] * E - gw[k]) * Math.min(1, dt * 2.5);
     const o = allow ? gestureOffsets(b, t, beatSec) : { rz: 0, rx: 0, dx: 0, dy: 0 };
+    // Agarre: resorte firme mientras se sostiene, más suelto al soltar (vaivén). Sin vaivén con movimiento reducido.
+    if (view.explode < 0.05 && !ring.dragging) {
+      const [kS, kD] = dragging ? [320, 34] : reduceMotion ? [400, 40] : [90, 9];
+      const sdt = Math.min(dt, 1 / 30);
+      hold.vx += ((hold.tx - hold.x) * kS - hold.vx * kD) * sdt; hold.x += hold.vx * sdt;
+      hold.vy += ((hold.ty - hold.y) * kS - hold.vy * kD) * sdt; hold.y += hold.vy * sdt;
+      o.dx += hold.x; o.dy += hold.y;
+      o.rz += Math.max(-0.75, Math.min(0.75, -hold.vx * 0.07)); // se inclina hacia donde no va (inercia del globo)
+      o.rx += Math.max(-0.4, Math.min(0.4, hold.vy * 0.04));
+    } else { hold.x = hold.y = hold.vx = hold.vy = hold.tx = hold.ty = 0; }
     hand.rotation.set(o.rx, 0, o.rz);
     hand.position.set(o.dx, STICK_Y + GRIP + o.dy, 0);
     // Movimiento secundario: el globo se atrasa unos cuadros respecto del mango.
@@ -1391,12 +1483,12 @@ if (renderer) {
       const cA = demo.active ? demo.color : mic?.active ? color : CROWD_PALETTE[show.step % CROWD_PALETTE.length];
       const cB = demo.active ? demo.color : mic?.active ? color : CROWD_PALETTE[(show.step + 1) % CROWD_PALETTE.length];
       const litEdge = 1.25 + L * (0.12 + 1.0 * P - 1.25);
-      const base = 0.55 + L * (0.18 + 0.6 * P - 0.55);
+      const base = 0.78 + L * (0.18 + 0.6 * P - 0.78); // en reposo también se ven como luces, no como puntos oscuros
       const amp = reduceMotion ? 0 : 0.28 + L * (0.12 + 0.5 * P - 0.28);
       const speedW = 1.1 + L * (1 + 1.6 * P);
       const front = (t - show.burstT) * 0.8;
       const mixB = L * (0.1 + 0.45 * P);
-      const ic = crowd.instanceColor.array;
+      const ic = crowd.instanceColor.array, hc = halo.instanceColor.array;
       for (let i = 0; i < N; i++) {
         const lit = Math.min(1, Math.max(0.06, (litEdge - rowN[i]) / 0.1));
         const wave = Math.sin(t * speedW - phase[i]);
@@ -1406,8 +1498,11 @@ if (renderer) {
         const w = boost * lit * Math.max(0.04, base + amp * wave + 0.25 * show.beatKick * L * P + burst + waveGlow) * (0.75 + 0.5 * seed[i]);
         tmp.copy(seed[i] < mixB ? cB : cA).lerp(IDLE_PURPLE, 1 - L).multiplyScalar(w);
         ic[i * 3] = tmp.r; ic[i * 3 + 1] = tmp.g; ic[i * 3 + 2] = tmp.b;
+        const hk = 0.85 * (1 - rowN[i] * 0.45); // halos más sutiles al fondo; centro un poco más blanco
+        hc[i * 3] = (tmp.r * 0.8 + 0.12 * w) * hk; hc[i * 3 + 1] = (tmp.g * 0.8 + 0.12 * w) * hk; hc[i * 3 + 2] = (tmp.b * 0.8 + 0.12 * w) * hk;
       }
       crowd.instanceColor.needsUpdate = true;
+      halo.instanceColor.needsUpdate = true;
       crowdPainted = crowdKey;
     }
 
@@ -1444,7 +1539,7 @@ if (renderer) {
       qTier++;
       if (qTier === 1 && mats.glass.transmission > 0) { mats.glass.transmission = 0; mats.glass.transparent = true; mats.glass.opacity = 0.16; mats.glass.needsUpdate = true; }
       else if (qTier === 2) useBloom = false;
-      else if (qTier === 3) crowd.count = Math.floor(N / 2);
+      else if (qTier === 3) crowd.count = halo.count = fans.count = Math.floor(N / 2);
       if (DEBUG) console.info("[pws] calidad ↓", qTier);
     }
     const now = performance.now();

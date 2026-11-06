@@ -5,7 +5,7 @@ Léela entera antes de cambiar algo. `AGENTS.md` apunta aquí.
 
 ## Qué es
 
-**Purple Wave Sync** (`lightstick-bts-concert-sync`): PWA estática, no oficial y de código abierto, que sincroniza
+**LumiParty** (`lightstick-bts-concert-sync`): PWA estática, no oficial y de código abierto, que sincroniza
 el lightstick ARMY Bomb por **Web Bluetooth** con videos de YouTube de canciones y conciertos de BTS.
 Se publica en GitHub Pages con dominio propio: https://lumiparty.com/ (DNS en Hostinger; antes https://karlamedina97.github.io/lightstick-bts-concert-sync/)
 
@@ -69,8 +69,9 @@ Las páginas dentro de carpetas usan rutas relativas con `../`. No uses `<base>`
   ID nuevo con oEmbed antes de añadirlo (ver `.claude/commands/agregar-cancion.md`).
 
 ### Seguridad
-- **Nada de CDNs ni scripts en línea.** Toda librería va en `vendor/` desde `npm pack`. El único script en línea
-  permitido es el importmap de `index.html`; si lo cambias, ejecuta `npm run csp`.
+- **Nada de CDNs ni scripts en línea.** Toda librería va en `vendor/` desde `npm pack`. Los únicos scripts en línea
+  permitidos son el importmap y los datos estructurados JSON-LD de `index.html` (no se ejecutan); si los cambias,
+  ejecuta `npm run csp`.
 - Si añades un origen externo (fetch, iframe, imagen), actualízalo en `scripts/csp.mjs` y regenera.
 - Muestra datos del usuario o del servidor con `textContent`, nunca `innerHTML`. Valida con `sanitizeRow`
   (`src/leaderboard.js`) o equivalentes.

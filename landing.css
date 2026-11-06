@@ -42,12 +42,12 @@ img, svg { -webkit-user-drag: none; }
 .eyebrow .ko, .kicker .ko { font-size: .95em; opacity: .9; text-transform: none; }
 
 /* ---------- Escena 3D de fondo ---------- */
-#scene { position: fixed; inset: 0; width: 100vw; height: 100dvh; display: block; touch-action: pan-y; }
+#scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100lvh; /* alto estable: no cambia con la barra del navegador */ display: block; touch-action: pan-y; }
 /* Mano abierta sobre el lightstick y mano cerrada al arrastrar (cursores propios en SVG). */
 #scene.grab { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M11 15V7.5a1.8 1.8 0 0 1 3.6 0V14m0-1V5.8a1.8 1.8 0 0 1 3.6 0V14m0-1V7a1.8 1.8 0 0 1 3.6 0v8m0-4.5a1.8 1.8 0 0 1 3.6 0V19c0 5-3.3 9-8.4 9-3.4 0-5.3-1.6-7-4.2l-3.3-5.3a1.9 1.9 0 0 1 3.1-2.2L11 18' fill='%23fff' stroke='%23140b26' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 15 15, grab; }
 #scene.grabbing, html.dragging #scene { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M10 14.5c0-1.2 1-2 2-2s2 .8 2 2m0-.8c0-1.2 1-2 2-2s2 .8 2 2m0-.2c0-1.2 1-2 2-2s2 .8 2 2v.8c0-1.2 1-2 2-2s1.8.8 1.8 2V19c0 5-3.3 9-8.4 9-3.4 0-5.6-1.8-7-4.2-1-1.6-1.6-3.3-1.6-5.2 0-1.5.9-2.6 2.2-3.1' fill='%23fff' stroke='%23140b26' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 15 15, grabbing; }
 .vignette { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(120% 80% at 50% 30%, transparent 40%, #060818b8 100%); }
-.markers { position: fixed; inset: 0; z-index: 1; pointer-events: none; user-select: none; }
+.markers { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100lvh; z-index: 1; pointer-events: none; user-select: none; }
 .leaders { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .leaders path { fill: none; stroke: var(--a1); stroke-width: 1.2; stroke-linecap: round; opacity: 0; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .9s var(--ease), opacity .4s, stroke .3s; }
 .leaders path.on { opacity: .75; stroke-dashoffset: 0; }
@@ -182,6 +182,20 @@ h3 { font-size: 1.02rem; letter-spacing: -.02em; font-weight: 600; }
 .orb-cta:hover .orb-arrow { transform: translateX(4px) rotate(-8deg); }
 .orb-cta .ripple { position: absolute; z-index: -1; width: 20px; height: 20px; margin: -10px; border-radius: 50%; background: var(--live); opacity: .5; pointer-events: none; animation: ripple .7s var(--ease) forwards; }
 @keyframes ripple { to { transform: scale(30); opacity: 0; } }
+/* Conectar: mismo tamaño y presencia que "Abrir el reproductor", en vidrio morado para distinguirlo. */
+.cta-pair { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+.orb-cta.orb-bt {
+  color: #fff;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--live) 70%, #2a0f57), #3b1680 60%, #1d3a8a);
+  box-shadow: 0 0 0 1px #ffffff8c, 0 12px 40px -10px var(--live), 0 0 calc(24px + var(--beat) * 40px) calc(var(--beat) * 6px) color-mix(in srgb, var(--live) 55%, transparent);
+}
+.orb-cta.orb-bt .orb-arrow { background: #fff; color: #2a0f57; }
+.orb-cta.orb-bt .orb-shine { background: linear-gradient(105deg, transparent 35%, #ffffff55 48%, transparent 60%); }
+.orb-cta:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+@media (max-width: 719px) {
+  .cta-pair { display: grid; width: 100%; }
+  .cta-pair .orb-cta { justify-content: space-between; width: 100%; }
+}
 .orb-micro { margin: 0 0 0 1.2rem; font-size: .8rem; color: var(--muted); letter-spacing: .04em; }
 .hero-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; align-items: center; margin-top: .3rem; }
 
@@ -409,6 +423,15 @@ body.doc { overflow-x: hidden; }
 
 /* Ritmo de espaciado en múltiplos de 8 px. */
 .ctas { gap: 12px; }
+/* Botones debajo de los pasos: aire suficiente sobre la barra del carrusel de pasos (en teléfono) y el mismo
+   espaciado entre botón y enlace que en el resto de la página. */
+.steps { padding-bottom: 14px; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .25) transparent; }
+.steps + .ctas { margin-top: .4rem; }
+@media (max-width: 719px) {
+  .steps + .ctas { flex-direction: column; align-items: stretch; gap: 8px; }
+  .steps + .ctas .btn { justify-content: center; min-height: 48px; }
+  .steps + .ctas .link-arrow { align-self: center; min-height: 44px; display: inline-flex; align-items: center; }
+}
 .hero-links { gap: 12px 24px; }
 .head { gap: 12px; }
 .kicker { gap: 8px; }
@@ -516,3 +539,21 @@ section[id], #contenido { scroll-margin-top: 76px; }
   .grad, .kt .grad .c { background: none !important; color: CanvasText !important; -webkit-text-fill-color: CanvasText; }
   .mq-outline { -webkit-text-stroke-color: CanvasText; }
 }
+
+/* Aviso dentro de apps (TikTok, Instagram…): src/inapp.js. Fijo, compacto y se puede cerrar. */
+.inapp-note {
+  position: fixed; z-index: 9000; left: 8px; right: 8px; top: calc(8px + env(safe-area-inset-top));
+  display: grid; gap: 6px; padding: 12px 40px 12px 14px; border-radius: 16px;
+  background: #1b1340; color: #fff; border: 1px solid rgba(255, 255, 255, .3); box-shadow: 0 16px 40px -12px rgba(0, 0, 0, .7);
+  font: 500 .88rem/1.35 system-ui, sans-serif;
+}
+.inapp-note p { margin: 0; }
+.inapp-how { color: #d9d2ee; font-size: .82rem; }
+.inapp-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.inapp-btn { min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .4); background: transparent; color: #fff; font: 700 .85rem/1 system-ui, sans-serif; display: inline-flex; align-items: center; text-decoration: none; cursor: pointer; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.inapp-btn.primary { background: #fff; color: #1b1340; border-color: #fff; }
+.inapp-url { flex: 1 1 100%; min-height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .4); background: #0f0a28; color: #fff; font: 500 .8rem/1 system-ui, sans-serif; }
+.inapp-close { position: absolute; top: 4px; right: 4px; width: 40px; height: 40px; border: 0; background: none; color: #fff; font-size: 1.4rem; cursor: pointer; }
+.inapp-btn:focus-visible, .inapp-close:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+.steps:focus-visible { outline: 3px solid #fff; outline-offset: 4px; border-radius: 18px; }

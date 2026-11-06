@@ -5,13 +5,32 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; worker-src 'self'; manifest-src 'self'; media-src 'self'; font-src 'self'; upgrade-insecure-requests; connect-src 'self' https://www.youtube.com https://*.supabase.co; form-action 'self'; script-src 'self' https://www.youtube.com https://s.ytimg.com">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Purple Wave Sync</title>
+  <title>LumiParty</title>
   <meta name="description" content="Página web no oficial para sincronizar tu lightstick con videos de canciones y conciertos de BTS, álbum por álbum.">
+  <link rel="canonical" href="https://lumiparty.com/player/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LumiParty">
+  <meta property="og:url" content="https://lumiparty.com/player/">
+  <meta property="og:locale" content="es_419">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:title" content="Reproductor · LumiParty">
+  <meta property="og:description" content="Elige una canción o un concierto de BTS y tu ARMY Bomb brilla con el video, sección por sección. Gratis, sin cuentas y sin instalar nada.">
+  <meta property="og:image" content="https://lumiparty.com/assets/og-image.jpg">
+  <meta property="og:image:secure_url" content="https://lumiparty.com/assets/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="LumiParty: un ARMY Bomb brillando sobre un mar de luces moradas. Tu ARMY Bomb, al ritmo de cada canción.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Reproductor · LumiParty">
+  <meta name="twitter:description" content="Elige una canción o un concierto de BTS y tu ARMY Bomb brilla con el video, sección por sección. Gratis, sin cuentas y sin instalar nada.">
+  <meta name="twitter:image" content="https://lumiparty.com/assets/og-image.jpg">
+  <meta name="twitter:image:alt" content="LumiParty: un ARMY Bomb brillando sobre un mar de luces moradas. Tu ARMY Bomb, al ritmo de cada canción.">
   <meta name="theme-color" content="#070a1a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="PurpleWave">
+  <meta name="apple-mobile-web-app-title" content="LumiParty">
   <link rel="manifest" href="../manifest.webmanifest">
   <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
@@ -36,6 +55,7 @@
     <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5h3v5h5V9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 9.5h8M8 12.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-9.2-9.4C1.6 7.3 3.8 4 7.2 4c2 0 3.6 1.1 4.8 2.8C13.2 5.1 14.8 4 16.8 4c3.4 0 5.6 3.3 4.4 6.6C19.5 15.4 12 20 12 20Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-guide" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 8.5v7l5.5-3.5L10 8.5Z" fill="currentColor"/></symbol>
@@ -78,15 +98,16 @@
       <!-- Logo (lleva a la página de inicio) y, en pantallas anchas, el botón de la biblioteca.
            En teléfono, el menú principal es el desplegable de la derecha. -->
       <div class="hud-start">
-        <a class="m-brand" href="../" aria-label="Purple Wave Sync: página de inicio" data-tip="Página de inicio"><img src="../icons/logo-mark.svg" alt="" width="30" height="30"><span>Purple Wave</span></a>
+        <a class="m-brand" href="../" aria-label="LumiParty: página de inicio" data-tip="Página de inicio"><img src="../icons/logo-mark.svg" alt="" width="30" height="30"><span>LumiParty</span></a>
         <nav class="menu" aria-label="Menú principal">
           <button id="btn-side" class="menu-item" type="button" aria-expanded="false" aria-controls="side" data-tip="Biblioteca"><svg aria-hidden="true"><use href="#i-rail"/></svg><span class="menu-label">Biblioteca</span></button>
         </nav>
       </div>
       <div class="seg view-tabs" role="tablist" aria-label="Vista">
+        <!-- Orden del recorrido: elegir qué escuchar → verlo → iluminar. Explorar es el inicio. -->
+        <button id="view-explore" role="tab" type="button" aria-selected="true" aria-controls="home">Explorar</button>
         <button id="view-video" role="tab" type="button" aria-selected="false" aria-controls="video-view">Video</button>
         <button id="view-lights" role="tab" type="button" aria-selected="false" aria-controls="lights-view">Luces</button>
-        <button id="view-explore" role="tab" type="button" aria-selected="true" aria-controls="home">Explorar</button>
       </div>
       <div class="top-actions">
         <button class="round lang-btn" type="button" data-lang-toggle>EN</button>
@@ -100,12 +121,13 @@
         <button id="m-nav-btn" class="m-nav-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="m-nav-menu"><span id="m-nav-label">Explorar</span><svg aria-hidden="true"><use href="#i-min"/></svg></button>
         <div id="m-nav-menu" class="m-nav-menu" role="menu" aria-label="Menú principal" hidden>
           <p class="m-nav-h" id="m-nav-h" role="presentation">Ver</p>
+          <button role="menuitemradio" type="button" data-proxy="view-explore" aria-checked="true"><svg aria-hidden="true"><use href="#i-explore"/></svg>Explorar</button>
           <button role="menuitemradio" type="button" data-proxy="view-video" aria-checked="false"><svg aria-hidden="true"><use href="#i-tv"/></svg>Video</button>
           <button role="menuitemradio" type="button" data-proxy="view-lights" aria-checked="false"><svg aria-hidden="true"><use href="#i-stick"/></svg>Luces</button>
-          <button role="menuitemradio" type="button" data-proxy="view-explore" aria-checked="true"><svg aria-hidden="true"><use href="#i-explore"/></svg>Explorar</button>
           <hr>
-          <button role="menuitem" type="button" data-go="mine" aria-controls="panel-queue"><svg aria-hidden="true"><use href="#i-list"/></svg>Mis videos</button>
-          <button role="menuitem" type="button" data-go="concerts" aria-controls="panel-queue"><svg aria-hidden="true"><use href="#i-live"/></svg>Conciertos</button>
+          <button role="menuitem" type="button" data-go="cola" aria-controls="np-side"><svg aria-hidden="true"><use href="#i-queue"/></svg>Cola</button>
+          <button role="menuitem" type="button" data-go="mine" aria-controls="np-side"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar videos</button>
+          <button role="menuitem" type="button" data-go="concerts" aria-controls="np-side"><svg aria-hidden="true"><use href="#i-live"/></svg>Conciertos</button>
           <hr>
           <button role="menuitem" type="button" data-proxy="btn-theme"><svg aria-hidden="true"><use href="#i-moon"/></svg><span id="m-theme-label">Tema claro u oscuro</span></button>
           <button role="menuitem" type="button" data-lang-toggle="long">English</button>
@@ -125,14 +147,12 @@
       </div>
       <nav class="lib-nav" aria-label="Secciones">
         <button class="lib-item" type="button" data-go="likes" data-tip="Me gusta"><svg aria-hidden="true"><use href="#i-heart"/></svg><span class="lib-label">Me gusta</span><b id="lib-n-likes" class="lib-n">0</b></button>
-        <button class="lib-item" type="button" data-go="albums" data-tip="Mis álbumes"><svg aria-hidden="true"><use href="#i-album"/></svg><span class="lib-label">Mis álbumes</span><b id="lib-n-albums" class="lib-n">0</b></button>
-        <button class="lib-item" type="button" data-go="cola" aria-haspopup="dialog" aria-controls="panel-cola" data-tip="Cola de reproducción"><svg aria-hidden="true"><use href="#i-queue"/></svg><span class="lib-label">Cola de reproducción</span><b id="lib-n-cola" class="lib-n">0</b></button>
-        <button id="btn-queue" class="lib-item" type="button" data-go="mine" aria-haspopup="dialog" aria-controls="panel-queue" data-tip="Mis videos"><svg aria-hidden="true"><use href="#i-list"/></svg><span class="lib-label">Mis videos</span></button>
-        <button class="lib-item" type="button" data-go="concerts" aria-haspopup="dialog" aria-controls="panel-queue" data-tip="Conciertos"><svg aria-hidden="true"><use href="#i-live"/></svg><span class="lib-label">Conciertos</span></button>
+        <button class="lib-item" type="button" data-go="cola" aria-controls="np-side" data-tip="Cola de reproducción"><svg aria-hidden="true"><use href="#i-queue"/></svg><span class="lib-label">Cola de reproducción</span><b id="lib-n-cola" class="lib-n">0</b></button>
+        <button id="btn-queue" class="lib-item" type="button" data-go="mine" aria-controls="np-side" data-tip="Tus videos y conciertos"><svg aria-hidden="true"><use href="#i-plus"/></svg><span class="lib-label">Tus videos</span></button>
       </nav>
       <div class="lib-scroll">
         <section class="lib-sec" aria-labelledby="lib-albums-t">
-          <h3 id="lib-albums-t" class="lib-h">Tus álbumes</h3>
+          <h3 id="lib-albums-t" class="lib-h">Álbumes que me gustan</h3>
           <ul id="lib-albums" class="lib-list"></ul>
           <p id="lib-albums-empty" class="hint small">Guarda álbumes con ♡.</p>
         </section>
@@ -143,18 +163,18 @@
         </section>
       </div>
       <div class="lib-foot">
-        <a id="lib-support" class="support-pill" href="#" target="_blank" rel="noopener noreferrer" data-tip="GitHub Sponsors (se abre en otra pestaña)"><span class="sp-stick" aria-hidden="true"></span><span class="lib-label">Apoya a Purple Wave</span></a>
+        <a id="lib-support" class="support-pill" href="#" target="_blank" rel="noopener noreferrer" data-tip="GitHub Sponsors (se abre en otra pestaña)"><span class="sp-stick" aria-hidden="true"></span><span class="lib-label">Apoya a LumiParty</span></a>
         <button id="btn-feedback" class="lib-item" type="button" aria-haspopup="dialog" aria-controls="panel-feedback" data-tip="Dar mi opinión"><svg aria-hidden="true"><use href="#i-chat"/></svg><span class="lib-label">Dar mi opinión</span></button>
       </div>
     </aside>
 
     <main id="main" class="stage" tabindex="-1">
-      <h1 class="sr">Purple Wave Sync · Reproductor</h1>
+      <h1 class="sr">LumiParty · Reproductor</h1>
       <p id="style-chip" class="style-chip">Luces listas</p>
 
       <button id="btn-min" class="video-min" type="button" aria-label="Minimizar video"><svg aria-hidden="true"><use href="#i-min"/></svg><span>Minimizar</span></button>
       <div id="video-view" class="video-card" role="tabpanel" aria-label="Video">
-        <p class="sr">Reproductor de YouTube. Los controles de Purple Wave están después del video.</p>
+        <p class="sr">Reproductor de YouTube. Los controles de LumiParty están después del video.</p>
         <div class="video-box"><div id="yt"></div></div>
         <div id="mini-bar" class="mini-bar">
           <span class="mini-grip" aria-hidden="true"></span>
@@ -175,7 +195,13 @@
             <svg aria-hidden="true"><use href="#i-search"/></svg>
             <input id="search-explore" class="song-search" type="search" placeholder="Busca canción, álbum, año o integrante" aria-label="Buscar canciones" autocomplete="off" spellcheck="false" enterkeyhint="search">
           </div>
-          <div class="filters" role="group" aria-label="Filtrar canciones" data-filters></div>
+          <div class="explore-tools">
+            <div class="type-seg" role="group" aria-label="Mostrar">
+              <button id="type-songs" class="type-opt" type="button" aria-pressed="true">Canciones</button>
+              <button id="type-albums" class="type-opt" type="button" aria-pressed="false">Álbumes</button>
+            </div>
+            <div class="filters" role="group" aria-label="Filtrar canciones" data-filters></div>
+          </div>
         </div>
         <div class="home-hero">
           <div class="hero-text">
@@ -184,21 +210,16 @@
             <p class="hero-sub">Elige una canción y tus luces la siguen.</p>
           </div>
         </div>
-        <!-- Por qué faltan algunos videos oficiales (bloqueos de inserción por derechos) -->
-        <details class="info-note">
-          <summary>¿Por qué no están todos los videos de BTS?</summary>
-          <p>Algunos videos oficiales no se pueden ver dentro de Purple Wave. Quien tiene los derechos de la música (una discográfica o una editora) puede bloquear que el video se reproduzca fuera de YouTube, a veces solo en algunos países.</p>
-          <p>Cuando eso pasa, YouTube muestra «El video no está disponible» y las luces no tienen con qué sincronizarse, así que lo quitamos de la lista. No es un error de tu ARMY Bomb ni de tu conexión: puedes verlo en YouTube.</p>
-        </details>
-        <!-- Primera visita: conectar solo si la persona quiere (la guía no se abre sola) -->
-        <div id="connect-card" class="connect-card" hidden>
-          <span class="sp-stick" aria-hidden="true"></span>
-          <p><strong>¿Tienes un ARMY Bomb?</strong><span>Te guiamos en 4 pasos para conectarlo.</span></p>
-          <div class="cc-actions">
-            <button id="cc-yes" class="btn primary" type="button">Conectar</button>
-            <button id="cc-no" class="btn ghost" type="button">Ahora no</button>
+        <!-- Bienvenida sin preguntas: la pantalla ya brilla; conectar el ARMY Bomb es opcional. Se va al conectar o al cerrarla. -->
+        <section id="onboard" class="onboard" aria-labelledby="ob-title" hidden>
+          <span class="ob-ico" aria-hidden="true"><svg><use href="#i-stick"/></svg></span>
+          <div class="ob-text">
+            <h2 id="ob-title" class="ob-title">Tu pantalla ya brilla con cada canción</h2>
+            <p>¿Tienes un ARMY Bomb? Conéctalo y brillará contigo. Te guío en 4 pasos.</p>
           </div>
-        </div>
+          <button id="ob-yes" class="btn primary ob-cta" type="button"><svg aria-hidden="true"><use href="#i-bt"/></svg>Conectar ARMY Bomb</button>
+          <button id="ob-close" class="ibtn sm ob-close" type="button" aria-label="Ocultar aviso"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+        </section>
         <p class="lights-legend" id="lights-legend"><span>Intensidad de luces:</span>
           <span class="ll-item"><span class="lights-glyph" data-level="1" aria-hidden="true"><svg viewBox="0 0 20 20"><circle class="lg-halo" cx="10" cy="8" r="7.5"/><path class="lg-rays" d="M10 .4v1.4M3.6 2.6l1 1M16.4 2.6l-1 1M1.8 8h1.4M16.8 8h1.4"/><circle class="lg-globe" cx="10" cy="8" r="3.6"/><path class="lg-stick" d="M10 11.8V18.6"/></svg></span>suaves</span>
           <span class="ll-item"><span class="lights-glyph" data-level="2" aria-hidden="true"><svg viewBox="0 0 20 20"><circle class="lg-halo" cx="10" cy="8" r="7.5"/><path class="lg-rays" d="M10 .4v1.4M3.6 2.6l1 1M16.4 2.6l-1 1M1.8 8h1.4M16.8 8h1.4"/><circle class="lg-globe" cx="10" cy="8" r="3.6"/><path class="lg-stick" d="M10 11.8V18.6"/></svg></span>medias</span>
@@ -213,44 +234,66 @@
           </div>
           <p class="search-empty hint" hidden></p>
           <div id="explore-list" class="albums explore-list"></div>
+          <ul id="explore-albums" class="sg-row album-grid" hidden></ul>
+        </section>
+
+        <!-- Álbumes: los más recientes; "Ver todos" cambia Explorar a Álbumes -->
+        <section id="album-shelf" class="shelf shelf-albums" aria-labelledby="as-title">
+          <div class="shelf-head">
+            <p class="shelf-eyebrow">Discografía</p>
+            <h2 id="as-title" class="shelf-title">Álbumes</h2>
+            <span class="shelf-ko" lang="ko" aria-hidden="true">앨범</span>
+            <button id="as-all" class="btn small secondary shelf-more" type="button">Ver todos</button>
+          </div>
+          <ul id="as-row" class="sg-row album-row"></ul>
         </section>
 
         <div class="ex-links" role="group" aria-label="Más en tu biblioteca">
-          <button class="btn secondary" type="button" data-go="mine" aria-haspopup="dialog" aria-controls="panel-queue"><svg aria-hidden="true"><use href="#i-list"/></svg>Mis videos</button>
-          <button class="btn secondary" type="button" data-go="concerts" aria-haspopup="dialog" aria-controls="panel-queue"><svg aria-hidden="true"><use href="#i-live"/></svg>Conciertos</button>
+          <button class="btn secondary" type="button" data-go="mine" aria-controls="np-side"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar un video</button>
+          <button class="btn secondary" type="button" data-go="concerts" aria-controls="np-side"><svg aria-hidden="true"><use href="#i-live"/></svg>Conciertos</button>
         </div>
-        <section id="my-albums" class="shelf shelf-albums" aria-labelledby="ma-title">
+
+        <a id="ex-support" class="support-card" href="#" target="_blank" rel="noopener noreferrer"><span class="sp-stick" aria-hidden="true"></span><span><strong>¿Te gusta LumiParty?</strong><small>Es gratis y hecho por ARMY. Apóyalo en GitHub Sponsors ↗</small></span></a>
+        <!-- Me gusta: canciones y álbumes en un solo lugar -->
+        <section id="likes-hub" class="likes-hub" aria-labelledby="lh-title">
           <div class="shelf-head">
             <p class="shelf-eyebrow">Tu colección</p>
-            <h2 id="ma-title" class="shelf-title">Mis álbumes</h2>
-            <p id="ma-sub" class="shelf-sub" hidden>Con tus Me gusta. Toca ♡ para guardarlos.</p>
-            <span class="shelf-ko" lang="ko" aria-hidden="true">앨범</span>
-          </div>
-          <ul id="ma-row" class="sg-row album-row"></ul>
-          <div id="ma-empty" class="empty-state" hidden>
-            <p class="es-title">Aún no guardas álbumes</p>
-            <p class="hint">Toca ♡ en un álbum para tenerlo a mano.</p>
-            <button id="ma-explore" class="btn secondary" type="button"><svg aria-hidden="true"><use href="#i-search"/></svg>Explorar álbumes</button>
-          </div>
-        </section>
-
-        <a id="ex-support" class="support-card" href="#" target="_blank" rel="noopener noreferrer"><span class="sp-stick" aria-hidden="true"></span><span><strong>¿Te gusta Purple Wave?</strong><small>Es gratis y hecho por ARMY. Apóyalo en GitHub Sponsors ↗</small></span></a>
-        <section id="liked-songs" class="shelf shelf-liked" aria-labelledby="ls-title">
-          <div class="shelf-head">
-            <p class="shelf-eyebrow">Tu lista</p>
-            <h2 id="ls-title" class="shelf-title">Canciones que me gustan</h2>
+            <h2 id="lh-title" class="shelf-title">Me gusta</h2>
             <span class="shelf-ko" lang="ko" aria-hidden="true">좋아요</span>
           </div>
-          <div id="ls-actions" class="ls-actions">
-            <button id="ls-play" class="btn primary" type="button"><svg aria-hidden="true"><use href="#i-play"/></svg>Reproducir todo</button>
-            <button id="ls-shuffle" class="btn secondary" type="button"><svg aria-hidden="true"><use href="#i-shuffle"/></svg>Aleatorio</button>
-          </div>
-          <ul id="ls-row" class="sg-row"></ul>
-          <div id="ls-empty" class="empty-state" hidden>
-            <p class="es-title">Aún no hay canciones</p>
-            <p class="hint">Toca ♡ en una canción para guardarla.</p>
-          </div>
-        </section>
+          <section id="liked-songs" class="shelf shelf-liked" aria-labelledby="ls-title">
+            <div class="shelf-head">
+              <h3 id="ls-title" class="shelf-title sub">Canciones</h3>
+            </div>
+            <div id="ls-actions" class="ls-actions">
+              <button id="ls-play" class="btn primary" type="button"><svg aria-hidden="true"><use href="#i-play"/></svg>Reproducir todo</button>
+              <button id="ls-shuffle" class="btn secondary" type="button"><svg aria-hidden="true"><use href="#i-shuffle"/></svg>Aleatorio</button>
+            </div>
+            <ul id="ls-row" class="sg-row"></ul>
+            <div id="ls-empty" class="empty-state" hidden>
+              <p class="es-title">Aún no hay canciones</p>
+              <p class="hint">Toca ♡ en una canción para guardarla.</p>
+            </div>
+          </section>
+            <section id="my-albums" class="shelf shelf-albums" aria-labelledby="ma-title">
+            <div class="shelf-head">
+              <h3 id="ma-title" class="shelf-title sub">Álbumes</h3>
+              <p id="ma-sub" class="shelf-sub" hidden>Incluye los álbumes de tus canciones favoritas. Toca ♡ en un álbum para guardarlo.</p>
+            </div>
+            <ul id="ma-row" class="sg-row album-row"></ul>
+            <div id="ma-empty" class="empty-state" hidden>
+              <p class="es-title">Aún no hay álbumes</p>
+              <p class="hint">Toca ♡ en la portada de un álbum para guardarlo aquí.</p>
+              <button id="ma-explore" class="btn secondary" type="button"><svg aria-hidden="true"><use href="#i-search"/></svg>Explorar álbumes</button>
+            </div>
+          </section>
+          </section>
+        <!-- Por qué faltan algunos videos oficiales (bloqueos de inserción por derechos) -->
+        <details class="info-note subtle">
+          <summary>¿Por qué no están todos los videos de BTS?</summary>
+          <p>Algunos videos oficiales no se pueden ver dentro de LumiParty. Quien tiene los derechos de la música (una discográfica o una editora) puede bloquear que el video se reproduzca fuera de YouTube, a veces solo en algunos países.</p>
+          <p>Cuando eso pasa, YouTube muestra «El video no está disponible» y las luces no tienen con qué sincronizarse, así que lo quitamos de la lista. No es un error de tu ARMY Bomb ni de tu conexión: puedes verlo en YouTube.</p>
+        </details>
       </section>
 
       <!-- A continuación: aparece cerca del final de la canción -->
@@ -286,6 +329,7 @@
     </main>
 
     <section id="dock" class="dock" aria-label="Controles del reproductor" tabindex="-1">
+      <div class="np-wrap">
       <button id="np-open" class="np" type="button" aria-controls="np-side" aria-expanded="false" data-tip="Ahora suena: detalles">
         <span id="np-art" class="art" aria-hidden="true"></span>
         <span class="np-text">
@@ -293,6 +337,9 @@
           <span id="now-album" class="np-sub">Elige una canción</span>
         </span>
       </button>
+      <!-- Me gusta de la canción que suena, siempre a mano mientras se ve el video -->
+      <button id="dock-like" class="like-btn dock-like" type="button" aria-pressed="false" aria-label="Agregar a Me gusta" hidden></button>
+      </div>
       <div class="transport">
         <button id="btn-shuffle" class="ibtn sm mode no-phone" type="button" aria-pressed="false" aria-label="Aleatorio: no"><svg aria-hidden="true"><use href="#i-shuffle"/></svg></button>
         <button id="btn-prev" class="ibtn" type="button" aria-label="Canción anterior"><svg aria-hidden="true"><use href="#i-prev"/></svg></button>
@@ -308,9 +355,10 @@
       </div>
       <!-- Acciones secundarias, siempre con etiqueta (en línea, o debajo del ícono si el dock es angosto). -->
       <div class="dock-actions">
-        <button id="btn-cola" class="dbtn" type="button" title="Cola de reproducción" aria-haspopup="dialog" aria-controls="panel-cola"><svg aria-hidden="true"><use href="#i-queue"/></svg><span>Cola</span></button>
+        <button id="btn-cola" class="dbtn" type="button" title="Cola de reproducción" aria-controls="np-side" aria-expanded="false"><svg aria-hidden="true"><use href="#i-queue"/></svg><span>Cola</span></button>
         <button id="btn-live" class="dbtn" type="button" title="Concierto" aria-expanded="false" aria-controls="menu-live"><svg aria-hidden="true"><use href="#i-live"/></svg><span>Concierto</span></button>
         <button id="btn-fs" class="dbtn dbtn-icon" type="button" aria-label="Pantalla completa" data-tip="Pantalla completa (F)"><svg aria-hidden="true"><use href="#i-expand"/></svg><span>Pantalla</span></button>
+        <button id="dock-like-m" class="dbtn phone-only dock-like-m" type="button" aria-pressed="false" aria-label="Agregar a Me gusta" hidden><svg aria-hidden="true"><use href="#i-heart"/></svg><span>Me gusta</span></button>
         <button id="dock-bt" class="dbtn phone-only" type="button" aria-haspopup="dialog" aria-controls="panel-bt"><svg aria-hidden="true"><use href="#i-bt"/></svg><span id="dock-bt-label">Conectar</span></button>
       </div>
     </section>
@@ -324,13 +372,18 @@
       <button id="btn-describe" class="mi" type="button" aria-keyshortcuts="L"><svg aria-hidden="true"><use href="#i-info"/></svg><span class="mi-text"><span class="mi-label">¿Cómo están las luces?</span><small>Lo dice en palabras · tecla L</small></span></button>
     </div>
 
-    <!-- Ahora suena: columna derecha en escritorio, hoja inferior en teléfono -->
-    <aside id="np-side" class="panel np-side" aria-labelledby="nps-heading" hidden>
-      <header class="panel-head">
-        <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-info"/></svg></span><h2 id="nps-heading">Ahora suena</h2></div>
-        <button id="nps-close" class="ibtn sm close" type="button" aria-label="Cerrar Ahora suena"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
-      </header>
-      <div class="panel-body nps-body">
+    <!-- Panel lateral (como en apps de música): columna derecha en escritorio, hoja inferior en teléfono -->
+    <aside id="np-side" class="panel np-side" aria-labelledby="rs-heading" hidden>
+      <div class="panel-head rs-head">
+        <h2 id="rs-heading" class="sr">Panel lateral</h2>
+        <div class="tabs rs-tabs" role="tablist" aria-label="Panel lateral">
+          <button id="rs-now" role="tab" type="button" aria-selected="true" aria-controls="rp-now">Ahora suena</button>
+          <button id="rs-cola" role="tab" type="button" aria-selected="false" aria-controls="cola-body" tabindex="-1">Cola</button>
+          <button id="rs-videos" role="tab" type="button" aria-selected="false" aria-controls="rp-videos" tabindex="-1">Tus videos</button>
+        </div>
+        <button id="nps-close" class="ibtn sm close" type="button" aria-label="Cerrar panel lateral"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div id="rp-now" class="panel-body nps-body" role="tabpanel" aria-labelledby="rs-now">
         <div id="nps-empty" class="empty-state">
           <p class="es-title">Nada sonando aún</p>
           <p class="hint">Elige una canción en Explorar.</p>
@@ -362,37 +415,15 @@
             <ul id="nps-album-list" class="nps-list"></ul>
           </section>
         </div>
+        <!-- Siempre a la vista: por aquí se agregan videos que no vienen incluidos -->
+        <button class="rs-add-hint" type="button" data-side="videos"><svg aria-hidden="true"><use href="#i-plus"/></svg><span><strong>¿Falta un video o concierto?</strong><small>Agrégalo con su enlace de YouTube</small></span></button>
       </div>
-    </aside>
 
-    <!-- Aviso de apoyo: una sola vez por sesión, después de la quinta canción -->
-    <aside id="support-nudge" class="support-nudge" aria-label="Apoya el proyecto" hidden>
-      <span class="sp-stick glow" aria-hidden="true"></span>
-      <p>Gracias por escuchar 💜 <a id="nudge-link" href="#" target="_blank" rel="noopener noreferrer">Apoya a Purple Wave ↗</a></p>
-      <button id="nudge-close" class="ibtn sm" type="button" aria-label="Cerrar aviso"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
-    </aside>
-
-    <!-- Menú de cada canción (⋯, clic derecho o pulsación larga) -->
-    <div id="song-menu" class="menu-pop song-menu" role="group" aria-labelledby="sm-title" hidden>
-      <p id="sm-title" class="mp-title"></p>
-      <button id="sm-next" class="mi" type="button"><svg aria-hidden="true"><use href="#i-queue"/></svg><span class="mi-text"><span class="mi-label">Reproducir a continuación</span></span></button>
-      <button id="sm-add" class="mi" type="button"><svg aria-hidden="true"><use href="#i-list"/></svg><span class="mi-text"><span class="mi-label">Agregar a la cola</span></span></button>
-      <button id="sm-album" class="mi" type="button"><svg aria-hidden="true"><use href="#i-explore"/></svg><span class="mi-text"><span class="mi-label">Ir al álbum</span></span></button>
-      <button id="sm-artist" class="mi" type="button"><svg aria-hidden="true"><use href="#i-mic"/></svg><span class="mi-text"><span class="mi-label">Ir al artista</span></span></button>
-      <button id="sm-like" class="mi" type="button"><svg aria-hidden="true"><use href="#i-heart"/></svg><span class="mi-text"><span class="mi-label">Agregar a Me gusta</span></span></button>
-    </div>
-
-    <!-- Panel: cola -->
-    <section id="panel-cola" class="panel" role="dialog" aria-labelledby="pc-title" hidden>
-      <header class="panel-head">
-        <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-queue"/></svg></span><h2 id="pc-title">Cola de reproducción</h2></div>
-        <div class="cq-modes">
-          <button id="cq-shuffle" class="ibtn sm mode phone-only" type="button" aria-pressed="false" aria-label="Aleatorio: no"><svg aria-hidden="true"><use href="#i-shuffle"/></svg></button>
-          <button id="cq-repeat" class="ibtn sm mode phone-only" type="button" aria-pressed="false" aria-label="Repetir: no"><svg aria-hidden="true"><use href="#i-repeat"/></svg></button>
-          <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      <div id="cola-body" class="panel-body" role="tabpanel" aria-labelledby="rs-cola" hidden>
+        <div class="cq-modes phone-only">
+          <button id="cq-shuffle" class="ibtn sm mode" type="button" aria-pressed="false" aria-label="Aleatorio: no"><svg aria-hidden="true"><use href="#i-shuffle"/></svg></button>
+          <button id="cq-repeat" class="ibtn sm mode" type="button" aria-pressed="false" aria-label="Repetir: no"><svg aria-hidden="true"><use href="#i-repeat"/></svg></button>
         </div>
-      </header>
-      <div id="cola-body" class="panel-body">
         <section class="cq-sec" aria-labelledby="cq-now-title">
           <h3 id="cq-now-title" class="group-title">Ahora suena</h3>
           <div id="cq-now" class="cq-now"></div>
@@ -413,60 +444,59 @@
         <p id="cq-help" class="hint small">Arrastra ≡ para ordenar · Alt + ↑/↓ con el teclado</p>
         <p id="cq-live" class="sr" aria-live="polite"></p>
       </div>
-    </section>
 
-    <!-- Panel: canciones y conciertos -->
-    <section id="panel-queue" class="panel" role="dialog" aria-labelledby="pq-title" hidden>
-      <header class="panel-head">
-        <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-list"/></svg></span><h2 id="pq-title">Canciones y conciertos</h2></div>
-        <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
-      </header>
-      <div class="tabs" role="tablist" aria-label="Qué ver">
-        <button id="qt-songs" role="tab" type="button" aria-selected="true" aria-controls="q-songs">Canciones</button>
-        <button id="qt-concerts" role="tab" type="button" aria-selected="false" aria-controls="q-concerts">Conciertos</button>
-        <button id="qt-mine" role="tab" type="button" aria-selected="false" aria-controls="q-mine">Mis videos</button>
-      </div>
-      <div id="q-songs" class="panel-body" role="tabpanel">
-        <section id="q-upnext" class="q-upnext" aria-labelledby="qun-title" hidden>
-          <h3 id="qun-title" class="group-title">A continuación</h3>
-          <ul id="q-upnext-row" class="sg-row compact"></ul>
+      <div id="rp-videos" class="panel-body rv-body" role="tabpanel" aria-labelledby="rs-videos" hidden>
+        <section class="rv-add" aria-labelledby="rv-add-t">
+          <h3 id="rv-add-t" class="rv-title">Agrega cualquier video de YouTube</h3>
+          <p class="hint">Algunos videos y conciertos no vienen incluidos por derechos de autor. Pega su enlace y tus luces se sincronizan igual.</p>
+          <form id="form-add" class="add-form">
+            <label for="inp-url">Enlace del video</label>
+            <input id="inp-url" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…" required>
+            <fieldset class="kind">
+              <legend>¿Qué es?</legend>
+              <label class="check"><input type="radio" name="kind" value="song" checked> Canción</label>
+              <label class="check"><input type="radio" name="kind" value="concert"> Concierto o en vivo</label>
+            </fieldset>
+            <button class="btn primary" type="submit"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar y reproducir</button>
+          </form>
+          <p class="hint small">Usa enlaces de canales oficiales. Se guardan solo en este dispositivo.</p>
         </section>
-        <div class="search" role="search">
-        <svg aria-hidden="true"><use href="#i-search"/></svg>
-        <input id="search-panel" class="song-search" type="search" placeholder="Busca canción, álbum, año o integrante" aria-label="Buscar canciones" autocomplete="off" spellcheck="false" enterkeyhint="search">
+        <section class="nps-sec" aria-labelledby="rv-mine-t">
+          <h3 id="rv-mine-t" class="group-title">Mis videos</h3>
+          <ol id="mine" class="mine"></ol>
+        </section>
+        <section id="rv-concerts" class="nps-sec" aria-labelledby="rv-concerts-t">
+          <h3 id="rv-concerts-t" class="group-title">Conciertos completos</h3>
+          <p class="hint">Son de pago y no se pueden insertar. Míralos en la TV y activa el micrófono: las luces siguen la música.</p>
+          <ul id="films" class="films"></ul>
+          <button id="btn-mic-2" class="btn secondary" type="button">Activar micrófono</button>
+        </section>
       </div>
-        <p class="search-empty hint" hidden></p>
-        <div class="filters" role="group" aria-label="Filtrar canciones" data-filters></div>
-        <div id="albums" class="albums"></div>
-      </div>
-      <div id="q-concerts" class="panel-body" role="tabpanel" hidden>
-        <p class="hint">Los conciertos completos son de pago. Míralos en la TV y usa el micrófono.</p>
-        <ul id="films" class="films"></ul>
-        <button id="btn-mic-2" class="btn primary" type="button">Activar micrófono</button>
-        <p class="hint">¿Un en vivo oficial en YouTube? Agrégalo en <em>Mis videos</em>.</p>
-      </div>
-      <div id="q-mine" class="panel-body" role="tabpanel" hidden>
-        <form id="form-add" class="add-form">
-          <label for="inp-url">Enlace del video de YouTube</label>
-          <input id="inp-url" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…" required>
-          <fieldset class="kind">
-            <legend>¿Qué es?</legend>
-            <label class="check"><input type="radio" name="kind" value="song" checked> Canción</label>
-            <label class="check"><input type="radio" name="kind" value="concert"> Concierto o en vivo</label>
-          </fieldset>
-          <button class="btn primary" type="submit">Agregar video</button>
-        </form>
-        <p class="hint">Solo canales oficiales. Se guardan en este dispositivo.</p>
-        <ol id="mine" class="mine"></ol>
-      </div>
-    </section>
+    </aside>
+
+    <!-- Aviso de apoyo: una sola vez por sesión, después de la quinta canción -->
+    <aside id="support-nudge" class="support-nudge" aria-label="Apoya el proyecto" hidden>
+      <span class="sp-stick glow" aria-hidden="true"></span>
+      <p>Gracias por escuchar 💜 <a id="nudge-link" href="#" target="_blank" rel="noopener noreferrer">Apoya a LumiParty ↗</a></p>
+      <button id="nudge-close" class="ibtn sm" type="button" aria-label="Cerrar aviso"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    </aside>
+
+    <!-- Menú de cada canción (⋯, clic derecho o pulsación larga) -->
+    <div id="song-menu" class="menu-pop song-menu" role="group" aria-labelledby="sm-title" hidden>
+      <p id="sm-title" class="mp-title"></p>
+      <button id="sm-next" class="mi" type="button"><svg aria-hidden="true"><use href="#i-queue"/></svg><span class="mi-text"><span class="mi-label">Reproducir a continuación</span></span></button>
+      <button id="sm-add" class="mi" type="button"><svg aria-hidden="true"><use href="#i-list"/></svg><span class="mi-text"><span class="mi-label">Agregar a la cola</span></span></button>
+      <button id="sm-album" class="mi" type="button"><svg aria-hidden="true"><use href="#i-explore"/></svg><span class="mi-text"><span class="mi-label">Ir al álbum</span></span></button>
+      <button id="sm-artist" class="mi" type="button"><svg aria-hidden="true"><use href="#i-mic"/></svg><span class="mi-text"><span class="mi-label">Ir al artista</span></span></button>
+      <button id="sm-like" class="mi" type="button"><svg aria-hidden="true"><use href="#i-heart"/></svg><span class="mi-text"><span class="mi-label">Agregar a Me gusta</span></span></button>
+    </div>
 
     <!-- Panel: Bluetooth -->
     <section id="panel-bt" class="panel" role="dialog" aria-labelledby="pb-title" hidden>
-      <header class="panel-head">
+      <div class="panel-head">
         <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-stick"/></svg></span><h2 id="pb-title">Tu ARMY Bomb</h2></div>
         <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
-      </header>
+      </div>
       <div class="panel-body">
         <p class="hint">Pon tu ARMY Bomb en modo Bluetooth y conéctalo.</p>
         <div id="bt-warning" class="warning" hidden></div>
@@ -483,10 +513,10 @@
 
     <!-- Panel: ajustes -->
     <section id="panel-settings" class="panel" role="dialog" aria-labelledby="ps-title" hidden>
-      <header class="panel-head">
+      <div class="panel-head">
         <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-sliders"/></svg></span><h2 id="ps-title">Ajustes</h2></div>
         <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
-      </header>
+      </div>
       <div class="panel-body">
         <section class="group" aria-labelledby="sg-lights">
           <h3 id="sg-lights" class="group-title"><svg aria-hidden="true"><use href="#i-stick"/></svg>Luces</h3>
@@ -562,10 +592,10 @@
 
     <!-- Panel: reto -->
     <section id="panel-game" class="panel" role="dialog" aria-labelledby="pg-title" hidden>
-      <header class="panel-head">
+      <div class="panel-head">
         <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-trophy"/></svg></span><h2 id="pg-title">Reto de ritmo</h2></div>
         <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
-      </header>
+      </div>
       <div class="panel-body">
         <p class="hint">Toca al compás y entra al ranking.</p>
         <div class="row wrap">
@@ -599,10 +629,10 @@
 
     <!-- Panel: opinión -->
     <section id="panel-feedback" class="panel" role="dialog" aria-labelledby="pf-title" hidden>
-      <header class="panel-head">
+      <div class="panel-head">
         <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-chat"/></svg></span><h2 id="pf-title">Tu opinión</h2></div>
         <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
-      </header>
+      </div>
       <form id="form-feedback" class="panel-body" novalidate>
         <p class="hint">Es anónimo: no escribas datos personales.</p>
         <fieldset class="stars">

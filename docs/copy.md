@@ -1,4 +1,4 @@
-# Copy deck · Purple Wave Sync
+# Copy deck · LumiParty
 
 Propuesta de textos para la landing, el reproductor, la privacidad, el README y los metadatos.
 Es un documento de trabajo: nadie la aplica automáticamente. Cada fila dice **dónde** está el texto,
@@ -33,7 +33,7 @@ Es un documento de trabajo: nadie la aplica automáticamente. Cada fila dice **d
 | --- | --- | --- |
 | Género de "lightstick" | **el** lightstick, **el** ARMY Bomb (hoy se mezclan "la lightstick", "lo" y "el") | El anglicismo suele ir en masculino en Latinoamérica y así concuerda con "ARMY Bomb". Ojo con las concordancias: "conectado", "conectados", "Libéralo". |
 | Nombre del producto | "ARMY Bomb" cuando hablamos del lightstick oficial; "lightstick" cuando es genérico o incluye la pantalla | Es como lo dice el fandom. Es uso descriptivo, no un logo ni una afirmación de alianza. |
-| La app | "Purple Wave Sync" en títulos; "la app" en el texto; "el reproductor" para `/player/` | "Experiencia" es vago y no dice qué abre. |
+| La app | "LumiParty" en títulos; "la app" en el texto; "el reproductor" para `/player/` | "Experiencia" es vago y no dice qué abre. |
 | Sincronizar | "seguir la canción", "brillar con la canción" en textos de marketing; "sincronizar" solo donde se espera el término técnico | Más claro y más emotivo. |
 | Celular / computadora | "celular" y "computadora" | Neutro para LatAm. |
 | Mayúsculas | Solo inicial de frase y nombres propios. "ARMY" y "BTS" sí, porque así se escriben. Nada de frases enteras en mayúsculas. | Legibilidad y lectores de pantalla. |
@@ -122,7 +122,7 @@ lo que requiere código nuevo.
   - Texto: "Estoy encendiendo mi ARMY Bomb con {canción} 💜 Pruébalo aquí:" + enlace
 - **Compartir puntaje del reto**, junto al toast de resultado:
   - Botón: "Compartir puntaje"
-  - Texto: "Hice {puntos} puntos al ritmo de {canción} en Purple Wave Sync. ¿Me superas? 💜" + enlace a `?song=<id>`
+  - Texto: "Hice {puntos} puntos al ritmo de {canción} en LumiParty. ¿Me superas? 💜" + enlace a `?song=<id>`
 - **Compartir la app** (en Ajustes → Apoya el proyecto, y en la pantalla de "¡Conectado!"):
   - Botón: "Invitar a ARMY"
   - Texto: "Encontré una app de fans para que el ARMY Bomb siga las canciones de BTS. Gratis y sin cuentas:" + enlace
@@ -145,7 +145,7 @@ lo que requiere código nuevo.
     SUGA 9/3, j-hope 18/2, Jimin 13/10, V 30/12, Jung Kook 1/9)
   - "13 de junio: aniversario de debut. ¿Encendemos el océano morado?"
   - No usar nombres de eventos oficiales como título nuestro.
-- **Instalar la app** (PWA) después de la 2.ª sesión, no en la primera: "Agrega Purple Wave Sync a tu pantalla de
+- **Instalar la app** (PWA) después de la 2.ª sesión, no en la primera: "Agrega LumiParty a tu pantalla de
   inicio y ábrela como una app." Botón: "Agregar". Botón secundario: "Ahora no".
 - **Pedir opinión en el momento justo:** tras terminar la 3.ª canción o un álbum, un toast: "¿Te gustó? Cuéntanos en
   10 segundos." Botón: "Opinar". Una sola vez por semana.
@@ -160,19 +160,19 @@ ni pedir correo o redes para jugar.
 
 | # | Ubicación | Actual | Propuesta | Alt A/B |
 | --- | --- | --- | --- | --- |
-| M-01 | `index.html` `<title>` | Purple Wave Sync | Purple Wave Sync · Tu ARMY Bomb al ritmo de BTS | Purple Wave Sync · Lightstick sync para ARMY |
+| M-01 | `index.html` `<title>` | LumiParty | LumiParty · Tu ARMY Bomb al ritmo de BTS | LumiParty · Lightstick sync para ARMY |
 | M-02 | `index.html` `meta[name=description]` | Página web no oficial para sincronizar tu lightstick (ARMY Bomb) con videos de canciones y conciertos de BTS. Gratis y de código abierto. | Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos oficiales de BTS, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas. | — |
-| M-03 | `index.html` `og:title` | Purple Wave Sync · Lightstick BTS concert sync | Tu ARMY Bomb, al ritmo de cada canción · Purple Wave Sync | El océano morado también se enciende en casa |
+| M-03 | `index.html` `og:title` | LumiParty · Lightstick BTS concert sync | Tu ARMY Bomb, al ritmo de cada canción · LumiParty | El océano morado también se enciende en casa |
 | M-04 | `index.html` `og:description` | Sincroniza tu lightstick con canciones y conciertos de BTS desde el navegador. | Dale play a un video de BTS y tu lightstick cambia de color con la canción. Hecho por ARMY, no oficial, gratis. | — |
 | M-05 | `index.html` (nuevo) | — | Agregar `og:type` = website, `og:url`, `og:image` (captura del lightstick 3D, sin logos oficiales), `og:locale` = es_419 y `twitter:card` = summary_large_image. Sin imagen, los enlaces compartidos se ven pobres. | — |
-| M-06 | `player/index.html` `<title>` | Purple Wave Sync | Reproductor · Purple Wave Sync | — |
+| M-06 | `player/index.html` `<title>` | LumiParty | Reproductor · LumiParty | — |
 | M-07 | `player/index.html` `meta[name=description]` | Página web no oficial para sincronizar tu lightstick con videos de canciones y conciertos de BTS, álbum por álbum. | Elige una canción de BTS y tu ARMY Bomb (o tu pantalla) la sigue en colores, álbum por álbum. Proyecto de fans no oficial. | — |
-| M-08 | `privacy/index.html` `<title>` | Privacidad · Purple Wave Sync | (se queda) | — |
-| M-09 | `privacy/index.html` (nuevo) `meta[name=description]` | — | Qué guarda Purple Wave Sync (casi nada) y cómo usa Bluetooth, cámara y micrófono: todo se procesa en tu dispositivo. | — |
-| M-10 | `manifest.webmanifest` `name` | Purple Wave Sync | (se queda) | — |
-| M-11 | `manifest.webmanifest` `short_name` | PurpleWave | Purple Wave | — |
+| M-08 | `privacy/index.html` `<title>` | Privacidad · LumiParty | (se queda) | — |
+| M-09 | `privacy/index.html` (nuevo) `meta[name=description]` | — | Qué guarda LumiParty (casi nada) y cómo usa Bluetooth, cámara y micrófono: todo se procesa en tu dispositivo. | — |
+| M-10 | `manifest.webmanifest` `name` | LumiParty | (se queda) | — |
+| M-11 | `manifest.webmanifest` `short_name` | LumiParty | LumiParty | — |
 | M-12 | `manifest.webmanifest` `description` | Sincroniza tu lightstick con canciones, álbum por álbum. Proyecto de fans, abierto y no oficial. | Tu ARMY Bomb al ritmo de cada canción de BTS. Proyecto de fans, gratis, abierto y no oficial. | — |
-| M-13 | `player/index.html` `apple-mobile-web-app-title` | PurpleWave | Purple Wave | — |
+| M-13 | `player/index.html` `apple-mobile-web-app-title` | LumiParty | LumiParty | — |
 
 ---
 
@@ -365,7 +365,7 @@ Nota P-29: confirmar a dónde lleva `lb-link`. Un enlace que abre otro sitio deb
 
 | # | Ubicación | Actual | Propuesta | Alt A/B |
 | --- | --- | --- | --- | --- |
-| P-36 | `#now-title` / `#now-album` (sin canción) | Nada sonando / Purple Wave Sync | Nada sonando aún / Elige una canción | — |
+| P-36 | `#now-title` / `#now-album` (sin canción) | Nada sonando / LumiParty | Nada sonando aún / Elige una canción | — |
 | P-37 | `#btn-prev` / `#btn-play` / `#btn-next` `aria-label` | Anterior / Reproducir / Siguiente | Canción anterior / Reproducir (Pausar) / Siguiente canción | — |
 | P-38 | `#timeline` `aria-label` | Posición en el video | (se queda) | — |
 | P-39 | `#btn-queue` | Canciones | (se queda) | — |
@@ -576,7 +576,7 @@ visible, así que ese tip ya no se mostraría. Apuntar el tip a `#btn-live` con 
 | --- | --- | --- | --- |
 | V-01 | `nav a` | Ir a la app | Abrir el reproductor |
 | V-02 | `h1` | Privacidad y seguridad | (se queda) |
-| V-03 | `.lead` | Purple Wave Sync es un proyecto de fans, gratis y de código abierto. Está hecho para guardar lo mínimo posible. | Purple Wave Sync es un proyecto de fans, gratis y de código abierto. Lo hicimos para guardar lo mínimo posible, y casi todo se queda en tu dispositivo. |
+| V-03 | `.lead` | LumiParty es un proyecto de fans, gratis y de código abierto. Está hecho para guardar lo mínimo posible. | LumiParty es un proyecto de fans, gratis y de código abierto. Lo hicimos para guardar lo mínimo posible, y casi todo se queda en tu dispositivo. |
 | V-04 | `h2` | Qué guardamos | (se queda) |
 | V-05 | li 1 | Nada en servidores propios. El sitio es estático: no hay cuentas, ni contraseñas, ni base de datos de usuarios. | (se queda) |
 | V-06 | li 2 | En tu dispositivo (almacenamiento local del navegador): … Puedes borrarlo todo en Ajustes → Borrar mis datos de este dispositivo. | (se queda; actualizar el nombre del botón si se aplica P-120: "Ajustes → Borrar mis datos") |
@@ -597,10 +597,10 @@ La privacidad ya habla en el tono correcto: llana, directa y sin jerga legal. Re
 
 | # | Ubicación | Actual | Propuesta |
 | --- | --- | --- | --- |
-| R-01 | `# 💜 Purple Wave Sync` | (se queda) | (se queda) |
+| R-01 | `# 💜 LumiParty` | (se queda) | (se queda) |
 | R-02 | cita bajo el título | **Lightstick BTS concert sync** · Página web no oficial para sincronizar tu lightstick (ARMY Bomb) con canciones de BTS en modo concierto. | **Lightstick BTS concert sync** · Tu ARMY Bomb al ritmo de cada canción de BTS, desde el navegador. Proyecto de fans, no oficial. |
 | R-03 | párrafo | App web progresiva (PWA), gratuita y de código abierto, para sincronizar tu lightstick con canciones, **álbum por álbum**, desde el navegador. Sin instalar nada y sin cuentas. | Conecta tu ARMY Bomb por Bluetooth, dale play a un video oficial y míralo cambiar de color en el intro, el coro y el puente, **álbum por álbum**. ¿Sin lightstick? Tu pantalla brilla en su lugar. Es una app web (PWA) gratuita y de código abierto: sin instalar nada y sin cuentas. |
-| R-04 | nueva línea tras el párrafo | — | **[Abrir Purple Wave Sync](https://karlamedina97.github.io/lightstick-bts-concert-sync/)** · Funciona en Chrome o Edge (Android, Windows, Mac, Chromebook) y en iPhone con Bluefy. |
+| R-04 | nueva línea tras el párrafo | — | **[Abrir LumiParty](https://karlamedina97.github.io/lightstick-bts-concert-sync/)** · Funciona en Chrome o Edge (Android, Windows, Mac, Chromebook) y en iPhone con Bluefy. |
 | R-05 | aviso | Proyecto de fans. **No oficial** y sin afiliación con HYBE, BIGHIT MUSIC ni BTS. Los videos se reproducen desde YouTube; este repositorio no contiene audio ni video. | (se queda) |
 | R-06 | viñeta "Landing 3D" | … gira al ritmo de la intro de la canción del grupo más escuchada del momento … | … gira al ritmo de la intro de una canción destacada (configurable en `src/config.js`). |
 

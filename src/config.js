@@ -1,6 +1,6 @@
 // Configuración del proyecto. Edita estos enlaces con los tuyos.
 export const PROJECT = {
-  name: "Purple Wave Sync",
+  name: "LumiParty",
   repo: "https://github.com/KarlaMedina97/lightstick-bts-concert-sync",
 };
 

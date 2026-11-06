@@ -1,6 +1,6 @@
 // Service worker: guarda la app para abrirla sin conexión (los videos sí necesitan internet).
 // Solo guarda archivos propios del sitio; nunca respuestas de terceros ni con errores.
-const CACHE = "pws-v21";
+const CACHE = "pws-v25";
 const SHELL = [
   "./",
   "index.html",
@@ -19,6 +19,7 @@ const SHELL = [
   "src/announce.js",
   "src/nav-menu.js",
   "src/videopalette.js",
+  "src/inapp.js",
   "src/earcons.js",
   "src/i18n/en-landing.js",
   "src/i18n/en-player.js",
