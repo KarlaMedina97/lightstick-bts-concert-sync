@@ -333,10 +333,16 @@ for (const [vp, w, h] of VIEWPORTS) {
 }
 
 ws.close();
-// En Windows, kill() cierra solo el proceso principal de Edge y deja vivos sus hijos (iconos en la bandeja): se cierra el árbol.
-const killTree = (p) => (process.platform === "win32" ? spawnSync("taskkill", ["/PID", String(p.pid), "/T", "/F"]) : p.kill());
-killTree(browser);
-killTree(server);
+// En Windows, Edge se relanza con otro PID y kill() deja vivos sus procesos (iconos en la bandeja): se cierran todos los
+// que usan el perfil temporal de esta prueba.
+if (process.platform === "win32") {
+  const dir = profile.replace(/'/g, "''");
+  spawnSync("powershell", ["-NoProfile", "-Command", `Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" | Where-Object { $_.CommandLine -like '*${dir}*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`]);
+  spawnSync("taskkill", ["/PID", String(server.pid), "/T", "/F"]);
+} else {
+  browser.kill();
+  server.kill();
+}
 try { rmSync(profile, { recursive: true, force: true }); } catch {}
 
 if (failures.length) {
