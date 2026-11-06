@@ -60,6 +60,14 @@ for (const [slug, title, desc, canon] of routes) {
   songPages++;
 }
 
+// Mapa del sitio: las páginas fijas (sitemap.xml del repo) más cada álbum y canción del reproductor (sin las viejas).
+{
+  const base = readFileSync(join(OUT, "sitemap.xml"), "utf8");
+  const day = new Date().toISOString().slice(0, 10);
+  const extra = routes.filter((r) => !r[3]).map(([slug]) => `  <url><loc>https://lumiparty.com/player/${slug}</loc><lastmod>${day}</lastmod></url>`);
+  writeFileSync(join(OUT, "sitemap.xml"), base.replace("</urlset>", [...extra, "</urlset>"].join("\n")));
+}
+
 // Verificación: ninguna ruta bloqueada se coló y todo lo que pide el service worker existe.
 const walk = (d) => readdirSync(d).flatMap((f) => { const p = join(d, f); return statSync(p).isDirectory() ? walk(p) : [p]; });
 const files = walk(OUT).map((f) => f.replaceAll("\\", "/").slice(OUT.length + 1));
