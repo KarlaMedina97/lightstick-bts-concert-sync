@@ -2066,8 +2066,9 @@ function bindLibrary() {
   addEventListener("resize", () => { if (typeof store.get(RAIL_KEY, null) !== "boolean") applyRail(innerWidth < 1280); });
   $("btn-feedback-2").onclick = (e) => showPanel("panel-feedback", e.currentTarget);
   const sponsor = DONATIONS.find((d) => d.url)?.url ?? PROJECT.repo;
-  ["lib-support", "ex-support", "nudge-link"].forEach((id) => ($(id).href = sponsor));
-  $("nudge-close").onclick = () => fadeOut($("support-nudge"));
+  ["lib-support", "ex-support", "nudge-link"].forEach((id) => { const a = $(id); if (a) a.href = sponsor; });
+  const nudgeClose = $("nudge-close"); // el aviso de apoyo se retiró: puede no existir
+  if (nudgeClose) nudgeClose.onclick = () => fadeOut($("support-nudge"));
 }
 
 // ---------- Ahora suena (columna derecha ≥ 1280 px; hoja en pantallas chicas) ----------
@@ -2337,7 +2338,7 @@ function maybeAskFeedback() {
   askFeedbackNext = false;
   // Unos segundos después de que arranca la canción (y el fanchant terminó): sin tapar nada.
   setTimeout(() => {
-    if (document.hidden || openPanel || fanchant?.running || !$("support-nudge").hidden) { askFeedbackNext = true; return; }
+    if (document.hidden || openPanel || fanchant?.running || $("support-nudge")?.hidden === false) { askFeedbackNext = true; return; }
     fbShownThisSession = true;
     store.set(FB_ASK_KEY, { ...store.get(FB_ASK_KEY, {}), at: Date.now() });
     const n = $("fb-nudge");
@@ -2361,18 +2362,9 @@ function bindFeedbackNudge(openWithRating) {
   };
 }
 
-// ---------- Apoyo: un aviso discreto, una vez por sesión, tras la quinta canción ----------
-let songsThisSession = 0;
-function maybeNudgeSupport() {
-  songsThisSession++;
-  if (songsThisSession !== 5 || !$("fb-nudge").hidden) return;
-  try { if (sessionStorage.getItem("pws.nudge")) return; sessionStorage.setItem("pws.nudge", "1"); } catch { return; }
-  const n = $("support-nudge");
-  fadeIn(n);
-  // 8 s a la vista (más si el puntero o el foco están encima) y se desvanece suave.
-  const hide = () => (n.matches(":hover, :focus-within") ? setTimeout(hide, 1500) : fadeOut(n, 320));
-  setTimeout(hide, 8000);
-}
+// ---------- Apoyo ----------
+// Retirado (2026-11-05): ya no se pide apoyo al terminar canciones. Se deja vacío para no tocar a quien la llama.
+function maybeNudgeSupport() {}
 
 // ---------- Menús compactos (Concierto) ----------
 function closeMenus(except) {
