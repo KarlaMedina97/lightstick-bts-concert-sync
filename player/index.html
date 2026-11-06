@@ -159,7 +159,6 @@
       </div>
       <nav class="lib-nav" aria-label="Secciones">
         <button class="lib-item" type="button" data-go="likes" data-tip="Me gusta"><svg aria-hidden="true"><use href="#i-heart"/></svg><span class="lib-label">Me gusta</span><b id="lib-n-likes" class="lib-n">0</b></button>
-        <button class="lib-item" type="button" data-go="cola" aria-controls="np-side" data-tip="Cola de reproducción"><svg aria-hidden="true"><use href="#i-queue"/></svg><span class="lib-label">Cola de reproducción</span><b id="lib-n-cola" class="lib-n">0</b></button>
         <button id="btn-queue" class="lib-item" type="button" data-go="mine" data-tip="Mis videos y conciertos"><svg aria-hidden="true"><use href="#i-plus"/></svg><span class="lib-label">Mis videos</span><b id="lib-n-mine" class="lib-n">0</b></button>
       </nav>
       <div class="lib-scroll">
@@ -393,6 +392,7 @@
           <button id="lv-orb" class="type-opt" type="button" aria-pressed="true">Bola</button>
           <button id="lv-stick" class="type-opt" type="button" aria-pressed="false">ARMY Bomb 3D</button>
         </div>
+        <p id="lv-note" class="lv-note" hidden>Ilustración 3D propia y no oficial: puede diferir del ARMY Bomb real.</p>
         <div class="lv-stage">
           <div id="big-bulb" class="big-bulb" aria-hidden="true"></div>
           <div id="stick3d" class="stick3d" hidden></div>
@@ -444,7 +444,7 @@
       </div>
       <!-- Acciones secundarias, siempre con etiqueta (en línea, o debajo del ícono si el dock es angosto). -->
       <div class="dock-actions">
-        <button id="btn-cola" class="dbtn" type="button" title="Cola de reproducción" aria-controls="np-side" aria-expanded="false"><svg aria-hidden="true"><use href="#i-queue"/></svg><span>Cola</span></button>
+        <button id="btn-cola" class="dbtn" type="button" data-tip="Cola de reproducción" aria-controls="np-side" aria-expanded="false"><svg aria-hidden="true"><use href="#i-queue"/></svg><span>Cola</span><b id="lib-n-cola" class="cola-n lib-n" aria-hidden="true">0</b></button>
         <button id="btn-live" class="dbtn live-btn" type="button" aria-expanded="false" aria-controls="menu-live" data-tip="Modo concierto: estadio, TV o micrófono"><span class="live-ico" aria-hidden="true"><svg><use href="#i-live"/></svg></span><span>Modo concierto</span></button>
         <!-- Junto a pantalla completa: minimizar el video (sigue sonando en una ventanita) o expandirlo de nuevo -->
         <button id="btn-mini" class="dbtn dbtn-icon" type="button" aria-label="Minimizar video" data-tip="Minimizar video" hidden><svg aria-hidden="true"><use href="#i-pip"/></svg><span>Minimizar</span></button>

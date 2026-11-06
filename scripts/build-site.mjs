@@ -30,12 +30,25 @@ const { ALBUMS } = await import(pathToFileURL(join(process.cwd(), "src/catalog.j
 const playerHtml = readFileSync(join(OUT, "player/index.html"), "utf8");
 const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 let songPages = 0;
-for (const album of ALBUMS) for (const song of album.songs ?? []) {
-  if (!/^[a-z0-9-]{1,80}$/.test(song.id) || existsSync(join(OUT, "player", `${song.id}.html`))) continue;
+const routes = [
+  ["albums", "Álbumes · LumiParty", "Todos los álbumes de BTS e integrantes, con luces para tu ARMY Bomb. Página de fans, no oficial."],
+  ["likes", "Me gusta · LumiParty", "Tus canciones y álbumes guardados en LumiParty."],
+  ["my-videos", "Mis videos · LumiParty", "Agrega videos de canales oficiales de YouTube y sincroniza tu ARMY Bomb."],
+  ["lights", "Luces · LumiParty", "Tu ARMY Bomb (o tu pantalla) con el color de cada canción."],
+];
+for (const album of ALBUMS) {
   const who = album.artist && album.artist !== "BTS" ? album.artist : "BTS";
-  const url = `https://lumiparty.com/player/${song.id}`;
-  const title = `${song.title} · ${who} · LumiParty`;
-  const desc = `Tu ARMY Bomb al ritmo de ${song.title} (${who}) con el video oficial. Página de fans, no oficial.`;
+  routes.push([`album-${album.id}`, `${album.title} · ${who} · LumiParty`, `${album.title} (${who}${album.year ? `, ${album.year}` : ""}): canciones con luces para tu ARMY Bomb. Página de fans, no oficial.`]);
+  for (const song of album.songs ?? []) routes.push([song.id, `${song.title} · ${who} · LumiParty`, `Tu ARMY Bomb al ritmo de ${song.title} (${who}) con el video oficial. Página de fans, no oficial.`]);
+}
+// Direcciones viejas en español: la misma página (el reproductor las pasa a la nueva sin recargar).
+for (const [old, now] of [["albumes", "albums"], ["me-gusta", "likes"], ["mis-videos", "my-videos"], ["luces", "lights"]]) {
+  const r = routes.find((x) => x[0] === now);
+  if (r) routes.push([old, r[1], r[2], now]); // canónica: la nueva
+}
+for (const [slug, title, desc, canon] of routes) {
+  if (!/^[a-z0-9-]{1,90}$/.test(slug) || existsSync(join(OUT, "player", `${slug}.html`))) continue;
+  const url = `https://lumiparty.com/player/${canon ?? slug}`;
   const html = playerHtml
     .replace(/<title>[^<]*<\/title>/, `<title>${esc(title)}</title>`)
     .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(desc)}$2`)
@@ -43,7 +56,7 @@ for (const album of ALBUMS) for (const song of album.songs ?? []) {
     .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
     .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
     .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(desc)}$2`);
-  writeFileSync(join(OUT, "player", `${song.id}.html`), html);
+  writeFileSync(join(OUT, "player", `${slug}.html`), html);
   songPages++;
 }
 
@@ -55,4 +68,4 @@ if (leaked.length) throw new Error(`No debería publicarse: ${leaked.join(", ")}
 const shell = [...readFileSync("sw.js", "utf8").matchAll(/^\s*"([^"]+)",?$/gm)].map((m) => m[1]).filter((f) => f !== "./" && !f.endsWith("/"));
 const missing = shell.filter((f) => !files.includes(f));
 if (missing.length) throw new Error(`El service worker pide archivos que no se publican: ${missing.join(", ")}`);
-console.log(`_site/: ${files.length} archivos publicados (${songPages} páginas de canción).`);
+console.log(`_site/: ${files.length} archivos publicados (${songPages} direcciones del reproductor).`);

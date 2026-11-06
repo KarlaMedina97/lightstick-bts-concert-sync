@@ -28,7 +28,7 @@ createServer(async (req, res) => {
   const path = decodeURIComponent(new URL(req.url, "http://x").pathname);
   let file = normalize(join(root, path.endsWith("/") ? path + "index.html" : path));
   // Canción con dirección amigable (/player/dynamite): en el sitio la sirve player/dynamite.html (lo arma el build).
-  if (/^\/player\/[a-z0-9-]{1,80}$/.test(path)) file = join(root, "player", "index.html");
+  if (/^\/player\/[a-z0-9-]{1,90}$/.test(path)) file = join(root, "player", "index.html");
   // Rutas de carpeta sin barra final (/player) → redirige a /player/, como GitHub Pages.
   else if (!extname(path) && !path.endsWith("/")) return res.writeHead(301, { location: path + "/" + (req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : "") }).end();
   if (file !== root && !file.startsWith(root + sep)) return res.writeHead(403).end();

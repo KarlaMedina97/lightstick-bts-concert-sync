@@ -281,6 +281,7 @@ function setView(v) {
   if (!exploring) app.classList.remove("mini-off");
   syncMiniButton();
   syncVideoTab();
+  syncRoute();
   requestAnimationFrame(() => placeMini(false));
 }
 /** Botón del pie de página junto a pantalla completa: Minimizar (en Video) o Expandir (con el video en la ventanita). */
@@ -1027,11 +1028,11 @@ function loadIndex(i, { autoplay = true } = {}) {
   $("np-open").dataset.tip = `Ahora suena: ${song.title}`;
   maybeNudgeSupport();
   maybeAskFeedback();
-  syncSongUrl(album.id === "mine" ? null : song.id);
+  syncRoute();
   if (npDocked() && store.get(NP_KEY, true) && $("np-side").hidden) setNpOpen(true);
   if (view === "video") $("home").hidden = true;
   setView(view);
-  document.title = `${song.title} · LumiParty`;
+  document.title = routeTitle(currentSlug());
   updateMediaSession();
   renderUpNext();
 }
@@ -1715,6 +1716,7 @@ function openAlbum(id) {
   renderFilters();
   applySearch();
   if (view !== "explore") $("view-explore").click();
+  syncRoute();
   requestAnimationFrame(() => $("explore-results").scrollIntoView({ block: "start", behavior: "smooth" }));
 }
 function albumCard(id) {
@@ -1803,6 +1805,7 @@ function setExploreType(type) {
   if (listFilter.startsWith("album:")) listFilter = "all";
   renderFilters();
   applySearch();
+  syncRoute();
 }
 
 function renderCollections() {
@@ -1845,6 +1848,7 @@ function clearExplore() {
   $("search-explore").value = "";
   renderFilters();
   applySearch();
+  syncRoute();
   $("search-explore").focus();
 }
 /** El chip «✕ Limpiar» va primero en la fila de filtros, solo cuando hay algo que limpiar. */
@@ -1868,7 +1872,7 @@ function syncClearChip() {
 const RAIL_KEY = "pws.rail.v1";
 function railPreferred() {
   const saved = store.get(RAIL_KEY, null);
-  return typeof saved === "boolean" ? saved : innerWidth < 1280;
+  return typeof saved === "boolean" ? saved : true; // compacta por defecto: se amplía al pasar el mouse
 }
 function applyRail(on) {
   app.classList.toggle("rail", on && wide()); // el cajón de tablet siempre va con etiquetas
@@ -1949,12 +1953,8 @@ function renderLibrary() {
 }
 // Páginas propias dentro de Explorar (como en las apps de música): Me gusta y Mis videos.
 const PAGES = { likes: { el: "likes-page", title: "lp-title", hash: "#me-gusta" }, videos: { el: "videos-page", title: "vp-title", hash: "#mis-videos" } };
-function openPage(name, { push = true, focus = true } = {}) {
-  if (page !== name) {
-    const replace = page !== "home" && history.state?.page === page; // de una página a otra: sin apilar historial
-    page = name;
-    if (push) try { history[replace ? "replaceState" : "pushState"]({ page: name }, "", PAGES[name].hash); } catch {}
-  }
+function openPage(name, { focus = true } = {}) {
+  page = name;
   // Directo (sin "tocar" la pestaña Explorar, que desde una página significa volver al inicio).
   if (view !== "explore") { selectViewTab("view-explore"); switchView("explore"); } else setView("explore");
   $(PAGES[name].el).scrollTop = 0;
@@ -1971,12 +1971,9 @@ function openVideos(opts) {
   openPage("videos", opts);
 }
 /** Vuelve al inicio de Explorar desde Me gusta o Mis videos. */
-function closeLikes({ fromHistory = false } = {}) {
+function closeLikes() {
   if (page === "home") return;
-  const was = page;
   page = "home";
-  if (!fromHistory && history.state?.page === was) { try { history.back(); } catch {} }
-  else if (!fromHistory && location.hash === PAGES[was].hash) { try { history.replaceState(null, "", location.pathname + location.search); } catch {} }
   setView(view);
 }
 /** La biblioteca marca la página abierta. */
@@ -2036,13 +2033,8 @@ function bindLikesPage() {
   $("lp-songs").onclick = () => setLikesTab("songs");
   $("lp-albums").onclick = () => setLikesTab("albums");
   $("ls-explore").onclick = () => { closeLikes(); requestAnimationFrame(() => $("search-explore").focus()); };
-  addEventListener("popstate", (e) => {
-    if (e.state?.page === "likes") openLikes(undefined, { push: false });
-    else if (e.state?.page === "videos") openVideos({ push: false });
-    else closeLikes({ fromHistory: true });
-  });
-  if (location.hash === "#me-gusta") openLikes("songs", { push: false });
-  else if (location.hash === "#mis-videos") openVideos({ push: false, focus: false });
+  // Atrás / adelante del navegador: la pantalla se rearma desde la dirección.
+  addEventListener("popstate", () => applyRoute(slugFromPath(), { fromHistory: true }));
 }
 
 /** Acciones de la biblioteca (también los accesos de Explorar en teléfono). */
@@ -2062,8 +2054,17 @@ function bindLibrary() {
     if (b) goLibrary(b.dataset.go, b);
   });
   applyRail(railPreferred());
+  // Compacta: al pasar el mouse (con una pequeña espera, para no abrirse al cruzarla) o al entrar con Tab, se amplía.
+  const side = $("side");
+  let peekT = 0;
+  const peek = (on) => { clearTimeout(peekT); side.classList.toggle("peek", on && app.classList.contains("rail")); };
+  side.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") peekT = setTimeout(() => peek(true), 140); });
+  side.addEventListener("pointerleave", () => peek(false));
+  side.addEventListener("focusin", () => peek(true));
+  side.addEventListener("focusout", (e) => { if (!side.contains(e.relatedTarget)) peek(false); });
+  side.addEventListener("click", (e) => { if (e.target.closest("[data-go], a, .lib-li .song")) peek(false); });
   $("side-rail").onclick = () => { const on = !app.classList.contains("rail"); store.set(RAIL_KEY, on); applyRail(on); };
-  addEventListener("resize", () => { if (typeof store.get(RAIL_KEY, null) !== "boolean") applyRail(innerWidth < 1280); });
+  addEventListener("resize", () => { if (typeof store.get(RAIL_KEY, null) !== "boolean") applyRail(true); });
   $("btn-feedback-2").onclick = (e) => showPanel("panel-feedback", e.currentTarget);
   const sponsor = DONATIONS.find((d) => d.url)?.url ?? PROJECT.repo;
   ["lib-support", "ex-support", "nudge-link"].forEach((id) => ($(id).href = sponsor));
@@ -2250,15 +2251,77 @@ function bindTheme() {
   });
 }
 
-/**
- * Dirección amigable con lo que suena: /player/dynamite (sin apilar historial; conserva #me-gusta o #mis-videos).
- * La carpeta sigue siendo /player/, así que las rutas relativas (../, ../assets/…) no cambian.
- */
+// ---------- Rutas: cada pantalla, álbum y canción tiene su dirección (y atrás/adelante funcionan) ----------
+// Todas en un solo nivel dentro de /player/, así las rutas relativas (../, ../assets/…) no cambian:
+//   /player/                Explorar           /player/albums         Explorar en Álbumes
+//   /player/album-<id>      un álbum           /player/likes          Me gusta
+//   /player/my-videos       Mis videos         /player/lights         Luces
+//   /player/<canción>       el video de esa canción
+// Cambiar de pantalla agrega una entrada al historial; cambiar de canción en el video solo actualiza la dirección.
 const playerBase = () => location.pathname.replace(/[^/]*$/, "");
-function syncSongUrl(id) {
-  const next = playerBase() + (id && /^[a-z0-9-]{1,80}$/.test(id) ? id : "");
+const SCREENS = new Set(["albums", "likes", "my-videos", "lights"]);
+// Direcciones viejas (en español o con #): siguen funcionando y pasan a la nueva.
+const LEGACY_SLUGS = { albumes: "albums", "me-gusta": "likes", "mis-videos": "my-videos", luces: "lights" };
+let routing = false, routeReady = false;
+const slugFromPath = () => {
+  const m = location.pathname.match(/\/player\/([a-z0-9-]{1,90})$/);
+  return m ? LEGACY_SLUGS[m[1]] ?? m[1] : "";
+};
+const isSongSlug = (slug) => Boolean(slug) && !SCREENS.has(slug) && !slug.startsWith("album-");
+/** La dirección de lo que se ve ahora. */
+function currentSlug() {
+  if (view === "lights") return "lights";
+  if (view === "video" && current >= 0) return queue[current].album.id === "mine" ? "" : queue[current].song.id;
+  if (page === "likes") return "likes";
+  if (page === "videos") return "my-videos";
+  if (listFilter.startsWith("album:")) return `album-${listFilter.slice(6)}`;
+  if (exploreType === "albums") return "albums";
+  return "";
+}
+function syncRoute() {
+  if (routing || !routeReady) return;
+  const slug = currentSlug(), next = playerBase() + slug;
   if (location.pathname === next && !location.search) return;
-  try { history.replaceState(history.state, "", next + location.hash); } catch {}
+  const prev = slugFromPath();
+  const replace = isSongSlug(prev) && isSongSlug(slug); // otra canción en el mismo video: no es navegar
+  try { history[replace ? "replaceState" : "pushState"]({ r: slug }, "", next); } catch {}
+  document.title = routeTitle(slug);
+}
+function routeTitle(slug) {
+  const item = queue[current];
+  if (isSongSlug(slug) && item) return `${item.song.title} · LumiParty`;
+  const names = { albums: "Álbumes", likes: "Me gusta", "my-videos": "Mis videos", lights: "Luces" };
+  if (slug.startsWith("album-")) { const al = queue.find((q) => q.album.id === slug.slice(6))?.album; return `${al?.title ?? t("Álbum")} · LumiParty`; }
+  return names[slug] ? `${t(names[slug])} · LumiParty` : item ? `${item.song.title} · LumiParty` : "LumiParty";
+}
+/** Arma la pantalla de una dirección (al entrar, o con atrás/adelante). */
+function applyRoute(slug, { fromHistory = false } = {}) {
+  routing = true;
+  try {
+    const toExplore = () => { if (view !== "explore") { selectViewTab("view-explore"); switchView("explore"); } };
+    if (slug === "likes") openLikes("songs", { focus: !fromHistory });
+    else if (slug === "my-videos") openVideos({ focus: false });
+    else if (slug === "lights") { closeLikes(); selectViewTab("view-lights"); switchView("lights"); }
+    else if (slug === "albums") { closeLikes(); toExplore(); if (listFilter.startsWith("album:")) listFilter = "all"; setExploreType("albums"); }
+    else if (slug.startsWith("album-") && queue.some((q) => q.album.id === slug.slice(6))) { closeLikes(); openAlbum(slug.slice(6)); }
+    else if (isSongSlug(slug) && queue.some((q) => q.song.id === slug)) {
+      closeLikes();
+      const idx = queue.findIndex((q) => q.song.id === slug);
+      if (queue[current]?.song.id !== slug) playIndex(idx);
+      selectViewTab("view-video");
+      switchView("video");
+    } else {
+      closeLikes();
+      toExplore();
+      if (exploreType === "albums" || listFilter.startsWith("album:")) setExploreType("songs");
+    }
+  } finally {
+    routing = false;
+  }
+  // Si la dirección no existe (o cambió al armarla), queda la que corresponde, sin apilar historial.
+  const want = playerBase() + currentSlug();
+  if (location.pathname !== want || location.search) { try { history.replaceState({ r: currentSlug() }, "", want); } catch {} }
+  document.title = routeTitle(currentSlug());
 }
 
 /** Los contadores de la biblioteca en 0 no se muestran (ni en la barra compacta). */
@@ -2286,6 +2349,7 @@ async function setLightsModel(mode, { save = true } = {}) {
   $("lights-view").classList.toggle("model", model);
   $("stick3d").hidden = !model;
   $("lv-vers").hidden = !model;
+  $("lv-note").hidden = !model;
   $("lv-hint").textContent = t(model ? "Sostenlo y agítalo · también con el teléfono" : "Sin ARMY Bomb, tu pantalla brilla. Sube el brillo.");
   if (model && !stick3d) {
     try {
@@ -3409,11 +3473,9 @@ async function init() {
   $("ob-close").onclick = () => { store.set(ONBOARD_KEY, "closed"); syncOnboard(); $("main").focus({ preventScroll: true }); };
   syncOnboard();
   if (params.has("guide") || params.has("guia")) guide.open();
-  // Parámetros de un solo uso (?guide=1, ?song=…): se leen y se quitan, así la dirección no los arrastra.
-  // La canción que suena se refleja después como /player/<id> (enlace para compartir; recargar la retoma).
-  if (["guide", "guia", "song"].some((k) => params.has(k))) {
-    try { history.replaceState(history.state, "", location.pathname + location.hash); } catch {}
-  }
+  // Parámetros de un solo uso (?guide=1, ?song=…) y direcciones viejas (#me-gusta, #mis-videos): se leen y se
+  // pasan a la dirección amigable, así no se arrastran.
+  const legacy = params.get("song") ?? { "#me-gusta": "likes", "#mis-videos": "my-videos" }[location.hash] ?? null;
   // El recorrido no se apila con la guía: si está abierta, espera.
   startTourLater = () => { if (Tour.done) return; if ($("guide").hidden) startTour(); else setTimeout(() => startTourLater(), 5000); };
   // Si la persona omite la guía, el recorrido empieza después.
@@ -3421,12 +3483,10 @@ async function init() {
   addEventListener("pws:lang", (e) => track("idioma", { idioma: e.detail }));
   // Compartido desde YouTube (botón Compartir → LumiParty).
   if (params.has("text") || params.has("url")) setTimeout(() => handleShared(params), 600);
-  // Enlace directo a una canción: /player/dynamite (y el formato viejo /player/?song=dynamite)
-  const songParam = params.get("song") ?? location.pathname.match(/\/player\/([a-z0-9-]{1,80})$/)?.[1] ?? null;
-  if (songParam && /^[a-z0-9-]{1,80}$/.test(songParam)) {
-    const idx = queue.findIndex((q) => q.song.id === songParam);
-    if (idx >= 0) setTimeout(() => playIndex(idx), 800);
-  }
+  // La dirección de entrada arma la pantalla (/player/luces, /player/album-wings, /player/dynamite…).
+  const startSlug = legacy && /^[a-z0-9-]{1,90}$/.test(legacy) ? legacy : slugFromPath();
+  if (startSlug && isSongSlug(startSlug)) setTimeout(() => { routeReady = true; applyRoute(startSlug); }, 800); // espera al reproductor
+  else { if (startSlug) applyRoute(startSlug); routeReady = true; if (location.search || location.hash) try { history.replaceState({ r: currentSlug() }, "", playerBase() + currentSlug()); } catch {} }
 
   player = new Player($("yt"), {
     onState: onPlayerState,
@@ -3461,7 +3521,7 @@ async function init() {
   requestAnimationFrame(frame);
   await player.init();
   // Retoma la cola guardada (en pausa) si no se pidió una canción por enlace.
-  if (!(songParam && /^[a-z0-9-]{1,80}$/.test(songParam))) restoreQueue();
+  if (!isSongSlug(startSlug)) restoreQueue();
 
   if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("../sw.js", { scope: "../" }).catch(() => {});
 }

@@ -1,5 +1,6 @@
 // Inglés del reproductor (player/index.html) y sus módulos, salvo src/app.js.
 export default {
+  "Ilustración 3D propia y no oficial: puede diferir del ARMY Bomb real.": "Our own unofficial 3D illustration: it may differ from the real ARMY Bomb.",
   "Sostenlo y agítalo · también con el teléfono": "Hold it and shake it · or move your phone",
   "Elige una canción primero": "Pick a song first",
   "Modo concierto": "Concert mode",

@@ -313,7 +313,8 @@ kbd {
 /* Un solo lugar por acción ----------------------------------------------------------
    Con la biblioteca a la vista, sus accesos (Cola, Mis videos, Conciertos) no se repiten en el pie ni en Explorar,
    y se cierra con el botón Biblioteca de la cabecera: el ✕ interno solo existe en modo cajón (tablet). */
-.app:not(.side-drawer):has(#side:not([hidden])) #btn-cola,
+/* La Cola vive en la barra de abajo (junto a lo que suena), no en la biblioteca: así la biblioteca solo marca
+   páginas (Me gusta, Mis videos) y no quedan dos cosas "seleccionadas" a la vez. */
 .app:not(.side-drawer):has(#side:not([hidden])) .ex-links { display: none; }
 .app:not(.side-drawer) #side-close { display: none; }
 /* Rendimiento en teléfonos y pantallas táctiles -------------------------------------------------------
@@ -411,8 +412,8 @@ kbd {
 .lib-li:hover > .like-btn, .lib-li:hover > .more-btn, .lib-li:focus-within > .like-btn, .lib-li:focus-within > .more-btn,
 .lib-li > .like-btn[aria-pressed="true"], .lib-li > .more-btn[aria-expanded="true"] { opacity: 1; }
 @media (pointer: coarse) { .lib-li > .more-btn { opacity: 1; } .lib-li > .like-btn:not([aria-pressed="true"]) { display: none; } }
-.app.rail .lib-li > .like-btn, .app.rail .lib-li > .more-btn { display: none; }
-.app.rail .lib-li { grid-template-columns: minmax(0, 1fr); }
+.app.rail .side:not(.peek) .lib-li > .like-btn, .app.rail .side:not(.peek) .lib-li > .more-btn { display: none; }
+.app.rail .side:not(.peek) .lib-li { grid-template-columns: minmax(0, 1fr); }
 
 /* Nota "¿Por qué no están todos los videos?" en el inicio */
 .info-note { margin: 0 0 var(--s-4); padding: var(--s-2) var(--s-4); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); font-size: var(--fs-14); }
@@ -1896,14 +1897,14 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 
 /* Riel de íconos (escritorio angosto o a elección) */
 .app.rail { --side-w: 72px; }
-.app.rail .lib .side-head h2, .app.rail .lib-label, .app.rail .lib-kbd, .app.rail .lib-scroll, .app.rail #side-close { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.app.rail .lib-scroll { display: none; }
-.app.rail .lib .side-head { justify-content: center; padding: var(--s-3) 0 var(--s-1); }
-.app.rail .lib-item, .app.rail .support-pill { justify-content: center; padding: 0; gap: 0; }
-.app.rail .lib-n { position: absolute; top: 2px; right: 2px; min-width: 18px; padding: 1px 5px; font-size: 0.625rem; }
-.app.rail .lib-nav, .app.rail .lib-foot { padding: 0 var(--s-2); }
-.app.rail .lib-foot { margin-top: auto; }
-.app.rail .support-pill { border-color: transparent; background: none; }
+.app.rail .side.lib:not(.peek) .side-head h2, .app.rail .side:not(.peek) .lib-label, .app.rail .side:not(.peek) .lib-kbd, .app.rail .side:not(.peek) .lib-scroll, .app.rail .side:not(.peek) #side-close { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.app.rail .side:not(.peek) .lib-scroll { display: none; }
+.app.rail .side.lib:not(.peek) .side-head { justify-content: center; padding: var(--s-3) 0 var(--s-1); }
+.app.rail .side:not(.peek) .lib-item, .app.rail .side:not(.peek) .support-pill { justify-content: center; padding: 0; gap: 0; }
+.app.rail .side:not(.peek) .lib-n { position: absolute; top: 2px; right: 2px; min-width: 18px; padding: 1px 5px; font-size: 0.625rem; }
+.app.rail .side:not(.peek) .lib-nav, .app.rail .side:not(.peek) .lib-foot { padding: 0 var(--s-2); }
+.app.rail .side:not(.peek) .lib-foot { margin-top: auto; }
+.app.rail .side:not(.peek) .support-pill { border-color: transparent; background: none; }
 
 /* ---------- Ahora suena ---------- */
 :root { --np-w: 340px; }
@@ -2553,3 +2554,22 @@ html {
 .lights-view.model > * { flex-shrink: 0; }
 .lights-view.model > .lv-stage { flex-shrink: 1; }
 @media (max-height: 760px) { .lights-view.model #lv-hint { display: none; } }
+
+/* Cola en la barra de abajo: con su contador (cuántas canciones vienen) */
+#btn-cola { position: relative; }
+#btn-cola .cola-n { position: absolute; top: 2px; right: 2px; min-width: 18px; padding: 0 5px; border-radius: var(--r-pill); background: var(--accent); color: var(--accent-ink); font-size: 0.625rem; font-weight: 800; line-height: 16px; text-align: center; }
+#btn-cola .cola-n:empty, #btn-cola .cola-n.zero { display: none; }
+
+/* Aclaración bajo el selector Bola / ARMY Bomb 3D: discreta, una línea */
+.lv-note { margin: calc(-1 * var(--s-2)) 0 0; max-width: 42ch; font-size: var(--fs-12); line-height: 1.35; color: var(--text-2); opacity: 0.85; text-align: center; }
+
+/* Biblioteca compacta por defecto; al pasar el mouse (o con el teclado) se amplía encima del contenido, sin
+   empujarlo: el escenario conserva el margen de la barra angosta. */
+.app.rail .side.peek { --side-w: 320px; z-index: calc(var(--z-side) + 6); box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.55), 1px 0 0 var(--border); }
+.app.rail .side { transition: width var(--dur-3) var(--ease-out), box-shadow var(--dur-3); }
+@media (prefers-reduced-motion: reduce) { .app.rail .side { transition: none; } }
+
+/* iPad / tablet en Safari: el dock no queda pegado al borde de abajo (barras de Safari y gestos del sistema).
+   Alto visible real (dvh) en vez del de la ventana, y un poco más de aire abajo en pantallas táctiles grandes. */
+@supports (height: 100dvh) { .app { bottom: auto; height: 100dvh; } }
+@media (pointer: coarse) and (min-width: 641px) { .app { padding-bottom: calc(var(--pad) + var(--safe-b) + 14px); } }

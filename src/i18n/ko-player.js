@@ -1,5 +1,6 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Ilustración 3D propia y no oficial: puede diferir del ARMY Bomb real.": "직접 만든 비공식 3D 일러스트로, 실제 아미밤과 다를 수 있어요.",
   "Sostenlo y agítalo · también con el teléfono": "잡고 흔들거나 휴대폰을 움직여 보세요",
   "Elige una canción primero": "먼저 곡을 골라 주세요",
   "Modo concierto": "콘서트 모드",
