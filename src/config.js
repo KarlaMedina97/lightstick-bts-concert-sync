@@ -34,16 +34,16 @@ export const FEATURED = {
 // Para activarlo: en el formulario, ⋮ › «Obtener vínculo previamente completado», llenar cualquier valor en cada
 // campo y copiar el vínculo; de ahí salen el id del formulario (después de /d/e/) y los entry.NNN de cada campo.
 export const FEEDBACK_FORM = {
-  id: "", // p. ej. "1FAIpQLSe…" (vacío: sin formulario; las opiniones abren GitHub como hasta ahora)
+  id: "1FAIpQLSfdRCG9sQheyFW5uEmFPZ5vhmG3rYoLOdNl6zwfqtIpdnI1og", // «Opiniones LumiParty»; vacío = apagado. p. ej. "1FAIpQLSe…" (vacío: sin formulario; las opiniones abren GitHub como hasta ahora)
   fields: {
-    rating: "", // entry.NNN de «Calificación (1-5)»
-    tags: "", // «Etiquetas»
-    ease: "", // «Facilidad para conectar (0-5)»
-    would_use: "", // «¿La usaría?»
-    comment: "", // «Comentario»
-    device: "", // «Dispositivo»
-    song_id: "", // «Canción»
-    app_version: "", // «Versión de la app»
+    rating: "entry.1269415260", // entry.NNN de «Calificación (1-5)»
+    tags: "entry.717399740", // «Etiquetas»
+    ease: "entry.1410107750", // «Facilidad para conectar (0-5)»
+    would_use: "entry.123940479", // «¿La usaría?»
+    comment: "entry.1113455152", // «Comentario»
+    device: "entry.1819771066", // «Dispositivo»
+    song_id: "entry.1625895833", // «Canción»
+    app_version: "entry.1598577977", // «Versión de la app»
   },
 };
 
