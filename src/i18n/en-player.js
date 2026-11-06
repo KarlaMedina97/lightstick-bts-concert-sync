@@ -1,5 +1,8 @@
 // Inglés del reproductor (player/index.html) y sus módulos, salvo src/app.js.
 export default {
+  "¡Gracias, ARMY!": "Thank you, ARMY!",
+  "Tu opinión llegó. La leemos para mejorar LumiParty.": "Your feedback arrived. We read it to improve LumiParty.",
+  "Enviar otra": "Send another",
   "Estadio": "Stadium",
   "Micrófono": "Microphone",
   "Métricas de uso": "Usage metrics",

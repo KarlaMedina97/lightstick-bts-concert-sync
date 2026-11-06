@@ -1,5 +1,8 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "¡Gracias, ARMY!": "고마워요, 아미!",
+  "Tu opinión llegó. La leemos para mejorar LumiParty.": "의견이 잘 도착했어요. LumiParty를 더 좋게 만드는 데 참고할게요.",
+  "Enviar otra": "하나 더 보내기",
   "Estadio": "공연장",
   "Micrófono": "마이크",
   "Métricas de uso": "사용 통계",

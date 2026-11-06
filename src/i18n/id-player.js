@@ -1,5 +1,8 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "¡Gracias, ARMY!": "Terima kasih, ARMY!",
+  "Tu opinión llegó. La leemos para mejorar LumiParty.": "Masukanmu sudah sampai. Kami membacanya untuk memperbaiki LumiParty.",
+  "Enviar otra": "Kirim lagi",
   "Estadio": "Stadion",
   "Micrófono": "Mikrofon",
   "Métricas de uso": "Statistik penggunaan",

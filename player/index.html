@@ -745,6 +745,16 @@
         <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-chat"/></svg></span><h2 id="pf-title">Tu opinión</h2></div>
         <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
       </div>
+      <!-- Después de enviar: un agradecimiento (no vuelve a mostrar las estrellas) -->
+      <div id="fb-thanks" class="panel-body fb-thanks" role="status" tabindex="-1" hidden>
+        <span class="fbt-heart" aria-hidden="true">💜</span>
+        <p class="fbt-title">¡Gracias, ARMY!</p>
+        <p class="fbt-text">Tu opinión llegó. La leemos para mejorar LumiParty.</p>
+        <div class="fbt-actions">
+          <button id="fbt-close" class="btn primary" type="button">Cerrar</button>
+          <button id="fbt-again" class="btn ghost" type="button">Enviar otra</button>
+        </div>
+      </div>
       <form id="form-feedback" class="panel-body fb" novalidate>
         <!-- Paso 1: solo estrellas. Según la calificación aparecen preguntas con opciones visuales (sin listas desplegables) -->
         <fieldset class="stars fb-stars">

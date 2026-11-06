@@ -884,8 +884,23 @@ function bindFeedback() {
       form.reset();
       $("fb-count").textContent = "0/1000";
       syncSteps();
+      status.textContent = "";
+      // Agradecimiento en lugar del formulario; si llegó al servidor, el panel se cierra solo en unos segundos.
+      if (r.via !== "github") {
+        form.hidden = true;
+        $("fb-thanks").hidden = false;
+        $("fb-thanks").focus({ preventScroll: true });
+        clearTimeout(thanksTimer);
+        thanksTimer = setTimeout(() => { if (openPanel === "panel-feedback" && !$("fb-thanks").hidden) closePanel(); }, 4500);
+      } else status.textContent = r.message;
     }
   };
+  // "Enviar otra" vuelve a las estrellas; al cerrar el panel, la próxima vez abre el formulario limpio.
+  let thanksTimer = 0;
+  const showForm = () => { clearTimeout(thanksTimer); $("fb-thanks").hidden = true; form.hidden = false; };
+  $("fbt-again").onclick = () => { showForm(); form.querySelector("input[name=rating]")?.focus(); };
+  $("fbt-close").onclick = () => { closePanel(); setTimeout(showForm, 400); };
+  $("panel-feedback").addEventListener("transitionend", () => { if ($("panel-feedback").hidden) showForm(); });
 }
 
 function renderMine() {

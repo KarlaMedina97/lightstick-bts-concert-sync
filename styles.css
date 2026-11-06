@@ -2642,3 +2642,13 @@ html {
 
 .home-link .hl-chev { width: 6px; height: 10px; opacity: 0.75; transition: transform var(--dur-2) var(--ease-out); }
 .home-link:hover .hl-chev { transform: translateX(-2px); opacity: 1; }
+
+/* Opinión enviada: agradecimiento en lugar del formulario */
+.fb-thanks { display: grid; justify-items: center; text-align: center; gap: var(--s-2); padding-block: var(--s-6); outline: none; }
+.fb-thanks[hidden] { display: none; }
+.fbt-heart { font-size: 3rem; line-height: 1; animation: fbt-pop .6s var(--ease-spring) both; }
+.fbt-title { margin: 0; font-family: var(--font-display); font-size: 1.35rem; }
+.fbt-text { margin: 0; color: var(--text-2); font-size: var(--fs-14); max-width: 30ch; }
+.fbt-actions { display: flex; gap: var(--s-2); margin-top: var(--s-3); flex-wrap: wrap; justify-content: center; }
+@keyframes fbt-pop { from { transform: scale(.3); opacity: 0; } 70% { transform: scale(1.15); } }
+@media (prefers-reduced-motion: reduce) { .fbt-heart { animation: none; } }
