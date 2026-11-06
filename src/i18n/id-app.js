@@ -61,7 +61,7 @@ const dict = {
   "Ese archivo no es de luces de LumiParty.": "File itu bukan file lampu LumiParty.",
   "Estas luces son de otra canción. ¿Aplicarlas a esta igual?": "Lampu ini dari lagu lain. Tetap pakai untuk lagu ini?",
   "Luces importadas ✓": "Lampu berhasil diimpor ✓",
-  "Océano Borahae": "Lautan Borahae",
+  "Océano morado (cierre)": "Lautan ungu (penutup)",
   "Cierre de concierto: todo el público en morado que respira despacio, con olas lentas, hasta apagarse.": "Penutup konser: seluruh penonton berwarna ungu, bernapas pelan dengan gelombang lembut, sampai padam.",
   "Colores de tu ARMY Bomb en esta canción": "Warna ARMY Bomb kamu di lagu ini",
   "Dirección para activar el Bluetooth en Brave": "Alamat untuk mengaktifkan Bluetooth di Brave",

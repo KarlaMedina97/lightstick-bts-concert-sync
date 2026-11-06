@@ -89,7 +89,7 @@ export default {
   "Ese archivo no es de luces de LumiParty.": "Esse arquivo não é de luzes do LumiParty.",
   "Estas luces son de otra canción. ¿Aplicarlas a esta igual?": "Estas luzes são de outra música. Aplicar nesta mesmo assim?",
   "Luces importadas ✓": "Luzes importadas ✓",
-  "Océano Borahae": "Oceano Borahae",
+  "Océano morado (cierre)": "Oceano roxo (encerramento)",
   "Cierre de concierto: todo el público en morado que respira despacio, con olas lentas, hasta apagarse.": "Encerramento de show: todo o público em roxo, respirando devagar, com ondas lentas, até apagar.",
   "Intensidad de luces: qué significan los íconos": "Intensidade das luzes: o que os ícones significam",
   "Intensidad de luces": "Intensidade das luzes",

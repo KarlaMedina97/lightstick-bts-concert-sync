@@ -89,7 +89,7 @@ export default {
   "Ese archivo no es de luces de LumiParty.": "That file isn't a LumiParty light file.",
   "Estas luces son de otra canción. ¿Aplicarlas a esta igual?": "These lights are from another song. Apply them to this one anyway?",
   "Luces importadas ✓": "Lights imported ✓",
-  "Océano Borahae": "Borahae ocean",
+  "Océano morado (cierre)": "Purple ocean (finale)",
   "Cierre de concierto: todo el público en morado que respira despacio, con olas lentas, hasta apagarse.": "Concert ending: the whole crowd in purple, breathing slowly with gentle waves, until it fades out.",
   "Intensidad de luces: qué significan los íconos": "Light intensity: what the icons mean",
   "Intensidad de luces": "Light intensity",

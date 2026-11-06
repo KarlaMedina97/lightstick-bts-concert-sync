@@ -61,7 +61,7 @@ const dict = {
   "Ese archivo no es de luces de LumiParty.": "LumiParty 조명 파일이 아니에요.",
   "Estas luces son de otra canción. ¿Aplicarlas a esta igual?": "다른 곡의 조명이에요. 그래도 이 곡에 적용할까요?",
   "Luces importadas ✓": "조명 가져오기 완료 ✓",
-  "Océano Borahae": "보라해 바다",
+  "Océano morado (cierre)": "보랏빛 바다 (피날레)",
   "Cierre de concierto: todo el público en morado que respira despacio, con olas lentas, hasta apagarse.": "콘서트 엔딩: 관객 모두가 보랏빛으로 천천히 숨 쉬듯 잔잔한 파도를 그리다 꺼져요.",
   "Colores de tu ARMY Bomb en esta canción": "이 곡에서 ARMY Bomb의 색",
   "Dirección para activar el Bluetooth en Brave": "Brave에서 Bluetooth를 켜는 주소",
