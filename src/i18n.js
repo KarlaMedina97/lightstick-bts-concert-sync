@@ -9,9 +9,9 @@ import player, { patterns as pPlayer } from "./i18n/en-player.js";
 import app, { patterns as pApp } from "./i18n/en-app.js";
 
 /** Idiomas disponibles, con su nombre en su propio idioma. */
-// (El coreano entra al menú cuando su traducción pase la prueba de tests/langs.test.js.)
+// Un idioma nuevo entra al menú solo si su traducción pasa la prueba de tests/langs.test.js.
 export const LANGS = [
-  ["es", "Español"], ["en", "English"], ["pt", "Português (Brasil)"], ["id", "Bahasa Indonesia"],
+  ["es", "Español"], ["en", "English"], ["pt", "Português (Brasil)"], ["ko", "한국어"], ["id", "Bahasa Indonesia"],
 ];
 const CODES = LANGS.map(([c]) => c);
 const BCP47 = { es: "es", en: "en", pt: "pt-BR", ko: "ko", id: "id" };

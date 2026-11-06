@@ -6,9 +6,8 @@ import { LANGS } from "../src/i18n.js";
 const PARTS = ["landing", "player", "app"];
 const OTHER = LANGS.map(([c]) => c).filter((c) => c !== "es" && c !== "en"); // los que ofrece el menú
 
-test("idiomas: el menú ofrece al menos español, inglés, portugués e indonesio", () => {
-  const codes = LANGS.map(([c]) => c);
-  for (const c of ["es", "en", "pt", "id"]) assert.ok(codes.includes(c), c);
+test("idiomas: el menú ofrece español, inglés, portugués, coreano e indonesio", () => {
+  assert.deepEqual(LANGS.map(([c]) => c), ["es", "en", "pt", "ko", "id"]);
 });
 
 for (const code of OTHER) {

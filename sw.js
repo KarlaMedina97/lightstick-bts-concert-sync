@@ -1,6 +1,6 @@
 // Service worker: guarda la app para abrirla sin conexión (los videos sí necesitan internet).
 // Solo guarda archivos propios del sitio; nunca respuestas de terceros ni con errores.
-const CACHE = "pws-v28";
+const CACHE = "pws-v29";
 const SHELL = [
   "./",
   "index.html",
@@ -33,6 +33,9 @@ const SHELL = [
   "src/i18n/id-landing.js",
   "src/i18n/id-player.js",
   "src/i18n/id-app.js",
+  "src/i18n/ko-landing.js",
+  "src/i18n/ko-player.js",
+  "src/i18n/ko-app.js",
   "src/models/shared.js",
   "src/models/armybomb-v4.js",
   "src/models/armybomb-v3.js",
