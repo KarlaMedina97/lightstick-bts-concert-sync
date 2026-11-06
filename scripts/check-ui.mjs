@@ -10,7 +10,9 @@
 //   - inicio: la anatomía queda fija (sticky) mientras se hace scroll por ella; los íconos de los pasos son SVG y no hay
 //     caracteres sin fuente en iPhone/iPad (runas ᛒ, ⏻ … salían como un cuadro con X);
 //   - reproductor: Video sin canción avisa y no cambia de vista; Mis videos abre su página; la opinión empieza con
-//     estrellas; el ARMY Bomb 3D de Luces carga, cambia de versión y se arrastra sin errores.
+//     estrellas; el ARMY Bomb 3D de Luces carga, cambia de versión y se arrastra sin errores;
+//   - políticas de YouTube (con YouTube simulado): en Video, Explorar y Luces el reproductor se ve entero, mide al menos
+//     200 × 200 px y nada lo tapa ("A continuación", fanchant, avisos, chip de luces, pie de página, fuegos artificiales).
 // Deja capturas en .ui-check/ para mirarlas (no se publican ni se suben al repo).
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -99,6 +101,59 @@ const noOverflow = `document.documentElement.scrollWidth <= innerWidth + 1`;
 // Caracteres que iPhone/iPad no tienen en sus fuentes (se ven como un cuadro): runas, símbolos de encendido.
 const missingGlyphs = `(() => { const m = document.body.innerText.match(/[\\u16A0-\\u16FF\\u23FB-\\u23FE\\u2B58]/g); return m ? [...new Set(m)].join(" ") : ""; })()`;
 
+// YouTube simulado (sin red): reproduce al instante y avisa sus cambios de estado como el de verdad.
+const YT_STUB = `(() => {
+  class P {
+    constructor(el, o) { this.o = o; this.s = 5; this.off = 0; this.t0 = 0; setTimeout(() => o.events?.onReady?.({ target: this }), 60);
+      return new Proxy(this, { get: (t, k) => (k in t ? t[k] : () => undefined) }); }
+    emit(s) { window.__yt = this; this.s = s; this.o.events?.onStateChange?.({ data: s, target: this }); }
+    loadVideoById() { this.off = 0; this.t0 = performance.now(); this.emit(1); }
+    cueVideoById() { this.off = 0; this.emit(5); }
+    playVideo() { this.t0 = performance.now(); this.emit(1); }
+    pauseVideo() { this.off = this.getCurrentTime(); this.emit(2); }
+    seekTo(x) { this.off = x; this.t0 = performance.now(); }
+    getDuration() { return 213; }
+    getCurrentTime() { return this.s === 1 ? this.off + (performance.now() - this.t0) / 1000 : this.off; }
+    getPlayerState() { return this.s; }
+    getIframe() { return document.createElement("iframe"); }
+    getVideoData() { return { title: "" }; }
+  }
+  window.YT = { Player: P, PlayerState: { UNSTARTED: -1, ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING: 3, CUED: 5 } };
+})();`;
+// En cada vista: "A continuación" forzado + un aviso, y luego el fin de la canción (fanchant y fuegos artificiales).
+const YT_POLICY = `(async () => {
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const $ = (s) => document.querySelector(s);
+  const shown = (el) => el && !el.hidden && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== "hidden" && getComputedStyle(el).display !== "none";
+  const hit = (a, b) => Math.min(a.right, b.right) > Math.max(a.left, b.left) + 1 && Math.min(a.bottom, b.bottom) > Math.max(a.top, b.top) + 1;
+  if (!window.__yt) return "la canción no empezó (YouTube simulado)";
+  document.querySelectorAll(".tour .tour-skip").forEach((b) => b.click());
+  const errs = [];
+  const check = (label) => {
+    const r = $(".video-box").getBoundingClientRect();
+    if (!shown($("#video-view")) || r.height < 199.5 || r.width < 199.5 || r.top < 0 || r.bottom > innerHeight) errs.push(label + ": el video no se ve entero o mide menos de 200 px (" + [r.width, r.height].map(Math.round).join("×") + ")");
+    for (const s of ["#upnext", "#chant", "#toast", ".style-chip", ".dock", ".tour"]) if (shown($(s)) && hit(r, $(s).getBoundingClientRect())) errs.push(label + ": " + s + " tapa el video");
+    const fw = $("canvas.fireworks");
+    if (fw && r.width) { const d = fw.width / innerWidth; const px = fw.getContext("2d").getImageData(r.left * d, r.top * d, r.width * d, r.height * d).data; for (let k = 3; k < px.length; k += 4) if (px[k]) { errs.push(label + ": fuegos artificiales sobre el video"); break; } }
+  };
+  for (const v of ["video", "explore", "lights"]) {
+    document.getElementById("view-" + v).click();
+    await wait(700);
+    check(v);
+    $("#upnext").dataset.force = "1";
+    $("#dock-like").click();
+    await wait(500);
+    check(v + " + A continuación y aviso");
+    delete $("#upnext").dataset.force;
+    window.__yt.emit(0);
+    await wait(1500);
+    check(v + " + fanchant");
+    $("#chant-skip").click();
+    await wait(800);
+  }
+  return errs.join("; ");
+})()`;
+
 const VIEWPORTS = [["teléfono", 390, 844], ["escritorio", 1440, 900]];
 
 for (const [vp, w, h] of VIEWPORTS) {
@@ -130,6 +185,8 @@ for (const [vp, w, h] of VIEWPORTS) {
 
   // ---------- Reproductor ----------
   const ap = `reproductor (${vp})`;
+  // Sin cola guardada de la vuelta anterior (/player/dynamite deja una): "Video sin canción" necesita no tener canción.
+  await evaluate(`localStorage.removeItem("pws.queue.v1")`);
   await open("/player/", w, h, 4000);
   if (!(await evaluate(noOverflow))) fail(ap, "hay scroll horizontal");
   const glyphsP = await evaluate(missingGlyphs);
@@ -193,6 +250,15 @@ for (const [vp, w, h] of VIEWPORTS) {
   const friendly = await evaluate(`document.getElementById("main") ? (location.pathname.endsWith("/player/dynamite") ? "" : "la dirección cambió a " + location.pathname) : "no abrió el reproductor"`);
   if (friendly) fail(`/player/dynamite (${vp})`, friendly);
   if (exceptions.length) fail(`/player/dynamite (${vp})`, `excepciones: ${[...new Set(exceptions)].join(" | ")}`);
+
+  // Políticas de YouTube: mientras suena, el reproductor se ve entero (≥ 200 × 200 px) en Video, Explorar y Luces, y
+  // nada lo tapa ("A continuación", fanchant, avisos, chip de luces, pie de página). YouTube simulado: sin red.
+  const stub = await send("Page.addScriptToEvaluateOnNewDocument", { source: YT_STUB });
+  await open("/player/dynamite", w, h, 4000);
+  const yt = await evaluate(YT_POLICY);
+  if (yt) fail(`políticas de YouTube (${vp})`, yt);
+  await send("Page.removeScriptToEvaluateOnNewDocument", { identifier: stub.result.identifier });
+  await evaluate(`localStorage.removeItem("pws.queue.v1")`);
 
   // ---------- Páginas de texto ----------
   for (const path of ["/privacy/", "/terms/", "/ai/", "/404.html"]) {
