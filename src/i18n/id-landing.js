@@ -1,5 +1,7 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Avisos de actualización:": "Pemberitahuan pembaruan:",
+  "mientras usas el reproductor, la página consulta cada pocos minutos a la API pública de GitHub si se está publicando una versión nueva de LumiParty, para avisarte que recargues. No se envía ningún dato tuyo; GitHub solo ve la consulta, como cualquier visita.": "saat kamu memakai pemutar, halaman memeriksa API publik GitHub setiap beberapa menit untuk tahu apakah versi baru LumiParty sedang diterbitkan, agar bisa memintamu memuat ulang. Tidak ada datamu yang dikirim; GitHub hanya melihat permintaannya, seperti kunjungan biasa.",
   "Opiniones:": "Masukan:",
   "lo que respondes en «Dar mi opinión» (estrellas, opciones, comentario y, si lo dejas marcado, el tipo de dispositivo y navegador) se guarda en un Formulario de Google del proyecto, sin tu nombre ni correo. Si no está configurado, se abre GitHub con tu texto listo y solo se publica si tú lo confirmas allí.": "jawabanmu di «Beri masukan» (bintang, pilihan, komentar, dan jika dibiarkan tercentang, jenis perangkat serta browser) disimpan di Google Formulir proyek, tanpa nama atau emailmu. Jika belum diatur, GitHub terbuka dengan teksmu siap dan hanya dipublikasikan jika kamu mengonfirmasinya di sana.",
   "Todo el concierto, ": "Seluruh konser, ",

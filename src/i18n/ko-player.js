@@ -1,5 +1,8 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Estamos actualizando LumiParty. Si algo deja de responder o las luces se desincronizan, recarga la página y vuelve a conectar tu ARMY Bomb.": "LumiParty를 업데이트하고 있어요. 반응이 없거나 불빛이 어긋나면 페이지를 새로고침하고 아미밤을 다시 연결해 주세요.",
+  "LumiParty se actualizó. Recarga la página cuando puedas: tus Me gusta y listas se guardan; después vuelve a conectar tu ARMY Bomb.": "LumiParty가 업데이트됐어요. 편할 때 페이지를 새로고침해 주세요. 좋아요와 목록은 그대로 남아요. 그다음 아미밤을 다시 연결해 주세요.",
+  "Recargar": "새로고침",
   "¿No conecta? Apaga y enciende el Bluetooth de tu equipo y recarga la página, sobre todo si cambiaste ajustes del navegador. En Windows, si tu ARMY Bomb aparece como vinculado, quítalo de la configuración de Bluetooth y vuelve a conectar.": "연결이 안 되나요? 기기의 블루투스를 껐다 켜고 페이지를 새로고침해 주세요. 브라우저 설정을 바꿨다면 특히 필요해요. Windows에서 아미밤이 '페어링됨'으로 보이면 블루투스 설정에서 제거한 뒤 다시 연결해 주세요.",
   "Último error": "마지막 오류",
   "Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial, ponlo en modo Bluetooth y prueba otra vez. Si sigue igual, apaga y enciende el Bluetooth del equipo y recarga la página.": "아미밤이 연결을 받지 않았어요. 다른 휴대폰이나 공식 앱에서 연결을 끊고 블루투스 모드로 바꾼 뒤 다시 시도해 주세요. 그래도 안 되면 기기의 블루투스를 껐다 켜고 페이지를 새로고침해 주세요.",

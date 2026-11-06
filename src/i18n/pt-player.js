@@ -1,5 +1,8 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Estamos actualizando LumiParty. Si algo deja de responder o las luces se desincronizan, recarga la página y vuelve a conectar tu ARMY Bomb.": "Estamos atualizando o LumiParty. Se algo parar de responder ou as luzes perderem a sincronia, recarregue a página e conecte seu ARMY Bomb de novo.",
+  "LumiParty se actualizó. Recarga la página cuando puedas: tus Me gusta y listas se guardan; después vuelve a conectar tu ARMY Bomb.": "O LumiParty foi atualizado. Recarregue a página quando puder: suas curtidas e listas ficam salvas; depois conecte seu ARMY Bomb de novo.",
+  "Recargar": "Recarregar",
   "¿No conecta? Apaga y enciende el Bluetooth de tu equipo y recarga la página, sobre todo si cambiaste ajustes del navegador. En Windows, si tu ARMY Bomb aparece como vinculado, quítalo de la configuración de Bluetooth y vuelve a conectar.": "Não conecta? Desligue e ligue o Bluetooth do aparelho e recarregue a página, principalmente se você mudou configurações do navegador. No Windows, se o ARMY Bomb aparece como pareado, remova-o das configurações de Bluetooth e conecte de novo.",
   "Último error": "Último erro",
   "Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial, ponlo en modo Bluetooth y prueba otra vez. Si sigue igual, apaga y enciende el Bluetooth del equipo y recarga la página.": "Seu ARMY Bomb não aceitou a conexão. Desconecte de outro celular ou do app oficial, coloque no modo Bluetooth e tente de novo. Se continuar igual, desligue e ligue o Bluetooth do aparelho e recarregue a página.",

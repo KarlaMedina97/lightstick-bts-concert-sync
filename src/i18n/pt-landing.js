@@ -1,5 +1,7 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Avisos de actualización:": "Avisos de atualização:",
+  "mientras usas el reproductor, la página consulta cada pocos minutos a la API pública de GitHub si se está publicando una versión nueva de LumiParty, para avisarte que recargues. No se envía ningún dato tuyo; GitHub solo ve la consulta, como cualquier visita.": "enquanto você usa o player, a página consulta a API pública do GitHub a cada poucos minutos para saber se uma nova versão do LumiParty está sendo publicada e avisar você para recarregar. Nenhum dado seu é enviado; o GitHub só vê a consulta, como qualquer visita.",
   "Opiniones:": "Opiniões:",
   "lo que respondes en «Dar mi opinión» (estrellas, opciones, comentario y, si lo dejas marcado, el tipo de dispositivo y navegador) se guarda en un Formulario de Google del proyecto, sin tu nombre ni correo. Si no está configurado, se abre GitHub con tu texto listo y solo se publica si tú lo confirmas allí.": "o que você responde em «Dar minha opinião» (estrelas, opções, comentário e, se deixar marcado, o tipo de dispositivo e navegador) fica salvo em um Formulário do Google do projeto, sem seu nome nem e-mail. Se não estiver configurado, o GitHub abre com seu texto pronto e só é publicado se você confirmar lá.",
   "Todo el concierto, ": "O show inteiro, ",

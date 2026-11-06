@@ -1,5 +1,8 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Estamos actualizando LumiParty. Si algo deja de responder o las luces se desincronizan, recarga la página y vuelve a conectar tu ARMY Bomb.": "Kami sedang memperbarui LumiParty. Jika ada yang tidak merespons atau lampu tidak sinkron, muat ulang halaman dan sambungkan lagi ARMY Bomb-mu.",
+  "LumiParty se actualizó. Recarga la página cuando puedas: tus Me gusta y listas se guardan; después vuelve a conectar tu ARMY Bomb.": "LumiParty sudah diperbarui. Muat ulang halaman saat sempat: suka dan daftarmu tetap tersimpan; lalu sambungkan lagi ARMY Bomb-mu.",
+  "Recargar": "Muat ulang",
   "¿No conecta? Apaga y enciende el Bluetooth de tu equipo y recarga la página, sobre todo si cambiaste ajustes del navegador. En Windows, si tu ARMY Bomb aparece como vinculado, quítalo de la configuración de Bluetooth y vuelve a conectar.": "Tidak tersambung? Matikan dan nyalakan Bluetooth perangkat lalu muat ulang halaman, terutama jika kamu mengubah pengaturan browser. Di Windows, jika ARMY Bomb tampil sebagai tersandingkan, hapus dari pengaturan Bluetooth lalu sambungkan lagi.",
   "Último error": "Galat terakhir",
   "Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial, ponlo en modo Bluetooth y prueba otra vez. Si sigue igual, apaga y enciende el Bluetooth del equipo y recarga la página.": "ARMY Bomb-mu tidak menerima koneksi. Putuskan dari ponsel lain atau aplikasi resmi, aktifkan mode Bluetooth, lalu coba lagi. Jika masih sama, matikan dan nyalakan Bluetooth perangkat lalu muat ulang halaman.",

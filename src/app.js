@@ -26,6 +26,7 @@ import { earcon, buzz, configureEarcons } from "./earcons.js";
 import { colorName } from "./palette.js";
 import { videoPalette } from "./videopalette.js";
 import { VIDEO_LOOKS } from "./video-looks.js";
+import { watchUpdates } from "./update-watch.js";
 import { inAppBrowser, showInAppNotice, redirectConnectButtons, chromeIntent } from "./inapp.js";
 
 const $ = (id) => document.getElementById(id);
@@ -3633,6 +3634,13 @@ async function init() {
   if (!isSongSlug(startSlug)) restoreQueue();
 
   if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("../sw.js", { scope: "../" }).catch(() => {});
+  // Mientras publicamos una versión nueva (y cuando ya está), aviso con «Recargar»: en ese rato pueden mezclarse
+  // archivos viejos y nuevos, y si algo falla o se desincroniza lo que sirve es recargar y volver a conectar.
+  watchUpdates({
+    swUrl: new URL("../sw.js", location.href).href,
+    onUpdating: () => toastAction(t("Estamos actualizando LumiParty. Si algo deja de responder o las luces se desincronizan, recarga la página y vuelve a conectar tu ARMY Bomb."), t("Recargar"), () => location.reload(), 20000),
+    onUpdated: () => toastAction(t("LumiParty se actualizó. Recarga la página cuando puedas: tus Me gusta y listas se guardan; después vuelve a conectar tu ARMY Bomb."), t("Recargar"), () => location.reload(), 30000),
+  });
 }
 
 init();

@@ -53,3 +53,13 @@ test("V4: el 4.º byte es el fundido del propio ARMY Bomb (≈50 ms por paso)", 
   assert.equal(v4Fade([128, 0, 255], [255, 0, 128], 120), 2); // Bluetooth lento: funde el hueco
   assert.equal(v4Fade([128, 0, 255], [0, 0, 0], 1000), 4); // nunca más de ~200 ms solo
 });
+
+import { versionOf, deployingRun } from "../src/update-watch.js";
+test("aviso de actualización: versión de sw.js y despliegue en curso de GitHub", () => {
+  assert.equal(versionOf('const CACHE = "pws-v77";'), "pws-v77");
+  assert.equal(versionOf("sin versión"), null);
+  assert.equal(deployingRun({ total_count: 1, workflow_runs: [{ id: 42, status: "in_progress" }] }), 42);
+  assert.equal(deployingRun({ total_count: 0, workflow_runs: [] }), null);
+  assert.equal(deployingRun({ total_count: 1, workflow_runs: [{ id: 7, status: "completed" }] }), null);
+  assert.equal(deployingRun(null), null);
+});

@@ -50,6 +50,6 @@ function apply(file, extra) {
 apply("index.html", { "connect-src": `'self' ${GA_CONNECT}`, "form-action": "'none'" });
 apply("player/index.html", {
   // oEmbed para títulos de videos y, si se configura, el ranking global de Supabase.
-  "connect-src": `'self' https://www.youtube.com https://*.supabase.co https://docs.google.com ${GA_CONNECT}`, // docs.google.com: opiniones (FEEDBACK_FORM)
+  "connect-src": `'self' https://www.youtube.com https://*.supabase.co https://docs.google.com https://api.github.com ${GA_CONNECT}`, // docs.google.com: opiniones (FEEDBACK_FORM); api.github.com: aviso de actualización (src/update-watch.js)
   "form-action": "'self'",
 });

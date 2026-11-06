@@ -1,5 +1,7 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
+  "Avisos de actualización:": "Update notices:",
+  "mientras usas el reproductor, la página consulta cada pocos minutos a la API pública de GitHub si se está publicando una versión nueva de LumiParty, para avisarte que recargues. No se envía ningún dato tuyo; GitHub solo ve la consulta, como cualquier visita.": "while you use the player, the page checks GitHub’s public API every few minutes to see whether a new version of LumiParty is being published, so it can tell you to reload. None of your data is sent; GitHub only sees the request, like any visit.",
   "Opiniones:": "Feedback:",
   "lo que respondes en «Dar mi opinión» (estrellas, opciones, comentario y, si lo dejas marcado, el tipo de dispositivo y navegador) se guarda en un Formulario de Google del proyecto, sin tu nombre ni correo. Si no está configurado, se abre GitHub con tu texto listo y solo se publica si tú lo confirmas allí.": "what you answer in “Give feedback” (stars, options, comment and, if you leave it checked, your device and browser type) is stored in the project’s Google Form, without your name or email. If it isn’t set up, GitHub opens with your text ready and it is only published if you confirm it there.",
   "Todo el concierto, ": "The whole concert, ",
