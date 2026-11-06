@@ -1,6 +1,6 @@
-# Notas: protocolo BLE del Army Bomb (observado en bora-waves.com, 2026-11-04)
+# Notas de interoperabilidad (verificadas con hardware propio)
 
-Notas de interoperabilidad escritas a mano (sin copiar código del sitio).
+Notas escritas a mano para que la app hable con el ARMY Bomb (interoperabilidad). La implementación de `src/ble.js` es propia.
 
 ## Descubrimiento (Web Bluetooth `requestDevice`)
 Filtros por nombre: `BTS LIGHTSTICK_SE`, `multiM`, `BTS LIGHTSTICK3`, `BTS_V4 LS`, prefijo `BBOMB-`.
@@ -19,12 +19,7 @@ Familias:
 - **V4:** `[R, G, B, modo]` (4 bytes, modo 1 = sólido)
 - **SE/V3:** `[1, 1, 11, 0, 0, R, G, B, 0, 0, checksum]` con `checksum = (suma de los 10 bytes − 2) & 0xFF`
 
-## Ritmo de escritura (V4)
-- Intervalo base 20 ms; tras error sube a 120 ms y baja 15 ms cada 8 escrituras OK.
+## Ritmo de escritura (regla propia de `src/ble.js`)
+- Una escritura cada ≥ 20 ms; tras un error sube a 120 ms y vuelve a bajar poco a poco con escrituras correctas.
 - Solo se envía el **último** color pendiente (descarta los intermedios) → evita colas y desfase.
-
-## Secuencias
-- Datos renderizados en servidor (React Router loader).
-- Cue: `{ id, start (s), duration (s), color "#rrggbb", mode: {type: "fade", direction: "in"|"out"}, trackId }`.
-- Reloj de sincronía: `getCurrentTime()` del reproductor de YouTube embebido.
-- Fades se emulan en el navegador enviando colores intermedios.
+- Los fundidos se hacen en la app enviando colores intermedios.

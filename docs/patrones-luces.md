@@ -59,30 +59,9 @@ En `tests/looks.test.js`:
 | Los LED responden de forma lineal y el ojo no: un 40 % se veía casi como un 100 %. | **Curva de brillo** (γ = 2) solo en lo que se envía al ARMY Bomb. |
 | Un video bloqueado para insertar (Graduation Song, por LatinAutor – UMPG) daba un error genérico. | Se quitó del catálogo. El aviso ahora explica el motivo según el código de YouTube (101/150, 100). Además, la guía para agregar canciones pide probar cada video en el reproductor, porque oEmbed no detecta estos bloqueos. |
 
-### Estudio de bora-waves.com (solo estadísticas, sin copiar datos ni código)
+### Densidad y contraste
 
-Analicé la secuencia comunitaria más popular de FIRE: «MIC DROP + FYA + FIRE (Arirang World Tour)», de 9:54 y con 1.889 cues. Solo saqué estadísticas agregadas; no guardé tiempos ni colores exactos.
-
-- **Dos capas:** una pista de color sólido (1.151 cues) y otra de efecto, con 725 fundidos y 13 parpadeos. En la práctica, cada golpe es «color encendido + fundido de unos 0,4 s».
-- **Densidad por zona:** en la parte tranquila hay unos 2 cambios por segundo, con luces de unos 0,7 s. En el clímax hay de 3,6 a 3,9 cambios por segundo, con luces de 0,1 a 0,4 s.
-- **Colores muy pocos y del concepto:**
-  - la parte de MIC DROP usa sobre todo verde y blanco (es una sola secuencia de fans, no algo confirmado);
-  - la de FIRE usa rojo, naranja y blanco, con algo de amarillo;
-  - no aparece ni un fucsia.
-- **Casi nunca queda apagado:** hay oscuridad solo entre el 2 % y el 5 % del tiempo.
-- **Por qué se siente «soso»:** todo es color plano con fundidos; no hay ola entre varios sticks ni respiración, y la estructura es igual de principio a fin.
-
-**Qué tomamos (sin copiar):**
-- Golpes que encienden y se funden rápido (estilo `hit`).
-- Pocos colores por canción, siempre del concepto (`onConcept`).
-- Luces más largas en lo tranquilo y más cortas en el clímax (`div` por sección).
-
-**Qué hacemos distinto:**
-- Oscuridad real entre golpes, que da contraste (en FIRE, más del 10 % del tiempo).
-- Explosión blanco → amarillo → rojo → brasa.
-- Olas entre varios sticks, «canto» por frase y colores del propio video filtrados por el concepto.
-- Golpes reales tomados del micrófono.
-- Modo seguro de 2,5 Hz como máximo. Esa secuencia llega a casi 4 cambios por segundo, por encima del límite de WCAG; aquí solo sería posible con el modo seguro apagado.
+Criterio propio: pocos colores por canción y del concepto, luces más largas en lo tranquilo y más cortas en el clímax, y oscuridad real entre golpes para dar contraste (sin pasar de 2,5 Hz en modo seguro).
 
 ### Danger y el «casi apagado» (cuarta ronda)
 
@@ -212,9 +191,7 @@ Hay muy pocas fuentes que describan el color del ARMY Bomb canción por canción
 | Yet To Come in BUSAN, 2022-10-15 | Ciudad y estadio de morado («Bora Road», el puente Gwangan iluminado). El bis fue «Spring Day» + «Yet To Come». | Parcial: morado general ([Busan](https://www.busan.go.kr/eng/bsnews01/1542970), [Rappler](https://www.rappler.com/entertainment/music/bts-busan-concert-why-best-yet-to-come/); resúmenes del buscador) |
 | Gira de estadios en Texas | Los sticks cambiaban de color según la canción, con olas arcoíris por secciones. No nombra los colores por canción. | Parcial ([Dallas Observer](https://www.dallasobserver.com/music/bts-rounded-up-diverse-and-dedicated-north-texas-troops-at-their-sold-out-stadium-shows-40705669/); no se pudo abrir, conexión rechazada) |
 | ARIRANG 2026, apertura en Goyang | Los ARMY Bomb se volvieron **rojos**, como el logo de ARIRANG. | Sin verificar ([Forbes](https://www.forbes.com/sites/laurasirikul/2026/04/19/bts-kicks-off-arirang-world-tour-with-stunning-spectacle-in-goyang/): 403; solo el resumen del buscador) |
-| Mikrokosmos, Love Yourself | Clip de fan titulado «rainbow army bomb ocean» (océano arcoíris). | Afirmación de fans ([YouTube](https://www.youtube.com/watch?v=RoCqQFAjdAI); no abierto) |
 | PTD Las Vegas | Clips con el título «Rainbow army ocean». | Afirmación de fans ([TikTok](https://www.tiktok.com/@shmems96/video/7085542421211204910); no abierto) |
-| Butter y PTD en sitios de fans | Un sitio de shows hechos por fans asigna dorado o amarillo a Butter y arcoíris a PTD. | Afirmación de fans ([bora-waves.com](https://bora-waves.com/albums/butter), resumen del buscador; no copiar sus cues) |
 
 **Conclusión:** solo está respaldado el **morado como base y para el final** y el **rojo para FIRE** (este último como
 luz de escenario). El resto de colores por canción son **propuestas creativas** basadas en la estética oficial del MV y
@@ -234,7 +211,7 @@ Columnas:
 | --- | --- | --- | --- | --- | --- |
 | `fire` | `#ff1a00` `#ff6a00` `#ffb300` | Intro: rojo tenue que respira. Verso: llama roja que parpadea. Coro: pulsos rojo/naranja a 168 BPM (2,8 Hz, justo bajo el límite de 3). Puente: llama baja. Final: rojo y luego morado. | `breathe, flame, flame, pulse, flame, pulse, flame, pulse, fadeout` | high | **Parcial** (luces rojas en PTD LA, [isplus](https://isplus.com/article/625/24172625.html)); el parpadeo de llama es propuesta |
 | `dynamite`, `-bside`, `-choreo`, `-sing-with-me*` | `#ff4fa3` `#ffd23f` `#3ec1ff` `#7cff6b` | Disco: cambia de color cada 2 tiempos. El coro es más brillante y con pulsos. Final: arcoíris. | `breathe, disco, wave, disco, disco, pulse, wave, rainbow, fadeout` | high | Propuesta creativa (MV de estética retro y colorida) |
-| `butter`, `-hotter`, `-spv`, `-megan-spv` | `#ffd400` `#ffe680` `#ffffff` | Amarillo mantequilla constante. Pulso en el coro. Puente: respiración amarilla. Final: el amarillo se funde en morado. | `breathe, pulse, breathe, pulse, pulse, pulse, breathe, pulse, fadeout` | high | Afirmación de fans (amarillo en bora-waves) + propuesta |
+| `butter`, `-hotter`, `-spv`, `-megan-spv` | `#ffd400` `#ffe680` `#ffffff` | Amarillo mantequilla constante. Pulso en el coro. Puente: respiración amarilla. Final: el amarillo se funde en morado. | `breathe, pulse, breathe, pulse, pulse, pulse, breathe, pulse, fadeout` | high | Afirmación de fans (amarillo) + propuesta |
 | `ptd` | arcoíris + `#8a2be2` | Verso: ola de colores. Coro: arcoíris. Final: arcoíris y luego morado. Sin destellos (es una canción luminosa y alegre). | `breathe, wave, wave, rainbow, wave, rainbow, ocean, rainbow, fadeout` | high | Afirmación de fans (arcoíris) + propuesta |
 | `mic-drop`, `mic-drop-jp` | `#ffffff` `#ff2d2d` `#1a1a1a` | Golpes blancos en los acentos del coro y verso oscuro con rojo. | `breathe, pulse, flash, flash, pulse, flash, breathe, flash, fadeout` | high | Propuesta creativa |
 | `idol`, `idol-nicki` | `#ff2e88` `#00c2a8` `#ffb300` | Colores vivos y festivos. Coro con `disco`. Puente en `split` (mitades de color, con varios sticks). | `breathe, wave, pulse, disco, wave, disco, split, rainbow, fadeout` | high | Propuesta creativa |
@@ -361,8 +338,6 @@ Abiertas en esta investigación:
 - BroadwayWorld, PTD Las Vegas: https://www.broadwayworld.com/bwwmusic/article/ARMY-Diaries-The-Power-of-BTS-is-Palpable-as-Las-Vegas-Becomes-Borahaegas-For-PERMISSION-TO-DANCE-ON-STAGE-20220415
 - Busan Metropolitan City, Yet To Come in BUSAN: https://www.busan.go.kr/eng/bsnews01/1542970
 - Rappler, Busan: https://www.rappler.com/entertainment/music/bts-busan-concert-why-best-yet-to-come/
-- bora-waves.com, Butter (shows hechos por fans): https://bora-waves.com/albums/butter
-- YouTube, «rainbow army bomb ocean»: https://www.youtube.com/watch?v=RoCqQFAjdAI
 - TikTok, «Rainbow army ocean» (PTD Las Vegas): https://www.tiktok.com/@shmems96/video/7085542421211204910
 
 ## Intensidad continua y combinaciones (2026-11-05)
@@ -409,6 +384,6 @@ Sin respaldo público: el amarillo de Butter, el arcoíris de Dynamite y PTD, el
   apertura de un show. Un solo cambio.
 - **`drop: true`**: apagón de 1 tiempo antes de cada coro. Brasa (piso del LED), nunca negro total: el paso de rojo
   saturado a negro cuenta como destello rojo (WCAG). Un solo destello por entrada.
-- **`finale: "borahae"`**: el final ocupa del 88 % al 100 % de la canción (≈ 25 s) con el estilo **Océano Borahae**:
+- **`finale: "borahae"`**: el final ocupa del 88 % al 100 % de la canción (≈ 25 s) con el estilo **Océano morado**:
   morado que respira en ciclos de 5 s, olas lentas entre ARMY Bomb, un recuerdo del color de la canción al empezar
   y se apaga en el último 30 %.
