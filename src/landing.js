@@ -101,6 +101,45 @@ let safeMode = true;
 try { const v = localStorage.getItem(SAFE_KEY); if (v !== null) safeMode = v === "1"; } catch {}
 if (reduceMotion) safeMode = true;
 
+// ---------- Scroll que se asienta: al soltar en una zona intermedia, termina en la sección más cercana ----------
+// Solo los bordes de sección "imantan" (≤ 32 % de la pantalla). Dentro de las secciones largas animadas por el scroll
+// (anatomía, océano) se puede parar en cualquier punto. Nunca mientras se arrastra, ni con movimiento reducido.
+{
+  let touching = false, snapping = false, timer = 0;
+  addEventListener("pointerdown", () => (touching = true), { passive: true });
+  addEventListener("pointerup", () => { touching = false; schedule(); }, { passive: true });
+  addEventListener("touchstart", () => (touching = true), { passive: true });
+  addEventListener("touchend", () => { touching = false; schedule(); }, { passive: true });
+  function points() {
+    const bar = mobileQ() ? 56 : 70;
+    return [...document.querySelectorAll("main > section, main > .chapter")].map((el) => {
+      const top = el.getBoundingClientRect().top + scrollY - bar;
+      return { top: Math.max(0, top), h: el.offsetHeight, long: el.offsetHeight > innerHeight * 1.35 };
+    });
+  }
+  function settle() {
+    if (touching || reduceMotion || document.documentElement.classList.contains("dragging")) return;
+    if (snapping) { snapping = false; return; }
+    const y = scrollY, vh = innerHeight, near = vh * 0.32;
+    const maxY = document.documentElement.scrollHeight - vh;
+    if (y >= maxY - 4) return; // al final de la página, quieto
+    const pts = points();
+    // Dentro de una sección larga (pasada su entrada y antes de su salida) se queda donde está: es la parte animada.
+    if (pts.some((p) => p.long && y > p.top + near && y < p.top + p.h - vh - near)) return;
+    let best = null;
+    for (const p of pts) {
+      const d = p.top - y;
+      if (Math.abs(d) <= near && (!best || Math.abs(d) < Math.abs(best.d))) best = { d, top: p.top };
+    }
+    if (!best || Math.abs(best.d) < 6) return;
+    snapping = true;
+    scrollTo({ top: best.top, behavior: "smooth" });
+  }
+  function schedule() { clearTimeout(timer); timer = setTimeout(settle, 140); }
+  if ("onscrollend" in window) addEventListener("scrollend", schedule);
+  else addEventListener("scroll", () => { clearTimeout(timer); timer = setTimeout(settle, 260); }, { passive: true });
+}
+
 // ---------- Enlaces de la misma página: scroll suave con margen para la barra fija ----------
 function focusTarget(el) {
   const h = el.matches("h1, h2, h3, main") ? el : el.querySelector("h1, h2, h3");
@@ -942,7 +981,7 @@ if (renderer) {
   });
   // Las tarjetas aparecen en secuencia con el desarme (en escritorio).
   for (const c of cards) c.style.opacity = "";
-  const _v = new THREE.Vector3();
+  const _v = new THREE.Vector3(), _axis = new THREE.Vector3();
   const project = (part, local) => {
     _v.copy(local);
     part.localToWorld(_v).project(camera);
@@ -970,8 +1009,13 @@ if (renderer) {
       const on = (anatOn && mobile) || (M.key === hotPart && hotPart && !(anatOn && !mobile));
       if (on !== M.shown) { M.shown = on; M.el.classList.toggle("shown", on); }
       if (!on) continue;
+      // Al costado de su pieza, no encima: se aleja del eje del ARMY Bomb (los del mango quedaban pegados a él).
       const [x, y] = project(M.part, M.local);
-      M.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+      _axis.set(0, M.local.y, M.local.z);
+      const [axX] = project(M.part, _axis);
+      const dir = Math.sign(x - axX) || 1;
+      const gap = Math.max(0, 30 - Math.abs(x - axX));
+      M.el.style.transform = `translate(${(x + dir * gap).toFixed(1)}px, ${y.toFixed(1)}px)`;
     }
   }
 
@@ -991,11 +1035,16 @@ if (renderer) {
     const o = { lowEnd: LOW_END };
     const v3 = createArmyBombV3(mats, o), se = createArmyBombSE(mats, o), v1 = createArmyBombV1(mats, o), v2 = createArmyBombV2(mats, o);
     // Las cinco versiones en la ronda: el principal (Ver. 4) + Ver. 3, SE, Ver. 2 y Ver. 1, repartidas a 72°.
-    const entries = [["v3", v3.group, v3.metrics.grip, "Ver. 3"], ["se", se.group, se.metrics.grip, "SE"], ["v2", v2.group, v2.metrics.grip, "Ver. 2"], ["v1", v1.group, v1.metrics.grip, "Ver. 1"]];
-    entries.forEach(([key, obj, grip, label], k) => {
+    const entries = [["v3", v3.group, v3.metrics, "Ver. 3"], ["se", se.group, se.metrics, "SE"], ["v2", v2.group, v2.metrics, "Ver. 2"], ["v1", v1.group, v1.metrics, "Ver. 1"]];
+    // Todas del mismo alto que la Ver. 4: los modelos reales miden distinto y las más bajas se veían chiquitas.
+    const mainH = v4.metrics.top - v4.metrics.bottom;
+    entries.forEach(([key, obj, mt, label], k) => {
+      const grip = mt.grip;
+      const norm = mainH / Math.max(0.1, mt.top - mt.bottom);
+      obj.scale.setScalar(norm);
       const holder = new THREE.Group();
       const spinner = new THREE.Group();
-      obj.position.set(0, -grip, 0);
+      obj.position.set(0, -grip * norm, 0);
       spinner.add(obj);
       holder.add(spinner);
       holder.rotation.order = "YXZ";
@@ -1006,7 +1055,7 @@ if (renderer) {
       tag.className = "ver-tag";
       tag.textContent = label;
       mkLayer?.append(tag);
-      ring.members.push({ key, holder, spinner, obj, k: k + 1, primary: true, hot: 0, sprites: [], tag, top: 1.9 });
+      ring.members.push({ key, holder, spinner, obj, k: k + 1, primary: true, hot: 0, sprites: [], tag, top: mt.top }); // etiqueta sobre su propio globo
       obj.traverse((o) => { if (o.isSprite) ring.members.at(-1).sprites.push(o); });
     });
   }
