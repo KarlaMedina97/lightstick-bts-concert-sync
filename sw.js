@@ -1,6 +1,6 @@
 // Service worker: guarda la app para abrirla sin conexión (los videos sí necesitan internet).
 // Solo guarda archivos propios del sitio; nunca respuestas de terceros ni con errores.
-const CACHE = "pws-v60";
+const CACHE = "pws-v61";
 const SHELL = [
   "./",
   "index.html",
@@ -78,7 +78,7 @@ const SHELL = [
   "src/rhythm.js",
   "src/youtube.js",
   "vendor/gsap/gsap.min.js",
-  "vendor/three/build/three.module.js",
+  "vendor/three/build/three.module.min.js",
   "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
   "vendor/three/examples/jsm/postprocessing/RenderPass.js",
   "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
