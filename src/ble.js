@@ -196,9 +196,13 @@ async function readInfo(server, family) {
   return info;
 }
 
-/** Construye el paquete de color según la familia del lightstick. */
-export function buildPacket(family, [r, g, b], mode = 1) {
-  if (family === "v4") return new Uint8Array([r, g, b, mode]);
+/**
+ * Construye el paquete de color según la familia del lightstick.
+ * V4: el 4.º byte es la duración del fundido que hace el propio ARMY Bomb hacia el color nuevo, en pasos de ~50 ms
+ * (0 = cambio instantáneo, 1 ≈ 50 ms, 20 ≈ 1 s, 255 ≈ 12 s). Medido con un Ver.4 real: ver docs/protocolo-ble.md.
+ */
+export function buildPacket(family, [r, g, b], fade = 1) {
+  if (family === "v4") return new Uint8Array([r, g, b, Math.max(0, Math.min(255, Math.round(fade)))]);
   const bytes = [1, 1, 11, 0, 0, r, g, b, 0, 0];
   const sum = bytes.reduce((a, v) => a + v, 0);
   bytes.push((sum - 2) & 0xff);
@@ -256,6 +260,22 @@ export async function connectStick(device) {
 }
 
 const MIN_INTERVAL = 20; // ms entre escrituras
+const FADE_STEP_MS = 50; // V4: cada unidad del byte de fundido dura ~50 ms
+
+const luma = ([r, g, b]) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
+/**
+ * Fundido del V4 para el siguiente color: si el brillo sube de golpe (un golpe, un destello) el cambio es instantáneo
+ * para que el ataque se sienta; si baja o cambia de tono, el ARMY Bomb funde solo durante el hueco hasta la próxima
+ * escritura, así no se ven escalones aunque el Bluetooth vaya lento.
+ * @param {number[] | null} prev último color enviado
+ * @param {number[]} next color nuevo
+ * @param {number} intervalMs ms hasta la próxima escritura
+ */
+export function v4Fade(prev, next, intervalMs) {
+  if (!prev) return 0;
+  if (luma(next) - luma(prev) > 40) return 0;
+  return Math.max(1, Math.min(4, Math.round(intervalMs / FADE_STEP_MS)));
+}
 const BACKOFF_INTERVAL = 120;
 
 export class Stick {
@@ -274,6 +294,7 @@ export class Stick {
     this.okWrites = 0;
     this.lastWrite = 0;
     this.pending = null;
+    this.pendingFade = null;
     this.lastSent = null;
     this.busy = false;
   }
@@ -282,11 +303,16 @@ export class Stick {
     return this.device.gatt?.connected ?? false;
   }
 
-  /** Envía el color más reciente; descarta los intermedios para no acumular retraso. */
-  setColor(rgb) {
+  /**
+   * Envía el color más reciente; descarta los intermedios para no acumular retraso.
+   * @param {number[]} rgb
+   * @param {number} [fadeMs] solo V4: fundido pedido (p. ej. 1000 para un cambio suave de 1 s); sin él se elige solo
+   */
+  setColor(rgb, fadeMs) {
     const c = rgb.map((v) => Math.max(0, Math.min(255, Math.round(v))));
     if (this.lastSent && c.every((v, i) => v === this.lastSent[i]) && !this.pending) return;
     this.pending = c;
+    this.pendingFade = fadeMs === undefined ? null : fadeMs / FADE_STEP_MS;
     if (!this.busy) this.#pump();
   }
 
@@ -294,11 +320,12 @@ export class Stick {
     this.busy = true;
     try {
       while (this.pending && this.connected) {
-        const c = this.pending;
+        const c = this.pending, asked = this.pendingFade;
         this.pending = null;
+        this.pendingFade = null;
         const wait = this.lastWrite + this.interval - performance.now();
         if (wait > 0) await new Promise((r) => setTimeout(r, wait));
-        const packet = buildPacket(this.family, c);
+        const packet = buildPacket(this.family, c, asked ?? v4Fade(this.lastSent, c, this.interval));
         try {
           if (this.family === "v4") await this.characteristic.writeValueWithResponse(packet);
           else await this.characteristic.writeValueWithoutResponse(packet);

@@ -3501,9 +3501,10 @@ async function init() {
     onTest: () => {
       // Prueba: morado, luego latido suave, luego morado fijo.
       const purple = hexToRgb(PURPLE);
-      sticks.forEach((s) => s.setColor(purple));
-      setTimeout(() => sticks.forEach((s) => s.setColor(purple.map((v) => v * 0.4))), 500);
-      setTimeout(() => sticks.forEach((s) => s.setColor(purple)), 1000);
+      // En el V4 el latido lo funde el propio ARMY Bomb (400 ms); en los demás es un cambio directo.
+      sticks.forEach((s) => s.setColor(purple, 0));
+      setTimeout(() => sticks.forEach((s) => s.setColor(purple.map((v) => v * 0.4), 400)), 500);
+      setTimeout(() => sticks.forEach((s) => s.setColor(purple, 400)), 1000);
     },
     hasSticks: () => sticks.length > 0,
     lastError: () => lastBtError,

@@ -14,7 +14,7 @@
 //   - políticas de YouTube (con YouTube simulado): en Video, Explorar y Luces el reproductor se ve entero, mide al menos
 //     200 × 200 px y nada lo tapa ("A continuación", fanchant, avisos, chip de luces, pie de página, fuegos artificiales).
 // Deja capturas en .ui-check/ para mirarlas (no se publican ni se suben al repo).
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -333,8 +333,10 @@ for (const [vp, w, h] of VIEWPORTS) {
 }
 
 ws.close();
-browser.kill();
-server.kill();
+// En Windows, kill() cierra solo el proceso principal de Edge y deja vivos sus hijos (iconos en la bandeja): se cierra el árbol.
+const killTree = (p) => (process.platform === "win32" ? spawnSync("taskkill", ["/PID", String(p.pid), "/T", "/F"]) : p.kill());
+killTree(browser);
+killTree(server);
 try { rmSync(profile, { recursive: true, force: true }); } catch {}
 
 if (failures.length) {

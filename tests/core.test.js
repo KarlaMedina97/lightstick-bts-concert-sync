@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildPacket } from "../src/ble.js";
+import { buildPacket, v4Fade } from "../src/ble.js";
 import { generatePattern, hexToRgb } from "../src/patterns.js";
 import { ALBUMS, flatQueue } from "../src/catalog.js";
 
@@ -43,3 +43,13 @@ test("modo seguro: como máximo 3 destellos por segundo", () => {
 });
 
 test("hexToRgb", () => assert.deepEqual(hexToRgb("#8a2be2"), [138, 43, 226]));
+
+test("V4: el 4.º byte es el fundido del propio ARMY Bomb (≈50 ms por paso)", () => {
+  assert.deepEqual([...buildPacket("v4", [1, 2, 3], 0)], [1, 2, 3, 0]);
+  assert.deepEqual([...buildPacket("v4", [1, 2, 3], 300)], [1, 2, 3, 255]); // tope de un byte
+  assert.equal(v4Fade(null, [255, 0, 0], 20), 0); // primer color: directo
+  assert.equal(v4Fade([10, 0, 40], [255, 255, 255], 20), 0); // golpe de brillo: instantáneo
+  assert.equal(v4Fade([255, 255, 255], [10, 0, 40], 20), 1); // caída: fundido corto
+  assert.equal(v4Fade([128, 0, 255], [255, 0, 128], 120), 2); // Bluetooth lento: funde el hueco
+  assert.equal(v4Fade([128, 0, 255], [0, 0, 0], 1000), 4); // nunca más de ~200 ms solo
+});
