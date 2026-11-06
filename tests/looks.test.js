@@ -306,3 +306,28 @@ test("concierto: las canciones de cierre terminan en el océano Borahae (morado 
     assert.ok(maxFlashesPerSecond(p, 210) <= 3, id);
   }
 });
+
+import { VIDEO_LOOKS } from "../src/video-looks.js";
+import { STRUCTURE } from "../src/patterns.js";
+
+test("looks analizados del MV (npm run analyze:video): datos válidos y modo seguro con ellos", () => {
+  const hex = /^#[0-9a-f]{6}$/;
+  for (const [id, v] of Object.entries(VIDEO_LOOKS)) {
+    const s = songs.find((x) => x.id === id);
+    assert.ok(s, `${id} no está en el catálogo`);
+    assert.equal(v.yt, s.yt, `${id}: el análisis es de otro video`);
+    assert.equal(v.frames.length, STRUCTURE.length, id);
+    assert.equal(v.curve.length, STRUCTURE.length, id);
+    for (const c of [...v.overall, ...v.frames.flat()]) assert.match(c, hex, `${id}: ${c}`);
+    for (const x of v.curve) assert.ok(x >= 0 && x <= 1, `${id}: curva ${x}`);
+    const p = generatePattern(s, s.album, v.dur, { safeMode: true, video: v });
+    assert.ok(maxFlashesPerSecond(p, Math.min(v.dur, 240), 30) <= 3, `${id}: pasa de 3 destellos/s`);
+  }
+});
+
+test("con análisis completo, cada una de las 9 secciones toma su propio color del MV", () => {
+  const frames = STRUCTURE.map((_, i) => [["#ff0000", "#00ff00", "#0000ff"][i % 3]]);
+  const s = songs.find((x) => !lookFor(x.id) && x.yt); // sin paleta curada que filtre los colores del video
+  const p = generatePattern(s, s.album, 200, { safeMode: true, video: { overall: ["#ff0000", "#00ff00", "#0000ff"], frames, curve: STRUCTURE.map(() => 0.5) } });
+  assert.deepEqual(p.sections[4].color, [0, 255, 0]); // verso 2 → su propio cuadro, no el del 50 %
+});

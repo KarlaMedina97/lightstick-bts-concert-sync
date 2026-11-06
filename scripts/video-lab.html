@@ -1,0 +1,58 @@
+<!doctype html>
+<!-- Laboratorio local de scripts/analyze-video.mjs (no se publica: no está en PUBLIC de build-site.mjs).
+     Inserta el reproductor OFICIAL de YouTube como lo hace LumiParty; el script captura lo que se ve, cuadro a cuadro,
+     y esta página lo reduce a números (colores, brillo, movimiento). Nunca se guarda una imagen ni el audio. -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Laboratorio de video</title>
+<style>html, body { margin: 0; background: #000; overflow: hidden; } #p { width: 640px; height: 360px; }</style>
+</head>
+<body>
+<div id="p"></div>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script type="module">
+  const id = new URLSearchParams(location.search).get("v");
+  let player = null, prev = null;
+  window.lab = { ready: false, error: null };
+  window.onYouTubeIframeAPIReady = () => {
+    player = new YT.Player("p", {
+      width: 640, height: 360, videoId: id,
+      playerVars: { autoplay: 1, mute: 1, controls: 0, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3 },
+      events: {
+        onReady: (e) => { e.target.mute(); e.target.playVideo(); window.lab.ready = true; },
+        onError: (e) => { window.lab.error = e.data; },
+      },
+    });
+  };
+  window.lab.state = () => (player?.getPlayerState ? { s: player.getPlayerState(), t: player.getCurrentTime(), d: player.getDuration() } : null);
+  window.lab.rate = (r) => { player?.setPlaybackRate?.(r); return player?.getPlaybackRate?.(); };
+  window.lab.pause = () => player?.pauseVideo?.();
+
+  // Una captura (PNG de 80×45) → píxeles diminutos (32×18, para colores por sección), brillo, saturación y cuánto cambió
+  // respecto a la anterior (movimiento / corte de escena).
+  const cv = document.createElement("canvas"); cv.width = 80; cv.height = 45;
+  const cx = cv.getContext("2d", { willReadFrequently: true });
+  const tiny = document.createElement("canvas"); tiny.width = 32; tiny.height = 18;
+  const tx = tiny.getContext("2d", { willReadFrequently: true });
+  window.lab.analyze = async (dataUrl) => {
+    const bmp = await createImageBitmap(await (await fetch(dataUrl)).blob());
+    cx.drawImage(bmp, 0, 0, 80, 45);
+    const d = cx.getImageData(0, 0, 80, 45).data;
+    let lum = 0, sat = 0, diff = 0;
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i], g = d[i + 1], b = d[i + 2], M = Math.max(r, g, b), m = Math.min(r, g, b);
+      lum += 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      sat += M ? (M - m) / M : 0;
+      if (prev) diff += Math.abs(r - prev[i]) + Math.abs(g - prev[i + 1]) + Math.abs(b - prev[i + 2]);
+    }
+    const n = d.length / 4;
+    const out = { lum: lum / n / 255, sat: sat / n, diff: prev ? diff / n / 765 : 0 };
+    prev = d;
+    tx.drawImage(bmp, 0, 0, 32, 18);
+    out.px = Array.from(tx.getImageData(0, 0, 32, 18).data);
+    return out;
+  };
+</script>
+</body>
+</html>

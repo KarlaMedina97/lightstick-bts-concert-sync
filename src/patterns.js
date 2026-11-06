@@ -112,7 +112,7 @@ export function lookFor(id = "") {
 }
 
 // Estructura aproximada de una canción pop, en fracciones de la duración.
-const STRUCTURE = [
+export const STRUCTURE = [
   ["intro", 0.0, 0.08],
   ["verso", 0.08, 0.25],
   ["pre-coro", 0.25, 0.3],
@@ -283,6 +283,9 @@ export function generatePattern(song, album, duration, opts = {}) {
     return alt ? alt[(seed >>> (i * 3)) % alt.length] : st;
   });
   let curve = look?.curve ?? CURVES[energy] ?? CURVES.mid;
+  // Intensidad del propio MV (src/video-looks.js): se mezcla a medias con la curva de su energía, así sigue la forma
+  // de la canción pero sube donde el video se mueve más. Una curva curada a mano manda.
+  if (!look?.curve && opts.video?.curve?.length === curve.length) curve = curve.map((v, i) => +(0.5 * v + 0.5 * opts.video.curve[i]).toFixed(3));
   // Rap: los versos (y el puente) suben; ahí está la fuerza de la canción.
   // (0,78 y no más: si los versos casi igualan al coro, el coro ya no se siente; la intensidad continua suma el resto).
   if (look?.rap && !look?.curve) curve = curve.map((v, i) => ([1, 4, 6].includes(i) ? Math.max(v, 0.78) : v));
@@ -316,7 +319,8 @@ export function generatePattern(song, album, duration, opts = {}) {
   const rot = seed % Math.max(1, concept.length);
   let sections = STRUCTURE.map(([label, a, b], i) => {
     const lvl = curve[i];
-    const frame = framePal?.[FRAME_OF[i]];
+    // Con análisis completo hay colores para cada sección; con los 3 cuadros de YouTube, uno cada tres secciones.
+    const frame = framePal?.[framePal.length === STRUCTURE.length ? i : FRAME_OF[i]];
     // Apertura de concierto: la intro en un color propio (blanco tenue) y en el verso todo cambia de golpe.
     const color = i === 0 && look?.intro && !opts.styleOverride ? hexToRgb(look.intro) : frame ? frame[i % frame.length] : palette[(i % (palette.length - 1)) + 1] ?? palette[0];
     const pool = frame?.length > 1 ? frame : concept;

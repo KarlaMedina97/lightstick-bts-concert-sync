@@ -24,6 +24,7 @@ Se publica en GitHub Pages con dominio propio: https://lumiparty.com/ (DNS en Ho
 | `npm run check:commits` | Verifica mensajes de commit contra `origin/main` |
 | `npm run build` | Arma `_site/` con solo lo que se publica (lista en `scripts/build-site.mjs`); CI despliega esa carpeta |
 | `npm run check:ui` | Prueba en navegador real (inicio, reproductor, páginas): excepciones, desbordes, anatomía pegajosa, íconos |
+| `npm run analyze:video -- <id>` | Analiza el MV oficial cuadro a cuadro (sin descargarlo) y guarda colores e intensidad por sección en `src/video-looks.js`; skill `analizar-video` |
 | `npm run check:embeds` | Comprueba que cada video del catálogo se pueda ver dentro de la página (bloqueos por derechos, error 150) |
 
 Antes de dar algo por terminado: `npm run check` y probar en el navegador (escritorio y 390×844).
@@ -52,6 +53,7 @@ Si agregas una sección o flujo importante, súmale su comprobación en `scripts
 | `src/guide.js` | Guía de conexión integrada (4 pasos) |
 | `src/fanchant.js`, `src/crowd.js`, `src/mic.js` | Fanchant entre canciones, multitud en canvas, modo micrófono |
 | `src/rhythm.js`, `src/leaderboard.js`, `src/feedback.js` | Reto de ritmo, rankings por nickname, opiniones |
+| `src/video-looks.js` | Generado por `scripts/analyze-video.mjs`: colores e intensidad del MV por sección (solo números) |
 | `src/config.js` | Enlaces, donaciones, canción destacada, Supabase opcional |
 | `src/i18n.js`, `src/i18n/en-*.js` | Idioma español/inglés: traduce textos y atributos accesibles con diccionarios (también los que el JS cambia después) |
 | `sw.js` | Service worker (lista `SHELL`: añade ahí cada archivo nuevo y sube la versión de `CACHE`) |

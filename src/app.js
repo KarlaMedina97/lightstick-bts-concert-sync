@@ -25,6 +25,7 @@ import { say } from "./announce.js";
 import { earcon, buzz, configureEarcons } from "./earcons.js";
 import { colorName } from "./palette.js";
 import { videoPalette } from "./videopalette.js";
+import { VIDEO_LOOKS } from "./video-looks.js";
 import { inAppBrowser, showInAppNotice, redirectConnectButtons, chromeIntent } from "./inapp.js";
 
 const $ = (id) => document.getElementById(id);
@@ -1071,8 +1072,11 @@ function loadIndex(i, { autoplay = true } = {}) {
   pattern = null;
   patternDuration = 0;
   // Colores del propio MV (portada y cuadros al 25/50/75 %): cuando llegan, el patrón se rehace con ellos.
-  currentVideoPal = null;
-  if (song.kind !== "concert") videoPalette(song.yt).then((v) => { if (current === i && v) { currentVideoPal = v; pattern = null; } });
+  // Si el MV ya se analizó cuadro a cuadro (npm run analyze:video), sus colores e intensidad por sección vienen
+  // incluidos; si no, se leen al vuelo los 3 cuadros que publica YouTube.
+  const analyzed = VIDEO_LOOKS[song.id];
+  currentVideoPal = analyzed?.yt === song.yt ? analyzed : null;
+  if (!currentVideoPal && song.kind !== "concert") videoPalette(song.yt).then((v) => { if (current === i && v) { currentVideoPal = v; pattern = null; } });
   markCurrent();
   startChallenge();
   renderRanking();
