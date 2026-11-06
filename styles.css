@@ -1034,6 +1034,15 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 }
 .coach-pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-ink); animation: g-blink 1.6s ease-in-out infinite; }
 .coach-pill:hover { transform: translateY(-1px); }
+/* Guía minimizada: nada flota; el botón Conectar lleva el paso en una insignia */
+#coach-pill { display: none !important; }
+#btn-bt.resume, #dock-bt.resume { position: relative; }
+#btn-bt.resume::after, #dock-bt.resume::after {
+  content: attr(data-step); position: absolute; top: -6px; right: -4px; min-width: 26px; padding: 1px 6px; border-radius: var(--r-pill);
+  background: var(--accent); color: var(--accent-ink); font-size: 0.6875rem; font-weight: 800; line-height: 1.5; font-variant-numeric: tabular-nums;
+  box-shadow: 0 0 0 2px var(--bg);
+}
+.app:has(#coach-pill:not([hidden])) .explore-head { margin-right: 0 !important; }
 @starting-style { .coach-pill:not([hidden]) { opacity: 0; transform: translateY(-6px); } }
 
 /* Estado de conexión de la guía */

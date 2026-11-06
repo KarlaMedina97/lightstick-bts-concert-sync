@@ -88,6 +88,11 @@ export class Guide {
     this.el.addEventListener("keydown", (e) => {
       if (e.key === "Escape") this.minimize();
     });
+    // Tocar fuera (la música, Explorar…) la minimiza: la guía acompaña, no estorba.
+    document.addEventListener("pointerdown", (e) => {
+      if (this.el.hidden || this.el.contains(e.target) || e.target.closest?.("#btn-bt, #dock-bt, #panel-bt, .panel, dialog")) return;
+      this.minimize();
+    });
   }
 
   /** Coloca la burbuja bajo el botón Conectar, con la flecha a su centro (solo cuando flota con flecha). */
@@ -113,6 +118,7 @@ export class Guide {
   }
 
   open(step = 0) {
+    this.markResume(false);
     const f = document.activeElement;
     if (f && !this.el.contains(f) && f !== document.body) this.opener = f;
     this.pill.hidden = true;
@@ -123,17 +129,27 @@ export class Guide {
     this.titleEl.focus({ preventScroll: true });
   }
 
-  /** Se esconde en una pastilla para no tapar el video; se puede retomar. */
+  /** Se esconde sin dejar nada flotando: el botón Conectar muestra el paso ("2/4") y desde ahí se retoma. */
   minimize() {
     speechSynthesis?.cancel?.();
+    const hadFocus = this.el.contains(document.activeElement);
     this.el.hidden = true;
-    if (!this.hooks.hasSticks()) {
-      this.pill.hidden = false;
-      this.pill.textContent = `Seguir conectando · paso ${this.i + 1} de ${STEPS.length}`;
-      this.place();
-      if (this.el.contains(document.activeElement) || document.activeElement === document.body) this.pill.focus();
-    } else this.returnFocus();
+    this.pill.hidden = true;
+    this.markResume(!this.hooks.hasSticks());
+    if (hadFocus || document.activeElement === document.body) this.returnFocus();
   }
+  /** Marca (o desmarca) los botones Conectar como "retomar la guía en el paso N". */
+  markResume(on) {
+    this.resuming = on;
+    for (const id of ["btn-bt", "dock-bt"]) {
+      const b = document.getElementById(id);
+      if (!b) continue;
+      b.classList.toggle("resume", on);
+      if (on) { b.dataset.step = `${this.i + 1}/${STEPS.length}`; b.setAttribute("aria-description", `Seguir conectando · paso ${this.i + 1} de ${STEPS.length}`); }
+      else { delete b.dataset.step; b.removeAttribute("aria-description"); }
+    }
+  }
+  get isMinimized() { return Boolean(this.resuming) && this.el.hidden; }
 
   /** Al cerrar, el foco vuelve a donde estaba (o al botón de conectar), nunca a un elemento oculto. */
   returnFocus() {
@@ -142,6 +158,7 @@ export class Guide {
   }
 
   restore() {
+    this.markResume(false);
     this.pill.hidden = true;
     this.el.hidden = false;
     this.go(this.i);
@@ -150,6 +167,7 @@ export class Guide {
 
   close() {
     speechSynthesis?.cancel?.();
+    this.markResume(false);
     const hadFocus = this.el.contains(document.activeElement);
     this.el.hidden = true;
     this.pill.hidden = true;

@@ -704,10 +704,25 @@ if (renderer) {
   // velocidad como un péndulo y al soltar vuelve a su lugar con un pequeño vaivén.
   const hold = { x: 0, y: 0, vx: 0, vy: 0, tx: 0, ty: 0, ox: 0, oy: 0 };
   let hotPart = null, hotFromUI = false;
+  // Se mide contra el lienzo real (en teléfonos la barra del navegador cambia el alto visible) y, si el rayo no toca
+  // la malla (mango delgado, dedo grueso), vale tocar cerca del eje del ARMY Bomb: se agarra por el globo o el mango.
+  const _a = new THREE.Vector3(), _b = new THREE.Vector3();
   function pick(e) {
-    pointer.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / VH()) * 2 + 1);
+    const cr = canvas.getBoundingClientRect();
+    const px = e.clientX - cr.left, py = e.clientY - cr.top;
+    pointer.set((px / cr.width) * 2 - 1, -(py / cr.height) * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
-    return raycaster.intersectObject(stick, true)[0] || null;
+    const hit = raycaster.intersectObject(stick, true)[0];
+    if (hit) return hit;
+    stick.updateWorldMatrix(true, false);
+    _a.set(0, v4.metrics.top, 0).applyMatrix4(stick.matrixWorld).project(camera);
+    _b.set(0, v4.metrics.bottom, 0).applyMatrix4(stick.matrixWorld).project(camera);
+    const ax = (_a.x + 1) / 2 * cr.width, ay = (1 - _a.y) / 2 * cr.height, bx = (_b.x + 1) / 2 * cr.width, by = (1 - _b.y) / 2 * cr.height;
+    const len2 = (bx - ax) ** 2 + (by - ay) ** 2 || 1;
+    const t = Math.max(0, Math.min(1, ((px - ax) * (bx - ax) + (py - ay) * (by - ay)) / len2));
+    const d = Math.hypot(px - (ax + t * (bx - ax)), py - (ay + t * (by - ay)));
+    const reach = Math.max(28, Math.sqrt(len2) * 0.09); // ≈ el ancho del mango, nunca menos que un dedo
+    return d <= reach ? { object: stick, point: null, approx: true } : null;
   }
   const partOf = (obj) => { while (obj && !PARTS.includes(obj)) obj = obj.parent; return obj; };
   function pulse(strength = 1) {
@@ -1138,7 +1153,8 @@ if (renderer) {
   for (const b of introButtons) b.onclick = () => { demo.active = false; startIntro({ muted: false }); setIntroButton(true); };
   $("mini-play").onclick = togglePlay;
   $("mini-expand").onclick = () => setMiniState(mini.dataset.state === "expanded" ? "collapsed" : "expanded");
-  $("mini-close").onclick = () => { player?.pauseVideo?.(); setMiniState("idle"); setIntroButton(false); syncPlayButtons(); };
+  // ✕ cierra de verdad: se detiene y el reproductor se va (vuelve si se pide la intro otra vez).
+  $("mini-close").onclick = () => { player?.pauseVideo?.(); setMiniState("closed"); setIntroButton(false); syncPlayButtons(); };
 
   // Arrastrar el reproductor; se acomoda en la esquina más cercana (escritorio) y recuerda la posición.
   const MINI_KEY = "pws.landing.miniCorner";
@@ -1146,13 +1162,16 @@ if (renderer) {
   try { corner = localStorage.getItem(MINI_KEY) || "br"; } catch {}
   function placeMini() {
     mini.style.left = mini.style.top = mini.style.right = mini.style.bottom = "";
-    if (mobileQ()) return; // en móvil queda acoplado al borde inferior
+    if (mobileQ() || innerHeight <= 500) return; // en móvil y en horizontal lo acomoda el CSS (abajo, a lo ancho o en la esquina)
     const m = 16;
     if (corner.includes("t")) mini.style.top = "76px"; else mini.style.bottom = `${m}px`;
     if (corner.includes("l")) { mini.style.left = `${m}px`; mini.style.right = "auto"; } else mini.style.right = `${m}px`;
   }
   placeMini();
   addEventListener("resize", placeMini);
+  // Al girar la pantalla el tamaño final llega tarde (sobre todo en iOS): se recoloca otra vez cuando se asienta.
+  addEventListener("orientationchange", () => setTimeout(placeMini, 350));
+  visualViewport?.addEventListener("resize", () => requestAnimationFrame(placeMini));
   const grip = $("mini-grip");
   let mDrag = null;
   grip.addEventListener("pointerdown", (e) => {
@@ -1769,7 +1788,9 @@ if (gsap && !reduceMotion && !SHOT) {
     for (const c of giant) c.addEventListener("pointerenter", () => gsap.to(c, { scale: 1.16, duration: 0.22, yoyo: true, repeat: 1, ease: "power2.out", transformOrigin: "50% 80%" }));
     for (const el of gsap.utils.toArray(".reveal-up")) {
       const kids = el.matches(".parts, .steps, .feats, .stats, .chips, .demo, .vers") ? el.querySelectorAll(":scope > *") : [el];
-      gsap.from(kids, { y: 34, opacity: 0, duration: 1.1, stagger: 0.07, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 90%", once: true } });
+      // Dentro de un carrusel (los pasos) la tarjeta no se baja: el carrusel recorta lo que sobresale y quedaba cortada.
+      const inScroller = el.matches(".steps");
+      gsap.from(kids, { y: inScroller ? 0 : 34, opacity: 0, duration: 1.1, stagger: 0.07, ease: "expo.out", clearProps: "transform,opacity", scrollTrigger: { trigger: el, start: "top 90%", once: true } });
     }
     // Palabra con contorno que se rellena con el color al avanzar por el clímax.
     const bw = document.querySelector(".bigword");

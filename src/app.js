@@ -75,6 +75,7 @@ let startTourLater = () => {};
 let firstSongPending = true;
 let tourScheduled = false;
 let fanchant = null;
+let guideRef = null; // guía de conexión (para que Conectar la retome si está minimizada)
 let chantFlashAt = -1e9;
 const sticks = [];
 
@@ -220,8 +221,9 @@ function bindPanels() {
   // "Ver canciones" lleva al buscador de Explorar (la lista ya está en pantalla).
   $("btn-settings").onclick = (e) => showPanel("panel-settings", e.currentTarget);
   $("btn-game").onclick = (e) => showPanel("panel-game", e.currentTarget);
-  $("btn-bt").onclick = (e) => showPanel("panel-bt", e.currentTarget);
-  $("dock-bt").onclick = (e) => showPanel("panel-bt", e.currentTarget);
+  // Con la guía minimizada, Conectar la retoma en su paso; si no, abre el panel de Bluetooth.
+  $("btn-bt").onclick = (e) => (guideRef?.isMinimized ? guideRef.restore() : showPanel("panel-bt", e.currentTarget));
+  $("dock-bt").onclick = (e) => (guideRef?.isMinimized ? guideRef.restore() : showPanel("panel-bt", e.currentTarget));
   document.addEventListener("pointerdown", (e) => {
     if (!openPanel) return;
     if (e.target.closest(".panel") || e.target.closest("dialog") || e.target.closest(".toast, #song-menu, .cq-ghost") || e.target.closest("[aria-controls^='panel-']")) return;
@@ -3264,7 +3266,7 @@ async function init() {
     else if (k === "l") { e.preventDefault(); announceLights(); }
   });
 
-  const guide = new Guide({
+  const guide = (guideRef = new Guide({
     onConnect: async () => {
       if (!bluetoothSupport().ok) {
         toast(IS_IOS ? "En iPhone, abre esta página en Bluefy para conectar." : "Este navegador no puede conectar por Bluetooth.");
@@ -3282,7 +3284,7 @@ async function init() {
     hasSticks: () => sticks.length > 0,
     stickNames: () => sticks.map((s) => s.name),
     onDone: (name) => { toast(`💜 ¡${name} listo! Ahora elige una canción.`); },
-  });
+  }));
   $("btn-guide").onclick = () => { closePanel(false); guide.open(); };
   bindMenu();
   bindMenus();
