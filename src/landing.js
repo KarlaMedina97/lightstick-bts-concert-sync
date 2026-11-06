@@ -14,6 +14,8 @@ import { MEMBERS, chantStepMs } from "./fanchant.js";
 import { MicSync } from "./mic.js";
 import { spanishClone, localize } from "./i18n.js";
 import { showInAppNotice, redirectConnectButtons } from "./inapp.js";
+import { carousel } from "./carousel.js";
+import { hive } from "./hive.js";
 import { createMaterials, glowTexture, contactShadow } from "./models/shared.js";
 import { createArmyBombV4 } from "./models/armybomb-v4.js";
 
@@ -47,6 +49,10 @@ const $ = (id) => document.getElementById(id);
 // Dentro de TikTok, Instagram…: aviso para abrir en el navegador (el Bluetooth no existe ahí).
 showInAppNotice();
 redirectConnectButtons(document.querySelectorAll('a[href$="?guide=1"]'));
+// «Cómo conectar» en teléfono y tableta: carrusel que avanza solo (con rebote) y se controla con el dedo.
+carousel(document.querySelector(".steps"), { label: "Paso" });
+// Fondo de panal: en el inicio, Versiones y el océano solo en los bordes; en Conectar y Funciones se junta al centro.
+hive({ gsap, ScrollTrigger, reduceMotion, reach: { inicio: 0.18, anatomia: 0.3, conectar: 0.62, demo: 0.24, funciones: 0.72, versiones: 0.2, oceano: 0.12 } });
 
 // Tarjetas de piezas y versiones: además de resaltar el modelo 3D, su texto se anuncia en #card-status
 // (lector de pantalla). Cada pieza va en su propio nodo con el texto en español de la tarjeta, así i18n.js
@@ -400,7 +406,7 @@ if (renderer) {
   }
   const seats = [];
   const STAGE_Z = 4, FLOOR_Y = -5.0, R_MIN = 9, R_MAX = 37;
-  const crowdSpacing = mobileQ() ? 0.95 : 0.66;
+  const crowdSpacing = mobileQ() ? 0.78 : 0.66; // en teléfono también lleno (antes 0.95: gradas medio vacías)
   for (let r = R_MIN; r < 24.5; r += crowdSpacing) {
     const span = Math.min(1.3, 26 / r);
     for (let a = -span; a <= span; a += crowdSpacing / r) {
@@ -417,14 +423,16 @@ if (renderer) {
       seats.push([Math.sin(aa) * r, y, STAGE_Z - Math.cos(aa) * r, r, aa]);
     }
   }
-  const CROWD_CAP = mobileQ() ? 1400 : 3000;
+  const CROWD_CAP = mobileQ() ? 2100 : 3000; // geometría liviana en teléfonos: alcanza para llenar el estadio
   while (seats.length > CROWD_CAP) seats.splice((Math.random() * seats.length) | 0, 1);
   const N = seats.length;
-  const crowd = new THREE.InstancedMesh(miniStickGeometry(), new THREE.MeshBasicMaterial({ vertexColors: true }), N);
+  // Las luces del público NO se apagan con la niebla: en un estadio las gradas del fondo siguen brillando a través
+  // de la bruma (con niebla se veía un «black ocean»). La distancia solo las hace un poco más tenues (ver hk).
+  const crowd = new THREE.InstancedMesh(miniStickGeometry(), new THREE.MeshBasicMaterial({ vertexColors: true, fog: false }), N);
   crowd.frustumCulled = false;
   crowd.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   // Halo de cada luz (aditivo, sin escribir profundidad) y siluetas oscuras que dan profundidad al público.
-  const halo = new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: haloTexture(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }), N);
+  const halo = new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: haloTexture(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false, fog: false }), N);
   halo.frustumCulled = false;
   halo.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   halo.renderOrder = 2;
@@ -486,7 +494,8 @@ if (renderer) {
       crowd.setMatrixAt(i, _m.compose(_p, _q, _s));
       // El halo va donde está el globo y mira a la cámara; más chico al fondo para no lavar la imagen.
       _hp.set(0, 0.64, 0).applyQuaternion(_q).multiply(_s).add(_p);
-      _hs.setScalar(0.62 - rowN[i] * 0.22);
+      // Las gradas del fondo tienen halos más grandes (en mundo) para que en pantalla sigan siendo puntos de luz.
+      _hs.setScalar(0.6 + rowN[i] * 0.75);
       halo.setMatrixAt(i, _m.compose(_hp, camera.quaternion, _hs));
     }
     crowd.instanceMatrix.needsUpdate = true;
@@ -543,10 +552,12 @@ if (renderer) {
   let activeSlot = slots[0];
   let lineupPose = null;
 
+  // Se abre al entrar y queda abierto mientras están las tarjetas y sus líneas (antes se volvía a armar al 88 %
+  // con las tarjetas todavía en pantalla y parecían dos secciones). Se arma solo al salir: el modelo, las tarjetas
+  // y las líneas se van juntos, porque la pose pasa al siguiente capítulo.
   function explodeFromProgress(p) {
-    const open = clamp01((p - 0.06) / 0.3), close = clamp01((p - 0.88) / 0.12);
-    const s = (x) => 0.5 - 0.5 * Math.cos(Math.PI * x);
-    return s(open) * (1 - s(close));
+    const open = clamp01((p - 0.04) / 0.26);
+    return 0.5 - 0.5 * Math.cos(Math.PI * open);
   }
   const NAV_H = () => (mobileQ() ? 56 : 68);
   // Ajusta posición/escala para que el lightstick entero (gema a tapa + margen de gestos) quede a la vista.
@@ -648,6 +659,9 @@ if (renderer) {
   const gw = { sway: 0, pump: 0, wave: 0, shake: 0 };
   const gwT = { sway: 0, pump: 0, wave: 0, shake: 0 };
   let shakeT = -10, shakeAmp = 0, handVz = 0, lastHandZ = 0, lag = 0, lagV = 0;
+  // Cordón: péndulo amortiguado. Quiere colgar hacia abajo (contra la inclinación de la mano) y la aceleración
+  // de la mano lo empuja; se mece y se asienta. Es lo único que se mueve suelto: el resto del ARMY Bomb es una pieza.
+  let cordAng = 0, cordVel = 0, lastHandX = 0, handVx = 0;
   const pumpCurve = (x) => (x < 0.12 ? x / 0.12 : Math.exp(-(x - 0.12) * 7) * Math.cos((x - 0.12) * 9));
   function triggerShake(a = 1) {
     if (reduceMotion || safeMode) a *= 0.4;
@@ -702,7 +716,14 @@ if (renderer) {
       const dx = e.clientX - dragX, dy = e.clientY - dragY, ddt = Math.max(1, now - dragT);
       dragX = e.clientX; dragY = e.clientY; dragT = now;
       moved += Math.abs(dx) + Math.abs(dy);
-      if (ring.dragging) { ring.vel = dx * 0.25; return; }
+      if (ring.dragging) {
+        // La ronda sigue al dedo (≈ 0,006 rad por píxel) y se mide su velocidad real para lanzarla al soltar.
+        const da = dx * RING_RAD_PER_PX;
+        ring.off += da;
+        const v = da / (ddt / 1000);
+        ring.vel = Math.max(-14, Math.min(14, ring.vel * 0.35 + v * 0.65));
+        return;
+      }
       const k = 1 / Math.max(1e-3, ppuNow() * pivot.scale.x);
       hold.tx = Math.max(-1.8, Math.min(1.8, (e.clientX - hold.ox) * k));
       hold.ty = Math.max(-1.1, Math.min(1.1, -(e.clientY - hold.oy) * k));
@@ -722,11 +743,19 @@ if (renderer) {
     if (!hotFromUI) setHot(view.explode > 0.5 && hitObj ? partOf(hitObj.object)?.name ?? null : null);
   });
   const ringHit = () => ring.group.visible && raycaster.intersectObject(ring.group, true).length > 0;
+  const RING_RAD_PER_PX = 0.006;
+  const lineupEl = () => slots.find((S) => S.lineup)?.el;
+  const inRingArea = (e) => {
+    if (!(ring.othersIn > 0.5) || !ring.members.length) return false;
+    const rr = lineupEl()?.getBoundingClientRect();
+    return Boolean(rr && e.clientX >= rr.left - 30 && e.clientX <= rr.right + 30 && e.clientY >= rr.top && e.clientY <= rr.bottom);
+  };
   canvas.addEventListener("pointerdown", (e) => {
     const onStick = !!pick(e);
-    const onRing = !onStick && ringHit();
+    const onRing = !onStick && (ringHit() || inRingArea(e));
     if (!onStick && !onRing) return;
     ring.dragging = ring.mainIn > 0.3 || onRing;
+    if (ring.dragging) ring.vel = 0; // al tocarla se "atrapa"
     e.preventDefault(); // sin selección de texto ni arrastre de imágenes
     dragging = true;
     dragX = e.clientX; dragY = e.clientY; dragT = performance.now();
@@ -843,17 +872,20 @@ if (renderer) {
   // ---------- Versiones: ronda de lightsticks que gira, "tomados de la mano" (se cargan al acercarse) ----------
   // Miembros: el principal (Ver. 4) + Ver. 3 + SE, una de cada una, con su etiqueta.
   const mainTag = (() => { const d = document.createElement("div"); d.className = "ver-tag"; d.textContent = "Ver. 4"; document.querySelector(".markers")?.append(d); return d; })();
-  const ring = { group: new THREE.Group(), members: [], loading: false, hot: null, angle: 0, off: 0, vel: 0, mainIn: 0, othersIn: 0, cx: 0, cy: 0, s: 0.4, dragging: false, last: null };
+  const ring = { group: new THREE.Group(), members: [], loading: false, hot: null, angle: 0, off: 0, vel: 0, spin: 0, mainIn: 0, othersIn: 0, cx: 0, cy: 0, s: 0.4, dragging: false, last: null };
   ring.group.rotation.x = 0.18;
   scene.add(ring.group);
   const verSection = document.getElementById("versiones");
   async function loadLineup() {
     if (ring.loading) return;
     ring.loading = true;
-    const [{ createArmyBombV3 }, { createArmyBombSE }] = await Promise.all([import("./models/armybomb-v3.js"), import("./models/armybomb-se.js")]);
-    const v3 = createArmyBombV3(mats, { lowEnd: LOW_END }), se = createArmyBombSE(mats, { lowEnd: LOW_END });
-    // Una sola de cada versión: el principal (Ver. 4) + Ver. 3 + SE, en un triángulo con aire entre ellos.
-    const entries = [["v3", v3.group, v3.metrics.grip, "Ver. 3"], ["se", se.group, se.metrics.grip, "SE"]];
+    const [{ createArmyBombV3 }, { createArmyBombSE }, { createArmyBombV1 }, { createArmyBombV2 }] = await Promise.all([
+      import("./models/armybomb-v3.js"), import("./models/armybomb-se.js"), import("./models/armybomb-v1.js"), import("./models/armybomb-v2.js"),
+    ]);
+    const o = { lowEnd: LOW_END };
+    const v3 = createArmyBombV3(mats, o), se = createArmyBombSE(mats, o), v1 = createArmyBombV1(mats, o), v2 = createArmyBombV2(mats, o);
+    // Las cinco versiones en la ronda: el principal (Ver. 4) + Ver. 3, SE, Ver. 2 y Ver. 1, repartidas a 72°.
+    const entries = [["v3", v3.group, v3.metrics.grip, "Ver. 3"], ["se", se.group, se.metrics.grip, "SE"], ["v2", v2.group, v2.metrics.grip, "Ver. 2"], ["v1", v1.group, v1.metrics.grip, "Ver. 1"]];
     entries.forEach(([key, obj, grip, label], k) => {
       const holder = new THREE.Group();
       const spinner = new THREE.Group();
@@ -887,7 +919,26 @@ if (renderer) {
   }
   const _rp = new THREE.Vector3(), _hc = new THREE.Color();
   /** Ronda: centro y escala del slot, giro con inercia, ola que levanta uno tras otro y entradas en espiral. */
-  function updateRing(dt, t) {
+  /**
+   * Baile de la ronda, al compás de la canción (b = tiempo de la música en pulsos). Frase de 8 tiempos: 4 saltos al
+   * unísono y 4 en ola alrededor de la ronda; cada 16 tiempos, un salto grande todos juntos. Salto corto con caída
+   * nítida (se estira al subir y se aplasta un poco al caer), vaivén cada 2 tiempos y empuje de muñeca en cada pulso.
+   */
+  function danceAt(b, k, n) {
+    const phrase = ((b % 8) + 8) % 8;
+    const wave = phrase >= 4 ? (k / Math.max(1, n)) * 0.9 : 0; // en la ola cada una sale un poco después
+    const x = b - wave, f = ((x % 1) + 1) % 1;
+    const big = ((Math.floor(x) % 16) + 16) % 16 === 0 ? 1.7 : 1;
+    const air = f < 0.5 ? Math.sin(Math.PI * (f / 0.5)) : 0; // en el aire media pulsación; el resto, en el piso
+    const land = f >= 0.5 && f < 0.66 ? Math.sin(Math.PI * ((f - 0.5) / 0.16)) : 0; // aplastado al caer
+    return {
+      hop: air ** 1.15 * big,
+      squash: 1 + 0.07 * air - 0.08 * land,
+      sway: Math.sin((Math.PI * x) / 2), // un lado y otro cada 2 tiempos
+      pump: f < 0.12 ? f / 0.12 : Math.exp(-(f - 0.12) * 7),
+    };
+  }
+  function updateRing(dt, t, b = t * 2, beatSec = 0.5) {
     const P = lineupPose;
     const k = reduceMotion || SHOT ? 1 : Math.min(1, dt * 4);
     ring.othersIn += ((P ? clamp01(P.vis * 1.5) : 0) - ring.othersIn) * (reduceMotion ? 1 : Math.min(1, dt * 2.2));
@@ -900,31 +951,45 @@ if (renderer) {
     const on = ring.othersIn > 0.01 || ring.mainIn > 0.01;
     ring.group.visible = on && ring.members.length > 0;
     if (!on) { for (const M of ring.members) M.tag.classList.remove("shown"); mainTag.classList.remove("shown"); return null; }
-    // Triángulo: Ver. 4 al frente y al centro; Ver. 3 y SE atrás a izquierda y derecha. La ronda se mece
-    // (sin dar la vuelta completa, así nunca se tapan) y al arrastrarla gira y vuelve con un resorte.
-    if (ring.dragging) ring.off += ring.vel * dt;
-    else { ring.off += (0 - ring.off) * Math.min(1, dt * 1.2); ring.vel *= 0.9; }
-    ring.angle = ring.off + (reduceMotion ? 0 : Math.sin(t * 0.25) * 0.1);
-    const s = ring.s, Rr = 5.6 * s; // aire entre las tres versiones
+    // Ronda en el espacio: todas las versiones (también la principal) giran juntas alrededor del centro del
+    // círculo (eje Y), repartidas a 120°. Al arrastrarla gira más rápido o al revés y luego vuelve a su ritmo.
+    if (!reduceMotion && !ring.dragging) ring.spin += dt * 0.3; // ritmo de carrusel (nunca se detiene)
+    if (!ring.dragging) {
+      // Lanzada fuerte: frena de forma exponencial (≈ 1,6 s) hasta quedar solo el giro de carrusel.
+      ring.off += ring.vel * dt;
+      ring.vel *= Math.exp(-dt * 1.6);
+      if (Math.abs(ring.vel) < 0.01) ring.vel = 0;
+    }
+    ring.angle = ring.off + ring.spin;
+    const s = ring.s, Rr = 6.2 * s; // aire entre las cinco versiones
     ring.group.position.set(ring.cx, ring.cy, 0);
     // Ángulo de las de atrás: ±2 rad con el principal; sin él, se reparten (±π/2) y cierran el hueco.
-    const spread = 1.72 + (1 - ring.mainIn) * (Math.PI / 2 - 1.72);
+    // Repartidas en el círculo: con el principal son 5 (72°); sin él, las demás cierran el hueco.
+    const slots = ring.members.length + ring.mainIn;
+    const step = (2 * Math.PI) / Math.max(1, slots);
     const waveOn = !reduceMotion && t % 11 < 3.2;
     const counter = !reduceMotion && Math.sin(t * 0.21) > 0.55;
-    const ownSpin = reduceMotion ? 0 : t * 0.9;
+    // Cada una se agita como el principal (vaivén y empuje de muñeca), desfasada: nada de girar sobre su eje.
     for (const M of ring.members) {
       const u = ring.othersIn;
       const ease = u * u * (3 - 2 * u);
-      const theta = ring.angle + (M.k === 1 ? -spread : spread) + (1 - ease) * (3 * Math.PI + M.k * 0.7);
+      const theta = ring.angle + M.k * step + (1 - ease) * (3 * Math.PI + M.k * 0.7);
       const rad = Rr * (1 + (1 - ease) * 2.2);
-      const lift = waveOn ? 0.9 * s * Math.max(0, Math.sin((t % 11) * 2.4 - M.k * 0.85)) ** 2 : 0;
+      const D = reduceMotion ? null : danceAt(b, M.k, ring.members.length + 1);
+      const lift = D ? 0.55 * s * D.hop : 0;
       const fly = (1 - ease) * (M.k % 2 ? 7 : -7) * s;
       M.hot += ((ring.hot === M.key && M.primary ? 1 : 0) - M.hot) * Math.min(1, dt * 6);
       const fwd = M.hot * 1.1 * s;
       M.holder.position.set(Math.sin(theta) * (rad + fwd), lift + fly, Math.cos(theta) * (rad + fwd));
       M.holder.rotation.set(-0.24 * ease, theta, 0); // inclinado hacia el centro, como tomados de la mano
       M.holder.scale.setScalar(Math.max(0.001, s * (0.3 + 0.7 * ease) * (1 + M.hot * 0.12)));
-      M.spinner.rotation.y = ownSpin * (counter && M.k % 2 ? -1 : 1);
+      if (!D) { M.spinner.rotation.set(0, 0, 0); M.spinner.scale.set(1, 1, 1); }
+      else {
+        // Todos con el mismo vaivén y el mismo empuje: bailan juntos (en la ola, con su pequeño retraso).
+        M.spinner.rotation.set(-0.14 * D.pump, 0, 0.2 * D.sway);
+        M.spinner.position.set(0.16 * D.sway, 0, 0);
+        M.spinner.scale.set(1 / Math.sqrt(D.squash), D.squash, 1 / Math.sqrt(D.squash));
+      }
       // El color viaja alrededor de la ronda.
       _hc.copy(color).offsetHSL(Math.sin(t * 1.4 - M.k * 1.05) * 0.06, 0, 0);
       for (const sp of M.sprites) { sp.material.color.copy(_hc); sp.material.opacity = (0.04 + 0.08 * Math.max(0, Math.sin(t * 2 - M.k * 1.05))) * ease; }
@@ -959,9 +1024,10 @@ if (renderer) {
       T.el.classList.toggle("shown", T.show);
       T.el.classList.toggle("hot", T.hot);
     }
-    // Posición del principal en la ronda (índice 0): entra y sale en espiral.
+    // Posición del principal en la ronda (índice 0): entra y sale en espiral, y baila con los demás.
     const theta0 = ring.angle;
-    _rp.set(Math.sin(theta0) * Rr, 0, Math.cos(theta0) * Rr);
+    const D0 = reduceMotion ? null : danceAt(b, 0, ring.members.length + 1);
+    _rp.set(Math.sin(theta0) * Rr, D0 ? 0.55 * s * D0.hop : 0, Math.cos(theta0) * Rr);
     ring.group.updateMatrixWorld();
     ring.group.localToWorld(_rp);
     return { pos: _rp, theta: theta0, s, hot: ring.hot === "v4" ? 1 : 0 };
@@ -1413,23 +1479,34 @@ if (renderer) {
       p.position.copy(p.userData.offset).multiplyScalar(eased);
       p.position.y += drift;
       const r = p.userData.rot;
-      const lagZ = i < 3 ? lag * (1 - eased) : 0;
+      const lagZ = 0; // fuera de la anatomía el ARMY Bomb es una sola pieza (antes el globo se atrasaba y parecía suelto)
       p.rotation.set(r[0] * eased, r[1] * eased + (reduceMotion ? 0 : Math.sin(t * 0.6 + i) * 0.05 * eased), r[2] * eased + lagZ);
       const hs = hotPart && (p.name === hotPart || (hotPart === "buttons" && p.name === "handle")) ? 1.07 + Math.sin(t * 6) * 0.015 : 1;
       p.scale.setScalar(p.scale.x + (hs - p.scale.x) * Math.min(1, dt * 8));
     });
-    v4.strap.rotation.z = -o.rz * 0.6;
+    {
+      const cdt = Math.min(dt, 1 / 30);
+      const hx = hand.position.x, vx = (hx - lastHandX) / Math.max(cdt, 1e-3);
+      const ax = (vx - handVx) / Math.max(cdt, 1e-3);
+      lastHandX = hx; handVx = vx;
+      if (reduceMotion) { cordAng = -o.rz; cordVel = 0; }
+      else {
+        cordVel += (-38 * (cordAng + o.rz) - 3.2 * cordVel + Math.max(-60, Math.min(60, ax)) * 0.05) * cdt;
+        cordAng = Math.max(-1.3, Math.min(1.3, cordAng + cordVel * cdt));
+      }
+      v4.cord.rotation.z = cordAng;
+    }
     shadow.material.opacity = 0.32 * (1 - view.explode) * (1 - view.lineup * 0.5);
     // Ronda de versiones: el principal entra y sale en espiral hasta su lugar (índice 0).
-    const R0 = updateRing(dt, t);
+    const R0 = updateRing(dt, t, b, beatSec);
     if (R0 && ring.mainIn > 0.001) {
       const m = ring.mainIn, e2 = m * m * (3 - 2 * m), f = 4 * e2 * (1 - e2);
       const tx = R0.pos.x, ty = R0.pos.y - (STICK_Y + GRIP) * R0.s, tz = R0.pos.z + R0.hot * 1.1 * R0.s;
       const hx = Math.sin(e2 * Math.PI * 3) * f * 2 * R0.s, hz = Math.cos(e2 * Math.PI * 3) * f * 1.6 * R0.s, hy = f * 1.4 * R0.s;
       pivot.position.set(pivot.position.x + (tx - pivot.position.x) * e2 + hx, pivot.position.y + (ty - pivot.position.y) * e2 + hy, tz * e2 + hz);
       pivot.scale.setScalar(pivot.scale.x + (R0.s * (1 + R0.hot * 0.12) - pivot.scale.x) * e2);
-      const own = reduceMotion ? 0 : t * 0.9;
-      stick.rotation.y = spinAngle + Math.atan2(Math.sin(own - spinAngle), Math.cos(own - spinAngle)) * e2;
+      // En la ronda el principal también deja de girar sobre su eje: mira al frente y se agita con los demás.
+      stick.rotation.y = spinAngle + Math.atan2(Math.sin(0 - spinAngle), Math.cos(0 - spinAngle)) * e2;
       hand.rotation.z += 0.24 * e2 * Math.sin(R0.theta);
       hand.rotation.x += -0.24 * e2 * Math.cos(R0.theta);
       // Durante la entrada/salida en espiral también se mantiene a la vista.
@@ -1498,7 +1575,7 @@ if (renderer) {
         const w = boost * lit * Math.max(0.04, base + amp * wave + 0.25 * show.beatKick * L * P + burst + waveGlow) * (0.75 + 0.5 * seed[i]);
         tmp.copy(seed[i] < mixB ? cB : cA).lerp(IDLE_PURPLE, 1 - L).multiplyScalar(w);
         ic[i * 3] = tmp.r; ic[i * 3 + 1] = tmp.g; ic[i * 3 + 2] = tmp.b;
-        const hk = 0.85 * (1 - rowN[i] * 0.45); // halos más sutiles al fondo; centro un poco más blanco
+        const hk = 0.9 * (1 - rowN[i] * 0.2); // al fondo apenas más tenues: las gradas se ven encendidas
         hc[i * 3] = (tmp.r * 0.8 + 0.12 * w) * hk; hc[i * 3 + 1] = (tmp.g * 0.8 + 0.12 * w) * hk; hc[i * 3 + 2] = (tmp.b * 0.8 + 0.12 * w) * hk;
       }
       crowd.instanceColor.needsUpdate = true;

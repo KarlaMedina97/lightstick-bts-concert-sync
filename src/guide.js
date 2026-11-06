@@ -2,7 +2,7 @@
 // con 4 pasos cortos centrados en encender y sincronizar el ARMY Bomb.
 // Cada paso tiene una mini animación, texto breve y narración opcional.
 
-import { lang, t } from "./i18n.js";
+import { lang, t, VOICE } from "./i18n.js";
 
 const STEPS = [
   {
@@ -219,8 +219,8 @@ export class Guide {
     if (!this.voice || !("speechSynthesis" in window) || !text) return;
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(t(text));
-    const code = lang === "en" ? "en" : "es";
-    u.lang = code === "en" ? "en-US" : "es-ES";
+    const code = lang;
+    u.lang = VOICE[lang] ?? "es-ES";
     const voices = speechSynthesis.getVoices();
     u.voice = voices.find((v) => v.lang.startsWith(code)) ?? null;
     speechSynthesis.speak(u);

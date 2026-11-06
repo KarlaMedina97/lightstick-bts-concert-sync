@@ -46,6 +46,12 @@ img, svg { -webkit-user-drag: none; }
 /* Mano abierta sobre el lightstick y mano cerrada al arrastrar (cursores propios en SVG). */
 #scene.grab { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M11 15V7.5a1.8 1.8 0 0 1 3.6 0V14m0-1V5.8a1.8 1.8 0 0 1 3.6 0V14m0-1V7a1.8 1.8 0 0 1 3.6 0v8m0-4.5a1.8 1.8 0 0 1 3.6 0V19c0 5-3.3 9-8.4 9-3.4 0-5.3-1.6-7-4.2l-3.3-5.3a1.9 1.9 0 0 1 3.1-2.2L11 18' fill='%23fff' stroke='%23140b26' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 15 15, grab; }
 #scene.grabbing, html.dragging #scene { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M10 14.5c0-1.2 1-2 2-2s2 .8 2 2m0-.8c0-1.2 1-2 2-2s2 .8 2 2m0-.2c0-1.2 1-2 2-2s2 .8 2 2v.8c0-1.2 1-2 2-2s1.8.8 1.8 2V19c0 5-3.3 9-8.4 9-3.4 0-5.6-1.8-7-4.2-1-1.6-1.6-3.3-1.6-5.2 0-1.5.9-2.6 2.2-3.1' fill='%23fff' stroke='%23140b26' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 15 15, grabbing; }
+/* Panal (src/hive.js): encima de la escena 3D y debajo del texto; líneas finas y tenues */
+.hive { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100lvh; pointer-events: none; z-index: 1; }
+.hive-band { fill: none; stroke: color-mix(in srgb, var(--a1, #b388ff) 55%, #ffffff); stroke-width: 1; vector-effect: non-scaling-stroke; opacity: 0;
+  transition: opacity .2s linear; will-change: opacity, transform; }
+@media (max-width: 719px) { .hive-band { stroke-width: .8; } }
+@media (forced-colors: active) { .hive { display: none; } }
 .vignette { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(120% 80% at 50% 30%, transparent 40%, #060818b8 100%); }
 .markers { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100lvh; z-index: 1; pointer-events: none; user-select: none; }
 .leaders { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
@@ -365,10 +371,9 @@ main { position: relative; z-index: 2; overflow-x: clip; }
   .hero .copy { padding: 110px 0 120px; }
   h1.display { font-size: clamp(2.6rem, 5vw, 5.2rem); }
   .h-giant { font-size: 1.32em; letter-spacing: -.045em; }
-  .steps { grid-auto-flow: row; grid-template-columns: repeat(4, 1fr); overflow: visible; }
   .feats { grid-template-columns: repeat(2, 1fr); }
   .feat.wide { grid-column: 1 / -1; }
-  .stats { grid-template-columns: repeat(4, 1fr); }
+  .stats dd { font-size: clamp(1.6rem, 3.4vw, 2.8rem); }
   /* Anatomía: escenario fijo con el modelo al centro y tarjetas a los lados. */
   .anatomy { display: block; min-height: 230svh; }
   .anat-stage { position: sticky; top: 0; height: 100svh; padding: 76px 0 24px; grid-template-columns: minmax(0, 1fr) minmax(300px, 36vw) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 24px; row-gap: 10px; }
@@ -557,3 +562,44 @@ section[id], #contenido { scroll-margin-top: 76px; }
 .inapp-btn:focus-visible, .inapp-close:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
 .steps:focus-visible { outline: 3px solid #fff; outline-offset: 4px; border-radius: 18px; }
+/* La columna de texto mide ~400 px en tableta: los 4 pasos y las 4 cifras en fila solo caben en pantallas anchas.
+   Debajo, los pasos son carrusel y las cifras van de 2 en 2 (antes empujaban el título fuera de la pantalla). */
+@media (min-width: 1200px) {
+  .steps { grid-auto-flow: row; grid-template-columns: repeat(4, 1fr); overflow: visible; }
+  .stats { grid-template-columns: repeat(4, 1fr); }
+}
+@media (min-width: 720px) and (max-width: 1199px) { .steps { grid-auto-columns: minmax(200px, 62%); } }
+.copy, .head { min-width: 0; }
+/* Carrusel de pasos (src/carousel.js): desplazamiento suave, sin barra, puntos y pausa debajo */
+.steps { overscroll-behavior-x: contain; scroll-behavior: smooth; scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; }
+.steps::-webkit-scrollbar { display: none; }
+.steps.dragging { scroll-snap-type: none; scroll-behavior: auto; cursor: grabbing; user-select: none; }
+.step.is-current { border-color: var(--a1); box-shadow: 0 10px 30px -18px var(--a1); }
+.car-bar { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 4px; }
+.car-bar[hidden] { display: none; }
+.car-dots { display: flex; gap: 2px; }
+.car-dot { width: 28px; height: 28px; display: grid; place-items: center; padding: 0; border: 0; background: none; cursor: pointer; }
+.car-dot::before { content: ""; width: 8px; height: 8px; border-radius: 999px; background: rgba(255, 255, 255, .3); transition: width .35s var(--ease), background .35s; }
+.car-dot[aria-current="true"]::before { width: 22px; background: var(--a1); }
+.car-dot:focus-visible, .car-pause:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 999px; }
+.car-pause { min-width: 32px; height: 28px; padding: 0 8px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255, 255, 255, .06); color: var(--muted); font-size: .7rem; cursor: pointer; }
+.car-pause:hover { color: #fff; }
+@media (pointer: coarse) { .car-dot { width: 32px; height: 44px; } .car-pause { min-width: 44px; height: 44px; } }
+@media (prefers-reduced-motion: reduce) { .steps { scroll-behavior: auto; } }
+
+/* Versiones sin Bluetooth: misma tarjeta, con la nota en tono apagado */
+.ver-card.no-bt span { color: var(--muted); font-style: italic; }
+
+/* Menú de idioma (src/i18n.js): cada idioma con su nombre en su propio idioma */
+.lang-pop { position: fixed; z-index: 1000; min-width: 210px; display: grid; gap: 2px; padding: 6px; border-radius: 14px;
+  background: #15122a; border: 1px solid rgba(255, 255, 255, .16); box-shadow: 0 18px 50px -12px rgba(0, 0, 0, .7); }
+.lang-pop button { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 10px;
+  background: none; color: #f4f0ff; font: 600 .95rem/1.2 inherit; text-align: start; cursor: pointer; }
+.lang-pop button:hover, .lang-pop button:focus-visible { background: rgba(255, 255, 255, .08); outline: none; }
+.lang-pop button[aria-checked="true"] { color: #fff; background: rgba(168, 85, 247, .22); }
+.lang-pop button[aria-checked="true"]::after { content: "✓"; font-weight: 800; color: #c4a7ff; }
+.lang-pop button:focus-visible { box-shadow: inset 0 0 0 2px #fff; }
+:root[data-theme="light"] .lang-pop { background: #fff; border-color: rgba(40, 20, 80, .14); }
+:root[data-theme="light"] .lang-pop button { color: #1b1340; }
+:root[data-theme="light"] .lang-pop button[aria-checked="true"] { background: rgba(138, 43, 226, .12); }
+@media (forced-colors: active) { .lang-pop { border: 1px solid CanvasText; } .lang-pop button[aria-checked="true"] { outline: 2px solid Highlight; } }

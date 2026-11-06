@@ -203,7 +203,9 @@
               <button id="type-songs" class="type-opt" type="button" aria-pressed="true">Canciones</button>
               <button id="type-albums" class="type-opt" type="button" aria-pressed="false">Álbumes</button>
             </div>
-            <div class="filters" role="group" aria-label="Filtrar canciones" data-filters></div>
+            <!-- Teléfono: los filtros se pliegan en un botón (no ocupan una fila fija) -->
+            <button id="filters-toggle" class="filters-toggle" type="button" aria-expanded="false" aria-controls="explore-filters"><svg aria-hidden="true"><use href="#i-sliders"/></svg><span id="filters-label">Filtros</span></button>
+            <div id="explore-filters" class="filters" role="group" aria-label="Filtrar canciones" data-filters></div>
             <!-- Qué significan los íconos de luces: un botón chico al final de los filtros (no ocupa una fila) -->
             <details id="ll-pop" class="ll-pop">
               <summary class="ll-btn" aria-label="Intensidad de luces: qué significan los íconos"><span class="lights-glyph" data-level="3" aria-hidden="true"><svg viewBox="0 0 20 20"><circle class="lg-halo" cx="10" cy="8" r="7.5"/><path class="lg-rays" d="M10 .4v1.4M3.6 2.6l1 1M16.4 2.6l-1 1M1.8 8h1.4M16.8 8h1.4"/><circle class="lg-globe" cx="10" cy="8" r="3.6"/><path class="lg-stick" d="M10 11.8V18.6"/></svg></span><span>Luces</span></summary>
@@ -212,7 +214,7 @@
                 <p class="lights-legend" id="lights-legend">
                   <span class="ll-item"><span class="lights-glyph" data-level="1" aria-hidden="true"><svg viewBox="0 0 20 20"><circle class="lg-halo" cx="10" cy="8" r="7.5"/><path class="lg-rays" d="M10 .4v1.4M3.6 2.6l1 1M16.4 2.6l-1 1M1.8 8h1.4M16.8 8h1.4"/><circle class="lg-globe" cx="10" cy="8" r="3.6"/><path class="lg-stick" d="M10 11.8V18.6"/></svg></span>suaves</span>
                   <span class="ll-item"><span class="lights-glyph" data-level="2" aria-hidden="true"><svg viewBox="0 0 20 20"><circle class="lg-halo" cx="10" cy="8" r="7.5"/><path class="lg-rays" d="M10 .4v1.4M3.6 2.6l1 1M16.4 2.6l-1 1M1.8 8h1.4M16.8 8h1.4"/><circle class="lg-globe" cx="10" cy="8" r="3.6"/><path class="lg-stick" d="M10 11.8V18.6"/></svg></span>medias</span>
-                  <span class="ll-item"><span class="lights-glyph" data-level="3" aria-hidden="true"><svg viewBox="0 0 20 20"><circle class="lg-halo" cx="10" cy="8" r="7.5"/><path class="lg-rays" d="M10 .4v1.4M3.6 2.6l1 1M16.4 2.6l-1 1M1.8 8h1.4M16.8 8h1.4"/><circle class="lg-globe" cx="10" cy="8" r="3.6"/><path class="lg-stick" d="M10 11.8V18.6"/></svg></span>intensas</span>
+                  <span class="ll-item"><span class="lights-glyph" data-level="3" aria-hidden="true"><svg viewBox="0 0 20 20"><circle class="lg-halo" cx="10" cy="8" r="7.5"/><path class="lg-rays" d="M10 .4v1.4M3.6 2.6l1 1M16.4 2.6l-1 1M1.8 8h1.4M16.8 8h1.4"/><circle class="lg-globe" cx="10" cy="8" r="3.6"/><path class="lg-stick" d="M10 11.8V18.6"/></svg></span>altas</span>
                 </p>
                 <p class="ll-note">Cada canción muestra su ícono: así sabes cuánto brillará tu ARMY Bomb.</p>
               </div>
@@ -241,7 +243,7 @@
         <section id="explore-results" class="explore-results" aria-labelledby="er-title" hidden>
           <div class="er-head">
             <h2 id="er-title" class="shelf-title">Resultados</h2>
-            <button id="er-clear" class="btn small ghost" type="button">Limpiar</button>
+            <button id="er-clear" class="btn small ghost" type="button" hidden>Limpiar</button>
           </div>
           <p class="search-empty hint" hidden></p>
           <div id="explore-list" class="albums explore-list"></div>
@@ -340,6 +342,7 @@
         <div id="sim" class="sim" aria-hidden="true"></div>
         <p id="now-section" class="section-label">—</p>
         <p class="hint">Sin ARMY Bomb, tu pantalla brilla. Sube el brillo.</p>
+        <button id="lv-edit" class="btn secondary small lv-edit" type="button" aria-haspopup="dialog" aria-controls="panel-editor"><svg aria-hidden="true"><use href="#i-sliders"/></svg>Editar luces de esta canción</button>
         <div id="concert-cam" class="concert-cam" hidden>
           <div class="cam-frame">
             <video id="cam-video" playsinline muted aria-label="Vista de la cámara para apuntar a un lightstick"></video>
@@ -424,6 +427,7 @@
           <div class="nps-actions">
             <button id="nps-like" class="btn secondary small" type="button" aria-pressed="false"><svg aria-hidden="true"><use href="#i-heart"/></svg><span>Me gusta</span></button>
             <button id="nps-save" class="btn secondary small" type="button" aria-pressed="false"><svg aria-hidden="true"><use href="#i-album"/></svg><span>Guardar álbum</span></button>
+            <button id="nps-edit" class="btn secondary small" type="button" aria-haspopup="dialog" aria-controls="panel-editor"><svg aria-hidden="true"><use href="#i-sliders"/></svg><span>Editar luces</span></button>
             <button id="btn-game" class="btn secondary small" type="button" aria-haspopup="dialog" aria-controls="panel-game"><svg aria-hidden="true"><use href="#i-trophy"/></svg><span>Reto de ritmo</span></button>
           </div>
           <section id="nps-next-sec" class="nps-sec" aria-labelledby="nps-next-t">
@@ -512,8 +516,40 @@
       <button id="sm-add" class="mi" type="button"><svg aria-hidden="true"><use href="#i-list"/></svg><span class="mi-text"><span class="mi-label">Agregar a la cola</span></span></button>
       <button id="sm-album" class="mi" type="button"><svg aria-hidden="true"><use href="#i-explore"/></svg><span class="mi-text"><span class="mi-label">Ir al álbum</span></span></button>
       <button id="sm-artist" class="mi" type="button"><svg aria-hidden="true"><use href="#i-mic"/></svg><span class="mi-text"><span class="mi-label">Ir al artista</span></span></button>
+      <button id="sm-edit" class="mi" type="button"><svg aria-hidden="true"><use href="#i-sliders"/></svg><span class="mi-text"><span class="mi-label">Editar luces</span></span></button>
       <button id="sm-like" class="mi" type="button"><svg aria-hidden="true"><use href="#i-heart"/></svg><span class="mi-text"><span class="mi-label">Agregar a Me gusta</span></span></button>
     </div>
+
+    <!-- Panel: editor de luces (de la canción que suena) -->
+    <section id="panel-editor" class="panel panel-editor" role="dialog" aria-labelledby="pe-title" hidden>
+      <div class="panel-head">
+        <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-sliders"/></svg></span><h2 id="pe-title">Editor de luces</h2></div>
+        <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div class="panel-body pe-body">
+        <p class="pe-song"><strong id="pe-song"></strong> <span id="pe-state" class="pe-state"></span></p>
+        <!-- Dos carriles, como un editor de luces: el color de cada sección y el ritmo de su efecto -->
+        <div class="pe-lanes">
+          <span class="pe-lane-name" aria-hidden="true">Color</span>
+          <div id="pe-timeline" class="pe-timeline" role="group" aria-label="Secciones de la canción (toca una para ir a ella)">
+            <span id="pe-head" class="pe-head" aria-hidden="true"></span>
+          </div>
+          <span class="pe-lane-name" aria-hidden="true">Efecto</span>
+          <div id="pe-fxlane" class="pe-timeline pe-fxlane" aria-hidden="true"><span id="pe-head2" class="pe-head"></span></div>
+        </div>
+        <div class="pe-tools">
+          <button id="pe-mark" class="btn small primary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Nueva sección aquí</button>
+          <span id="pe-now" class="pe-now" aria-live="off"></span>
+        </div>
+        <p class="hint small">Dale play y, en el segundo donde cambia la canción, toca «Nueva sección aquí». Los cambios se ven al instante en tu pantalla y en tu ARMY Bomb. El modo seguro sigue activo.</p>
+        <ol id="pe-list" class="pe-list"></ol>
+        <div class="pe-foot">
+          <button id="pe-reset" class="btn small ghost" type="button">Volver a automático</button>
+          <button id="pe-export" class="btn small secondary" type="button">Exportar</button>
+          <label class="btn small secondary pe-import">Importar<input id="pe-file" type="file" accept="application/json,.json" hidden></label>
+        </div>
+      </div>
+    </section>
 
     <!-- Panel: Bluetooth -->
     <section id="panel-bt" class="panel" role="dialog" aria-labelledby="pb-title" hidden>

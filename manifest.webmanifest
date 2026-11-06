@@ -55,5 +55,15 @@
         }
       ]
     }
-  ]
+  ],
+  "share_target": {
+    "action": "player/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "id": "/player/"
 }

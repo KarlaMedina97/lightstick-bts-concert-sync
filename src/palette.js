@@ -121,6 +121,10 @@ export const THEME_INK = INK;
 const COLOR_WORDS = {
   es: { white: "blanco", purple: "morado", violet: "violeta", pink: "rosa", red: "rojo", orange: "naranja", gold: "dorado", green: "verde", aqua: "aqua", sky: "celeste", blue: "azul", off: "apagado", dim: "tenue", bright: "intenso" },
   en: { white: "white", purple: "purple", violet: "violet", pink: "pink", red: "red", orange: "orange", gold: "gold", green: "green", aqua: "aqua", sky: "sky blue", blue: "blue", off: "off", dim: "dim", bright: "bright" },
+  pt: { white: "branco", purple: "roxo", violet: "violeta", pink: "rosa", red: "vermelho", orange: "laranja", gold: "dourado", green: "verde", aqua: "água", sky: "azul-celeste", blue: "azul", off: "apagado", dim: "fraco", bright: "intenso" },
+  // En coreano el adjetivo va antes: "밝은 분홍".
+  ko: { white: "흰색", purple: "보라", violet: "바이올렛", pink: "분홍", red: "빨강", orange: "주황", gold: "금색", green: "초록", aqua: "청록", sky: "하늘색", blue: "파랑", off: "꺼짐", dim: "희미한", bright: "밝은", before: true },
+  id: { white: "putih", purple: "ungu", violet: "violet", pink: "merah muda", red: "merah", orange: "oranye", gold: "emas", green: "hijau", aqua: "toska", sky: "biru langit", blue: "biru", off: "mati", dim: "redup", bright: "terang" },
 };
 /** Nombre corto del color más cercano + intensidad: "rosa intenso", "azul tenue". @param {number[]} rgb */
 export function colorName(rgb, lang = "es") {
@@ -141,5 +145,5 @@ export function colorName(rgb, lang = "es") {
   else if (h < 310) key = "purple";
   else key = "pink";
   const level = max < 110 ? w.dim : max > 200 ? w.bright : "";
-  return level ? `${w[key]} ${level}` : w[key];
+  return level ? (w.before ? `${level} ${w[key]}` : `${w[key]} ${level}`) : w[key];
 }

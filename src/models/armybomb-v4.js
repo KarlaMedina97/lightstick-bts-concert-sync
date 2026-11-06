@@ -81,10 +81,14 @@ export function createArmyBombV4(m, { lowEnd = false } = {}) {
   const seam = new THREE.Mesh(new THREE.TorusGeometry(HANDLE_R + 0.002, 0.008, 6, 48), m.seam);
   seam.rotation.x = Math.PI / 2;
   seam.position.y = SEAM_Y;
-  // Correa: argolla bajo la base y un lazo corto de cordón.
+  // Correa: argolla fija bajo la base y un lazo de cordón que cuelga de ella. El cordón tiene su propio pivote
+  // justo en la argolla (`cord`): así se mece como una cuerda sin despegarse; la argolla nunca se mueve.
   const strap = new THREE.Group();
   const eyelet = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.022, 6, 16), m.chrome);
   eyelet.position.y = HANDLE_BOT - 0.07;
+  const CORD_Y = HANDLE_BOT - 0.12;
+  const cord = new THREE.Group();
+  cord.position.y = CORD_Y;
   const loop = new THREE.Mesh(
     new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
       new THREE.Vector3(0, HANDLE_BOT - 0.12, 0), new THREE.Vector3(0.12, HANDLE_BOT - 0.4, 0.04), new THREE.Vector3(0.1, HANDLE_BOT - 0.82, 0.08),
@@ -92,7 +96,9 @@ export function createArmyBombV4(m, { lowEnd = false } = {}) {
     ], true), lowEnd ? 24 : 48, 0.022, 6, true),
     m.cord,
   );
-  strap.add(eyelet, loop);
+  loop.geometry.translate(0, -CORD_Y, 0); // el lazo cuelga desde el pivote
+  cord.add(loop);
+  strap.add(eyelet, cord);
 
   // Dos botones: píldora vertical con contorno cromado dividida en botón superior e inferior.
   const bezel = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.3, 4, 16), m.chrome);
@@ -133,5 +139,5 @@ export function createArmyBombV4(m, { lowEnd = false } = {}) {
     gem: ["gem"], shell: ["shell"], emblem: ["emblem"], base: ["base"], collar: ["collar"],
     buttons: ["handle", new THREE.Vector3(0.16, BTN_Y, HANDLE_R + 0.02)], handle: ["handle"], bottom: ["bottom"],
   };
-  return { group, parts, partByName, labelAnchors, strap, light, halo, metrics: { top: 1.95, bottom: HANDLE_BOT - 0.95, radius: R, grip: -4.3 } };
+  return { group, parts, partByName, labelAnchors, strap, cord, light, halo, metrics: { top: 1.95, bottom: HANDLE_BOT - 0.95, radius: R, grip: -4.3 } };
 }

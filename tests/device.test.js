@@ -36,3 +36,17 @@ test("errores de Bluetooth: cerrar la lista no es lo mismo que tenerlo desactiva
   assert.equal(classifyBtError(err("SecurityError", "Origin is not allowed")), "denied");
   assert.equal(classifyBtError(err("NetworkError", "GATT Server is disconnected")), "other");
 });
+
+import { parseYouTubeId } from "../src/youtube.js";
+import { readFileSync } from "node:fs";
+
+test("compartir desde YouTube: la app es destino y entiende el texto que manda YouTube", () => {
+  const m = JSON.parse(readFileSync(new URL("../manifest.webmanifest", import.meta.url), "utf8"));
+  assert.equal(m.share_target.method, "GET");
+  assert.deepEqual(Object.keys(m.share_target.params).sort(), ["text", "title", "url"]);
+  // Lo que suele mandar la app de YouTube al compartir (el enlace va dentro del texto).
+  const text = "BTS (방탄소년단) 'Dynamite' Official MV https://youtu.be/gdZLi9oWNZg?si=abc123";
+  const link = text.match(/https?:\/\/\S+/g)[0];
+  assert.equal(parseYouTubeId(link), "gdZLi9oWNZg");
+  assert.equal(parseYouTubeId("https://www.youtube.com/shorts/gdZLi9oWNZg"), "gdZLi9oWNZg");
+});

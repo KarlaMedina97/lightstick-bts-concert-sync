@@ -1,5 +1,6 @@
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
 import { PURPLE, STYLES, generateConcertPattern, generatePattern, hexToRgb, rgbToHex, ledLevel, lightColors } from "./patterns.js";
+import { sequences, sanitizeSequence, exportSequence, PARTS, MIN_SEGMENT_S } from "./sequences.js";
 import { bluetoothSupport, requestStick, LOW_BATTERY, isBrave, classifyBtError } from "./ble.js";
 import { Player } from "./player.js";
 import { DONATIONS, PROJECT } from "./config.js";
@@ -134,6 +135,10 @@ function closePanel(restoreFocus = true) {
   setModal(p, false);
   openPanel = null;
   if (p.id === "np-side") syncSideState();
+  if (p.id === "panel-editor") {
+    app.classList.remove("editing");
+    if (npDocked() && store.get(NP_KEY, true)) setNpOpen(true); // vuelve el panel lateral si estaba abierto
+  }
   if (restoreFocus || hadFocus) panelTrigger?.focus?.();
 }
 function bindPanels() {
@@ -515,7 +520,31 @@ let listFilter = "all";
 let exploreType = "songs"; // Explorar: "songs" (canciones) o "albums" (álbumes)
 const artistOf = (item) => item.album.artist ?? (item.album.id === "mine" ? "mine" : "BTS");
 
+/** Teléfono: el botón «Filtros» despliega los chips y muestra cuál está activo. */
+function syncFiltersToggle() {
+  const b = $("filters-toggle");
+  if (!b) return;
+  const on = listFilter !== "all";
+  const name = listFilter.startsWith("album:") ? queue.find((q) => q.album.id === listFilter.slice(6))?.album.title : FILTER_NAMES[listFilter] ?? listFilter;
+  $("filters-label").textContent = on ? `Filtros · ${name}` : "Filtros";
+  b.classList.toggle("active", on);
+}
+function bindFiltersToggle() {
+  const b = $("filters-toggle"), box = b.closest(".explore-tools");
+  b.onclick = () => {
+    const open = !box.classList.contains("open");
+    box.classList.toggle("open", open);
+    b.setAttribute("aria-expanded", String(open));
+    if (open) $("explore-filters").querySelector("[aria-pressed='true'], button")?.focus({ preventScroll: true });
+  };
+  // Al elegir un filtro en el teléfono, se pliega solo (la lista queda a la vista).
+  $("explore-filters").addEventListener("click", (e) => {
+    if (!e.target.closest("button") || !matchMedia("(max-width: 640px)").matches) return;
+    requestAnimationFrame(() => { box.classList.remove("open"); b.setAttribute("aria-expanded", "false"); syncFiltersToggle(); });
+  });
+}
 function renderFilters() {
+  queueMicrotask(syncFiltersToggle);
   const counts = new Map();
   queue.forEach((q) => counts.set(artistOf(q), (counts.get(artistOf(q)) ?? 0) + 1));
   const chips = [["all", "Todo", queue.length], ["likes", "♥ Me gusta", favorites.count()]];
@@ -541,6 +570,7 @@ function renderFilters() {
       return c;
     }));
   });
+  syncClearChip();
 }
 
 function passesFilter(item) {
@@ -595,6 +625,7 @@ function applySearch() {
       empty.append(a);
     } else empty.hidden = true;
   }
+  syncClearChip();
 }
 
 function bindSearch() {
@@ -716,7 +747,13 @@ function renderMine() {
         current = queue.findIndex((q) => q.song.id === playingId);
         renderAlbums();
       };
-      li.append(b, del);
+      const edit = document.createElement("button");
+      edit.type = "button";
+      edit.className = "ibtn sm";
+      edit.setAttribute("aria-label", `Editar luces de ${item.song.title}`);
+      edit.innerHTML = `<svg aria-hidden="true"><use href="#i-sliders"/></svg>`;
+      edit.onclick = () => openEditor(i);
+      li.append(b, edit, del);
       return li;
     }),
   );
@@ -750,7 +787,11 @@ async function onAddVideo(e) {
   e.preventDefault();
   const id = parseYouTubeId($("inp-url").value);
   if (!id) return toast("Ese enlace no parece de YouTube.");
-  const kind = new FormData(e.target).get("kind");
+  await addVideoById(id, new FormData(e.target).get("kind"));
+  e.target.reset();
+}
+/** Agrega un video a «Tus videos» (o lo actualiza) y lo reproduce con su patrón de luces generado. */
+async function addVideoById(id, kind = "song") {
   const meta = await fetchTitle(id);
   const song = { id: `mine-${id}`, title: meta?.title ?? "Mi video", yt: id, bpm: 110, energy: "high", kind, channel: meta?.channel };
   mine = [...mine.filter((m) => m.id !== song.id), song];
@@ -759,9 +800,30 @@ async function onAddVideo(e) {
   buildQueue();
   current = queue.findIndex((q) => q.song.id === playingId);
   renderAlbums();
-  e.target.reset();
   toast(`Video agregado: ${song.title}`);
   playIndex(queue.findIndex((q) => q.song.id === song.id));
+}
+/**
+ * Compartir desde YouTube a la app instalada (Web Share Target): YouTube manda el enlace dentro del texto. Si la
+ * canción ya está (catálogo o tus videos) se reproduce; si no, se agrega a «Tus videos» con su patrón generado.
+ */
+async function handleShared(params) {
+  const raw = ["url", "text", "title"].map((k) => params.get(k) ?? "").join(" ");
+  if (!raw.trim()) return false;
+  const links = raw.match(/https?:\/\/\S+/g) ?? [];
+  const id = [...links, raw.trim()].map((x) => parseYouTubeId(x.replace(/[)\].,;]+$/, ""))).find(Boolean);
+  try { history.replaceState(null, "", location.pathname); } catch {} // recargar no lo vuelve a agregar
+  if (!id) { toast("Lo que compartiste no es un video de YouTube."); return true; }
+  const idx = queue.findIndex((q) => q.song.yt === id || q.song.lyricVideo === id);
+  if (idx >= 0) {
+    toast(`💜 ${queue[idx].song.title}`, 2500);
+    playIndex(idx);
+    return true;
+  }
+  const title = params.get("title") ?? "";
+  const kind = /concert|concierto|full show|en vivo|world tour|live in|콘서트/i.test(`${title} ${raw}`) ? "concert" : "song";
+  await addVideoById(id, kind);
+  return true;
 }
 
 function markCurrent() {
@@ -834,13 +896,280 @@ function buildPattern() {
   const dur = player.duration();
   if (!item || !(dur > 0)) return;
   const bpm = Number(settings.bpm[item.song.id] ?? item.song.bpm);
-  const opts = { styleOverride: settings.style === "auto" ? null : settings.style, safeMode: settings.safeMode, video: currentVideoPal, phase: settings.phase?.[item.song.id] ?? 0 };
+  const custom = item.song.kind === "concert" ? null : sequences.get(item.song.id, STYLE_IDS);
+  const opts = { styleOverride: settings.style === "auto" ? null : settings.style, safeMode: settings.safeMode, video: currentVideoPal, phase: settings.phase?.[item.song.id] ?? 0, custom };
   pattern =
     item.song.kind === "concert"
       ? generateConcertPattern(dur, { ...opts, bpm, palettes: ALBUMS.map((a) => a.palette) })
       : generatePattern({ ...item.song, bpm }, item.album, dur, opts);
   patternDuration = dur;
   renderTimeline();
+  if (pendingEditor === item.song.id) { pendingEditor = null; openEditor(); }
+  else if (!$("panel-editor").hidden) renderEditor();
+}
+
+// ---------- Editor de luces ----------
+const STYLE_IDS = Object.keys(STYLES);
+const PART_NAMES = { intro: "Intro", verso: "Verso", "pre-coro": "Pre-coro", coro: "Coro", puente: "Puente", final: "Final" };
+let pendingEditor = null; // id de la canción cuyo editor se abre cuando su video esté listo
+let editorRaf = 0;
+const mmss = (sec) => { const m = Math.floor(sec / 60), x = sec - m * 60; return `${m}:${x.toFixed(1).padStart(4, "0")}`; };
+/** Secuencia en edición: la guardada, o la automática convertida en secciones editables. */
+function editorSeq() {
+  const id = queue[current]?.song.id;
+  const saved = id ? sequences.get(id, STYLE_IDS) : null;
+  if (saved) return saved;
+  return {
+    v: 1,
+    segments: (pattern?.sections ?? []).map((sec) => ({
+      start: Math.round(sec.start * 10) / 10,
+      part: PARTS.includes(sec.label) ? sec.label : sec.label.startsWith("coro") ? "coro" : sec.label.startsWith("verso") ? "verso" : "verso",
+      style: STYLE_IDS.includes(sec.style) ? sec.style : "breathe",
+      colors: [sec.color, sec.accent, sec.third].filter(Boolean).map(rgbToHex),
+      lvl: Math.round(sec.lvl * 100) / 100,
+    })),
+  };
+}
+/** Guarda (validando) y aplica al instante: el patrón se rehace y la luz cambia en la pantalla y el ARMY Bomb. */
+function saveEditor(seq, { focusIndex } = {}) {
+  const item = queue[current];
+  const clean = sanitizeSequence(seq, STYLE_IDS);
+  if (!item || !clean) return;
+  sequences.set(item.song.id, clean);
+  buildPattern();
+  renderEditor(focusIndex);
+}
+function openEditor(index = current) {
+  if (index !== current || current < 0) {
+    if (index < 0) return toast("Elige una canción para editar sus luces.");
+    pendingEditor = queue[index].song.id;
+    playIndex(index);
+    return;
+  }
+  if (queue[current].song.kind === "concert") return toast("Los conciertos largos usan bloques automáticos: el editor es para canciones.");
+  if (!pattern) { pendingEditor = queue[current].song.id; return toast("Dale play para cargar el video y editar sus luces."); }
+  // Modo edición: se ve el video (y las luces) mientras se edita. En escritorio el editor es una columna a la
+  // derecha a todo lo alto; en teléfono, una hoja que deja ver el video arriba.
+  if (view === "explore") { selectViewTab("view-video"); switchView("video"); }
+  if (openPanel !== "panel-editor") showPanel("panel-editor");
+  app.classList.add("editing");
+  if (npDocked()) { $("np-side").hidden = true; app.classList.remove("with-np"); }
+  renderEditor();
+  cancelAnimationFrame(editorRaf);
+  const tick = () => {
+    if ($("panel-editor").hidden) return;
+    const t = player.time(), d = patternDuration || 1;
+    $("pe-head").style.left = `${Math.min(100, (t / d) * 100)}%`;
+    $("pe-head2").style.left = $("pe-head").style.left;
+    $("pe-now").textContent = mmss(t);
+    const segs = [...$("pe-list").children];
+    const at = segs.reduce((k, li, i) => (Number(li.dataset.start) <= t + 0.05 ? i : k), 0);
+    segs.forEach((li, i) => li.classList.toggle("now", i === at));
+    editorRaf = requestAnimationFrame(tick);
+  };
+  editorRaf = requestAnimationFrame(tick);
+}
+function renderEditor(focusIndex) {
+  const item = queue[current];
+  if (!item) return;
+  const seq = editorSeq();
+  const custom = sequences.has(item.song.id);
+  $("pe-song").textContent = item.song.title;
+  $("pe-state").textContent = custom ? "Personalizadas" : "Automáticas";
+  $("pe-state").classList.toggle("on", custom);
+  $("pe-reset").disabled = !custom;
+  const d = patternDuration || 1;
+  // Línea de tiempo: cada sección con el degradado de sus colores.
+  const tl = $("pe-timeline");
+  tl.querySelectorAll(".pe-seg").forEach((n) => n.remove());
+  seq.segments.forEach((sg, i) => {
+    const end = seq.segments[i + 1]?.start ?? d;
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "pe-seg";
+    b.style.left = `${(sg.start / d) * 100}%`;
+    b.style.width = `${(Math.max(0, end - sg.start) / d) * 100}%`;
+    b.style.background = sg.colors.length > 1 ? `linear-gradient(90deg, ${sg.colors.join(", ")})` : sg.colors[0];
+    b.setAttribute("aria-label", `${PART_NAMES[sg.part] ?? sg.part}, ${mmss(sg.start)}: ir ahí`);
+    b.onclick = () => player.seek(sg.start);
+    tl.append(b);
+  });
+  // Carril de efectos: el ritmo de cada estilo dibujado (rayas = destellos o golpes; degradado = fundidos).
+  const fx = $("pe-fxlane");
+  fx.querySelectorAll(".pe-fx").forEach((n) => n.remove());
+  seq.segments.forEach((sg, i) => {
+    const end = seq.segments[i + 1]?.start ?? d;
+    const b = document.createElement("span");
+    b.className = `pe-fx pfx-${sg.style}`;
+    b.style.left = `${(sg.start / d) * 100}%`;
+    b.style.width = `${(Math.max(0, end - sg.start) / d) * 100}%`;
+    b.style.setProperty("--k", String(0.35 + 0.65 * sg.lvl)); // más intenso = más brillante
+    fx.append(b);
+  });
+  const list = $("pe-list");
+  list.replaceChildren(...seq.segments.map((sg, i) => editorRow(seq, sg, i)));
+  if (focusIndex != null) list.children[focusIndex]?.querySelector("select")?.focus();
+}
+function editorRow(seq, sg, i) {
+  const li = document.createElement("li");
+  li.className = "pe-row";
+  li.dataset.start = sg.start;
+  const change = (fn) => () => { fn(); saveEditor(seq); };
+  // Inicio: botón para ir y campo editable
+  const top = document.createElement("div");
+  top.className = "pe-top";
+  const go = document.createElement("button");
+  go.type = "button";
+  go.className = "ibtn sm";
+  go.setAttribute("aria-label", `Ir a ${mmss(sg.start)}`);
+  go.innerHTML = `<svg aria-hidden="true"><use href="#i-play"/></svg>`;
+  go.onclick = () => { player.seek(sg.start); player.play?.(); };
+  const time = document.createElement("input");
+  time.type = "number";
+  time.min = "0";
+  time.step = "0.1";
+  time.value = String(sg.start);
+  time.className = "pe-time";
+  time.disabled = i === 0;
+  time.setAttribute("aria-label", "Inicio en segundos");
+  time.onchange = change(() => { sg.start = Math.max(0, Number(time.value) || 0); });
+  const part = document.createElement("select");
+  part.setAttribute("aria-label", "Parte de la canción");
+  for (const k of PARTS) part.append(new Option(PART_NAMES[k], k, false, k === sg.part));
+  part.onchange = change(() => { sg.part = part.value; });
+  const del = document.createElement("button");
+  del.type = "button";
+  del.className = "ibtn sm";
+  del.setAttribute("aria-label", "Quitar sección");
+  del.innerHTML = `<svg aria-hidden="true"><use href="#i-close"/></svg>`;
+  del.disabled = seq.segments.length <= 1;
+  del.onclick = () => { seq.segments.splice(i, 1); if (seq.segments[0]) seq.segments[0].start = 0; saveEditor(seq, { focusIndex: Math.max(0, i - 1) }); };
+  top.append(go, time, part, del);
+  // Estilo, colores e intensidad
+  const mid = document.createElement("div");
+  mid.className = "pe-mid";
+  // Efecto: miniatura animada con los colores de la sección (no un menú de texto). Al tocarla se abre la
+  // galería de efectos, todos animados con esos mismos colores y con su descripción.
+  const style = document.createElement("button");
+  style.type = "button";
+  style.className = "pe-style";
+  style.setAttribute("aria-expanded", "false");
+  style.setAttribute("aria-label", `Efecto: ${STYLES[sg.style]?.label ?? sg.style}. Cambiar`);
+  style.append(fxThumb(sg.style, sg.colors));
+  const sname = document.createElement("span");
+  sname.textContent = STYLES[sg.style]?.label ?? sg.style;
+  style.append(sname);
+  const gallery = document.createElement("div");
+  gallery.className = "fx-gallery";
+  gallery.hidden = true;
+  gallery.setAttribute("role", "group");
+  gallery.setAttribute("aria-label", "Efectos de luz");
+  const help = document.createElement("p");
+  help.className = "fx-help";
+  help.textContent = STYLES[sg.style]?.description ?? "";
+  for (const k of STYLE_IDS) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "fx-opt";
+    b.setAttribute("aria-pressed", String(k === sg.style));
+    b.title = STYLES[k].description;
+    b.append(fxThumb(k, sg.colors));
+    const n = document.createElement("span");
+    n.textContent = STYLES[k].label;
+    b.append(n);
+    const show = () => { help.textContent = STYLES[k].description; };
+    b.onmouseenter = show;
+    b.onfocus = show;
+    b.onclick = change(() => { sg.style = k; });
+    gallery.append(b);
+  }
+  gallery.append(help);
+  style.onclick = () => {
+    const open = gallery.hidden;
+    gallery.hidden = !open;
+    style.setAttribute("aria-expanded", String(open));
+    if (open) gallery.querySelector('[aria-pressed="true"]')?.focus();
+  };
+  const colors = document.createElement("span");
+  colors.className = "pe-colors";
+  for (let k = 0; k < 3; k++) {
+    const c = document.createElement("input");
+    c.type = "color";
+    c.value = sg.colors[k] ?? (k === 1 ? "#8a2be2" : "#ffffff");
+    c.setAttribute("aria-label", k === 0 ? "Color principal" : k === 1 ? "Color acento" : "Tercer color");
+    c.classList.toggle("off", !sg.colors[k]);
+    c.onchange = change(() => { sg.colors[k] = c.value; sg.colors = sg.colors.filter(Boolean); });
+    colors.append(c);
+  }
+  const lvl = document.createElement("input");
+  lvl.type = "range";
+  lvl.min = "10";
+  lvl.max = "100";
+  lvl.value = String(Math.round(sg.lvl * 100));
+  lvl.className = "pe-lvl";
+  lvl.setAttribute("aria-label", "Intensidad");
+  lvl.onchange = change(() => { sg.lvl = Number(lvl.value) / 100; });
+  mid.append(style, colors, lvl);
+  li.append(top, mid, gallery);
+  return li;
+}
+/** Miniatura animada de un efecto con los colores dados (solo CSS; lenta y segura: ≤ 2 cambios por segundo). */
+function fxThumb(style, colors) {
+  const th = document.createElement("span");
+  th.className = `fx fx-${style}`;
+  th.setAttribute("aria-hidden", "true");
+  const [a, b = "#8a2be2", c = "#ffffff"] = colors;
+  th.style.setProperty("--c1", a);
+  th.style.setProperty("--c2", b);
+  th.style.setProperty("--c3", c);
+  // Varias luces chiquitas: así se entienden los efectos que viajan (ola, secciones, dúo).
+  for (let i = 0; i < 5; i++) { const d = document.createElement("i"); d.style.setProperty("--i", i); th.append(d); }
+  return th;
+}
+function bindEditor() {
+  $("sm-edit").onclick = () => { const i = songMenuIndex; closeSongMenu(false); openEditor(i); };
+  $("nps-edit").onclick = () => openEditor();
+  $("lv-edit").onclick = () => openEditor();
+  $("pe-mark").onclick = () => {
+    const seq = editorSeq();
+    const t = Math.round(player.time() * 10) / 10;
+    const k = seq.segments.reduce((acc, sg, i) => (sg.start <= t ? i : acc), 0);
+    const cur = seq.segments[k], next = seq.segments[k + 1];
+    if (t - cur.start < MIN_SEGMENT_S || (next && next.start - t < MIN_SEGMENT_S)) return toast("Muy cerca de otra sección: avanza un poco el video.");
+    seq.segments.splice(k + 1, 0, { ...cur, colors: [...cur.colors], start: t });
+    saveEditor(seq, { focusIndex: k + 1 });
+    say(`Nueva sección en ${mmss(t)}`);
+  };
+  $("pe-reset").onclick = () => {
+    const id = queue[current]?.song.id;
+    if (!id || !confirm(t("¿Volver a las luces automáticas? Se borran tus cambios de esta canción."))) return;
+    sequences.remove(id);
+    buildPattern();
+    renderEditor();
+  };
+  $("pe-export").onclick = () => {
+    const item = queue[current];
+    if (!item) return;
+    const blob = new Blob([exportSequence(editorSeq(), item.song)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `lumiparty-luces-${item.song.id}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  $("pe-file").onchange = async (e) => {
+    const f = e.target.files?.[0];
+    e.target.value = "";
+    if (!f || f.size > 200_000) return toast("Ese archivo no es de luces de LumiParty.");
+    let data = null;
+    try { data = JSON.parse(await f.text()); } catch {}
+    const clean = data?.app === "lumiparty" ? sanitizeSequence(data, STYLE_IDS) : null;
+    if (!clean) return toast("Ese archivo no es de luces de LumiParty.");
+    const item = queue[current];
+    if (data.song && data.song !== item?.song.id && !confirm(t("Estas luces son de otra canción. ¿Aplicarlas a esta igual?"))) return;
+    saveEditor(clean);
+    toast("Luces importadas ✓");
+  };
 }
 
 function renderTimeline() {
@@ -924,7 +1253,8 @@ function describeLights() {
     parts.push(t(sec.label), `${t("estilo")} ${t(STYLES[sec.style].label)}`);
   }
   const n = sticks.length;
-  const conn = n ? (lang === "en" ? `${n} ARMY Bomb connected` : `${n} ARMY Bomb conectado${n > 1 ? "s" : ""}`) : t("Sin ARMY Bomb conectado");
+  const CONN = { en: `${n} ARMY Bomb connected`, pt: `${n} ARMY Bomb conectado${n > 1 ? "s" : ""}`, ko: `ARMY Bomb ${n}개 연결됨`, id: `${n} ARMY Bomb terhubung` };
+  const conn = n ? CONN[lang] ?? `${n} ARMY Bomb conectado${n > 1 ? "s" : ""}` : t("Sin ARMY Bomb conectado");
   return `${parts.join(", ")}. ${conn}.`;
 }
 function announceLights() { lastDescribed = performance.now(); say(describeLights(), { delay: 0 }); }
@@ -1260,7 +1590,7 @@ function rememberPlayed(id) {
   store.set(PLAYED_KEY, playedHistory);
 }
 const LIGHT_LEVEL = { ballad: 1, mid: 2, high: 3 };
-const LIGHT_NAME = ["", "suaves", "medias", "intensas"];
+const LIGHT_NAME = ["", "suaves", "medias", "altas"]; // niveles: no "intensas" ("intensidad: intensa" se repetía)
 /** Tipo de video: MV por defecto; En vivo, Coreografía, Performance o Film según el catálogo. */
 function videoType(song) {
   if (song.kind === "cover") return "Cover";
@@ -1345,7 +1675,10 @@ function suggestCard(index, { compact = false, tag = "", uid = 0, ctx = null } =
   colors.className = "sg-colors";
   colors.setAttribute("aria-hidden", "true");
   colors.title = "Colores de tu ARMY Bomb en esta canción";
-  lightColors(song, queue[index].album).forEach((c, k) => {
+  const own = sequences.get(song.id, STYLE_IDS);
+  const shown = own ? [...new Set(own.segments.flatMap((x) => x.colors))].slice(0, 4) : lightColors(song, queue[index].album);
+  if (own) { colors.classList.add("own"); colors.title = "Tus luces para esta canción"; }
+  shown.forEach((c, k) => {
     const dot = document.createElement("i");
     dot.style.setProperty("--c", c);
     dot.style.setProperty("--k", k);
@@ -1520,7 +1853,8 @@ function albumCard(id) {
 function likeLabel(liked) {
   const span = $("nps-like").querySelector("span");
   span.setAttribute("translate", "no"); // lo maneja esta función en los dos idiomas
-  span.textContent = lang === "en" ? (liked ? "Liked" : "Like") : (liked ? "Te gusta" : "Me gusta");
+  const L = { en: ["Like", "Liked"], pt: ["Curtir", "Curtido"], ko: ["좋아요", "좋아요 누름"], id: ["Suka", "Disukai"] }[lang] ?? ["Me gusta", "Te gusta"];
+  span.textContent = L[liked ? 1 : 0];
 }
 addEventListener("pws:lang", () => likeLabel($("nps-like").getAttribute("aria-pressed") === "true"));
 function likedIndices() {
@@ -1590,18 +1924,36 @@ function bindCollections() {
   $("as-all").onclick = showAllAlbums;
   $("type-songs").onclick = () => setExploreType("songs");
   $("type-albums").onclick = () => setExploreType("albums");
-  $("er-clear").onclick = () => {
-    exploreAll = false;
-    listFilter = "all";
-    exploreType = "songs";
-    $("type-songs").setAttribute("aria-pressed", "true");
-    $("type-albums").setAttribute("aria-pressed", "false");
-    searchQuery = "";
-    $("search-explore").value = "";
-    renderFilters();
-    applySearch();
-    $("search-explore").focus();
-  };
+  $("er-clear").onclick = clearExplore;
+}
+/** Quita filtro, búsqueda, vista de álbumes y «ver todos» (chip «✕ Limpiar» al inicio de los filtros). */
+function clearExplore() {
+  exploreAll = false;
+  listFilter = "all";
+  exploreType = "songs";
+  $("type-songs").setAttribute("aria-pressed", "true");
+  $("type-albums").setAttribute("aria-pressed", "false");
+  searchQuery = "";
+  $("search-explore").value = "";
+  renderFilters();
+  applySearch();
+  $("search-explore").focus();
+}
+/** El chip «✕ Limpiar» va primero en la fila de filtros, solo cuando hay algo que limpiar. */
+function syncClearChip() {
+  const active = listFilter !== "all" || exploreAll || exploreType === "albums" || Boolean(searchQuery.trim());
+  document.querySelectorAll("[data-filters]").forEach((box) => {
+    let c = box.querySelector(".filter-chip.clear");
+    if (active && !c) {
+      c = document.createElement("button");
+      c.type = "button";
+      c.className = "filter-chip clear";
+      c.textContent = "✕ Limpiar";
+      c.setAttribute("aria-label", "Limpiar filtros y búsqueda");
+      c.onclick = clearExplore;
+      box.prepend(c);
+    } else if (!active && c) c.remove();
+  });
 }
 
 // ---------- Biblioteca (columna izquierda) ----------
@@ -2703,7 +3055,13 @@ async function finishChallenge() {
     score: s.score, accuracy: s.accuracy, maxCombo: s.maxCombo,
   });
   toast(`🏆 ${s.score.toLocaleString("es")} puntos · ${s.accuracy}% · combo ${s.maxCombo}`, 6000);
-  say(lang === "en" ? `Challenge over: ${s.score} points, ${s.accuracy}% accuracy, best combo ${s.maxCombo}.` : `Reto terminado: ${s.score} puntos, ${s.accuracy} % de precisión, combo máximo ${s.maxCombo}.`, { delay: 600 });
+  const DONE = {
+    en: `Challenge over: ${s.score} points, ${s.accuracy}% accuracy, best combo ${s.maxCombo}.`,
+    pt: `Desafio encerrado: ${s.score} pontos, ${s.accuracy}% de precisão, combo máximo ${s.maxCombo}.`,
+    ko: `챌린지 종료: ${s.score}점, 정확도 ${s.accuracy}%, 최고 콤보 ${s.maxCombo}.`,
+    id: `Tantangan selesai: ${s.score} poin, akurasi ${s.accuracy}%, kombo terbaik ${s.maxCombo}.`,
+  };
+  say(DONE[lang] ?? `Reto terminado: ${s.score} puntos, ${s.accuracy} % de precisión, combo máximo ${s.maxCombo}.`, { delay: 600 });
   renderRanking();
 }
 async function renderRanking() {
@@ -2837,6 +3195,8 @@ async function init() {
   // Sin canción, lo que se ve es Explorar: la pestaña lo dice.
   if (current < 0) { selectViewTab("view-explore"); setView("explore"); }
   bindLikesPage();
+  bindEditor();
+  bindFiltersToggle();
   addEventListener("resize", () => requestAnimationFrame(markTitleOverflow));
   bindTabs(["rs-now", "rs-cola", "rs-videos"], (id) => setSideTab(id.slice(3), false));
 
@@ -2962,6 +3322,8 @@ async function init() {
   // El recorrido no se apila con la guía: si está abierta, espera.
   startTourLater = () => { if (Tour.done) return; if ($("guide").hidden) startTour(); else setTimeout(() => startTourLater(), 5000); };
   // Si la persona omite la guía, el recorrido empieza después.
+  // Compartido desde YouTube (botón Compartir → LumiParty).
+  if (params.has("text") || params.has("url")) setTimeout(() => handleShared(params), 600);
   // Enlace directo a una canción: /player/?song=dynamite
   const songParam = params.get("song");
   if (songParam && /^[a-z0-9-]{1,80}$/.test(songParam)) {

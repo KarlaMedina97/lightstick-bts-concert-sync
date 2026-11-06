@@ -1,4 +1,4 @@
-# LumiParty: todo el sitio es público.
+# LumiParty: todo el sitio es público y de código abierto (MIT). Política de IA: https://lumiparty.com/ai/
 User-agent: *
 Allow: /
 

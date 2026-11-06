@@ -2,6 +2,45 @@
 // Los patrones con datos (títulos de canciones o álbumes, nombres, búsquedas) usan funciones para que esos
 // datos nunca pasen por el diccionario; los que llevan partes traducibles usan "$1" (se buscan en el diccionario).
 const dict = {
+  "Limpiar filtros y búsqueda": "Clear filters and search",
+  "✕ Limpiar": "✕ Clear",
+  "Idioma": "Language",
+  "Lo que compartiste no es un video de YouTube.": "What you shared isn't a YouTube video.",
+  "Efectos de luz": "Light effects",
+  "Editar luces de esta canción": "Edit this song's lights",
+  "Tus luces para esta canción": "Your lights for this song",
+  "Editor de luces": "Light editor",
+  "Editar luces": "Edit lights",
+  "Nueva sección aquí": "New section here",
+  "Secciones de la canción (toca una para ir a ella)": "Song sections (tap one to jump to it)",
+  "Dale play y, en el segundo donde cambia la canción, toca «Nueva sección aquí». Los cambios se ven al instante en tu pantalla y en tu ARMY Bomb. El modo seguro sigue activo.": "Press play and, at the second where the song changes, tap “New section here”. Changes show instantly on your screen and your ARMY Bomb. Safe mode stays on.",
+  "Volver a automático": "Back to automatic",
+  "Exportar": "Export",
+  "Importar": "Import",
+  "Personalizadas": "Custom",
+  "Automáticas": "Automatic",
+  "Intro": "Intro",
+  "Verso": "Verse",
+  "Pre-coro": "Pre-chorus",
+  "Coro": "Chorus",
+  "Puente": "Bridge",
+  "Final": "Ending",
+  "Inicio en segundos": "Start in seconds",
+  "Parte de la canción": "Part of the song",
+  "Quitar sección": "Remove section",
+  "Estilo de luz": "Light style",
+  "Color principal": "Main color",
+  "Color acento": "Accent color",
+  "Tercer color": "Third color",
+  "Intensidad": "Intensity",
+  "Elige una canción para editar sus luces.": "Pick a song to edit its lights.",
+  "Los conciertos largos usan bloques automáticos: el editor es para canciones.": "Long concerts use automatic blocks: the editor is for songs.",
+  "Dale play para cargar el video y editar sus luces.": "Press play to load the video and edit its lights.",
+  "Muy cerca de otra sección: avanza un poco el video.": "Too close to another section: move the video forward a bit.",
+  "¿Volver a las luces automáticas? Se borran tus cambios de esta canción.": "Go back to automatic lights? Your changes for this song will be deleted.",
+  "Ese archivo no es de luces de LumiParty.": "That file isn't a LumiParty light file.",
+  "Estas luces son de otra canción. ¿Aplicarlas a esta igual?": "These lights are from another song. Apply them to this one anyway?",
+  "Luces importadas ✓": "Lights imported ✓",
   "Océano Borahae": "Borahae ocean",
   "Cierre de concierto: todo el público en morado que respira despacio, con olas lentas, hasta apagarse.": "Concert ending: the whole crowd in purple, breathing slowly with gentle waves, until it fades out.",
   "Colores de tu ARMY Bomb en esta canción": "Your ARMY Bomb colors for this song",
@@ -321,7 +360,7 @@ export default dict;
 /** Sustituye $n por el grupo tal cual (datos: no se traducen). */
 const keep = (tpl) => (...m) => tpl.replace(/\$(\d)/g, (_, n) => m[Number(n)] ?? "");
 
-const LIGHTS = { suaves: "soft", medias: "medium", intensas: "intense" };
+const LIGHTS = { suaves: "soft", medias: "medium", altas: "high", intensas: "intense" };
 const TYPES = { "video musical": "music video", cover: "cover", "en vivo": "live", "coreografía": "choreography", performance: "performance", film: "film" };
 const TAGS = { "En tu cola": "In your queue", "Después": "Later", "Sigue": "Next", "Te gusta": "Liked", "Sugerida": "Suggested" };
 const SECTIONS = { intro: "intro", verso: "verse", "pre-coro": "pre-chorus", coro: "chorus", "verso 2": "verse 2", "coro 2": "chorus 2", puente: "bridge", "coro final": "final chorus", final: "outro" };
@@ -336,6 +375,12 @@ const ctxLabel = (s) => {
 
 const SECTION_EN = { intro: "intro", verso: "verse", "pre-coro": "pre-chorus", coro: "chorus", puente: "bridge", "coro final": "final chorus", final: "outro" };
 export const patterns = [
+  [/^Efecto: (.+)\. Cambiar$/, (_, e) => `Effect: ${e}. Change`],
+  [/^Filtros · (.+)$/, (_, f) => `Filters · ${f}`],
+  [/^Editar luces de (.+)$/, (_, s) => `Edit lights for ${s}`],
+  [/^Nueva sección en (.+)$/, (_, t) => `New section at ${t}`],
+  [/^Ir a (\d+:\d+(?:\.\d)?)$/, (_, t) => `Go to ${t}`],
+  [/^(Intro|Verso|Pre-coro|Coro|Puente|Final), (\d+:[\d.]+): ir ahí$/, (_, p, t) => `${{ Intro: "Intro", Verso: "Verse", "Pre-coro": "Pre-chorus", Coro: "Chorus", Puente: "Bridge", Final: "Ending" }[p]}, ${t}: go there`],
   [/^(\d+) (canción|canciones) · (\d+) (álbum|álbumes)$/, (_, a, s1, b, s2) => `${a} ${s1 === "canción" ? "song" : "songs"} · ${b} ${s2 === "álbum" ? "album" : "albums"}`],
   [/^Álbumes · (.+)$/, (_, who) => `Albums · ${who}`],
   [/^Estás en el navegador de (.+?): aquí no se puede conectar el ARMY Bomb \(los videos y tu pantalla sí funcionan\)\.$/, "You're in the $1 browser: the ARMY Bomb can't connect here (videos and your screen still work)."],
@@ -345,7 +390,7 @@ export const patterns = [
   [/^(\d+:\d{2}(?::\d{2})?) de (\d+:\d{2}(?::\d{2})?)(?:, (.+))?$/, (m, a, b, sec) => `${a} of ${b}${sec ? `, ${SECTION_EN[sec] ?? sec}` : ""}`], // aria-valuetext de la línea de tiempo
   // Nombre accesible de cada canción (songLabel), con "Reproducir" y etiqueta opcionales.
   [
-    /^(Reproducir (?:(En tu cola|Después|Sigue|Te gusta|Sugerida): )?)?(.+), (video musical|cover|en vivo|coreografía|performance|film)(, con letra)?, luces (suaves|medias|intensas)(, escuchada)?$/,
+    /^(Reproducir (?:(En tu cola|Después|Sigue|Te gusta|Sugerida): )?)?(.+), (video musical|cover|en vivo|coreografía|performance|film)(, con letra)?, luces (suaves|medias|altas|intensas)(, escuchada)?$/,
     (_, play, tag, rest, type, lyr, lights, heard) =>
       `${play ? "Play " : ""}${tag ? `${TAGS[tag]}: ` : ""}${rest}, ${TYPES[type]}${lyr ? ", with lyrics" : ""}, ${LIGHTS[lights]} lights${heard ? ", played" : ""}`,
   ],
@@ -394,8 +439,8 @@ export const patterns = [
   // Luces
   [new RegExp(`^Luces: (.+?) · bloque (\\d+) · ${SEC_RE}$`), (_, s, n, sec) => `Lights: ${dict[s] ?? s} · block ${n} · ${SECTIONS[sec]}`],
   [new RegExp(`^Luces: (.+?) · ${SEC_RE}$`), (_, s, sec) => `Lights: ${dict[s] ?? s} · ${SECTIONS[sec]}`],
-  [/^Intensidad de luces: (suaves|medias|intensas)$/, (_, l) => `Light intensity: ${LIGHTS[l]}`],
-  [/^Luces (suaves|medias|intensas)$/, (_, l) => `${LIGHTS[l][0].toUpperCase()}${LIGHTS[l].slice(1)} lights`],
+  [/^Intensidad de luces: (suaves|medias|altas|intensas)$/, (_, l) => `Light intensity: ${LIGHTS[l]}`],
+  [/^Luces (suaves|medias|altas|intensas)$/, (_, l) => `${LIGHTS[l][0].toUpperCase()}${LIGHTS[l].slice(1)} lights`],
 
   // Ahora suena
   [/^Ahora suena: (.+)$/, keep("Now playing: $1")],

@@ -42,7 +42,7 @@ test("color en palabras y avisos sin emojis", () => {
 });
 
 test("cada id aparece una sola vez y las etiquetas de bloque cierran (páginas)", () => {
-  for (const page of ["index.html", "player/index.html", "privacy/index.html"]) {
+  for (const page of ["index.html", "player/index.html", "privacy/index.html", "terms/index.html", "ai/index.html", "404.html"]) {
     const html = read(page);
     const seen = new Map();
     for (const [, id] of html.matchAll(/\bid="([^"]+)"/g)) seen.set(id, (seen.get(id) ?? 0) + 1);

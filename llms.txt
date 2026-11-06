@@ -1,0 +1,17 @@
+# LumiParty
+
+> App web gratis, no oficial y de código abierto (MIT) hecha por fans: sincroniza el lightstick ARMY Bomb de BTS
+> por Web Bluetooth con videos oficiales de YouTube. Sin cuentas ni servidores propios; todo corre en el navegador.
+
+- Inicio: https://lumiparty.com/
+- Reproductor: https://lumiparty.com/player/ (`?guide=1` abre la guía de conexión, `?song=<id>` abre una canción)
+- Privacidad: https://lumiparty.com/privacy/
+- Términos de uso: https://lumiparty.com/terms/
+- Política de IA: https://lumiparty.com/ai/
+- Código: https://github.com/KarlaMedina97/lightstick-bts-concert-sync
+
+## Datos clave
+- Compatible por Bluetooth con ARMY Bomb Ver. 3, Special Edition y Ver. 4 (Chrome/Edge; en iPhone, app Bluefy). Ver. 1 y 2 no tienen Bluetooth.
+- Las luces se calculan en el dispositivo (ritmo, energía y paleta por canción); modo seguro: máx. 3 destellos/s.
+- No incluye letras de canciones, audio ni video propios: los videos son de YouTube.
+- Sin afiliación con HYBE, BIGHIT MUSIC ni BTS.
