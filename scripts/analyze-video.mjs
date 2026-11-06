@@ -30,7 +30,7 @@ const songs = ALBUMS.flatMap((a) => a.songs.map((s) => ({ ...s, album: a })));
 let looks = {};
 try { looks = JSON.parse(readFileSync(OUT, "utf8").match(/export const VIDEO_LOOKS = (\{[\s\S]*\});/)[1]); } catch {}
 const ids = args.includes("--missing")
-  ? songs.filter((s) => s.yt && !looks[s.id]).map((s) => s.id)
+  ? songs.filter((s) => s.yt && (!looks[s.id] || looks[s.id].contrast === undefined)).map((s) => s.id) // sin análisis o de la versión anterior
   : args.filter((a, i) => !a.startsWith("--") && !args[i - 1]?.startsWith("--"));
 if (!ids.length) { console.log("Uso: npm run analyze:video -- <id> [<id>…] | --missing"); process.exit(1); }
 
@@ -133,6 +133,9 @@ function summarize(song, dur, samples) {
   });
   const lo = Math.min(...raw), hi = Math.max(...raw);
   const curve = raw.map((v) => +(0.45 + 0.55 * ((v - lo) / (hi - lo || 1))).toFixed(2));
+  // Contraste real entre secciones: en un video quieto (dance practice de cámara fija) es casi 0, y la curva
+  // normalizada exageraría ruido; patterns.js le da al video tanto peso como contraste tenga.
+  const contrast = +(hi - lo).toFixed(3);
   // Colores: cada captura elige sus colores vivos (como la portada en src/videopalette.js) y la sección se queda
   // con los que más se repiten. Promediar todos los píxeles juntos borraba los colores de los MV muy variados.
   for (const s of samples) { s.cols = dominantColors(new Uint8ClampedArray(s.px), 3); delete s.px; }
@@ -143,7 +146,7 @@ function summarize(song, dur, samples) {
   const cutsPerMin = +((samples.filter((s) => s.diff > cutAt).length / (samples.length / FPS)) * 60).toFixed(1);
   return {
     yt: song.yt, analyzed: new Date().toISOString().slice(0, 10), dur: Math.round(dur), samples: samples.length,
-    overall, frames: frames.map((f) => (f.length ? f : overall)), curve, cutsPerMin, ...(title.length ? { title } : {}),
+    overall, frames: frames.map((f) => (f.length ? f : overall)), curve, contrast, cutsPerMin, ...(title.length ? { title } : {}),
   };
 }
 

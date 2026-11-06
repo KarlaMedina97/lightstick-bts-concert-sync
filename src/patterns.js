@@ -133,6 +133,9 @@ const CURVES = {
 };
 // Qué cuadro del video da color a cada sección: portada → 25 % → 50 % → 75 % del video.
 const FRAME_OF = [0, 0, 0, 1, 1, 1, 2, 2, 2];
+// Coro, coro 2 y coro final: el video nunca los baja de su nivel. Contraste del video que vale el 50 % completo.
+const CLIMAX = [3, 5, 7];
+const VIDEO_CONTRAST_FULL = 0.08;
 const FLAME = ["#ff1a00", "#ff6a00"];
 const FLOOR_BASE = { high: 0.12, mid: 0.08, ballad: 0.04 };
 
@@ -162,6 +165,15 @@ function hueSat([r, g, b]) {
   const h = max === r ? ((g - b) / d + (g < b ? 6 : 0)) / 6 : max === g ? ((b - r) / d + 2) / 6 : ((r - g) / d + 4) / 6;
   return [h, d / max];
 }
+/** Apertura de tonos (grados) de una lista de colores vivos; 0 si hay uno solo. */
+function hueSpread(hexes = []) {
+  const hs = hexes.map((h) => hueSat(hexToRgb(h))).filter(([, sat]) => sat > 0.25).map(([h]) => h * 360).sort((x, y) => x - y);
+  if (hs.length < 2) return 0;
+  let gap = 360 - hs[hs.length - 1] + hs[0];
+  for (let i = 1; i < hs.length; i++) gap = Math.max(gap, hs[i] - hs[i - 1]);
+  return 360 - gap; // arco más corto que cubre todos los tonos
+}
+
 /**
  * Filtra colores del video que no van con el concepto de la canción: solo quedan los que están a menos de 35°
  * de tono de algún color de su paleta curada (el blanco del concepto no deja pasar colores nuevos).
@@ -283,9 +295,17 @@ export function generatePattern(song, album, duration, opts = {}) {
     return alt ? alt[(seed >>> (i * 3)) % alt.length] : st;
   });
   let curve = look?.curve ?? CURVES[energy] ?? CURVES.mid;
-  // Intensidad del propio MV (src/video-looks.js): se mezcla a medias con la curva de su energía, así sigue la forma
-  // de la canción pero sube donde el video se mueve más. Una curva curada a mano manda.
-  if (!look?.curve && opts.video?.curve?.length === curve.length) curve = curve.map((v, i) => +(0.5 * v + 0.5 * opts.video.curve[i]).toFixed(3));
+  // Intensidad del propio MV (src/video-looks.js): se mezcla con la curva de su energía (hasta 50 %), así sigue la
+  // forma de la canción pero sube donde el video se mueve más. Pesa tanto como contraste real tenga el video (uno
+  // quieto casi no cambia nada) y nunca baja los coros: la música manda sobre la cámara. Una curva curada manda.
+  if (!look?.curve && opts.video?.curve?.length === curve.length) {
+    const w = 0.5 * Math.min(1, (opts.video.contrast ?? VIDEO_CONTRAST_FULL) / VIDEO_CONTRAST_FULL);
+    const base = curve;
+    curve = curve.map((v, i) => { const x = +((1 - w) * v + w * opts.video.curve[i]).toFixed(3); return CLIMAX.includes(i) ? Math.max(x, v) : x; });
+    // El video puede subir un verso, pero no acercarlo a menos de 0,2 de los coros: el coro tiene que pegar más.
+    const top = Math.min(...CLIMAX.map((i) => curve[i]));
+    curve = curve.map((v, i) => (CLIMAX.includes(i) ? v : Math.min(v, Math.max(base[i], top - 0.2))));
+  }
   // Rap: los versos (y el puente) suben; ahí está la fuerza de la canción.
   // (0,78 y no más: si los versos casi igualan al coro, el coro ya no se siente; la intensidad continua suma el resto).
   if (look?.rap && !look?.curve) curve = curve.map((v, i) => ([1, 4, 6].includes(i) ? Math.max(v, 0.78) : v));
@@ -297,9 +317,25 @@ export function generatePattern(song, album, duration, opts = {}) {
     const overall = keep(vid.overall);
     vid = overall.length ? { overall, frames: (vid.frames ?? []).map((f) => { const k = keep(f); return k.length ? k : overall; }) } : null;
   }
+  // Un video casi de un solo tono (p. ej. todo celeste) dejaría la canción plana: se suman los colores de la
+  // canción o del álbum como acentos, para que siga habiendo combinaciones y transiciones.
+  if (vid && hueSpread(vid.overall) < 70) {
+    const extra = (look?.palette ?? album?.palette ?? []).filter((h) => !vid.overall.includes(h));
+    if (extra.length) vid = { ...vid, overall: [...vid.overall, ...extra].slice(0, 4), frames: (vid.frames ?? []).map((f) => [...(f?.length ? f : vid.overall), ...extra].slice(0, 4)) };
+  }
   const source = (vid?.overall ?? look?.palette ?? album.palette).map(lightable).filter(Boolean);
   const palette = [hexToRgb(PURPLE), ...(source.length ? (look?.lock ? source : withCompanion(source)) : [hexToRgb("#b388ff")])];
-  const framePal = vid?.frames?.map((f) => { const c = (f?.length ? f : vid.overall).map(lightable).filter(Boolean); return c.length ? c : palette.slice(1); }) ?? null;
+  // Cada sección con sus colores del video; si son de un solo tono (todo cálido, todo celeste…), se suma el color
+  // compañero de la canción (withCompanion) como acento para que haya contraste de color, no una luz plana.
+  const spreadRgb = (cs) => hueSpread(cs.map(rgbToHex));
+  const framePal = vid?.frames?.map((f) => {
+    const c = (f?.length ? f : vid.overall).map(lightable).filter(Boolean);
+    if (!c.length) return { main: palette.slice(1), pool: palette.slice(1) };
+    if (spreadRgb(c) >= 70) return { main: c, pool: c };
+    let far = palette.slice(1).filter((p) => !c.some((q) => Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]) < 90));
+    if (!far.length) far = [hexToRgb(PURPLE)]; // sin compañero en la paleta: el morado del ARMY Bomb
+    return { main: c, pool: [...c, ...far].slice(0, 4) };
+  }) ?? null;
   const oceanRgb = look?.oceanColor ? hexToRgb(look.oceanColor) : null;
   const flamePal = (look?.palette ?? FLAME).slice(0, 2).map(hexToRgb);
   if (look?.explode && flamePal.length === 2) flamePal[1] = mix(flamePal[0], flamePal[1], 0.45); // brasa: rojo→naranja
@@ -320,10 +356,11 @@ export function generatePattern(song, album, duration, opts = {}) {
   let sections = STRUCTURE.map(([label, a, b], i) => {
     const lvl = curve[i];
     // Con análisis completo hay colores para cada sección; con los 3 cuadros de YouTube, uno cada tres secciones.
-    const frame = framePal?.[framePal.length === STRUCTURE.length ? i : FRAME_OF[i]];
+    const fp = framePal?.[framePal.length === STRUCTURE.length ? i : FRAME_OF[i]];
+    const frame = fp?.main;
     // Apertura de concierto: la intro en un color propio (blanco tenue) y en el verso todo cambia de golpe.
     const color = i === 0 && look?.intro && !opts.styleOverride ? hexToRgb(look.intro) : frame ? frame[i % frame.length] : palette[(i % (palette.length - 1)) + 1] ?? palette[0];
-    const pool = frame?.length > 1 ? frame : concept;
+    const pool = fp?.pool?.length > 1 ? fp.pool : concept;
     const at = (k) => pool[(pool.indexOf(color) + k + (frame ? 0 : rot) + pool.length) % pool.length];
     const accent = pool.length > 1 ? (at(1) === color ? at(2) : at(1)) : palette[0];
     const third = pool.length > 2 ? at(2) : mix(color, [255, 255, 255], 0.45);

@@ -331,3 +331,21 @@ test("con análisis completo, cada una de las 9 secciones toma su propio color d
   const p = generatePattern(s, s.album, 200, { safeMode: true, video: { overall: ["#ff0000", "#00ff00", "#0000ff"], frames, curve: STRUCTURE.map(() => 0.5) } });
   assert.deepEqual(p.sections[4].color, [0, 255, 0]); // verso 2 → su propio cuadro, no el del 50 %
 });
+
+test("con el video: los coros no bajan, el rap sigue arriba y un video quieto casi no cambia la curva", () => {
+  const s = songs.find((x) => x.id === "dope"); // rap
+  const base = generatePattern(s, s.album, 210, { safeMode: true });
+  const quiet = STRUCTURE.map((_, i) => (i === 0 ? 1 : 0.45)); // intro "alta" por ruido de cámara
+  const still = generatePattern(s, s.album, 210, { safeMode: true, video: { overall: ["#ffffff"], frames: STRUCTURE.map(() => ["#ffffff"]), curve: quiet, contrast: 0.004 } });
+  for (const i of [3, 5, 7]) assert.ok(still.sections[i].lvl >= base.sections[i].lvl - 1e-9, `coro ${i} bajó`);
+  for (const i of [1, 4]) assert.ok(still.sections[i].lvl >= 0.78 - 1e-9, `rap ${i} bajó a ${still.sections[i].lvl}`);
+  assert.ok(Math.abs(still.sections[0].lvl - base.sections[0].lvl) < 0.05, "un video quieto movió la intro");
+});
+
+test("calidad con el video: ningún look analizado queda plano", () => {
+  for (const [id, v] of Object.entries(VIDEO_LOOKS)) {
+    const s = songs.find((x) => x.id === id);
+    const score = lightScore(generatePattern(s, s.album, 210, { safeMode: true, video: v }));
+    assert.ok(score >= 55, `${id}: ${score.toFixed(0)} (plano)`);
+  }
+});
