@@ -1,6 +1,6 @@
 // Service worker: guarda la app para abrirla sin conexión (los videos sí necesitan internet).
 // Solo guarda archivos propios del sitio; nunca respuestas de terceros ni con errores.
-const CACHE = "pws-v68";
+const CACHE = "pws-v69";
 const SHELL = [
   "./",
   "index.html",
@@ -104,7 +104,10 @@ self.addEventListener("activate", (e) => {
 // Librerías (three.js, GSAP) y fuentes: primero la copia guardada. Pesan mucho y solo cambian con una versión nueva
 // de CACHE, que las vuelve a bajar al instalar; así la segunda visita en una red lenta no las espera.
 const IMMUTABLE = /\/(vendor|fonts)\//;
-const fetchAndKeep = (req) => fetch(req).then((res) => {
+// Los archivos propios se revalidan siempre con el servidor (no-cache: si no cambiaron, un 304 liviano). GitHub Pages
+// manda max-age=600 y, sin esto, después de un despliegue el navegador seguía usando el JS viejo hasta 10 minutos.
+const fresh = (req) => (req.mode === "navigate" ? fetch(req) : fetch(req, { cache: "no-cache" }));
+const fetchAndKeep = (req, revalidate = false) => (revalidate ? fresh(req) : fetch(req)).then((res) => {
   if (res.ok && res.type === "basic") {
     const copy = res.clone();
     caches.open(CACHE).then((c) => c.put(req, copy));
@@ -121,7 +124,7 @@ self.addEventListener("fetch", (e) => {
     return;
   }
   e.respondWith(
-    fetchAndKeep(e.request)
+    fetchAndKeep(e.request, true)
       .catch(async () => (await caches.match(e.request, { ignoreSearch: true }))
         // Sin conexión, una canción (/player/dynamite) abre el reproductor guardado.
         ?? (e.request.mode === "navigate" && /\/player\/[a-z0-9-]+$/.test(url.pathname) ? caches.match(new URL("player/", self.registration.scope)) : undefined)),
