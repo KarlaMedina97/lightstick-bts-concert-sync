@@ -2,6 +2,28 @@
 // Los patrones con datos (títulos de canciones o álbumes, nombres, búsquedas) usan funciones para que esos
 // datos nunca pasen por el diccionario; los que llevan partes traducibles usan "$1" (se buscan en el diccionario).
 const dict = {
+  "Revisar compatibilidad de este navegador": "Check this browser's compatibility",
+  "Navegador": "Browser",
+  "Sistema": "System",
+  "iPhone / iPad": "iPhone / iPad",
+  "Computadora": "Computer",
+  "Bluetooth web": "Web Bluetooth",
+  "Disponible": "Available",
+  "No disponible": "Not available",
+  "Página segura (HTTPS)": "Secure page (HTTPS)",
+  "Sí": "Yes",
+  "No": "No",
+  "Bluetooth del equipo": "Device Bluetooth",
+  "No (apagado o sin adaptador)": "No (off or no adapter)",
+  "No se pudo saber": "Couldn't tell",
+  "Dentro de una app": "Inside an app",
+  "Ábrela en Chrome: dentro de las apps no hay Bluetooth.": "Open it in Chrome: there's no Bluetooth inside apps.",
+  "En iPhone, usa la app Bluefy.": "On iPhone, use the Bluefy app.",
+  "Este navegador no puede conectar: usa Chrome o Edge.": "This browser can't connect: use Chrome or Edge.",
+  "Brave: activa el Bluetooth web (ver arriba) y listo.": "Brave: turn on Web Bluetooth (see above) and you're set.",
+  "Puede fallar en este navegador. Si la lista no se abre, usa Chrome.": "It may fail in this browser. If the list doesn't open, use Chrome.",
+  "Todo listo para conectar.": "All set to connect.",
+  "LumiParty: ir a Explorar": "LumiParty: go to Explore",
   "Limpiar filtros y búsqueda": "Clear filters and search",
   "✕ Limpiar": "✕ Clear",
   "Idioma": "Language",
@@ -375,6 +397,8 @@ const ctxLabel = (s) => {
 
 const SECTION_EN = { intro: "intro", verso: "verse", "pre-coro": "pre-chorus", coro: "chorus", puente: "bridge", "coro final": "final chorus", final: "outro" };
 export const patterns = [
+  [/^(.+) no abrió la lista de dispositivos Bluetooth\. Ábrela en Chrome para conectar tu ARMY Bomb\.$/, (_, b) => `${b} didn't open the Bluetooth device list. Open it in Chrome to connect your ARMY Bomb.`],
+  [/^En (.+) la conexión Bluetooth puede no funcionar\. Si al tocar Conectar no pasa nada, ábrela en Chrome\.$/, (_, b) => `In ${b} the Bluetooth connection may not work. If nothing happens when you tap Connect, open it in Chrome.`],
   [/^Efecto: (.+)\. Cambiar$/, (_, e) => `Effect: ${e}. Change`],
   [/^Filtros · (.+)$/, (_, f) => `Filters · ${f}`],
   [/^Editar luces de (.+)$/, (_, s) => `Edit lights for ${s}`],

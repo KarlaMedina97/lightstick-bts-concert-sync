@@ -1,5 +1,27 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 const dict = {
+  "Revisar compatibilidad de este navegador": "Verificar a compatibilidade deste navegador",
+  "Navegador": "Navegador",
+  "Sistema": "Sistema",
+  "iPhone / iPad": "iPhone / iPad",
+  "Computadora": "Computador",
+  "Bluetooth web": "Bluetooth web",
+  "Disponible": "Disponível",
+  "No disponible": "Indisponível",
+  "Página segura (HTTPS)": "Página segura (HTTPS)",
+  "Sí": "Sim",
+  "No": "Não",
+  "Bluetooth del equipo": "Bluetooth do aparelho",
+  "No (apagado o sin adaptador)": "Não (desligado ou sem adaptador)",
+  "No se pudo saber": "Não foi possível saber",
+  "Dentro de una app": "Dentro de um app",
+  "Ábrela en Chrome: dentro de las apps no hay Bluetooth.": "Abra no Chrome: dentro de apps não há Bluetooth.",
+  "En iPhone, usa la app Bluefy.": "No iPhone, use o app Bluefy.",
+  "Este navegador no puede conectar: usa Chrome o Edge.": "Este navegador não consegue conectar: use Chrome ou Edge.",
+  "Brave: activa el Bluetooth web (ver arriba) y listo.": "Brave: ative o Bluetooth web (veja acima) e pronto.",
+  "Puede fallar en este navegador. Si la lista no se abre, usa Chrome.": "Pode falhar neste navegador. Se a lista não abrir, use o Chrome.",
+  "Todo listo para conectar.": "Tudo pronto para conectar.",
+  "LumiParty: ir a Explorar": "LumiParty: ir para Explorar",
   "Limpiar filtros y búsqueda": "Limpar filtros e busca",
   "✕ Limpiar": "✕ Limpar",
   "Idioma": "Idioma",
@@ -373,6 +395,8 @@ const ctxLabel = (s) => {
 
 const SECTION_PT = { intro: "intro", verso: "verso", "pre-coro": "pré-refrão", coro: "refrão", puente: "ponte", "coro final": "refrão final", final: "final" };
 export const patterns = [
+  [/^(.+) no abrió la lista de dispositivos Bluetooth\. Ábrela en Chrome para conectar tu ARMY Bomb\.$/, (_, b) => `${b} não abriu a lista de dispositivos Bluetooth. Abra no Chrome para conectar seu ARMY Bomb.`],
+  [/^En (.+) la conexión Bluetooth puede no funcionar\. Si al tocar Conectar no pasa nada, ábrela en Chrome\.$/, (_, b) => `No ${b} a conexão Bluetooth pode não funcionar. Se nada acontecer ao tocar em Conectar, abra no Chrome.`],
   [/^Efecto: (.+)\. Cambiar$/, (_, e) => `Efeito: ${e}. Mudar`],
   [/^Filtros · (.+)$/, (_, f) => `Filtros · ${f}`],
   [/^Editar luces de (.+)$/, (_, s) => `Editar luzes de ${s}`],

@@ -33,7 +33,10 @@ createServer(async (req, res) => {
   // Nunca archivos ocultos (.git, .env, .claude…): importa sobre todo en modo --lan.
   if (/[\\/]\./.test(file.slice(root.length))) return res.writeHead(403).end();
   try {
-    const body = await readFile(file);
+    let body = await readFile(file);
+    // En la red local no hay HTTPS: la CSP del sitio pide «upgrade-insecure-requests» (correcto en lumiparty.com) y
+    // el navegador pasaba cada recurso a https://… y fallaba. Solo en --lan y solo al servir, el archivo no cambia.
+    if (lan && extname(file) === ".html") body = Buffer.from(body.toString("utf8").replace(/;\s*upgrade-insecure-requests/g, ""));
     res.writeHead(200, { "content-type": types[extname(file)] ?? "application/octet-stream", "cache-control": "no-store" });
     res.end(body);
   } catch {

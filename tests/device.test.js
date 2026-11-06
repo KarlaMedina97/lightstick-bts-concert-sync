@@ -50,3 +50,17 @@ test("compartir desde YouTube: la app es destino y entiende el texto que manda Y
   assert.equal(parseYouTubeId(link), "gdZLi9oWNZg");
   assert.equal(parseYouTubeId("https://www.youtube.com/shorts/gdZLi9oWNZg"), "gdZLi9oWNZg");
 });
+
+import { browserInfo } from "../src/ble.js";
+
+test("navegadores: Samsung Internet y otros de fabricantes se marcan como inestables; Chrome, Edge y Opera no", () => {
+  const S = "Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/25.0 Chrome/121.0.0.0 Mobile Safari/537.36";
+  assert.deepEqual(browserInfo(S), { name: "Samsung Internet", flaky: true, android: true, ios: false });
+  assert.equal(browserInfo("Mozilla/5.0 (Linux; Android 13; M2101K6G) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Mobile Safari/537.36 XiaoMi/MiuiBrowser/18.0").flaky, true);
+  for (const ua of [
+    "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Mobile Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36 Edg/124.0",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36 OPR/110.0",
+  ]) assert.equal(browserInfo(ua).flaky, false, ua);
+  assert.equal(classifyBtError(Object.assign(new Error("x"), { name: "ChooserTimeout" })), "no-chooser");
+});

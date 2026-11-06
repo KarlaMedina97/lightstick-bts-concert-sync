@@ -31,15 +31,40 @@ export const isBrave = () => typeof navigator !== "undefined" && Boolean(navigat
 /**
  * Qué significa un error de requestDevice(). Varios navegadores responden "NotFoundError" tanto si la persona cerró
  * la lista como si el Bluetooth está apagado o desactivado: se distinguen por el mensaje.
- * @returns {"cancelled" | "disabled" | "adapter-off" | "denied" | "other"}
+ * @returns {"cancelled" | "disabled" | "adapter-off" | "denied" | "no-chooser" | "other"}
  */
 export function classifyBtError(e) {
   const msg = String(e?.message ?? "");
   if (/globally disabled|api is disabled|not enabled|flag|blocklist|not available in this|not supported/i.test(msg)) return "disabled";
   if (/adapter (is )?not available|adapter.*off|bluetooth.*(off|unavailable)|no bluetooth adapter/i.test(msg)) return "adapter-off";
   if (e?.name === "SecurityError" || e?.name === "NotAllowedError" || /permission|denied/i.test(msg)) return "denied";
+  if (e?.name === "ChooserTimeout") return "no-chooser";
   if (e?.name === "NotFoundError") return "cancelled";
   return "other";
+}
+
+/**
+ * Navegador según su identificación. Los de fabricantes Android (Samsung, Xiaomi, Huawei, Oppo…) y otros traen
+ * `navigator.bluetooth` pero a veces la lista de dispositivos nunca se abre y la promesa no responde.
+ */
+export function browserInfo(ua = typeof navigator === "undefined" ? "" : navigator.userAgent || "") {
+  const has = (re) => re.test(ua);
+  let name = "Otro", flaky = false;
+  if (has(/SamsungBrowser/i)) { name = "Samsung Internet"; flaky = true; }
+  else if (has(/MiuiBrowser|XiaoMi/i)) { name = "Navegador de Xiaomi"; flaky = true; }
+  else if (has(/HuaweiBrowser|HMSCore/i)) { name = "Navegador de Huawei"; flaky = true; }
+  else if (has(/HeyTapBrowser|OppoBrowser/i)) { name = "Navegador de Oppo"; flaky = true; }
+  else if (has(/UCBrowser/i)) { name = "UC Browser"; flaky = true; }
+  else if (has(/YaBrowser/i)) { name = "Yandex"; flaky = true; }
+  else if (has(/Vivaldi/i)) { name = "Vivaldi"; flaky = true; }
+  else if (has(/Firefox|FxiOS/i)) name = "Firefox";
+  else if (has(/Edg\//i)) name = "Edge";
+  else if (has(/OPR\//i)) name = "Opera";
+  else if (has(/CriOS/i)) name = "Chrome (iPhone)";
+  else if (has(/Chrome\//i)) name = "Chrome";
+  else if (has(/Safari/i)) name = "Safari";
+  if (typeof navigator !== "undefined" && navigator.brave) { name = "Brave"; flaky = false; }
+  return { name, flaky, android: has(/Android/i), ios: has(/iPhone|iPad|iPod/i) };
 }
 
 export function bluetoothSupport() {
@@ -179,10 +204,25 @@ export function buildPacket(family, [r, g, b], mode = 1) {
  * Pide al usuario elegir una lightstick y la conecta.
  * @param {{showAll?: boolean}} opts showAll muestra cualquier dispositivo BLE.
  */
-export async function requestStick({ showAll = false } = {}) {
-  const device = await navigator.bluetooth.requestDevice(
+export async function requestStick({ showAll = false, watchdogMs = browserInfo().flaky ? 8000 : 0 } = {}) {
+  const req = navigator.bluetooth.requestDevice(
     showAll ? { acceptAllDevices: true, optionalServices: OPTIONAL_SERVICES } : { filters: FILTERS, optionalServices: OPTIONAL_SERVICES },
   );
+  // En navegadores que a veces no abren la lista (Samsung Internet…), si no se abrió en unos segundos se deja de
+  // esperar: antes el botón se quedaba "Conectando…" para siempre. Si la lista sí se abrió (la página pierde el
+  // foco), se espera a que la persona elija, sin apuro.
+  let device;
+  if (watchdogMs > 0) {
+    let opened = false;
+    const mark = () => { opened = true; };
+    addEventListener("blur", mark, { once: true });
+    document.addEventListener("visibilitychange", mark, { once: true });
+    const watchdog = new Promise((_, reject) => setTimeout(() => {
+      if (!opened) reject(Object.assign(new Error("El navegador no abrió la lista de dispositivos"), { name: "ChooserTimeout" }));
+    }, watchdogMs));
+    try { device = await Promise.race([req, watchdog]); }
+    finally { removeEventListener("blur", mark); document.removeEventListener("visibilitychange", mark); }
+  } else device = await req;
   return connectStick(device);
 }
 

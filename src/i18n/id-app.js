@@ -1,5 +1,27 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 const dict = {
+  "Revisar compatibilidad de este navegador": "Cek kompatibilitas browser ini",
+  "Navegador": "Browser",
+  "Sistema": "Sistem",
+  "iPhone / iPad": "iPhone / iPad",
+  "Computadora": "Komputer",
+  "Bluetooth web": "Bluetooth web",
+  "Disponible": "Tersedia",
+  "No disponible": "Tidak tersedia",
+  "Página segura (HTTPS)": "Halaman aman (HTTPS)",
+  "Sí": "Ya",
+  "No": "Tidak",
+  "Bluetooth del equipo": "Bluetooth perangkat",
+  "No (apagado o sin adaptador)": "Tidak (mati atau tanpa adaptor)",
+  "No se pudo saber": "Tidak dapat diketahui",
+  "Dentro de una app": "Di dalam aplikasi",
+  "Ábrela en Chrome: dentro de las apps no hay Bluetooth.": "Buka di Chrome: di dalam aplikasi tidak ada Bluetooth.",
+  "En iPhone, usa la app Bluefy.": "Di iPhone, pakai aplikasi Bluefy.",
+  "Este navegador no puede conectar: usa Chrome o Edge.": "Browser ini tidak bisa menyambung: pakai Chrome atau Edge.",
+  "Brave: activa el Bluetooth web (ver arriba) y listo.": "Brave: aktifkan Bluetooth web (lihat di atas) dan selesai.",
+  "Puede fallar en este navegador. Si la lista no se abre, usa Chrome.": "Bisa gagal di browser ini. Kalau daftarnya tidak terbuka, pakai Chrome.",
+  "Todo listo para conectar.": "Siap untuk menyambung.",
+  "LumiParty: ir a Explorar": "LumiParty: buka Jelajahi",
   "Limpiar filtros y búsqueda": "Hapus filter dan pencarian",
   "✕ Limpiar": "✕ Hapus",
   "Idioma": "Bahasa",
@@ -373,6 +395,8 @@ const ctxLabel = (s) => {
 
 const SECTION_ID = { intro: "intro", verso: "verse", "pre-coro": "pre-reff", coro: "reff", puente: "bridge", "coro final": "reff terakhir", final: "outro" };
 export const patterns = [
+  [/^(.+) no abrió la lista de dispositivos Bluetooth\. Ábrela en Chrome para conectar tu ARMY Bomb\.$/, (_, b) => `${b} tidak membuka daftar perangkat Bluetooth. Buka di Chrome untuk menyambungkan ARMY Bomb-mu.`],
+  [/^En (.+) la conexión Bluetooth puede no funcionar\. Si al tocar Conectar no pasa nada, ábrela en Chrome\.$/, (_, b) => `Di ${b} koneksi Bluetooth mungkin tidak berfungsi. Kalau tidak terjadi apa-apa saat menekan Sambungkan, buka di Chrome.`],
   [/^Efecto: (.+)\. Cambiar$/, (_, e) => `Efek: ${e}. Ganti`],
   [/^Filtros · (.+)$/, (_, f) => `Filter · ${f}`],
   [/^Editar luces de (.+)$/, (_, s) => `Edit lampu ${s}`],

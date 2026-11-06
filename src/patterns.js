@@ -336,29 +336,8 @@ export function generatePattern(song, album, duration, opts = {}) {
       div: lvl >= 0.9 ? 1 : lvl >= 0.65 ? 2 : 4, // late en cada tiempo, cada 2 o cada 4
     };
   });
-  // Luces editadas por la persona (src/sequences.js): sus secciones reemplazan la estructura automática, pero
-  // pasan por los mismos estilos, combinaciones, intensidad y límite de destellos.
-  const custom = opts.custom?.segments?.length ? opts.custom.segments : null;
-  if (custom) {
-    sections = custom.map((c, k) => {
-      const next = custom[k + 1];
-      const cols = c.colors.map(hexToRgb);
-      const color = cols[0];
-      const accent = cols[1] ?? (concept.find((x) => x.join() !== color.join()) ?? palette[0]);
-      const third = cols[2] ?? mix(color, [255, 255, 255], 0.45);
-      const lvl = c.lvl;
-      const end = Math.min(duration, next ? next.start : duration);
-      return {
-        label: c.part, start: Math.min(c.start, duration), end, style: opts.styleOverride || c.style, color, accent, third, lvl,
-        gain: 0.4 + 0.6 * lvl,
-        floor: c.style === "fadeout" || c.style === "borahae" ? 0 : (look?.explode ? 0.04 : FLOOR_BASE[energy] ?? 0.1) + (look?.explode ? 0.12 : 0.5) * lvl ** 2,
-        div: lvl >= 0.9 ? 1 : lvl >= 0.65 ? 2 : 4,
-        custom: true,
-      };
-    }).filter((x) => x.end > x.start);
-  }
   // Cierre Borahae: el final ocupa del 88 % al 100 % (≈ 25 s en una canción de 3,5 min) y respira en morado.
-  if (look?.finale === "borahae" && !opts.styleOverride && !custom) {
+  if (look?.finale === "borahae" && !opts.styleOverride) {
     const cut = 0.88 * duration;
     sections[7].end = cut;
     Object.assign(sections[8], { start: cut, style: "borahae", floor: 0 });

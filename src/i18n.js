@@ -169,7 +169,7 @@ function applyMeta() {
   }
   // Botones de idioma: muestran el idioma actual y abren el menú con los demás.
   for (const b of document.querySelectorAll("[data-lang-toggle]")) {
-    b.textContent = b.dataset.langToggle === "long" ? `🌐 ${nameOf(lang)}` : lang.toUpperCase();
+    b.textContent = b.dataset.langToggle === "long" ? nameOf(lang) : lang.toUpperCase(); // el globo lo pone el estilo del menú
     b.setAttribute("lang", BCP47[lang]);
     b.setAttribute("aria-haspopup", "menu");
     b.setAttribute("aria-label", `${t("Idioma")}: ${nameOf(lang)}`);

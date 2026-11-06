@@ -1,9 +1,8 @@
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
 import { PURPLE, STYLES, generateConcertPattern, generatePattern, hexToRgb, rgbToHex, ledLevel, lightColors } from "./patterns.js";
-import { sequences, sanitizeSequence, exportSequence, PARTS, MIN_SEGMENT_S } from "./sequences.js";
 import { fireworks } from "./fireworks.js";
 let fx = null; // fuegos artificiales (se crean la primera vez que termina una canción)
-import { bluetoothSupport, requestStick, LOW_BATTERY, isBrave, classifyBtError } from "./ble.js";
+import { bluetoothSupport, requestStick, LOW_BATTERY, isBrave, classifyBtError, browserInfo } from "./ble.js";
 import { Player } from "./player.js";
 import { DONATIONS, PROJECT } from "./config.js";
 import { RhythmChallenge, MIN_TAPS_FOR_RANKING } from "./rhythm.js";
@@ -26,7 +25,7 @@ import { say } from "./announce.js";
 import { earcon, buzz, configureEarcons } from "./earcons.js";
 import { colorName } from "./palette.js";
 import { videoPalette } from "./videopalette.js";
-import { inAppBrowser, showInAppNotice, redirectConnectButtons } from "./inapp.js";
+import { inAppBrowser, showInAppNotice, redirectConnectButtons, chromeIntent } from "./inapp.js";
 
 const $ = (id) => document.getElementById(id);
 const app = $("app");
@@ -94,6 +93,36 @@ const fmt = (s) => {
   return h ? `${h}:${String(m).padStart(2, "0")}:${sec}` : `${m}:${sec}`;
 };
 const thumbUrl = (yt) => `https://i.ytimg.com/vi/${yt}/mqdefault.jpg`;
+// ---------- Skeletons de miniaturas ----------
+// Miniatura de fondo: se queda en esqueleto y se carga solo al entrar en pantalla (no las 248 de golpe).
+const thumbIO = typeof IntersectionObserver === "undefined" ? null : new IntersectionObserver((ents) => {
+  for (const e of ents) {
+    if (!e.isIntersecting) continue;
+    thumbIO.unobserve(e.target);
+    loadBgThumb(e.target);
+  }
+}, { rootMargin: "300px 0px" });
+function loadBgThumb(el) {
+  const url = el.dataset.thumb;
+  if (!url) return;
+  const im = new Image();
+  im.onload = () => { el.style.backgroundImage = `url(${url})`; el.classList.remove("sk"); };
+  im.onerror = () => el.classList.remove("sk");
+  im.src = url;
+}
+function bgThumb(el, yt) {
+  el.dataset.thumb = thumbUrl(yt);
+  el.classList.add("sk");
+  if (thumbIO) thumbIO.observe(el); else loadBgThumb(el);
+}
+/** Miniatura <img>: el contenedor muestra el esqueleto hasta que la imagen carga (y luego aparece suave). */
+function imgThumb(box, img) {
+  box.classList.add("sk");
+  const done = () => box.classList.remove("sk");
+  img.addEventListener("load", done, { once: true });
+  img.addEventListener("error", done, { once: true });
+  if (img.complete && img.naturalWidth) done();
+}
 
 // ---------- Paneles ----------
 let openPanel = null;
@@ -137,13 +166,42 @@ function closePanel(restoreFocus = true) {
   setModal(p, false);
   openPanel = null;
   if (p.id === "np-side") syncSideState();
-  if (p.id === "panel-editor") {
-    app.classList.remove("editing");
-    if (npDocked() && store.get(NP_KEY, true)) setNpOpen(true); // vuelve el panel lateral si estaba abierto
-  }
   if (restoreFocus || hadFocus) panelTrigger?.focus?.();
 }
+/**
+ * Hojas inferiores (teléfono): se arrastran hacia abajo desde su cabecera para cerrarlas. Tenían el indicador
+ * de arrastre pero no respondían. Lejos o rápido → se cierra; poco → vuelve a su lugar.
+ */
+function bindSheetDrag() {
+  for (const p of document.querySelectorAll(".panel")) {
+    const head = p.querySelector(".panel-head");
+    if (!head) continue;
+    let y0 = null, t0 = 0, dy = 0;
+    head.addEventListener("pointerdown", (e) => {
+      if (!phoneLayout() || p.hidden || e.target.closest("button, a, input, select, [role=tab], label")) return;
+      y0 = e.clientY; t0 = performance.now(); dy = 0;
+      p.style.transition = "none";
+      head.setPointerCapture?.(e.pointerId);
+    });
+    head.addEventListener("pointermove", (e) => {
+      if (y0 == null) return;
+      dy = Math.max(0, e.clientY - y0);
+      p.style.transform = `translateY(${dy}px)`;
+    });
+    const end = () => {
+      if (y0 == null) return;
+      const v = dy / Math.max(1, performance.now() - t0);
+      y0 = null;
+      p.style.transition = "";
+      p.style.transform = "";
+      if (dy > 110 || (dy > 30 && v > 0.6)) closePanel();
+    };
+    head.addEventListener("pointerup", end);
+    head.addEventListener("pointercancel", end);
+  }
+}
 function bindPanels() {
+  bindSheetDrag();
   document.querySelectorAll(".panel .close").forEach((b) => (b.onclick = () => closePanel()));
   // #btn-queue (Mis videos en la biblioteca) se maneja con [data-go], igual que los demás accesos.
   // "Ver canciones" lleva al buscador de Explorar (la lista ya está en pantalla).
@@ -383,6 +441,30 @@ function showBtWarning(reason) {
     p2.textContent = "También puedes usar Chrome o Edge, que lo traen activado.";
     w.replaceChildren(p1, ol, p2);
     if (reason === "brave-hint") return; // solo informativo: no desactiva Conectar
+  } else if (reason === "no-chooser" || reason === "flaky-hint") {
+    // Samsung Internet (y otros de fabricantes) traen Bluetooth web a medias: a veces la lista no se abre nunca.
+    const b = browserInfo();
+    const p1 = document.createElement("p");
+    p1.textContent = reason === "no-chooser"
+      ? `${b.name} no abrió la lista de dispositivos Bluetooth. Ábrela en Chrome para conectar tu ARMY Bomb.`
+      : `En ${b.name} la conexión Bluetooth puede no funcionar. Si al tocar Conectar no pasa nada, ábrela en Chrome.`;
+    const row = document.createElement("div");
+    row.className = "row wrap";
+    if (b.android) {
+      const a = document.createElement("a");
+      a.className = "btn small primary";
+      a.href = chromeIntent(location.href.replace(/#.*$/, ""));
+      a.textContent = "Abrir en Chrome";
+      row.append(a);
+    }
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.className = "btn small";
+    copy.textContent = "Copiar enlace";
+    copy.onclick = async () => { try { await navigator.clipboard.writeText(location.href); copy.textContent = "Enlace copiado ✓"; } catch { copy.textContent = location.href; } };
+    row.append(copy);
+    w.replaceChildren(p1, row);
+    if (reason === "flaky-hint") return; // solo aviso: Conectar sigue activo
   } else if (reason === "disabled") {
     w.textContent = "Este navegador tiene el Bluetooth web desactivado. Ábrela en Chrome o Edge, o actívalo en la configuración del navegador.";
   } else if (reason === "inapp") {
@@ -427,6 +509,7 @@ async function onConnect() {
     const kind = classifyBtError(e);
     if (kind === "cancelled") say("Lista cerrada sin elegir un dispositivo.");
     else if (kind === "disabled") { showBtWarning(isBrave() ? "brave" : "disabled"); showPanel("panel-bt"); earcon("error"); }
+    else if (kind === "no-chooser") { showBtWarning("no-chooser"); if (openPanel !== "panel-bt") showPanel("panel-bt"); earcon("error"); }
     else if (kind === "adapter-off") { toast("El Bluetooth de tu dispositivo está apagado. Actívalo y vuelve a tocar Conectar.", 7000, { assertive: true }); earcon("error"); }
     else if (kind === "denied") { toast("El navegador no dio permiso para usar Bluetooth. Revisa los permisos del sitio y prueba otra vez.", 7000, { assertive: true }); earcon("error"); }
     else { toast("No pudimos conectar. Revisa que parpadee y prueba otra vez."); earcon("error"); }
@@ -446,7 +529,7 @@ function songButton(item, index) {
   b.dataset.index = index;
   const th = document.createElement("span");
   th.className = "thumb";
-  th.style.backgroundImage = `url(${thumbUrl(song.yt)})`;
+  bgThumb(th, song.yt);
   b.dataset.song = song.id;
   const text = document.createElement("span");
   text.className = "s-text";
@@ -749,13 +832,7 @@ function renderMine() {
         current = queue.findIndex((q) => q.song.id === playingId);
         renderAlbums();
       };
-      const edit = document.createElement("button");
-      edit.type = "button";
-      edit.className = "ibtn sm";
-      edit.setAttribute("aria-label", `Editar luces de ${item.song.title}`);
-      edit.innerHTML = `<svg aria-hidden="true"><use href="#i-sliders"/></svg>`;
-      edit.onclick = () => openEditor(i);
-      li.append(b, edit, del);
+      li.append(b, del);
       return li;
     }),
   );
@@ -898,280 +975,13 @@ function buildPattern() {
   const dur = player.duration();
   if (!item || !(dur > 0)) return;
   const bpm = Number(settings.bpm[item.song.id] ?? item.song.bpm);
-  const custom = item.song.kind === "concert" ? null : sequences.get(item.song.id, STYLE_IDS);
-  const opts = { styleOverride: settings.style === "auto" ? null : settings.style, safeMode: settings.safeMode, video: currentVideoPal, phase: settings.phase?.[item.song.id] ?? 0, custom };
+  const opts = { styleOverride: settings.style === "auto" ? null : settings.style, safeMode: settings.safeMode, video: currentVideoPal, phase: settings.phase?.[item.song.id] ?? 0 };
   pattern =
     item.song.kind === "concert"
       ? generateConcertPattern(dur, { ...opts, bpm, palettes: ALBUMS.map((a) => a.palette) })
       : generatePattern({ ...item.song, bpm }, item.album, dur, opts);
   patternDuration = dur;
   renderTimeline();
-  if (pendingEditor === item.song.id) { pendingEditor = null; openEditor(); }
-  else if (!$("panel-editor").hidden) renderEditor();
-}
-
-// ---------- Editor de luces ----------
-const STYLE_IDS = Object.keys(STYLES);
-const PART_NAMES = { intro: "Intro", verso: "Verso", "pre-coro": "Pre-coro", coro: "Coro", puente: "Puente", final: "Final" };
-let pendingEditor = null; // id de la canción cuyo editor se abre cuando su video esté listo
-let editorRaf = 0;
-const mmss = (sec) => { const m = Math.floor(sec / 60), x = sec - m * 60; return `${m}:${x.toFixed(1).padStart(4, "0")}`; };
-/** Secuencia en edición: la guardada, o la automática convertida en secciones editables. */
-function editorSeq() {
-  const id = queue[current]?.song.id;
-  const saved = id ? sequences.get(id, STYLE_IDS) : null;
-  if (saved) return saved;
-  return {
-    v: 1,
-    segments: (pattern?.sections ?? []).map((sec) => ({
-      start: Math.round(sec.start * 10) / 10,
-      part: PARTS.includes(sec.label) ? sec.label : sec.label.startsWith("coro") ? "coro" : sec.label.startsWith("verso") ? "verso" : "verso",
-      style: STYLE_IDS.includes(sec.style) ? sec.style : "breathe",
-      colors: [sec.color, sec.accent, sec.third].filter(Boolean).map(rgbToHex),
-      lvl: Math.round(sec.lvl * 100) / 100,
-    })),
-  };
-}
-/** Guarda (validando) y aplica al instante: el patrón se rehace y la luz cambia en la pantalla y el ARMY Bomb. */
-function saveEditor(seq, { focusIndex } = {}) {
-  const item = queue[current];
-  const clean = sanitizeSequence(seq, STYLE_IDS);
-  if (!item || !clean) return;
-  sequences.set(item.song.id, clean);
-  buildPattern();
-  renderEditor(focusIndex);
-}
-function openEditor(index = current) {
-  if (index !== current || current < 0) {
-    if (index < 0) return toast("Elige una canción para editar sus luces.");
-    pendingEditor = queue[index].song.id;
-    playIndex(index);
-    return;
-  }
-  if (queue[current].song.kind === "concert") return toast("Los conciertos largos usan bloques automáticos: el editor es para canciones.");
-  if (!pattern) { pendingEditor = queue[current].song.id; return toast("Dale play para cargar el video y editar sus luces."); }
-  // Modo edición: se ve el video (y las luces) mientras se edita. En escritorio el editor es una columna a la
-  // derecha a todo lo alto; en teléfono, una hoja que deja ver el video arriba.
-  if (view === "explore") { selectViewTab("view-video"); switchView("video"); }
-  if (openPanel !== "panel-editor") showPanel("panel-editor");
-  app.classList.add("editing");
-  if (npDocked()) { $("np-side").hidden = true; app.classList.remove("with-np"); }
-  renderEditor();
-  cancelAnimationFrame(editorRaf);
-  const tick = () => {
-    if ($("panel-editor").hidden) return;
-    const t = player.time(), d = patternDuration || 1;
-    $("pe-head").style.left = `${Math.min(100, (t / d) * 100)}%`;
-    $("pe-head2").style.left = $("pe-head").style.left;
-    $("pe-now").textContent = mmss(t);
-    const segs = [...$("pe-list").children];
-    const at = segs.reduce((k, li, i) => (Number(li.dataset.start) <= t + 0.05 ? i : k), 0);
-    segs.forEach((li, i) => li.classList.toggle("now", i === at));
-    editorRaf = requestAnimationFrame(tick);
-  };
-  editorRaf = requestAnimationFrame(tick);
-}
-function renderEditor(focusIndex) {
-  const item = queue[current];
-  if (!item) return;
-  const seq = editorSeq();
-  const custom = sequences.has(item.song.id);
-  $("pe-song").textContent = item.song.title;
-  $("pe-state").textContent = custom ? "Personalizadas" : "Automáticas";
-  $("pe-state").classList.toggle("on", custom);
-  $("pe-reset").disabled = !custom;
-  const d = patternDuration || 1;
-  // Línea de tiempo: cada sección con el degradado de sus colores.
-  const tl = $("pe-timeline");
-  tl.querySelectorAll(".pe-seg").forEach((n) => n.remove());
-  seq.segments.forEach((sg, i) => {
-    const end = seq.segments[i + 1]?.start ?? d;
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "pe-seg";
-    b.style.left = `${(sg.start / d) * 100}%`;
-    b.style.width = `${(Math.max(0, end - sg.start) / d) * 100}%`;
-    b.style.background = sg.colors.length > 1 ? `linear-gradient(90deg, ${sg.colors.join(", ")})` : sg.colors[0];
-    b.setAttribute("aria-label", `${PART_NAMES[sg.part] ?? sg.part}, ${mmss(sg.start)}: ir ahí`);
-    b.onclick = () => player.seek(sg.start);
-    tl.append(b);
-  });
-  // Carril de efectos: el ritmo de cada estilo dibujado (rayas = destellos o golpes; degradado = fundidos).
-  const fx = $("pe-fxlane");
-  fx.querySelectorAll(".pe-fx").forEach((n) => n.remove());
-  seq.segments.forEach((sg, i) => {
-    const end = seq.segments[i + 1]?.start ?? d;
-    const b = document.createElement("span");
-    b.className = `pe-fx pfx-${sg.style}`;
-    b.style.left = `${(sg.start / d) * 100}%`;
-    b.style.width = `${(Math.max(0, end - sg.start) / d) * 100}%`;
-    b.style.setProperty("--k", String(0.35 + 0.65 * sg.lvl)); // más intenso = más brillante
-    fx.append(b);
-  });
-  const list = $("pe-list");
-  list.replaceChildren(...seq.segments.map((sg, i) => editorRow(seq, sg, i)));
-  if (focusIndex != null) list.children[focusIndex]?.querySelector("select")?.focus();
-}
-function editorRow(seq, sg, i) {
-  const li = document.createElement("li");
-  li.className = "pe-row";
-  li.dataset.start = sg.start;
-  const change = (fn) => () => { fn(); saveEditor(seq); };
-  // Inicio: botón para ir y campo editable
-  const top = document.createElement("div");
-  top.className = "pe-top";
-  const go = document.createElement("button");
-  go.type = "button";
-  go.className = "ibtn sm";
-  go.setAttribute("aria-label", `Ir a ${mmss(sg.start)}`);
-  go.innerHTML = `<svg aria-hidden="true"><use href="#i-play"/></svg>`;
-  go.onclick = () => { player.seek(sg.start); player.play?.(); };
-  const time = document.createElement("input");
-  time.type = "number";
-  time.min = "0";
-  time.step = "0.1";
-  time.value = String(sg.start);
-  time.className = "pe-time";
-  time.disabled = i === 0;
-  time.setAttribute("aria-label", "Inicio en segundos");
-  time.onchange = change(() => { sg.start = Math.max(0, Number(time.value) || 0); });
-  const part = document.createElement("select");
-  part.setAttribute("aria-label", "Parte de la canción");
-  for (const k of PARTS) part.append(new Option(PART_NAMES[k], k, false, k === sg.part));
-  part.onchange = change(() => { sg.part = part.value; });
-  const del = document.createElement("button");
-  del.type = "button";
-  del.className = "ibtn sm";
-  del.setAttribute("aria-label", "Quitar sección");
-  del.innerHTML = `<svg aria-hidden="true"><use href="#i-close"/></svg>`;
-  del.disabled = seq.segments.length <= 1;
-  del.onclick = () => { seq.segments.splice(i, 1); if (seq.segments[0]) seq.segments[0].start = 0; saveEditor(seq, { focusIndex: Math.max(0, i - 1) }); };
-  top.append(go, time, part, del);
-  // Estilo, colores e intensidad
-  const mid = document.createElement("div");
-  mid.className = "pe-mid";
-  // Efecto: miniatura animada con los colores de la sección (no un menú de texto). Al tocarla se abre la
-  // galería de efectos, todos animados con esos mismos colores y con su descripción.
-  const style = document.createElement("button");
-  style.type = "button";
-  style.className = "pe-style";
-  style.setAttribute("aria-expanded", "false");
-  style.setAttribute("aria-label", `Efecto: ${STYLES[sg.style]?.label ?? sg.style}. Cambiar`);
-  style.append(fxThumb(sg.style, sg.colors));
-  const sname = document.createElement("span");
-  sname.textContent = STYLES[sg.style]?.label ?? sg.style;
-  style.append(sname);
-  const gallery = document.createElement("div");
-  gallery.className = "fx-gallery";
-  gallery.hidden = true;
-  gallery.setAttribute("role", "group");
-  gallery.setAttribute("aria-label", "Efectos de luz");
-  const help = document.createElement("p");
-  help.className = "fx-help";
-  help.textContent = STYLES[sg.style]?.description ?? "";
-  for (const k of STYLE_IDS) {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "fx-opt";
-    b.setAttribute("aria-pressed", String(k === sg.style));
-    b.title = STYLES[k].description;
-    b.append(fxThumb(k, sg.colors));
-    const n = document.createElement("span");
-    n.textContent = STYLES[k].label;
-    b.append(n);
-    const show = () => { help.textContent = STYLES[k].description; };
-    b.onmouseenter = show;
-    b.onfocus = show;
-    b.onclick = change(() => { sg.style = k; });
-    gallery.append(b);
-  }
-  gallery.append(help);
-  style.onclick = () => {
-    const open = gallery.hidden;
-    gallery.hidden = !open;
-    style.setAttribute("aria-expanded", String(open));
-    if (open) gallery.querySelector('[aria-pressed="true"]')?.focus();
-  };
-  const colors = document.createElement("span");
-  colors.className = "pe-colors";
-  for (let k = 0; k < 3; k++) {
-    const c = document.createElement("input");
-    c.type = "color";
-    c.value = sg.colors[k] ?? (k === 1 ? "#8a2be2" : "#ffffff");
-    c.setAttribute("aria-label", k === 0 ? "Color principal" : k === 1 ? "Color acento" : "Tercer color");
-    c.classList.toggle("off", !sg.colors[k]);
-    c.onchange = change(() => { sg.colors[k] = c.value; sg.colors = sg.colors.filter(Boolean); });
-    colors.append(c);
-  }
-  const lvl = document.createElement("input");
-  lvl.type = "range";
-  lvl.min = "10";
-  lvl.max = "100";
-  lvl.value = String(Math.round(sg.lvl * 100));
-  lvl.className = "pe-lvl";
-  lvl.setAttribute("aria-label", "Intensidad");
-  lvl.onchange = change(() => { sg.lvl = Number(lvl.value) / 100; });
-  mid.append(style, colors, lvl);
-  li.append(top, mid, gallery);
-  return li;
-}
-/** Miniatura animada de un efecto con los colores dados (solo CSS; lenta y segura: ≤ 2 cambios por segundo). */
-function fxThumb(style, colors) {
-  const th = document.createElement("span");
-  th.className = `fx fx-${style}`;
-  th.setAttribute("aria-hidden", "true");
-  const [a, b = "#8a2be2", c = "#ffffff"] = colors;
-  th.style.setProperty("--c1", a);
-  th.style.setProperty("--c2", b);
-  th.style.setProperty("--c3", c);
-  // Varias luces chiquitas: así se entienden los efectos que viajan (ola, secciones, dúo).
-  for (let i = 0; i < 5; i++) { const d = document.createElement("i"); d.style.setProperty("--i", i); th.append(d); }
-  return th;
-}
-function bindEditor() {
-  $("sm-edit").onclick = () => { const i = songMenuIndex; closeSongMenu(false); openEditor(i); };
-  $("nps-edit").onclick = () => openEditor();
-  $("lv-edit").onclick = () => openEditor();
-  $("pe-mark").onclick = () => {
-    const seq = editorSeq();
-    const t = Math.round(player.time() * 10) / 10;
-    const k = seq.segments.reduce((acc, sg, i) => (sg.start <= t ? i : acc), 0);
-    const cur = seq.segments[k], next = seq.segments[k + 1];
-    if (t - cur.start < MIN_SEGMENT_S || (next && next.start - t < MIN_SEGMENT_S)) return toast("Muy cerca de otra sección: avanza un poco el video.");
-    seq.segments.splice(k + 1, 0, { ...cur, colors: [...cur.colors], start: t });
-    saveEditor(seq, { focusIndex: k + 1 });
-    say(`Nueva sección en ${mmss(t)}`);
-  };
-  $("pe-reset").onclick = () => {
-    const id = queue[current]?.song.id;
-    if (!id || !confirm(t("¿Volver a las luces automáticas? Se borran tus cambios de esta canción."))) return;
-    sequences.remove(id);
-    buildPattern();
-    renderEditor();
-  };
-  $("pe-export").onclick = () => {
-    const item = queue[current];
-    if (!item) return;
-    const blob = new Blob([exportSequence(editorSeq(), item.song)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `lumiparty-luces-${item.song.id}.json`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  };
-  $("pe-file").onchange = async (e) => {
-    const f = e.target.files?.[0];
-    e.target.value = "";
-    if (!f || f.size > 200_000) return toast("Ese archivo no es de luces de LumiParty.");
-    let data = null;
-    try { data = JSON.parse(await f.text()); } catch {}
-    const clean = data?.app === "lumiparty" ? sanitizeSequence(data, STYLE_IDS) : null;
-    if (!clean) return toast("Ese archivo no es de luces de LumiParty.");
-    const item = queue[current];
-    if (data.song && data.song !== item?.song.id && !confirm(t("Estas luces son de otra canción. ¿Aplicarlas a esta igual?"))) return;
-    saveEditor(clean);
-    toast("Luces importadas ✓");
-  };
 }
 
 function renderTimeline() {
@@ -1669,6 +1479,7 @@ function suggestCard(index, { compact = false, tag = "", uid = 0, ctx = null } =
   img.decoding = "async";
   img.width = 320;
   img.height = 180;
+  imgThumb(th, img);
   const icon = document.createElement("span");
   icon.className = "sg-icon";
   icon.innerHTML = `<svg aria-hidden="true"><use href="#i-play"/></svg>`;
@@ -1677,10 +1488,7 @@ function suggestCard(index, { compact = false, tag = "", uid = 0, ctx = null } =
   colors.className = "sg-colors";
   colors.setAttribute("aria-hidden", "true");
   colors.title = "Colores de tu ARMY Bomb en esta canción";
-  const own = sequences.get(song.id, STYLE_IDS);
-  const shown = own ? [...new Set(own.segments.flatMap((x) => x.colors))].slice(0, 4) : lightColors(song, queue[index].album);
-  if (own) { colors.classList.add("own"); colors.title = "Tus luces para esta canción"; }
-  shown.forEach((c, k) => {
+  lightColors(song, queue[index].album).forEach((c, k) => {
     const dot = document.createElement("i");
     dot.style.setProperty("--c", c);
     dot.style.setProperty("--k", k);
@@ -1831,6 +1639,7 @@ function albumCard(id) {
   img.loading = "lazy";
   img.width = 320;
   img.height = 180;
+  imgThumb(th, img);
   th.append(img);
   const title = document.createElement("span");
   title.className = "sg-title";
@@ -1980,7 +1789,7 @@ function libItem(index, { sub = "", actions = false } = {}) {
   b.setAttribute("aria-label", `Reproducir ${songLabel(queue[index])}`);
   const th = document.createElement("span");
   th.className = "thumb";
-  th.style.backgroundImage = `url(${thumbUrl(song.yt)})`;
+  bgThumb(th, song.yt);
   const t = document.createElement("span");
   t.className = "lib-row-text";
   const a = document.createElement("span");
@@ -2001,7 +1810,7 @@ function libItem(index, { sub = "", actions = false } = {}) {
     like.dataset.song = song.id;
     like.setAttribute("aria-pressed", String(favorites.has(song.id)));
     like.setAttribute("aria-label", `Me gusta: ${song.title}`);
-    like.innerHTML = `<svg aria-hidden="true"><use href="#i-heart"/></svg>`;
+    // Sin ícono propio: el corazón lo dibuja el estilo de .like-btn (con un ícono extra se veían dos).
     like.onclick = (e) => { e.stopPropagation(); toggleLike(song, like); };
     li.append(like, moreButton(index, song.title));
   }
@@ -2075,8 +1884,36 @@ function bindLegend() {
   document.addEventListener("pointerdown", (e) => { if (d.open && !d.contains(e.target)) d.open = false; });
   d.addEventListener("keydown", (e) => { if (e.key === "Escape" && d.open) { d.open = false; d.querySelector("summary").focus(); } });
 }
+/** Diagnóstico de compatibilidad (panel Bluetooth): para probar el sitio en cada navegador. */
+async function renderBtDiag() {
+  const b = browserInfo(), sup = bluetoothSupport();
+  let avail = "—";
+  if ("bluetooth" in navigator && navigator.bluetooth.getAvailability) {
+    try { avail = (await navigator.bluetooth.getAvailability()) ? "Sí" : "No (apagado o sin adaptador)"; } catch { avail = "No se pudo saber"; }
+  }
+  const rows = [
+    ["Navegador", b.name], ["Sistema", b.ios ? "iPhone / iPad" : b.android ? "Android" : "Computadora"],
+    ["Bluetooth web", "bluetooth" in navigator ? "Disponible" : "No disponible"], ["Página segura (HTTPS)", window.isSecureContext ? "Sí" : "No"],
+    ["Bluetooth del equipo", avail], ["Dentro de una app", inAppBrowser() ? "Sí" : "No"],
+  ];
+  $("bt-diag-list").replaceChildren(...rows.flatMap(([k, v]) => { const dt = document.createElement("dt"), dd = document.createElement("dd"); dt.textContent = k; dd.textContent = v; return [dt, dd]; }));
+  $("bt-diag-verdict").textContent = inAppBrowser() ? "Ábrela en Chrome: dentro de las apps no hay Bluetooth."
+    : !sup.ok ? (b.ios ? "En iPhone, usa la app Bluefy." : "Este navegador no puede conectar: usa Chrome o Edge.")
+    : isBrave() ? "Brave: activa el Bluetooth web (ver arriba) y listo."
+    : b.flaky ? "Puede fallar en este navegador. Si la lista no se abre, usa Chrome."
+    : "Todo listo para conectar.";
+}
 function bindLikesPage() {
+  $("bt-diag").addEventListener("toggle", (e) => { if (e.target.open) renderBtDiag(); });
   bindLegend();
+  // El logo lleva a Explorar dentro del reproductor (sin recargar ni cortar lo que suena).
+  for (const a of document.querySelectorAll(".m-brand")) a.addEventListener("click", (e) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; // nueva pestaña: como un enlace normal
+    e.preventDefault();
+    closeLikes();
+    if (view !== "explore") { selectViewTab("view-explore"); switchView("explore"); }
+    requestAnimationFrame(() => { $("home").scrollTo({ top: 0, behavior: "smooth" }); $("search-explore").focus({ preventScroll: true }); });
+  });
   $("lp-back").onclick = () => closeLikes();
   $("lp-songs").onclick = () => setLikesTab("songs");
   $("lp-albums").onclick = () => setLikesTab("albums");
@@ -2182,7 +2019,8 @@ async function renderNowPanel() {
   $("nps-main").hidden = !item;
   if (!item) return;
   const { album, song } = item;
-  $("nps-img").src = thumbUrl(song.yt);
+  const npsImg = $("nps-img");
+  if (npsImg.getAttribute("src") !== thumbUrl(song.yt)) { npsImg.src = thumbUrl(song.yt); imgThumb(npsImg.parentElement, npsImg); }
   $("nps-title").textContent = song.title;
   const artist = album.id === "mine" ? song.channel ?? "Mis videos" : album.artist ?? "BTS";
   $("nps-artist").textContent = artist;
@@ -2541,7 +2379,7 @@ function colaItem(e, list) {
   main.setAttribute("aria-label", `Reproducir ${songLabel(item)}`);
   const th = document.createElement("span");
   th.className = "thumb";
-  th.style.backgroundImage = `url(${thumbUrl(item.song.yt)})`;
+  bgThumb(th, item.song.yt);
   const text = document.createElement("span");
   text.className = "s-text";
   const t = document.createElement("span");
@@ -2568,7 +2406,7 @@ function renderCola() {
     row.className = "cq-nowrow";
     const th = document.createElement("span");
     th.className = "thumb";
-    th.style.backgroundImage = `url(${thumbUrl(cur.song.yt)})`;
+    bgThumb(th, cur.song.yt);
     const text = document.createElement("span");
     text.className = "s-text";
     const t = document.createElement("span");
@@ -3197,7 +3035,6 @@ async function init() {
   // Sin canción, lo que se ve es Explorar: la pestaña lo dice.
   if (current < 0) { selectViewTab("view-explore"); setView("explore"); }
   bindLikesPage();
-  bindEditor();
   bindFiltersToggle();
   addEventListener("resize", () => requestAnimationFrame(markTitleOverflow));
   bindTabs(["rs-now", "rs-cola", "rs-videos"], (id) => setSideTab(id.slice(3), false));
@@ -3205,6 +3042,7 @@ async function init() {
   const support = bluetoothSupport();
   if (!support.ok) showBtWarning(IS_IOS ? "ios" : support.reason);
   else if (isBrave()) showBtWarning("brave-hint"); // aviso informativo: el botón sigue activo por si ya lo activaron
+  else if (browserInfo().flaky) showBtWarning("flaky-hint"); // Samsung Internet y similares: aviso, sin bloquear
 
   $("btn-connect").onclick = onConnect;
   $("btn-next").onclick = () => { fanchant?.stop(); next(false); };

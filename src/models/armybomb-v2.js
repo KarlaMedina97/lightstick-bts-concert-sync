@@ -1,9 +1,10 @@
-// ARMY Bomb "Ver. 2" (ilustración inspirada, no el diseño oficial; sin logos). Silueta: globo más grande con la
-// base un poco aplanada, collar plateado acanalado, mango cónico con dos botones ovalados y una tapa superior
-// oscura sin gema. No tiene Bluetooth: en LumiParty la luz la pone la pantalla.
+// ARMY Bomb "Ver. 2" (ilustración inspirada, no el diseño oficial; sin logos). A diferencia de las versiones
+// nuevas, el globo NO es transparente ni lleva una esfera adentro: es una cáscara esmerilada, lechosa, que se
+// ilumina entera. Collar plateado acanalado, mango cónico con dos botones ovalados y tapa superior oscura.
+// No tiene Bluetooth: en LumiParty la luz la pone la pantalla.
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
-import { lathe, waveEmblemGeometry } from "./shared.js";
+import { lathe } from "./shared.js";
 
 /** @param {ReturnType<import("./shared.js").createMaterials>} m */
 export function createArmyBombV2(m, { lowEnd = false } = {}) {
@@ -13,14 +14,8 @@ export function createArmyBombV2(m, { lowEnd = false } = {}) {
 
   const shellGeo = new THREE.SphereGeometry(R, seg, Math.round(seg * 0.75));
   shellGeo.scale(1, 0.94, 1); // base un poco aplanada
-  const shell = new THREE.Mesh(shellGeo, m.glass);
-  shell.renderOrder = 3;
-  const dome = new THREE.Mesh(new THREE.SphereGeometry(R * 0.62, 32, 24), m.frostDome);
-  dome.position.y = -0.2;
-  const emblemGeo = waveEmblemGeometry({ variant: "small", curveSegments: lowEnd ? 6 : 10, bevelSegments: 1 });
-  const emblem = new THREE.Mesh(emblemGeo, m.acrylic);
-  emblem.scale.setScalar(0.7);
-  emblem.position.set(0, -0.45, 0.05);
+  // Cáscara esmerilada opaca que brilla con el color (sin esfera interior ni emblema flotando).
+  const shell = new THREE.Mesh(shellGeo, m.frostDome);
   const halo = new THREE.Sprite(m.halo);
   halo.scale.setScalar(2.8);
 
@@ -48,6 +43,6 @@ export function createArmyBombV2(m, { lowEnd = false } = {}) {
   const top = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.46, 0.16, seg), m.gloss);
   top.position.y = R * 0.94 - 0.04;
 
-  group.add(shell, dome, emblem, halo, collar, ribs, handle, oval(-2.45), oval(-2.95), bottom, top);
+  group.add(shell, halo, collar, ribs, handle, oval(-2.45), oval(-2.95), bottom, top);
   return { group, halo, metrics: { top: 1.65, bottom: BOT, radius: R, grip: -4.2 } };
 }

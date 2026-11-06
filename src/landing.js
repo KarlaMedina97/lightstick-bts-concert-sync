@@ -1452,7 +1452,8 @@ if (renderer) {
     const allow = !reduceMotion && view.explode < 0.05;
     const E = allow ? view.gest : 0;
     gwT.sway = gwT.pump = gwT.wave = gwT.shake = 0;
-    if (g === "intro" && playing) { gwT.sway = 0.8; gwT.pump = 0.35; }
+    // Portada: siempre se agita al compás (antes quedaba casi quieto si no sonaba la intro). Con música, más fuerte.
+    if (g === "intro") { gwT.sway = playing ? 0.85 : 0.65; gwT.pump = playing ? 0.8 : 0.55; gwT.shake = playing && !safeMode ? 0.5 : 0; }
     else if (g === "demo") {
       const k = demo.active ? demo.gesture : "sway";
       gwT[k] = demo.active ? 1 : 0.5;
@@ -1760,7 +1761,9 @@ if (gsap && !reduceMotion && !SHOT) {
     const giant = document.querySelectorAll("#hero-title .h-giant .c");
     // Solo transformaciones y opacidad: cambiar el grosor de la letra cambiaba su ancho, y el título saltaba de
     // una a dos líneas («Tu ARMY Bomb,») al subir o bajar por la primera sección.
-    gsap.to(giant, { yPercent: -10, opacity: 0.55, stagger: 0.04, ease: "none", scrollTrigger: { trigger: "#inicio", start: "top top", end: "bottom 30%", scrub: 1 } });
+    // Va sobre el contenedor «ARMY Bomb,» y no sobre cada letra: la entrada ya anima la opacidad y la posición de las
+    // letras, y dos animaciones sobre lo mismo se pisaban (al volver arriba quedaban letras ocultas, como la A).
+    gsap.fromTo("#hero-title .h-giant", { opacity: 1 }, { opacity: 0.55, ease: "none", immediateRender: false, scrollTrigger: { trigger: "#inicio", start: "top top", end: "bottom 30%", scrub: 1 } });
     for (const c of giant) c.addEventListener("pointerenter", () => gsap.to(c, { scale: 1.16, duration: 0.22, yoyo: true, repeat: 1, ease: "power2.out", transformOrigin: "50% 80%" }));
     for (const el of gsap.utils.toArray(".reveal-up")) {
       const kids = el.matches(".parts, .steps, .feats, .stats, .chips, .demo, .vers") ? el.querySelectorAll(":scope > *") : [el];

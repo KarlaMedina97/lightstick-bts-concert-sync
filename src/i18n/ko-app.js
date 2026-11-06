@@ -1,5 +1,27 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 const dict = {
+  "Revisar compatibilidad de este navegador": "이 브라우저 호환성 확인",
+  "Navegador": "브라우저",
+  "Sistema": "시스템",
+  "iPhone / iPad": "iPhone / iPad",
+  "Computadora": "컴퓨터",
+  "Bluetooth web": "웹 블루투스",
+  "Disponible": "사용 가능",
+  "No disponible": "사용 불가",
+  "Página segura (HTTPS)": "보안 페이지 (HTTPS)",
+  "Sí": "예",
+  "No": "아니요",
+  "Bluetooth del equipo": "기기 블루투스",
+  "No (apagado o sin adaptador)": "아니요 (꺼짐 또는 어댑터 없음)",
+  "No se pudo saber": "확인할 수 없음",
+  "Dentro de una app": "앱 안",
+  "Ábrela en Chrome: dentro de las apps no hay Bluetooth.": "Chrome에서 열어 주세요. 앱 안에서는 블루투스를 쓸 수 없어요.",
+  "En iPhone, usa la app Bluefy.": "iPhone에서는 Bluefy 앱을 사용해 주세요.",
+  "Este navegador no puede conectar: usa Chrome o Edge.": "이 브라우저는 연결할 수 없어요. Chrome이나 Edge를 사용해 주세요.",
+  "Brave: activa el Bluetooth web (ver arriba) y listo.": "Brave: 웹 블루투스를 켜면 끝이에요 (위 참고).",
+  "Puede fallar en este navegador. Si la lista no se abre, usa Chrome.": "이 브라우저에서는 안 될 수 있어요. 목록이 열리지 않으면 Chrome을 사용해 주세요.",
+  "Todo listo para conectar.": "연결할 준비가 됐어요.",
+  "LumiParty: ir a Explorar": "LumiParty: 둘러보기로 이동",
   "Limpiar filtros y búsqueda": "필터와 검색어 지우기",
   "✕ Limpiar": "✕ 지우기",
   "Idioma": "언어",
@@ -374,6 +396,8 @@ const ctxLabel = (s) => {
 
 const SECTION_KO = { intro: "인트로", verso: "벌스", "pre-coro": "프리코러스", coro: "후렴", puente: "브리지", "coro final": "마지막 후렴", final: "아웃트로" };
 export const patterns = [
+  [/^(.+) no abrió la lista de dispositivos Bluetooth\. Ábrela en Chrome para conectar tu ARMY Bomb\.$/, (_, b) => `${b}에서 블루투스 기기 목록이 열리지 않았어요. ARMY Bomb을 연결하려면 Chrome에서 열어 주세요.`],
+  [/^En (.+) la conexión Bluetooth puede no funcionar\. Si al tocar Conectar no pasa nada, ábrela en Chrome\.$/, (_, b) => `${b}에서는 블루투스 연결이 안 될 수 있어요. 연결을 눌러도 반응이 없으면 Chrome에서 열어 주세요.`],
   [/^Efecto: (.+)\. Cambiar$/, (_, e) => `효과: ${e}. 변경`],
   [/^Filtros · (.+)$/, (_, f) => `필터 · ${f}`],
   [/^Editar luces de (.+)$/, (_, s) => `조명 편집: ${s}`],
