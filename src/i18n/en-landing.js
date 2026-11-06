@@ -1,5 +1,9 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
+  "Sin cookies y sin publicidad propia.": "No cookies and no ads of our own.",
+  "Para mejorar la app medimos el uso de forma anónima con Google Analytics,": "To improve the app we measure usage anonymously with Google Analytics,",
+  "sin cookies ni identificadores": "with no cookies or identifiers",
+  ": solo qué páginas se abren y acciones generales (reproducir, conectar, cambiar de idioma). Si tu navegador pide no ser rastreado, no se mide nada.": ": only which pages are opened and general actions (play, connect, change language). If your browser asks not to be tracked, nothing is measured.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "All five ARMY Bomb versions. Ver. 3, SE and Ver. 4 sync over Bluetooth; Ver. 1 and 2 have no Bluetooth, so your screen glows for them.",
   "Sin Bluetooth · con tu pantalla": "No Bluetooth · with your screen",
   "Términos de uso": "Terms of use",

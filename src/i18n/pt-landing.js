@@ -1,5 +1,9 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Sin cookies y sin publicidad propia.": "Sem cookies e sem anúncios próprios.",
+  "Para mejorar la app medimos el uso de forma anónima con Google Analytics,": "Para melhorar o app, medimos o uso de forma anônima com o Google Analytics,",
+  "sin cookies ni identificadores": "sem cookies nem identificadores",
+  ": solo qué páginas se abren y acciones generales (reproducir, conectar, cambiar de idioma). Si tu navegador pide no ser rastreado, no se mide nada.": ": só quais páginas são abertas e ações gerais (tocar, conectar, mudar de idioma). Se o seu navegador pedir para não ser rastreado, nada é medido.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "As cinco versões do ARMY Bomb. Ver. 3, SE e Ver. 4 sincronizam por Bluetooth; Ver. 1 e 2 não têm Bluetooth: sua tela brilha por elas.",
   "Sin Bluetooth · con tu pantalla": "Sem Bluetooth · com a sua tela",
   "Términos de uso": "Termos de uso",

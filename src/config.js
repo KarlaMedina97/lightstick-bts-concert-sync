@@ -4,6 +4,10 @@ export const PROJECT = {
   repo: "https://github.com/KarlaMedina97/lightstick-bts-concert-sync",
 };
 
+// Métricas de uso (Google Analytics 4 sin cookies, src/analytics.js). Vacío = apagado: no se carga nada.
+// Formato: "G-XXXXXXXXXX" (ID de medición de la propiedad de GA4).
+export const ANALYTICS = { ga4: "" };
+
 // Enlaces de donación. Deja vacío "url" para ocultar una opción.
 export const DONATIONS = [
   { label: "GitHub Sponsors", url: "https://github.com/sponsors/KarlaMedina97", note: "Apoya el desarrollo del proyecto." },

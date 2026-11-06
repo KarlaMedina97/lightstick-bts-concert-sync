@@ -16,6 +16,8 @@ import { spanishClone, localize } from "./i18n.js";
 import { showInAppNotice, redirectConnectButtons } from "./inapp.js";
 import { carousel } from "./carousel.js";
 import { fireworks } from "./fireworks.js";
+import { pageview } from "./analytics.js";
+pageview();
 import { createMaterials, glowTexture, contactShadow } from "./models/shared.js";
 import { createArmyBombV4 } from "./models/armybomb-v4.js";
 

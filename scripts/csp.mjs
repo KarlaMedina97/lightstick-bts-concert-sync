@@ -4,6 +4,9 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 
 const YT = "https://www.youtube.com https://s.ytimg.com";
+// Google Analytics 4 sin cookies (src/analytics.js): el script de gtag y el envío de métricas.
+const GA_SCRIPT = "https://www.googletagmanager.com";
+const GA_CONNECT = "https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com";
 const base = {
   "default-src": "'self'",
   "style-src": "'self' 'unsafe-inline'", // atributos style generados por la app; sin scripts en línea
@@ -34,7 +37,7 @@ function inlineHashes(html) {
 function apply(file, extra) {
   let html = readFileSync(file, "utf8");
   const hashes = inlineHashes(html).join(" ");
-  const csp = policy({ ...extra, "script-src": `'self' ${hashes} ${YT}`.replace(/\s+/g, " ").trim() });
+  const csp = policy({ ...extra, "script-src": `'self' ${hashes} ${YT} ${GA_SCRIPT}`.replace(/\s+/g, " ").trim(), "img-src": `${base["img-src"]} https://www.google-analytics.com https://www.googletagmanager.com` });
   const meta = `<meta http-equiv="Content-Security-Policy" content="${csp}">`;
   const eol = html.includes("\r\n") ? "\r\n" : "\n"; // en Windows el checkout puede traer CRLF
   html = html.replace(/<meta http-equiv="Content-Security-Policy"[^>]*>\r?\n?[ \t]*/, "");
@@ -44,9 +47,9 @@ function apply(file, extra) {
   console.log(`${file}: ${csp}`);
 }
 
-apply("index.html", { "connect-src": "'self'", "form-action": "'none'" });
+apply("index.html", { "connect-src": `'self' ${GA_CONNECT}`, "form-action": "'none'" });
 apply("player/index.html", {
   // oEmbed para títulos de videos y, si se configura, el ranking global de Supabase.
-  "connect-src": "'self' https://www.youtube.com https://*.supabase.co",
+  "connect-src": `'self' https://www.youtube.com https://*.supabase.co ${GA_CONNECT}`,
   "form-action": "'self'",
 });

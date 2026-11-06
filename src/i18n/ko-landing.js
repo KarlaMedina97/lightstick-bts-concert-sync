@@ -1,5 +1,9 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Sin cookies y sin publicidad propia.": "쿠키도, 자체 광고도 없어요.",
+  "Para mejorar la app medimos el uso de forma anónima con Google Analytics,": "앱을 개선하기 위해 Google Analytics로 사용 현황을 익명으로 측정해요.",
+  "sin cookies ni identificadores": "쿠키나 식별자 없이",
+  ": solo qué páginas se abren y acciones generales (reproducir, conectar, cambiar de idioma). Si tu navegador pide no ser rastreado, no se mide nada.": ": 어떤 페이지가 열리는지와 일반적인 동작(재생, 연결, 언어 변경)만 측정해요. 브라우저가 추적 거부를 요청하면 아무것도 측정하지 않아요.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "ARMY Bomb 다섯 가지 버전 모두 OK. Ver. 3, SE, Ver. 4는 Bluetooth로 동기화되고, Bluetooth가 없는 Ver. 1과 2는 대신 화면이 빛나요.",
   "Sin Bluetooth · con tu pantalla": "Bluetooth 없음 · 화면으로",
   "Términos de uso": "이용약관",

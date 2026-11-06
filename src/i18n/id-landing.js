@@ -1,5 +1,9 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Sin cookies y sin publicidad propia.": "Tanpa cookie dan tanpa iklan sendiri.",
+  "Para mejorar la app medimos el uso de forma anónima con Google Analytics,": "Untuk meningkatkan aplikasi, kami mengukur penggunaan secara anonim dengan Google Analytics,",
+  "sin cookies ni identificadores": "tanpa cookie maupun pengenal",
+  ": solo qué páginas se abren y acciones generales (reproducir, conectar, cambiar de idioma). Si tu navegador pide no ser rastreado, no se mide nada.": ": hanya halaman yang dibuka dan aksi umum (memutar, menyambung, ganti bahasa). Kalau browser-mu meminta tidak dilacak, tidak ada yang diukur.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "Kelima versi ARMY Bomb. Ver. 3, SE, dan Ver. 4 sinkron lewat Bluetooth; Ver. 1 dan 2 tidak punya Bluetooth, jadi layarmu yang bersinar untuk mereka.",
   "Sin Bluetooth · con tu pantalla": "Tanpa Bluetooth · pakai layarmu",
   "Términos de uso": "Ketentuan penggunaan",

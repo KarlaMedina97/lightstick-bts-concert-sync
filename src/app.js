@@ -1,6 +1,7 @@
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
 import { PURPLE, STYLES, generateConcertPattern, generatePattern, hexToRgb, rgbToHex, ledLevel, lightColors } from "./patterns.js";
 import { fireworks } from "./fireworks.js";
+import { pageview, event as track } from "./analytics.js";
 let fx = null; // fuegos artificiales (se crean la primera vez que termina una canción)
 import { bluetoothSupport, requestStick, LOW_BATTERY, isBrave, classifyBtError, browserInfo } from "./ble.js";
 import { Player } from "./player.js";
@@ -498,6 +499,7 @@ async function onConnect() {
     });
     sticks.push(stick);
     stick.onBattery = () => { renderSticks(); checkBattery(stick); };
+    track("conectar_army_bomb", { familia: stick.family ?? "" });
     renderSticks();
     setTimeout(() => checkBattery(stick), 2500); // después del aviso de "conectado"
     stick.setColor(hexToRgb(PURPLE));
@@ -871,6 +873,7 @@ async function onAddVideo(e) {
 }
 /** Agrega un video a «Tus videos» (o lo actualiza) y lo reproduce con su patrón de luces generado. */
 async function addVideoById(id, kind = "song") {
+  track("agregar_video", { tipo: kind });
   const meta = await fetchTitle(id);
   const song = { id: `mine-${id}`, title: meta?.title ?? "Mi video", yt: id, bpm: 110, energy: "high", kind, channel: meta?.channel };
   mine = [...mine.filter((m) => m.id !== song.id), song];
@@ -1183,9 +1186,24 @@ let micGain = 1;
 let lastUi = 0;
 let lastLabel = "";
 let lastSave = 0;
+// Bucle de sincronía. Con la página visible lo mueve requestAnimationFrame; con la página oculta (otra pestaña u
+// otra ventana) el navegador lo detiene, así que un temporizador sigue mandando colores al ARMY Bomb mientras el
+// video suena. Nunca corren los dos a la vez (si no, cada color se mandaría dos veces).
 function frame(now) {
   requestAnimationFrame(frame);
-  if (!player?.ready) { crowd?.draw(now); return; } // el fondo se dibuja aunque YouTube aún no cargue
+  if (!document.hidden) step(now);
+}
+let bgTimer = 0;
+function syncBackground() {
+  clearInterval(bgTimer);
+  bgTimer = 0;
+  // Las pestañas que suenan (el video) no se frenan: 50 ms. Si el video está en silencio, el navegador lo limita
+  // a ~1 vez por segundo, que igual es mejor que dejar el ARMY Bomb congelado.
+  if (document.hidden && sticks.length) bgTimer = setInterval(() => { if (document.hidden) step(performance.now()); else syncBackground(); }, 50);
+}
+document.addEventListener("visibilitychange", syncBackground);
+function step(now) {
+  if (!player?.ready) { if (!document.hidden) crowd?.draw(now); return; } // el fondo se dibuja aunque YouTube aún no cargue
   const k = settings.brightness / 100;
   const total = Math.max(SIM_COUNT, sticks.length);
   let colors;
@@ -1223,7 +1241,7 @@ function frame(now) {
   // Piso de la sección: lo intenso nunca se ve apagado; solo el cierre de la canción puede llegar a negro.
   const floor = pattern && player.state === "playing" && !cam && (!mic || mic.hybrid) ? pattern.floorAt(player.time()) : 0;
   sticks.forEach((s, i) => s.setColor(ledLevel(colors[i].map((v) => v * k), floor * k, LED_GAMMA)));
-  if (crowd) { crowd.setColor(colors[0].map((v) => Math.max(40, v * k))); crowd.draw(now); }
+  if (crowd && !document.hidden) { crowd.setColor(colors[0].map((v) => Math.max(40, v * k))); crowd.draw(now); } // oculto: solo el ARMY Bomb
 
   // La interfaz se actualiza a ~20 fps para ahorrar batería.
   if (now - lastUi < 50) return;
@@ -2255,6 +2273,7 @@ function contextFromRow(btn, i) {
 /** Empieza una canción con su contexto (por defecto, el resto del álbum). */
 function playIndex(i, ctx) {
   if (i < 0 || i >= queue.length) return;
+  track("reproducir", { cancion: queue[i].album.id === "mine" ? "video_propio" : queue[i].song.id });
   pq.start(queue[i].song.id, ctx ?? albumContext(i));
   loadIndex(i);
   queueChanged();
@@ -3162,6 +3181,8 @@ async function init() {
   // El recorrido no se apila con la guía: si está abierta, espera.
   startTourLater = () => { if (Tour.done) return; if ($("guide").hidden) startTour(); else setTimeout(() => startTourLater(), 5000); };
   // Si la persona omite la guía, el recorrido empieza después.
+  pageview();
+  addEventListener("pws:lang", (e) => track("idioma", { idioma: e.detail }));
   // Compartido desde YouTube (botón Compartir → LumiParty).
   if (params.has("text") || params.has("url")) setTimeout(() => handleShared(params), 600);
   // Enlace directo a una canción: /player/?song=dynamite
