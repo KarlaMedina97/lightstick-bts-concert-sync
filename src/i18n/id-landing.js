@@ -1,5 +1,7 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Código en GitHub (se abre en otra pestaña)": "Kode di GitHub (terbuka di tab baru)",
+  "Código en GitHub ↗": "Kode di GitHub ↗",
   "Métricas de uso, sin publicidad.": "Statistik penggunaan, tanpa iklan.",
   "Medimos el uso con Google Analytics 4: qué páginas y funciones se usan, con una cookie propia de analítica (_ga) que no sirve para publicidad. En la Unión Europea, el Reino Unido y Suiza no se guardan cookies. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se carga.":
     "Kami mengukur penggunaan dengan Google Analytics 4: halaman dan fitur yang dipakai, dengan cookie analitik milik sendiri (_ga) yang tidak dipakai untuk iklan. Di Uni Eropa, Inggris, dan Swiss tidak ada cookie yang disimpan. Kamu bisa mematikannya di Pengaturan › Statistik penggunaan; jika kamu mengaktifkan «Jangan Lacak» atau Global Privacy Control, tidak dimuat.",

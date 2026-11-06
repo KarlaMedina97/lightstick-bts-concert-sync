@@ -1,5 +1,7 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Código en GitHub (se abre en otra pestaña)": "GitHub 코드 (새 탭에서 열림)",
+  "Código en GitHub ↗": "GitHub 코드 ↗",
   "Métricas de uso, sin publicidad.": "사용 통계, 광고 없음.",
   "Medimos el uso con Google Analytics 4: qué páginas y funciones se usan, con una cookie propia de analítica (_ga) que no sirve para publicidad. En la Unión Europea, el Reino Unido y Suiza no se guardan cookies. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se carga.":
     "Google Analytics 4로 어떤 페이지와 기능이 쓰이는지 측정해요. 광고에는 쓰이지 않는 자체 분석 쿠키(_ga)를 사용해요. 유럽연합, 영국, 스위스에서는 쿠키를 저장하지 않아요. 설정 › 사용 통계에서 끌 수 있고, '추적 안 함'이나 글로벌 개인정보 보호 제어를 켜면 불러오지 않아요.",

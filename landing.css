@@ -607,3 +607,10 @@ section[id], #contenido { scroll-margin-top: 76px; }
 :root[data-theme="light"] .lang-pop button { color: #1b1340; }
 :root[data-theme="light"] .lang-pop button[aria-checked="true"] { background: rgba(138, 43, 226, .12); }
 @media (forced-colors: active) { .lang-pop { border: 1px solid CanvasText; } .lang-pop button[aria-checked="true"] { outline: 2px solid Highlight; } }
+
+/* GitHub en la navegación: el ícono con una flechita de enlace externo (el texto queda para el menú del teléfono) */
+.nav-gh { display: inline-flex; align-items: center; gap: 2px; }
+.nav-gh .ext-mark { opacity: 0.7; margin-top: -8px; }
+.nav-gh:hover .ext-mark { opacity: 1; }
+.nav-gh-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 719px) { .nav-gh { gap: 8px; } .nav-gh-label { position: static; width: auto; height: auto; overflow: visible; clip: auto; } .nav-gh .ext-mark { margin-top: 0; } }

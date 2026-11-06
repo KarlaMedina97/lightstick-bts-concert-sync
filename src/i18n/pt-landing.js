@@ -1,5 +1,7 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Código en GitHub (se abre en otra pestaña)": "Código no GitHub (abre em outra aba)",
+  "Código en GitHub ↗": "Código no GitHub ↗",
   "Métricas de uso, sin publicidad.": "Métricas de uso, sem publicidade.",
   "Medimos el uso con Google Analytics 4: qué páginas y funciones se usan, con una cookie propia de analítica (_ga) que no sirve para publicidad. En la Unión Europea, el Reino Unido y Suiza no se guardan cookies. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se carga.":
     "Medimos o uso com o Google Analytics 4: quais páginas e funções são usadas, com um cookie próprio de análise (_ga) que não serve para publicidade. Na União Europeia, no Reino Unido e na Suíça não são salvos cookies. Você pode desativar em Ajustes › Métricas de uso; se ativar «Não rastrear» ou o Controle Global de Privacidade, ele não é carregado.",

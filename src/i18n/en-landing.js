@@ -1,5 +1,7 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
+  "Código en GitHub (se abre en otra pestaña)": "Code on GitHub (opens in a new tab)",
+  "Código en GitHub ↗": "Code on GitHub ↗",
   "Métricas de uso, sin publicidad.": "Usage metrics, no ads.",
   "Medimos el uso con Google Analytics 4: qué páginas y funciones se usan, con una cookie propia de analítica (_ga) que no sirve para publicidad. En la Unión Europea, el Reino Unido y Suiza no se guardan cookies. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se carga.":
     "We measure usage with Google Analytics 4: which pages and features are used, with a first-party analytics cookie (_ga) that is not used for advertising. In the European Union, the UK and Switzerland no cookies are stored. You can turn it off in Settings › Usage metrics; if you enable “Do Not Track” or Global Privacy Control, it doesn't load.",
