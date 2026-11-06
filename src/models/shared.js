@@ -90,8 +90,15 @@ export function createMaterials({ lowEnd = false, color = new THREE.Color("#8a2b
   const glass = lowEnd
     ? new THREE.MeshPhysicalMaterial({ color: "#ffffff", roughness: 0.03, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, transparent: true, opacity: 0.16, depthWrite: false, envMapIntensity: 1.4, emissive: color.clone(), emissiveIntensity: 0.1 })
     : new THREE.MeshPhysicalMaterial({ color: "#ffffff", roughness: 0.03, metalness: 0, transmission: 1, thickness: 0.18, ior: 1.5, clearcoat: 1, clearcoatRoughness: 0.02, specularIntensity: 1, envMapIntensity: 1.3, transparent: false, depthWrite: false, attenuationColor: new THREE.Color("#f4f0ff"), attenuationDistance: 6, emissive: color.clone(), emissiveIntensity: 0.06 });
+  // Globo semiesmerilado (Ver. 1–3): deja ver el interior difuso y se ilumina un poco con el color.
+  const haze = lowEnd
+    ? new THREE.MeshPhysicalMaterial({ color: "#f4f2fa", roughness: 0.45, metalness: 0, clearcoat: 0.8, clearcoatRoughness: 0.2, transparent: true, opacity: 0.42, depthWrite: false, envMapIntensity: 1.1, emissive: color.clone(), emissiveIntensity: 0.25 })
+    : new THREE.MeshPhysicalMaterial({ color: "#ffffff", roughness: 0.42, metalness: 0, transmission: 0.92, thickness: 0.35, ior: 1.45, clearcoat: 1, clearcoatRoughness: 0.12, envMapIntensity: 1.1, depthWrite: false, attenuationColor: new THREE.Color("#f2eefb"), attenuationDistance: 4, emissive: color.clone(), emissiveIntensity: 0.2 });
   const m = {
     glass,
+    haze,
+    // Motivos plateados abstractos dentro del globo (Ver. 1–3): láminas originales, sin logos.
+    foil: new THREE.MeshStandardMaterial({ color: "#d6d6de", metalness: 0.75, roughness: 0.38, transparent: true, opacity: 0.42, side: THREE.DoubleSide, depthWrite: false, envMapIntensity: 1.2, emissive: color.clone(), emissiveIntensity: 0.12 }),
     // Plástico negro satinado: rugosidad con variación fina y micro relieve.
     satin: new THREE.MeshPhysicalMaterial({ color: "#121117", metalness: 0.15, roughness: 0.62, roughnessMap: noise, bumpMap: noise, bumpScale: 0.004, clearcoat: 0.25, clearcoatRoughness: 0.5, envMapIntensity: 0.8 }),
     gloss: new THREE.MeshPhysicalMaterial({ color: "#0b0a10", metalness: 0.25, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 1 }),
@@ -128,6 +135,10 @@ export function createMaterials({ lowEnd = false, color = new THREE.Color("#8a2b
     m.frostDome.emissive.copy(c);
     m.frostDome.emissiveIntensity = 0.55 + 0.35 * glow;
     m.buttons.emissive.copy(c);
+    m.haze.emissive.copy(c);
+    m.haze.emissiveIntensity = 0.14 + 0.16 * glow;
+    m.foil.emissive.copy(c);
+    m.foil.emissiveIntensity = 0.08 + 0.1 * glow;
     m.glass.emissive.copy(c);
     m.glass.emissiveIntensity = (lowEnd ? 0.03 : 0.02) + 0.03 * glow;
     m.tint.color.copy(c).multiplyScalar(0.35 + 0.2 * glow);
@@ -137,8 +148,11 @@ export function createMaterials({ lowEnd = false, color = new THREE.Color("#8a2b
   return m;
 }
 
-/** Remate superior con gema roja (común a las tres versiones, con medidas distintas). */
-export function capWithGem(m, { radius = 0.49, height = 0.24, gemR = 0.15, segs = 40 } = {}) {
+/**
+ * Remate superior con gema roja (Ver. 2, Ver. 3, SE y Ver. 4, con medidas distintas). `bezel` añade el aro
+ * cromado alrededor de la gema (Ver. 4 y SE).
+ */
+export function capWithGem(m, { radius = 0.49, height = 0.24, gemR = 0.15, segs = 40, bezel = false } = {}) {
   const g = new THREE.Group();
   const mount = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.7, radius * 0.7, 0.2, 24), m.gloss);
   mount.position.y = -0.08;
@@ -149,7 +163,51 @@ export function capWithGem(m, { radius = 0.49, height = 0.24, gemR = 0.15, segs 
   edge.position.y = height;
   const gem = new THREE.Mesh(lathe([[gemR, height - 0.01], [gemR * 1.07, height + 0.04], [gemR * 0.6, height + 0.11], [0, height + 0.12]], 8), m.gem);
   g.add(mount, body, edge, gem);
+  if (bezel) {
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(gemR * 1.14, 0.018, 6, 24), m.chrome);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = height + 0.005;
+    g.add(ring);
+  }
   return g;
+}
+
+/**
+ * Láminas abstractas (cuadriláteros irregulares planos) repartidas sobre una esfera de radio `r` y tangentes a
+ * ella: el motivo plateado difuso que se ve dentro de los globos esmerilados. Patrón aleatorio original
+ * (semilla fija), sin relación con ningún logo. `band` limita la latitud (y / r) donde aparecen.
+ */
+export function shardShellGeometry(r, { count = 34, size = 0.22, seed = 11, band = [-0.75, 0.6] } = {}) {
+  let s = seed;
+  const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  const pos = [];
+  const n = new THREE.Vector3(), t = new THREE.Vector3(), b = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0);
+  for (let i = 0; i < count; i++) {
+    const y = band[0] + rnd() * (band[1] - band[0]);
+    const a = rnd() * Math.PI * 2, k = Math.sqrt(1 - y * y);
+    n.set(Math.cos(a) * k, y, Math.sin(a) * k);
+    t.crossVectors(up, n).normalize();
+    b.crossVectors(n, t);
+    const c = n.clone().multiplyScalar(r);
+    const sz = size * (0.55 + rnd() * 0.9);
+    const pts = Array.from({ length: 4 }, (_, j) => {
+      const ang = (j / 4) * Math.PI * 2 + rnd() * 0.9, d = sz * (0.45 + rnd() * 0.7);
+      return c.clone().addScaledVector(t, Math.cos(ang) * d).addScaledVector(b, Math.sin(ang) * d * 0.8);
+    });
+    for (const [p, q, w] of [[0, 1, 2], [0, 2, 3]]) pos.push(...pts[p].toArray(), ...pts[q].toArray(), ...pts[w].toArray());
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  g.computeVertexNormals();
+  return g;
+}
+
+/** Anillo fino (costura del globo o borde) horizontal, o vertical (meridiano) si `vertical`. */
+export function seamRing(mat, r, t, { y = 0, vertical = false, segs = 64 } = {}) {
+  const o = new THREE.Mesh(new THREE.TorusGeometry(r, t, 4, segs), mat);
+  if (!vertical) o.rotation.x = Math.PI / 2;
+  o.position.y = y;
+  return o;
 }
 
 /** Sombra de contacto suave (disco con gradiente) bajo un modelo. */

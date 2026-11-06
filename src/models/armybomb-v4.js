@@ -1,7 +1,7 @@
 // ARMY Bomb "Ver. 4" (ilustración inspirada, no el diseño oficial; emblema original en forma de ola).
 // Proporciones medidas en fotos de producto, relativas al diámetro D del globo (9,3 cm):
 // mango ≈ 0.33·D × 1.32·D (tapa de pilas ≈ 0.23·D), collar ≈ 0.49·D × 0.085·D, remate ≈ 0.32·D a ~28°
-// con gema ≈ 0.09·D, botón ≈ 0.13·D × 0.21·D, largo total ≈ 2.4·D. 1 unidad ≈ 3 cm → globo r = 1.55.
+// con gema ≈ 0.14·D en aro cromado, botón ≈ 0.13·D × 0.21·D, largo total ≈ 2.4·D. 1 unidad ≈ 3 cm → globo r = 1.55.
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { lathe, waveEmblemGeometry, capWithGem } from "./shared.js";
@@ -112,7 +112,8 @@ export function createArmyBombV4(m, { lowEnd = false } = {}) {
   };
 
   // Remate con gema a ~28° del eje (hacia un lado y algo al frente).
-  const cap = capWithGem(m);
+  // Gema grande (≈ 0.45 del ancho del remate) con aro cromado, como en las fotos de cerca.
+  const cap = capWithGem(m, { gemR: 0.21, bezel: true });
   const capDir = new THREE.Vector3(0.47, 0.8, 0.37).normalize();
   cap.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), capDir);
   cap.position.copy(capDir).multiplyScalar(R - 0.21);

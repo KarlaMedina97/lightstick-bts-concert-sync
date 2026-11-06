@@ -1,7 +1,7 @@
 // ARMY Bomb "Special Edition" (ilustración inspirada, no el diseño oficial). El producto real tiene una
 // esfera interior lechosa con un logo impreso: aquí es una cúpula esmerilada lisa, sin ninguna marca.
-// Proporciones medidas en una foto de producto (relativas al diámetro D del globo): esfera interior
-// ≈ 0.9·D, cuello cónico 0.49·D → 0.29·D y ≈ 0.18·D de alto, mango recto ≈ 0.29·D, tapa inferior
+// Proporciones medidas en fotos de producto (relativas al diámetro D del globo): esfera interior
+// ≈ 0.8·D algo baja (centro ≈ 0.05·D bajo el del globo) sobre un asiento negro, cuello cónico 0.49·D → 0.29·D y ≈ 0.18·D de alto, mango recto ≈ 0.29·D, tapa inferior
 // ≈ 0.25·D con junta, botón corto ≈ 0.12·D × 0.10·D y botón largo ≈ 0.12·D × 0.22·D, remate ≈ 0.27·D a ~35°.
 // Largo total: la foto da ≈ 2.8·D y la ficha (95,2 × 226,9 mm) ≈ 2.4·D; se usa un punto medio (≈ 2.55·D).
 import * as THREE from "three";
@@ -15,8 +15,10 @@ export function createArmyBombSE(m, { lowEnd = false } = {}) {
 
   const shell = new THREE.Mesh(new THREE.SphereGeometry(R, seg, Math.round(seg * 0.75)), m.glass);
   shell.renderOrder = 3;
-  // Cúpula interior esmerilada que se ilumina con el color (sin logo).
-  const dome = new THREE.Mesh(new THREE.SphereGeometry(R * 0.9, seg, Math.round(seg * 0.75)), m.frostDome);
+  // Esfera interior esmerilada que se ilumina con el color (sin logo), un poco baja, sobre un asiento negro.
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(R * 0.8, seg, Math.round(seg * 0.75)), m.frostDome);
+  dome.position.y = -0.16;
+  const seat = new THREE.Mesh(lathe([[0.62, FUNNEL_TOP + 0.02], [0.7, -1.18], [0.74, -1.1]], seg), m.gloss);
   const halo = new THREE.Sprite(m.halo);
   halo.scale.setScalar(3.2);
 
@@ -39,11 +41,11 @@ export function createArmyBombSE(m, { lowEnd = false } = {}) {
   };
   const [bu, ru] = pillBtn(0.36, 0.32, -2.55), [bl, rl] = pillBtn(0.36, 0.68, -3.25);
 
-  const cap = capWithGem(m, { radius: 0.42, height: 0.2, gemR: 0.12 });
+  const cap = capWithGem(m, { radius: 0.44, height: 0.2, gemR: 0.15, bezel: true });
   const capDir = new THREE.Vector3(0.57, 0.8, 0.2).normalize();
   cap.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), capDir);
   cap.position.copy(capDir).multiplyScalar(R - 0.17);
 
-  group.add(shell, dome, halo, funnel, handle, bottom, seam, bu, ru, bl, rl, cap);
+  group.add(shell, dome, seat, halo, funnel, handle, bottom, seam, bu, ru, bl, rl, cap);
   return { group, halo, metrics: { top: 1.8, bottom: BOT, radius: R, grip: -4.6 } };
 }

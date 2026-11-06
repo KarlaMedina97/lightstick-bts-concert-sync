@@ -434,8 +434,12 @@ if (renderer) {
       seats.push([Math.sin(aa) * r, y, STAGE_Z - Math.cos(aa) * r, r, aa]);
     }
   }
-  const CROWD_CAP = mobileQ() ? 2100 : 3000; // geometría liviana en teléfonos: alcanza para llenar el estadio
+  const TOUCH = matchMedia("(pointer: coarse)").matches; // tablets (iPad) también: GPU de teléfono en pantalla grande
+  const CROWD_CAP = mobileQ() || TOUCH ? 2100 : 3000; // geometría liviana en teléfonos: alcanza para llenar el estadio
   while (seats.length > CROWD_CAP) seats.splice((Math.random() * seats.length) | 0, 1);
+  // Orden intercalado (pares primero, luego impares): si el equipo va lento y se dibuja solo la mitad del público,
+  // se ralea parejo en todo el estadio. Antes la mitad eran las filas de adelante y las gradas quedaban vacías (iPad).
+  seats.splice(0, seats.length, ...seats.filter((_, i) => i % 2 === 0), ...seats.filter((_, i) => i % 2 === 1));
   const N = seats.length;
   // Las luces del público NO se apagan con la niebla: en un estadio las gradas del fondo siguen brillando a través
   // de la bruma (con niebla se veía un «black ocean»). La distancia solo las hace un poco más tenues (ver hk).
