@@ -1646,7 +1646,7 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 .explore-list .album-title { position: static; background: none; margin-top: var(--s-4); }
 .app.exploring .home-hero { display: none; }
 .app.exploring .style-chip, .app.exploring .lyrics-bar, .app.exploring .upnext { display: none; }
-.app.exploring .home-view { padding-bottom: 280px; animation: none; }
+.app.exploring .home-view { padding-bottom: var(--mini-pad, 280px); animation: none; }
 
 .mini-bar { display: none; }
 /* Miniatura oculta (el video queda en pausa; ver hideMini en src/app.js) */
@@ -2142,7 +2142,7 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
   .app.exploring .video-card { --mini-w: calc(100cqw - 16px); }
   .app.exploring .mini-bar { height: 44px; }
   .app.exploring .progress { display: none; }
-  .app.exploring .home-view { padding-bottom: 272px; }
+  .app.exploring .home-view { padding-bottom: var(--mini-pad, 272px); }
   /* UI-05 · avisos encima del dock (zona del pulgar) */
   .toast { top: auto; bottom: calc(var(--pad) + var(--dock-h) + var(--s-3) + var(--safe-b)); }
   .toast[hidden] { transform: translate(-50%, 8px) scale(0.98); }
@@ -2521,3 +2521,8 @@ html {
 .stick3d { width: 100%; height: min(64cqh, 120cqw); aspect-ratio: auto; }
 @media (max-width: 640px) { .stick3d { width: 100%; height: min(60cqh, 150cqw); } }
 .lights-view.model .big-bulb { display: none; }
+
+/* En Álbumes (o con resultados) el estante "Álbumes · Ver todos" repetía lo mismo y solo subía la página:
+   se oculta y al final quedan los accesos útiles (agregar un video que falta, conciertos completos). */
+.home-view.searching #album-shelf { display: none; }
+.home-view.searching .ex-links { margin-top: var(--s-2); }

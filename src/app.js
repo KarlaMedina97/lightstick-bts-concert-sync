@@ -45,10 +45,12 @@ const store = {
 };
 
 const SETTINGS_KEY = "pws.settings.v1";
-const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, chant: true, chantVoice: true, lightsModel: "orb", stickVer: "", sounds: true, describe: false, keys: true, calm: false, bpm: {}, phase: {} };
+const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, chant: true, chantVoice: false, lightsModel: "orb", stickVer: "", sounds: true, describe: false, keys: true, calm: false, bpm: {}, phase: {} };
 const settings = { ...defaults, ...store.get(SETTINGS_KEY, {}) };
 // 2026-11-05: la descripción de las luces queda apagada para todos (una sola vez; después cada quien la activa en Ajustes).
 if (!store.get("pws.migr.describeOff", false)) { settings.describe = false; store.set("pws.migr.describeOff", true); store.set(SETTINGS_KEY, settings); }
+// Igual con "Con voz y aplausos" del fanchant: apagado para todos (el fanchant sigue, en silencio).
+if (!store.get("pws.migr.chantVoiceOff", false)) { settings.chantVoice = false; store.set("pws.migr.chantVoiceOff", true); store.set(SETTINGS_KEY, settings); }
 if (matchMedia("(prefers-reduced-motion: reduce)").matches) settings.safeMode = true;
 const saveSettings = () => store.set(SETTINGS_KEY, settings);
 
@@ -1016,6 +1018,7 @@ function loadIndex(i, { autoplay = true } = {}) {
   maybeNudgeSupport();
   maybeAskFeedback();
   syncSongUrl(album.id === "mine" ? null : song.id);
+  if (npDocked() && store.get(NP_KEY, true) && $("np-side").hidden) setNpOpen(true);
   if (view === "video") $("home").hidden = true;
   setView(view);
   document.title = `${song.title} · LumiParty`;
@@ -2202,8 +2205,9 @@ function bindNowPanel() {
     if (npDocked()) setNpOpen(store.get(NP_KEY, false));
     else { $("np-side").hidden = true; app.classList.remove("with-np"); syncSideState(); }
   });
-  // En escritorio el panel arranca abierto (como en las apps de música): así se ve dónde agregar videos.
-  if (npDocked() && store.get(NP_KEY, true)) setNpOpen(true);
+  // En escritorio el panel se abre cuando hay algo sonando (vacío solo ocupaba un tercio de la pantalla); si la
+  // persona lo cerró, se respeta.
+  if (npDocked() && store.get(NP_KEY, true) && current >= 0) setNpOpen(true);
 }
 
 // ---------- Tema claro / oscuro ----------
@@ -2873,11 +2877,13 @@ const MINI = { corner: "br" };
 function hideMini() {
   player.pause();
   app.classList.add("mini-off");
+  placeMini(false); // sin miniatura, Explorar ya no reserva su espacio abajo
   toastAction("Miniatura oculta, video en pausa", "Mostrar", () => { showMini(); player.play(); });
   $("btn-play").focus({ preventScroll: true });
 }
 function showMini() {
   app.classList.remove("mini-off");
+  placeMini(false);
   requestAnimationFrame(() => placeMini(false));
 }
 let minimizeVideo = () => {};
@@ -2899,6 +2905,9 @@ function placeMini(animate) {
   const maxX = Math.max(0, stage.width - w - g), maxY = Math.max(top, stage.height - h - g);
   card.style.setProperty("--mx", `${Math.min(maxX, Math.max(0, pos[0]))}px`);
   card.style.setProperty("--my", `${Math.min(maxY, Math.max(top, pos[1]))}px`);
+  // Explorar deja al final solo el espacio que tapa la miniatura (si está abajo y a la vista), no 280 px fijos.
+  const bottomCorner = MINI.corner.startsWith("b") && !app.classList.contains("mini-off");
+  $("home").style.setProperty("--mini-pad", `${bottomCorner ? h + g * 2 : 24}px`);
 }
 function bindMini() {
   const bar = $("mini-bar");
