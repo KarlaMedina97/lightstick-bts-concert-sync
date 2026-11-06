@@ -1,9 +1,8 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
   "Sin cookies y sin publicidad propia.": "No cookies and no ads of our own.",
-  "Para mejorar la app medimos el uso de forma anónima con Google Analytics,": "To improve the app we measure usage anonymously with Google Analytics,",
-  "sin cookies ni identificadores": "with no cookies or identifiers",
-  ": solo qué páginas se abren y acciones generales (reproducir, conectar, cambiar de idioma). Si tu navegador pide no ser rastreado, no se mide nada.": ": only which pages are opened and general actions (play, connect, change language). If your browser asks not to be tracked, nothing is measured.",
+  "Medimos el uso con Google Analytics 4 sin cookies (modo de consentimiento denegado). Google recibe tu IP y tipo de navegador para contar visitas, pero no se guardan identificadores en tu dispositivo. Si activas «No rastrear» o Control Global de Privacidad, no se carga.":
+    "We measure usage with Google Analytics 4 without cookies (consent mode set to denied). Google receives your IP address and browser type to count visits, but no identifiers are stored on your device. If you turn on “Do Not Track” or Global Privacy Control, it doesn't load.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "All five ARMY Bomb versions. Ver. 3, SE and Ver. 4 sync over Bluetooth; Ver. 1 and 2 have no Bluetooth, so your screen glows for them.",
   "Sin Bluetooth · con tu pantalla": "No Bluetooth · with your screen",
   "Términos de uso": "Terms of use",
@@ -299,8 +298,8 @@ export default {
   "se abre GitHub con tu texto listo; solo se publica si tú lo confirmas allí.":
     "GitHub opens with your text ready; it's only published if you confirm it there.",
   "Medidas de seguridad": "Security measures",
-  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio y de YouTube.":
-    "A Content Security Policy (CSP) that only allows code from the site itself and from YouTube.",
+  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio, de YouTube y de Google Analytics.":
+    "A Content Security Policy (CSP) that only allows code from the site itself, YouTube and Google Analytics.",
   "Las librerías (three.js y GSAP) se sirven desde el propio sitio, copiadas de paquetes verificados de npm.":
     "The libraries (three.js and GSAP) are served from the site itself, copied from verified npm packages.",
   "Todo lo que escriben las personas se valida y se muestra como texto, nunca como código.":

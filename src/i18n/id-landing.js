@@ -1,9 +1,8 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
   "Sin cookies y sin publicidad propia.": "Tanpa cookie dan tanpa iklan sendiri.",
-  "Para mejorar la app medimos el uso de forma anónima con Google Analytics,": "Untuk meningkatkan aplikasi, kami mengukur penggunaan secara anonim dengan Google Analytics,",
-  "sin cookies ni identificadores": "tanpa cookie maupun pengenal",
-  ": solo qué páginas se abren y acciones generales (reproducir, conectar, cambiar de idioma). Si tu navegador pide no ser rastreado, no se mide nada.": ": hanya halaman yang dibuka dan aksi umum (memutar, menyambung, ganti bahasa). Kalau browser-mu meminta tidak dilacak, tidak ada yang diukur.",
+  "Medimos el uso con Google Analytics 4 sin cookies (modo de consentimiento denegado). Google recibe tu IP y tipo de navegador para contar visitas, pero no se guardan identificadores en tu dispositivo. Si activas «No rastrear» o Control Global de Privacidad, no se carga.":
+    "Kami mengukur penggunaan dengan Google Analytics 4 tanpa cookie (mode persetujuan ditolak). Google menerima IP dan jenis browser-mu untuk menghitung kunjungan, tetapi tidak ada pengenal yang disimpan di perangkatmu. Kalau kamu mengaktifkan «Jangan Lacak» atau Global Privacy Control, analitik tidak dimuat.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "Kelima versi ARMY Bomb. Ver. 3, SE, dan Ver. 4 sinkron lewat Bluetooth; Ver. 1 dan 2 tidak punya Bluetooth, jadi layarmu yang bersinar untuk mereka.",
   "Sin Bluetooth · con tu pantalla": "Tanpa Bluetooth · pakai layarmu",
   "Términos de uso": "Ketentuan penggunaan",
@@ -299,8 +298,8 @@ export default {
   "se abre GitHub con tu texto listo; solo se publica si tú lo confirmas allí.":
     "GitHub terbuka dengan teksmu yang sudah siap; baru dipublikasikan kalau kamu konfirmasi di sana.",
   "Medidas de seguridad": "Langkah keamanan",
-  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio y de YouTube.":
-    "Content Security Policy (CSP) yang hanya mengizinkan kode dari situs ini sendiri dan dari YouTube.",
+  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio, de YouTube y de Google Analytics.":
+    "Content Security Policy (CSP) yang hanya mengizinkan kode dari situs ini sendiri, YouTube, dan Google Analytics.",
   "Las librerías (three.js y GSAP) se sirven desde el propio sitio, copiadas de paquetes verificados de npm.":
     "Library (three.js dan GSAP) disajikan dari situs ini sendiri, disalin dari paket npm yang terverifikasi.",
   "Todo lo que escriben las personas se valida y se muestra como texto, nunca como código.":

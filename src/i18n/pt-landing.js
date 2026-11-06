@@ -1,9 +1,8 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
   "Sin cookies y sin publicidad propia.": "Sem cookies e sem anúncios próprios.",
-  "Para mejorar la app medimos el uso de forma anónima con Google Analytics,": "Para melhorar o app, medimos o uso de forma anônima com o Google Analytics,",
-  "sin cookies ni identificadores": "sem cookies nem identificadores",
-  ": solo qué páginas se abren y acciones generales (reproducir, conectar, cambiar de idioma). Si tu navegador pide no ser rastreado, no se mide nada.": ": só quais páginas são abertas e ações gerais (tocar, conectar, mudar de idioma). Se o seu navegador pedir para não ser rastreado, nada é medido.",
+  "Medimos el uso con Google Analytics 4 sin cookies (modo de consentimiento denegado). Google recibe tu IP y tipo de navegador para contar visitas, pero no se guardan identificadores en tu dispositivo. Si activas «No rastrear» o Control Global de Privacidad, no se carga.":
+    "Medimos o uso com o Google Analytics 4 sem cookies (modo de consentimento negado). O Google recebe seu IP e o tipo de navegador para contar visitas, mas nenhum identificador é salvo no seu dispositivo. Se você ativar «Não rastrear» ou o Controle Global de Privacidade, ele não é carregado.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "As cinco versões do ARMY Bomb. Ver. 3, SE e Ver. 4 sincronizam por Bluetooth; Ver. 1 e 2 não têm Bluetooth: sua tela brilha por elas.",
   "Sin Bluetooth · con tu pantalla": "Sem Bluetooth · com a sua tela",
   "Términos de uso": "Termos de uso",
@@ -299,8 +298,8 @@ export default {
   "se abre GitHub con tu texto listo; solo se publica si tú lo confirmas allí.":
     "o GitHub abre com seu texto pronto; só é publicado se você confirmar lá.",
   "Medidas de seguridad": "Medidas de segurança",
-  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio y de YouTube.":
-    "Política de segurança de conteúdo (CSP) que só permite código do próprio site e do YouTube.",
+  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio, de YouTube y de Google Analytics.":
+    "Política de segurança de conteúdo (CSP) que só permite código do próprio site, do YouTube e do Google Analytics.",
   "Las librerías (three.js y GSAP) se sirven desde el propio sitio, copiadas de paquetes verificados de npm.":
     "As bibliotecas (three.js e GSAP) são servidas pelo próprio site, copiadas de pacotes verificados do npm.",
   "Todo lo que escriben las personas se valida y se muestra como texto, nunca como código.":
