@@ -1,10 +1,11 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "¿No conecta? Apaga y enciende el Bluetooth de tu equipo y recarga la página, sobre todo si cambiaste ajustes del navegador. En Windows, si tu ARMY Bomb aparece como vinculado, quítalo de la configuración de Bluetooth y vuelve a conectar.": "Não conecta? Desligue e ligue o Bluetooth do aparelho e recarregue a página, principalmente se você mudou configurações do navegador. No Windows, se o ARMY Bomb aparece como pareado, remova-o das configurações de Bluetooth e conecte de novo.",
   "Último error": "Último erro",
-  "Tu ARMY Bomb no aceptó la conexión. Si está conectado a otro celular o a la app oficial, desconéctalo, vuelve a ponerlo en modo Bluetooth y prueba otra vez.": "Seu ARMY Bomb não aceitou a conexão. Se estiver conectado a outro celular ou ao app oficial, desconecte, coloque de novo no modo Bluetooth e tente outra vez.",
+  "Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial, ponlo en modo Bluetooth y prueba otra vez. Si sigue igual, apaga y enciende el Bluetooth del equipo y recarga la página.": "Seu ARMY Bomb não aceitou a conexão. Desconecte de outro celular ou do app oficial, coloque no modo Bluetooth e tente de novo. Se continuar igual, desligue e ligue o Bluetooth do aparelho e recarregue a página.",
   "Ese dispositivo no es un ARMY Bomb compatible. Elige el que empieza con BTS LIGHTSTICK o BBOMB.": "Esse dispositivo não é um ARMY Bomb compatível. Escolha o que começa com BTS LIGHTSTICK ou BBOMB.",
   "Cerraste la lista sin elegir. Toca Conectar y elige tu ARMY Bomb": "Você fechou a lista sem escolher. Toque em Conectar e escolha seu ARMY Bomb",
-  "Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial, ponlo en modo Bluetooth y vuelve a tocar Conectar": "Seu ARMY Bomb não aceitou a conexão. Desconecte de outro celular ou do app oficial, coloque no modo Bluetooth e toque em Conectar de novo",
+  "Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial y ponlo en modo Bluetooth. Si sigue igual, apaga y enciende el Bluetooth del equipo, recarga la página y vuelve a tocar Conectar": "Seu ARMY Bomb não aceitou a conexão. Desconecte de outro celular ou do app oficial e coloque no modo Bluetooth. Se continuar igual, desligue e ligue o Bluetooth do aparelho, recarregue a página e toque em Conectar de novo",
   "Ese dispositivo no es un ARMY Bomb. Elige el que empieza con BTS LIGHTSTICK o BBOMB": "Esse dispositivo não é um ARMY Bomb. Escolha o que começa com BTS LIGHTSTICK ou BBOMB",
   "Sin elegir": "Nada escolhido",
   "Expandir biblioteca": "Expandir biblioteca",

@@ -64,7 +64,7 @@ export class Guide {
     this.prevBtn.onclick = () => this.go(this.i - 1);
     this.nextBtn.onclick = () => this.go(this.i + 1);
     this.el.querySelector("#g-close").onclick = () => this.minimize();
-    this.el.querySelector("#g-skip").onclick = () => this.close();
+    this.el.querySelector("#g-skip").onclick = () => this.skip();
     this.pill.onclick = () => this.restore();
 
     this.voiceBtn = this.el.querySelector("#g-voice");
@@ -175,6 +175,12 @@ export class Guide {
     try { localStorage.setItem(SEEN_KEY, "1"); } catch {}
   }
 
+  /** "Omitir guía": se cierra del todo y quien la usa abre la conexión directamente. */
+  skip() {
+    this.close();
+    this.hooks.onSkip?.();
+  }
+
   go(i) {
     if (i < 0 || i >= STEPS.length) return;
     this.i = i;
@@ -203,7 +209,7 @@ export class Guide {
       const err = this.hooks.lastError?.();
       const sub = {
         cancelled: "Cerraste la lista sin elegir. Toca Conectar y elige tu ARMY Bomb",
-        gatt: "Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial, ponlo en modo Bluetooth y vuelve a tocar Conectar",
+        gatt: "Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial y ponlo en modo Bluetooth. Si sigue igual, apaga y enciende el Bluetooth del equipo, recarga la página y vuelve a tocar Conectar",
         "not-stick": "Ese dispositivo no es un ARMY Bomb. Elige el que empieza con BTS LIGHTSTICK o BBOMB",
       }[err?.kind] ?? "Revisa que esté parpadeando y vuelve a tocar Conectar";
       this.showStatus(err?.kind === "cancelled" ? "wait" : "fail", err?.kind === "cancelled" ? "Sin elegir" : "No se conectó", sub, err && err.kind !== "cancelled" ? err.detail : "");

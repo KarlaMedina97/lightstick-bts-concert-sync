@@ -235,6 +235,48 @@ for (const [vp, w, h] of VIEWPORTS) {
   })()`);
   if (fb) fail(ap, fb);
   await shot(`reproductor-opinion-${w}`);
+  // Conexión (flujo crítico): guía → «Omitir guía» abre el panel de conexión solo, sin nada encima, y Conectar
+  // sigue pidiendo la lista de dispositivos al navegador (se simula: aquí no hay Bluetooth de verdad).
+  const conn = await evaluate(`(async () => {
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const $ = (id) => document.getElementById(id);
+    let asked = 0;
+    const fake = { requestDevice: async () => { asked++; throw Object.assign(new Error("User cancelled the requestDevice() chooser."), { name: "NotFoundError" }); }, getAvailability: async () => true, getDevices: async () => [] };
+    try { Object.defineProperty(navigator, "bluetooth", { value: fake, configurable: true }); } catch {}
+    $("btn-bt").click();
+    await wait(400);
+    if ($("panel-bt").hidden) return "Conectar no abrió el panel de conexión";
+    $("btn-guide").click();
+    await wait(500);
+    if ($("guide").hidden) return "Ver la guía no abrió la guía";
+    if (!$("panel-bt").hidden) return "la guía se abrió con el panel de conexión encima";
+    $("g-skip").click();
+    await wait(500);
+    if (!$("guide").hidden) return "Omitir guía no cerró la guía";
+    if (!$("coach-pill").hidden) return "tras omitir quedó la burbuja de la guía";
+    if ($("btn-bt").classList.contains("resume")) return "tras omitir, Conectar quedó como «seguir la guía»";
+    if ($("panel-bt").hidden) return "Omitir guía no abrió el panel de conexión";
+    const open = [...document.querySelectorAll(".panel")].filter((p) => !p.hidden && p.id !== "panel-bt").map((p) => p.id);
+    if (open.length) return "otro panel quedó abierto: " + open.join(", ");
+    const c = $("btn-connect");
+    if (document.activeElement !== c) return "el foco no quedó en Conectar ARMY Bomb";
+    // Se mide la posición final (sin la animación de la hoja, que en el navegador sin ventana puede no avanzar).
+    const still = document.createElement("style");
+    still.textContent = "*,*::before,*::after{transition:none!important;animation:none!important}";
+    document.head.append(still);
+    await wait(100);
+    const r = c.getBoundingClientRect();
+    const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    if (!c.contains(top)) return "algo tapa Conectar ARMY Bomb: " + (top ? (top.id || String(top.className?.baseVal ?? top.className) || top.tagName) + " en " + (top.closest("[id]")?.id ?? "") : "nada (fuera de pantalla)") + " · botón y=" + Math.round(r.top) + "/" + innerHeight;
+    still.remove();
+    c.click();
+    await wait(800);
+    if (!asked) return "Conectar ARMY Bomb no abrió la lista de dispositivos";
+    return "";
+  })()`);
+  if (conn) fail(ap, `conexión: ${conn}`);
+  await shot(`reproductor-conexion-${w}`);
+  await evaluate(`document.querySelector("#panel-bt .close")?.click()`);
   // Luces: el ARMY Bomb 3D carga, cambia de versión y se puede arrastrar sin errores.
   const lights = await evaluate(`(async () => {
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));

@@ -19,15 +19,10 @@ const FINAL = { ko: "방탄소년단!", roman: "BTS!" };
 // alcanza a decirlos y se amontonan. Por eso el paso va de 1,1 a 1,5 s (3 tiempos si 2 quedan cortos).
 /** Pausa entre un nombre y el siguiente (el público toma aire). */
 export const CHANT_PAUSE_MS = 1000;
-/**
- * Cuánto se ve (y se dice) cada nombre: unos 3 s, ajustados a un número entero de tiempos de la canción que viene
- * para que el público siga en compás (entre 2,6 y 3,4 s).
- */
-export function chantStepMs(bpm) {
-  if (!(bpm > 0)) return 3000;
-  const beat = 60000 / bpm;
-  const ms = Math.max(1, Math.round(3000 / beat)) * beat;
-  return Math.round(Math.min(3400, Math.max(2600, ms)));
+/** Cuánto se ve (y se dice) cada nombre: 2,5 s fijos (decisión del proyecto), más la pausa de 1 s entre nombres. */
+export const CHANT_STEP_MS = 2500;
+export function chantStepMs(_bpm) {
+  return CHANT_STEP_MS;
 }
 
 /** Ovación corta: ruido filtrado con una envolvente, sin archivos de audio. */

@@ -573,7 +573,7 @@ async function onConnect() {
     else if (kind === "no-chooser") { showBtWarning("no-chooser"); if (openPanel !== "panel-bt") showPanel("panel-bt"); earcon("error"); }
     else if (kind === "adapter-off") { toast("El Bluetooth de tu dispositivo está apagado. Actívalo y vuelve a tocar Conectar.", 7000, { assertive: true }); earcon("error"); }
     else if (kind === "denied") { toast("El navegador no dio permiso para usar Bluetooth. Revisa los permisos del sitio y prueba otra vez.", 7000, { assertive: true }); earcon("error"); }
-    else if (kind === "gatt") { toast("Tu ARMY Bomb no aceptó la conexión. Si está conectado a otro celular o a la app oficial, desconéctalo, vuelve a ponerlo en modo Bluetooth y prueba otra vez.", 9000, { assertive: true }); earcon("error"); }
+    else if (kind === "gatt") { toast("Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial, ponlo en modo Bluetooth y prueba otra vez. Si sigue igual, apaga y enciende el Bluetooth del equipo y recarga la página.", 9000, { assertive: true }); earcon("error"); }
     else if (kind === "not-stick") { toast("Ese dispositivo no es un ARMY Bomb compatible. Elige el que empieza con BTS LIGHTSTICK o BBOMB.", 8000); earcon("error"); }
     else { toast("No pudimos conectar. Revisa que parpadee y prueba otra vez."); earcon("error"); }
   } finally {
@@ -3508,6 +3508,11 @@ async function init() {
     hasSticks: () => sticks.length > 0,
     lastError: () => lastBtError,
     stickNames: () => sticks.map((s) => s.name),
+    // "Omitir guía": la guía ya se cerró; se abre el panel de conexión solo (sin la guía encima) y el foco va a Conectar.
+    onSkip: () => {
+      if (openPanel !== "panel-bt") showPanel("panel-bt", $("btn-bt"));
+      $("btn-connect")?.focus({ preventScroll: true });
+    },
     onDone: (name) => { toast(`💜 ¡${name} listo! Ahora elige una canción.`); },
   }));
   $("btn-guide").onclick = () => { closePanel(false); guide.open(); };

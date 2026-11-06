@@ -1568,7 +1568,7 @@ async function buildScene() {
       pulse(0.7);
       gw.pump = Math.max(gw.pump, 0.8);
       if (voice) { const u = new SpeechSynthesisUtterance(m.ko); u.lang = "ko-KR"; u.rate = 1; speechSynthesis.speak(u); }
-      // Mismo ritmo que en el reproductor: 2 tiempos por nombre; «BTS!» dura el doble.
+      // Mismo ritmo que en el reproductor: 2,5 s por nombre; «BTS!» dura el doble.
       const stepMs = chantStepMs(FEATURED.bpm);
       await new Promise((r) => setTimeout(r, i === seq.length - 1 ? stepMs * 2 : stepMs));
     }
