@@ -24,7 +24,9 @@ function init() {
   if (ready || !allowed()) return ready;
   window.dataLayer = window.dataLayer || [];
   window.gtag = gtag;
-  gtag("consent", "default", { ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", analytics_storage: "granted" }); // sin cookies igual (client_storage: none)
+  // analytics_storage "denied": gtag.js NO escribe cookies (_ga) y manda solo visitas anónimas sin identificador.
+  // (client_storage: "none" no basta en GA4: igual crea las cookies; se comprobó en producción el 2026-11-05.)
+  gtag("consent", "default", { ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", analytics_storage: "denied", functionality_storage: "denied", personalization_storage: "denied" });
   gtag("js", new Date());
   gtag("config", ID, {
     client_storage: "none", anonymize_ip: true, allow_google_signals: false, allow_ad_personalization_signals: false,

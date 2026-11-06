@@ -9,6 +9,7 @@ test("analítica: Google Analytics sin cookies, con privacidad y solo si hay ID"
   assert.match(src, /client_storage: "none"/); // sin cookies ni identificador guardado
   assert.match(src, /allow_google_signals: false/);
   assert.match(src, /ad_storage: "denied"/);
+  assert.match(src, /analytics_storage: "denied"/); // así gtag.js no escribe cookies _ga
   assert.match(src, /doNotTrack|globalPrivacyControl/); // respeta "no rastrear"
   assert.match(src, /localhost/); // nunca en desarrollo ni en la red local
   assert.doesNotMatch(src, /location\.search|location\.href/); // nunca la URL completa (?song=…)
