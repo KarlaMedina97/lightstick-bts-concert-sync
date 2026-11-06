@@ -14,10 +14,11 @@ export const DEFAULT_TIPS = [
 ];
 
 export class Tour {
-  /** @param {{tips?:Tip[], onEnd?:()=>void}} opts */
+  /** @param {{tips?:Tip[], onEnd?:()=>void, avoid?:()=>DOMRect|null}} opts  avoid: rectángulo que el globo no tapa (el video) */
   constructor(opts = {}) {
     this.tips = opts.tips ?? DEFAULT_TIPS;
     this.onEnd = opts.onEnd;
+    this.avoid = opts.avoid;
     this.i = -1;
     this.el = document.createElement("div");
     this.el.className = "tour";
@@ -45,6 +46,7 @@ export class Tour {
     this.reposition = () => this.place();
     addEventListener("resize", this.reposition);
     addEventListener("scroll", this.reposition, true);
+    addEventListener("pws:layout", this.reposition); // el mini reproductor cambió de lugar
   }
 
   static get done() {
@@ -113,6 +115,14 @@ export class Tour {
     }
     x = Math.min(innerWidth - box.width - m, Math.max(m, x));
     y = Math.min(innerHeight - box.height - m, Math.max(m, y));
+    // Nunca encima del reproductor de YouTube (sus políticas): si lo tapa, el globo pasa arriba, abajo o a un lado del video.
+    const v = this.avoid?.();
+    if (v && x < v.right && v.left < x + box.width && y < v.bottom && v.top < y + box.height) {
+      if (v.top - gap - box.height >= m) y = v.top - gap - box.height;
+      else if (v.bottom + gap + box.height <= innerHeight - m) y = v.bottom + gap;
+      else if (v.left - gap - box.width >= m) x = v.left - gap - box.width;
+      else if (v.right + gap + box.width <= innerWidth - m) x = v.right + gap;
+    }
     this.el.style.left = `${x}px`;
     this.el.style.top = `${y}px`;
     this.el.dataset.place = place;

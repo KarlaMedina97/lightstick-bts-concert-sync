@@ -957,8 +957,9 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   transition: opacity var(--dur-4) var(--ease-out), display var(--dur-4) allow-discrete;
 }
 .chant[hidden] { opacity: 0; }
-/* El fanchant va por encima del video flotante (z 7); los avisos esperan a que termine */
-#chant { z-index: 9; }
+/* El fanchant nunca tapa el reproductor de YouTube: va en una franja bajo el video o, con el mini reproductor,
+   en el resto del escenario (y por debajo del mini, z 7, si se arrastra). Los avisos esperan a que termine. */
+#chant { z-index: 6; }
 body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, body.chanting .upnext { visibility: hidden; }
 @starting-style { .chant:not([hidden]) { opacity: 0; } }
 .chant::before { /* halo que respira (lento, sin destellos) */
@@ -1137,7 +1138,7 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 .app.idle { cursor: none; }
 .app.idle .dock:focus-within, .app.idle .hud-top:focus-within { opacity: 1; transform: none; }
 .app.fs .video-card { width: min(100cqw, calc((100cqh - 24px) * 16 / 9)); }
-.app.fs .style-chip { top: var(--s-2); }
+.app.fs .style-chip { display: none; } /* a pantalla completa no queda hueco sobre el video */
 
 /* =====================================================================
    Responsivo
@@ -1645,28 +1646,61 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 .explore-list { gap: 2px; }
 .explore-list .album-title { position: static; background: none; margin-top: var(--s-4); }
 .app.exploring .home-hero { display: none; }
-.app.exploring .style-chip, .app.exploring .lyrics-bar, .app.exploring .upnext { display: none; }
+.app.mini-mode .style-chip, .app.mini-mode .lyrics-bar, .app.mini-mode .upnext { display: none; }
 .app.exploring .home-view { padding-bottom: var(--mini-pad, 280px); animation: none; }
 
 .mini-bar { display: none; }
 /* Miniatura oculta (el video queda en pausa; ver hideMini en src/app.js) */
-.app.exploring.mini-off .video-card { visibility: hidden; pointer-events: none; }
-.app.exploring .video-card {
+.app.mini-mode.mini-off .video-card { visibility: hidden; pointer-events: none; }
+.app.mini-mode .video-card {
   --mini-w: min(356px, calc(100cqw - 24px));
   position: absolute; left: 0; top: 0; z-index: 7; width: var(--mini-w); aspect-ratio: auto;
   transform: translate(var(--mx, 12px), var(--my, 12px));
   border-radius: var(--r-lg); animation: mini-in var(--dur-3) var(--ease-out);
   box-shadow: 0 0 0 1px var(--border-strong), var(--e-3), 0 20px 60px -20px var(--glow);
 }
-@keyframes mini-in { from { opacity: 0; transform: translate(var(--mx, 12px), calc(var(--my, 12px) + 16px)) scale(0.92); } }
-.app.exploring .video-card.snapping { transition: transform var(--dur-3) var(--ease-spring); }
-.app.exploring .video-box { position: relative; inset: auto; height: 200px; } /* YouTube pide ≥ 200 × 200 px */
-.app.exploring .empty { display: none; }
-.app.exploring .mini-bar {
+@keyframes mini-in { from { opacity: 0; transform: translate(var(--mx, 12px), calc(var(--my, 12px) + 16px)); } } /* sin achicar: nunca menos de 200 px */
+.app.mini-mode .video-card.snapping { transition: transform var(--dur-3) var(--ease-spring); }
+.app.mini-mode .video-box { position: relative; inset: auto; height: 200px; } /* YouTube pide ≥ 200 × 200 px */
+.app.mini-mode .empty { display: none; }
+.app.mini-mode .mini-bar {
   display: flex; align-items: center; gap: 2px; height: 48px; padding: 0 var(--s-1) 0 var(--s-3);
   background: var(--surface-2); cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none;
 }
-.app.exploring .video-card.dragging .mini-bar { cursor: grabbing; }
+.app.mini-mode .video-card.dragging .mini-bar { cursor: grabbing; }
+/* Luces con canción: el video sigue a la vista en el mini reproductor (YouTube no permite que suene oculto).
+   placeMini() le reserva su franja (--mini-res-*): las luces y el fanchant se acomodan en el resto del escenario. */
+.app.mini-mode .lights-view {
+  container-type: size;
+  padding: var(--mini-res-t, 0px) var(--mini-res-r, 0px) var(--mini-res-b, 0px) var(--mini-res-l, 0px);
+}
+.app.mini-mode .chant { inset: var(--mini-res-t, 0px) var(--mini-res-r, 0px) var(--mini-res-b, 0px) var(--mini-res-l, 0px); }
+
+/* Video (escritorio y tableta): "A continuación" y el fanchant van en una franja bajo el video, nunca encima del
+   reproductor ni de sus controles. Mientras están a la vista el video se achica lo justo, sin bajar de 200 px. */
+@media (min-width: 641px) and (min-height: 501px) {
+  .stage { --band: min(var(--band-h, 0px), max(0px, 100cqh - 280px)); }
+  .stage:has(#upnext:not([hidden])) { --band-h: 64px; }
+  body.chanting .stage { --band-h: clamp(150px, 30cqh, 240px); }
+  .app:not(.mini-mode) .video-card { margin-bottom: var(--band); width: min(100cqw, calc((100cqh - 80px - var(--band)) * 16 / 9)); }
+  .app.fs:not(.mini-mode) .video-card { width: min(100cqw, calc((100cqh - 24px - var(--band)) * 16 / 9)); }
+  .app:not(.mini-mode) .upnext {
+    left: 50%; right: auto; bottom: 0; translate: -50% 0; width: min(100%, 880px); max-height: calc(var(--band) + 32px); overflow: hidden;
+    grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--s-3); padding: var(--s-2) var(--s-3);
+  }
+  .app:not(.mini-mode) .upnext .un-head { flex-direction: column-reverse; align-items: flex-start; gap: var(--s-1); padding-left: 0; }
+  .app:not(.mini-mode) .un-list { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: var(--s-2); }
+  .app:not(.mini-mode) .chant { inset: auto 0 0 0; height: calc(var(--band) + 32px); gap: var(--s-1); overflow: hidden; }
+  .app:not(.mini-mode) .chant-name { font-size: clamp(2rem, min(9cqw, 12cqh), 4.5rem); }
+  .app:not(.mini-mode) .chant .btn { margin-top: var(--s-1); }
+}
+/* Teléfono en horizontal: el video se arrima a la izquierda y el fanchant ocupa el hueco de la derecha. */
+@media (max-height: 500px) and (orientation: landscape) {
+  body.chanting .app:not(.mini-mode) .video-card { justify-self: start; }
+  .app:not(.mini-mode) .chant { inset: 0 0 0 calc(min(100cqw, (100cqh - 8px) * 16 / 9) + var(--s-2)); gap: var(--s-1); overflow: hidden; }
+  .app:not(.mini-mode) .chant-name { font-size: clamp(1.75rem, 7cqw, 3rem); }
+  .app:not(.mini-mode) .chant .btn { margin-top: var(--s-1); }
+}
 .mini-grip { flex: none; width: 10px; height: 18px; margin-right: var(--s-1); background: radial-gradient(circle, var(--muted) 1.4px, transparent 1.6px) 0 0 / 5px 6px; opacity: 0.8; }
 .mini-title { flex: 1; min-width: 0; font-size: var(--fs-14); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -2131,22 +2165,28 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 /* I-10 · teléfono: "A continuación" ocupa el hueco bajo el video (no flota) */
 @media (max-width: 640px) {
   /* Debajo del video; deja el hueco de la tira de letra solo si está visible */
+  .stage { --un-top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + var(--s-3)); }
   .upnext {
-    --un-top: calc(36px + min(100cqw, (100cqh - 64px) * 16 / 9) * 9 / 16 + var(--s-3));
     top: var(--un-top); bottom: auto; left: 0; right: 0; width: auto;
     max-height: calc(100cqh - var(--un-top)); overflow: auto;
     background: var(--surface-1); box-shadow: var(--e-1);
   }
   /* UI-04 · Explorar en teléfono: el mini video mide 200 px y su barra va debajo, nunca encima del reproductor de
      YouTube (sus políticas no permiten tapar el reproductor ni sus controles). */
-  .app.exploring .video-card { --mini-w: calc(100cqw - 16px); }
-  .app.exploring .mini-bar { height: 44px; }
+  .app.mini-mode .video-card { --mini-w: calc(100cqw - 16px); }
+  .app.mini-mode .mini-bar { height: 44px; }
   .app.exploring .progress { display: none; }
   .app.exploring .home-view { padding-bottom: var(--mini-pad, 272px); }
+  /* Fanchant: en el mismo hueco bajo el video, nunca encima del reproductor */
+  .app:not(.mini-mode) .chant { inset: var(--un-top) 0 0 0; border-radius: var(--r-lg); }
+  .app:not(.mini-mode) .chant-name { font-size: clamp(2rem, 11cqw, 3.5rem); }
   /* UI-05 · avisos encima del dock (zona del pulgar) */
   .toast { top: auto; bottom: calc(var(--pad) + var(--dock-h) + var(--s-3) + var(--safe-b)); }
   .toast[hidden] { transform: translate(-50%, 8px) scale(0.98); }
 }
+/* Si el aviso taparía el video (dodgeVideo en src/app.js), sube sobre la cabecera o baja sobre el pie de página. */
+.toast[data-at="top"] { top: calc(var(--pad) + var(--safe-t)); bottom: auto; }
+.toast[data-at="bottom"] { top: auto; bottom: calc(var(--pad) + var(--safe-b)); }
 :root[data-theme="light"] .home-view { background: linear-gradient(to bottom, rgba(244, 240, 251, 0.86), rgba(244, 240, 251, 0.72)); }
 :root[data-theme="light"] .sg-play { background: rgba(255, 255, 255, 0.92); }
 /* UI-07 / UI-01 · en los paneles, cada fila mide lo que su contenido (las filas con scroll horizontal,
@@ -2173,14 +2213,14 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 .al-item > .like-btn.sg-like { opacity: 1; }
 #mini-size svg, #mini-back svg { width: 18px; height: 18px; }
 /* Mini reproductor chico: 200 × 200 px (el mínimo que pide YouTube) en una esquina */
-.app.exploring .video-card.mini-sm { --mini-w: 200px; }
-.app.exploring .video-card.mini-sm .mini-title { display: none; }
-.app.exploring .video-card.mini-sm .mini-bar { justify-content: flex-end; }
+.app.mini-mode .video-card.mini-sm { --mini-w: 200px; }
+.app.mini-mode .video-card.mini-sm .mini-title { display: none; }
+.app.mini-mode .video-card.mini-sm .mini-bar { justify-content: flex-end; }
 /* Teléfono en horizontal: mini de 200 px en su propia columna a la derecha (no tapa tarjetas ni el dock) */
 @media (max-height: 500px) and (orientation: landscape) {
-  .app.exploring .video-card { --mini-w: 200px; }
-  .app.exploring .video-card .mini-title { display: none; }
-  .app.exploring .video-card .mini-bar { justify-content: flex-end; height: 44px; }
+  .app.mini-mode .video-card { --mini-w: 200px; }
+  .app.mini-mode .video-card .mini-title { display: none; }
+  .app.mini-mode .video-card .mini-bar { justify-content: flex-end; height: 44px; }
   .app.exploring .home-view { padding-right: 212px; padding-bottom: var(--s-5); }
 }
 
@@ -2322,7 +2362,7 @@ html {
 :root[data-theme="light"] .app.calm .ambient { background: linear-gradient(180deg, #ebe4fa 0%, var(--bg) 45%, #e9e1f7 100%); }
 .app.calm .big-bulb { filter: brightness(0.7); box-shadow: 0 0 40px 6px color-mix(in srgb, var(--c) 50%, transparent), inset 0 -20px 40px rgba(0, 0, 0, 0.35); }
 .app.calm .bulb { filter: brightness(0.8); }
-.app.calm .video-card, .app.calm.exploring .video-card { box-shadow: 0 0 0 1px var(--border-strong), var(--e-3); }
+.app.calm .video-card, .app.calm.mini-mode .video-card { box-shadow: 0 0 0 1px var(--border-strong), var(--e-3); }
 .app.calm.playing-now .dock { border-color: var(--border); box-shadow: var(--hairline-top), var(--e-2); }
 .app.calm.playing-now .ibtn.play { box-shadow: 0 6px 20px -6px rgba(0, 0, 0, 0.7); }
 .app.calm.playing-now .art, .app.calm .song.playing .thumb::after, .app.calm .chant-name.pop,
@@ -2343,7 +2383,7 @@ html {
   :root[data-theme="light"] .ambient { background: linear-gradient(180deg, #ebe4fa 0%, var(--bg) 45%, #e9e1f7 100%); }
   .big-bulb { filter: brightness(0.7); box-shadow: 0 0 40px 6px color-mix(in srgb, var(--c) 50%, transparent), inset 0 -20px 40px rgba(0, 0, 0, 0.35); }
   .bulb { filter: brightness(0.8); }
-  .video-card, .app.exploring .video-card { box-shadow: 0 0 0 1px var(--border-strong), var(--e-3); }
+  .video-card, .app.mini-mode .video-card { box-shadow: 0 0 0 1px var(--border-strong), var(--e-3); }
   .playing-now .dock { border-color: var(--border); box-shadow: var(--hairline-top), var(--e-2); }
   .playing-now .ibtn.play { box-shadow: 0 6px 20px -6px rgba(0, 0, 0, 0.7); }
   .playing-now .art, .song.playing .thumb::after, .chant-name.pop, .np-letters, .np-letters .ch, .hero-title, .empty-art { animation: none !important; }
@@ -2409,8 +2449,8 @@ html {
 
   /* Superficies flotantes: borde propio (sin sombra ni vidrio no se distinguen del fondo) */
   .panel, .np-side, .dock, .side, .menu-pop, #song-menu, .m-nav-menu, .toast, .tip, .coach, .coach-pill, .upnext, .support-nudge,
-  .dlg, .lyrics-bar, .style-chip, .cq-ghost, .app.exploring .video-card, .explore-head { border: 1px solid CanvasText; }
-  .app.exploring .mini-bar { border-bottom: 1px solid CanvasText; }
+  .dlg, .lyrics-bar, .style-chip, .cq-ghost, .app.mini-mode .video-card, .explore-head { border: 1px solid CanvasText; }
+  .app.mini-mode .mini-bar { border-bottom: 1px solid CanvasText; }
   .toast-action, .ibtn.play { border: 1px solid ButtonText; }
 
   /* El color de las luces y las paletas es contenido: se conserva */
