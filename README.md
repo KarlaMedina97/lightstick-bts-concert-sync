@@ -112,3 +112,6 @@ Si te gusta, puedes apoyarlo desde el botón **Sponsor** del repositorio o los e
 ## Licencia
 
 [MIT](LICENSE). Los nombres de artistas y álbumes se usan solo para identificar la música; pertenecen a sus dueños.
+
+La licencia MIT cubre solo el código propio del proyecto. **No cubre `vendor/gsap/`**: GSAP 3.13.0 se usa con la
+licencia Standard «sin costo» de GreenSock (ver [`vendor/gsap/LICENSE.txt`](vendor/gsap/LICENSE.txt) y https://gsap.com/standard-license).
