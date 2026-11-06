@@ -1319,7 +1319,7 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 .app.home .progress { visibility: hidden; }
 .home-view {
   position: absolute; inset: 0; z-index: 3; overflow: auto; overscroll-behavior: contain;
-  display: flex; flex-direction: column; gap: var(--s-4); padding: 0 var(--s-1) var(--s-5); /* compacto: las canciones a la vista antes */
+  display: flex; flex-direction: column; gap: var(--s-4); padding: 0 10px var(--s-5); /* 10 px: los anillos de foco y el brillo de las tarjetas no se cortan */
   scrollbar-gutter: stable;
   -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), transparent);
   animation: view-in var(--dur-4) var(--ease-out);
@@ -1540,12 +1540,13 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 @media (max-width: 640px) {
   #btn-side, .top-actions { display: none; }
   .hud-top { justify-content: space-between; }
-  .home-view { padding: 0 0 var(--s-4); gap: var(--s-4); }
+  .home-view { padding: 0 10px var(--s-4); gap: var(--s-4); }
   .home-hero { padding: var(--s-3) var(--s-4); gap: var(--s-3); }
   .hero-cta { width: 100%; }
   .hero-cta .btn { flex: 1 1 auto; min-height: var(--tap); font-size: var(--fs-14); padding: 0 var(--s-3); }
   .shelves { gap: var(--s-5); }
-  .sg-row { grid-auto-flow: column; grid-auto-columns: 164px; grid-template-columns: none; overflow-x: auto; scroll-snap-type: x mandatory; gap: var(--s-3); padding: 0 var(--s-1) var(--s-2); scroll-padding-inline: var(--s-1); scrollbar-width: none; }
+  .sg-row { grid-auto-flow: column; grid-auto-columns: 164px; grid-template-columns: none; overflow-x: auto; scroll-snap-type: x mandatory; gap: var(--s-3); padding: 8px 10px 12px; margin: -8px -10px -4px; scroll-padding-inline: 10px; scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent); } /* la última tarjeta se desvanece: se nota que hay más */
   .sg-row::-webkit-scrollbar { display: none; }
   .sg-item { scroll-snap-align: start; }
   .upnext { left: 0; right: 0; bottom: 0; width: auto; }
@@ -2491,4 +2492,20 @@ html {
   .app.with-np .stage { margin-right: calc(var(--np-w) - var(--pad) + var(--s-4)); }
 }
 /* «Tu historial» y demás filas: el anillo de la tarjeta que suena ya no se corta arriba ni a la izquierda */
-.sg-row { padding-top: 6px; padding-inline: 6px; margin-top: -6px; margin-inline: -6px; }
+
+/* ---------- Auditoría UX (2026-11-05) ---------- */
+/* Filas de tarjetas en escritorio: aire para el anillo de foco y el brillo al pasar el puntero */
+@media (min-width: 641px) { .sg-row { padding: 8px; margin: -8px; } }
+.sg-item:hover .sg-thumb, .sg-play:hover { box-shadow: 0 12px 28px -14px var(--glow); }
+/* Filtros en escritorio: una fila que se desliza y se acomoda al inicio de cada chip (ninguno queda partido) */
+.explore-head .filters { scroll-snap-type: x proximity; scroll-padding-inline: 4px; }
+.explore-head .filters > * { scroll-snap-align: start; }
+/* Títulos que reciben el foco por código (para el lector de pantalla): sin el anillo apretado */
+[tabindex="-1"]:focus:not(:focus-visible), h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus, h3[tabindex="-1"]:focus { outline: none; }
+/* Al buscar, los resultados van primero */
+.home-view.searching #onboard, .app.exploring #onboard { display: none; }
+/* Contadores en cero: no se muestran */
+.lib-n.zero { display: none; }
+.song-search { text-overflow: ellipsis; }
+/* Panel de ajustes: se nota que hay más abajo y el último renglón no queda cortado */
+.panel-body { scroll-padding-bottom: var(--s-5); }

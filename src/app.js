@@ -1013,6 +1013,7 @@ function loadIndex(i, { autoplay = true } = {}) {
   $("np-open").dataset.tip = `Ahora suena: ${song.title}`;
   maybeNudgeSupport();
   maybeAskFeedback();
+  syncSongUrl(album.id === "mine" ? null : song.id);
   if (view === "video") $("home").hidden = true;
   setView(view);
   document.title = `${song.title} · LumiParty`;
@@ -1819,7 +1820,7 @@ function clearExplore() {
 }
 /** El chip «✕ Limpiar» va primero en la fila de filtros, solo cuando hay algo que limpiar. */
 function syncClearChip() {
-  const active = listFilter !== "all" || exploreAll || exploreType === "albums" || Boolean(searchQuery.trim());
+  const active = listFilter !== "all" || Boolean(searchQuery.trim()); // Álbumes o "ver todo" son vistas, no filtros
   document.querySelectorAll("[data-filters]").forEach((box) => {
     let c = box.querySelector(".filter-chip.clear");
     if (active && !c) {
@@ -2217,6 +2218,22 @@ function bindTheme() {
     try { saved = localStorage.getItem(THEME_KEY); } catch {}
     if (!saved) applyTheme(currentTheme());
   });
+}
+
+/** La dirección dice qué suena: /player/?song=dynamite (sin apilar historial; conserva #me-gusta o #mis-videos). */
+function syncSongUrl(id) {
+  const q = id && /^[a-z0-9-]{1,80}$/.test(id) ? `?song=${id}` : "";
+  if (location.search === q) return;
+  try { history.replaceState(history.state, "", location.pathname + q + location.hash); } catch {}
+}
+
+/** Los contadores de la biblioteca en 0 no se muestran (ni en la barra compacta). */
+function watchZeroBadges() {
+  for (const b of document.querySelectorAll(".lib-n")) {
+    const sync = () => b.classList.toggle("zero", b.textContent.trim() === "0" || !b.textContent.trim());
+    sync();
+    new MutationObserver(sync).observe(b, { childList: true, characterData: true, subtree: true });
+  }
 }
 
 // ---------- Vista Luces: bola o ARMY Bomb 3D ----------
@@ -3226,6 +3243,7 @@ async function init() {
   if (current < 0) { selectViewTab("view-explore"); setView("explore"); }
   bindLikesPage();
   bindLightsView();
+  watchZeroBadges();
   bindFiltersToggle();
   addEventListener("resize", () => requestAnimationFrame(markTitleOverflow));
   bindTabs(["rs-now", "rs-cola"], (id) => setSideTab(id.slice(3), false));
@@ -3350,6 +3368,11 @@ async function init() {
   $("ob-close").onclick = () => { store.set(ONBOARD_KEY, "closed"); syncOnboard(); $("main").focus({ preventScroll: true }); };
   syncOnboard();
   if (params.has("guide") || params.has("guia")) guide.open();
+  // Parámetros de un solo uso (?guide=1, ?song=…): se leen y se quitan, así la dirección no los arrastra.
+  // La canción que suena se refleja después como ?song=<id> (enlace para compartir; recargar la retoma).
+  if (["guide", "guia", "song"].some((k) => params.has(k))) {
+    try { history.replaceState(history.state, "", location.pathname + location.hash); } catch {}
+  }
   // El recorrido no se apila con la guía: si está abierta, espera.
   startTourLater = () => { if (Tour.done) return; if ($("guide").hidden) startTour(); else setTimeout(() => startTourLater(), 5000); };
   // Si la persona omite la guía, el recorrido empieza después.
