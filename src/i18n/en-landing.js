@@ -1,5 +1,6 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
+  "Presiónalo y agítalo": "Press it and shake it",
   "Tócalo y agítalo": "Tap it and shake it",
   "Código en GitHub (se abre en otra pestaña)": "Code on GitHub (opens in a new tab)",
   "Código en GitHub ↗": "Code on GitHub ↗",
