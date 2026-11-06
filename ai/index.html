@@ -31,41 +31,83 @@
   <link rel="stylesheet" href="../fonts/fonts.css">
   <link rel="stylesheet" href="../landing.css">
   <script type="module" src="../src/i18n.js"></script>
+  <script type="module" src="../src/doc.js"></script>
 </head>
 <body class="doc">
   <header class="nav">
-    <a class="brand" href="../"><img src="../icons/icon.svg" alt="" width="28" height="28"> LumiParty</a>
-    <nav aria-label="Principal"><button class="nav-lang" type="button" data-lang-toggle>EN</button><a class="nav-cta" href="../player/">Ir a la app</a></nav>
+    <a class="brand" href="../"><img src="../icons/icon.svg" alt="" width="28" height="28"> <span class="brand-name">LumiParty</span></a>
+    <nav aria-label="Principal"><a class="nav-back" href="../"><span aria-hidden="true">←</span> Inicio</a><button class="nav-lang" type="button" data-lang-toggle>EN</button><a class="nav-cta" href="../player/">Ir a la app</a></nav>
   </header>
-  <main class="doc-body">
-    <h1>Política de IA</h1>
-    <p class="lead">Cómo se usa (y cómo no) la inteligencia artificial en LumiParty.</p>
+  <main class="doc-body" id="contenido" tabindex="-1">
+    <header class="doc-hero">
+      <p class="eyebrow">Transparencia</p>
+      <h1>Política de IA</h1>
+      <p class="lead">Cómo se usa (y cómo no) la inteligencia artificial en LumiParty.</p>
+      <p class="doc-date"><span class="doc-date-ico" aria-hidden="true">🗓️</span> <time datetime="2026-11-05">Actualizada el 5 de noviembre de 2026.</time></p>
+    </header>
 
-    <h2>En la app</h2>
-    <ul>
-      <li><strong>No hay IA procesando tus datos.</strong> LumiParty no envía tu sonido, tu cámara, tus videos ni tus ajustes a ningún servicio de IA.</li>
-      <li><strong>Las luces son algoritmos propios</strong>: se calculan en tu dispositivo a partir del ritmo, la energía y la paleta de cada canción. No son generadas por un modelo de IA.</li>
-      <li>El micrófono y la cámara (opcionales) se analizan en tu dispositivo y nunca se graban ni se envían.</li>
-    </ul>
+    <div class="doc-layout">
+      <nav class="doc-toc" aria-label="En esta página">
+        <details>
+          <summary>En esta página</summary>
+          <ol>
+            <li><a href="#app">En la app</a></li>
+            <li><a href="#desarrollo">En el desarrollo</a></li>
+            <li><a href="#rastreadores">Rastreadores y asistentes de IA</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ol>
+        </details>
+      </nav>
 
-    <h2>En el desarrollo</h2>
-    <ul>
-      <li>Parte del código y de los textos se escribió con ayuda de asistentes de IA. <strong>Todo lo revisa una persona</strong> antes de publicarse, y pasa las mismas pruebas automáticas que el resto del proyecto.</li>
-      <li>Nunca usamos IA para copiar trabajo ajeno: ni secuencias de luces de otras personas, ni código de otras apps, ni letras de canciones.</li>
-      <li>Las luces de cada canción combinan diseño propio, fuentes públicas (prensa y relatos de fans sobre los conciertos) y, si tú las editas, tus propias secuencias.</li>
-    </ul>
+      <article class="doc-article">
+        <section id="app">
+          <h2><span class="h-ico" aria-hidden="true">📱</span> En la app</h2>
+          <aside class="callout">
+            <p class="callout-title"><span class="callout-ico" aria-hidden="true">🙅</span> Sin IA con tus datos</p>
+            <p><strong>No hay IA procesando tus datos.</strong> LumiParty no envía tu sonido, tu cámara, tus videos ni tus ajustes a ningún servicio de IA.</p>
+          </aside>
+          <ul>
+            <li><strong>Las luces son algoritmos propios</strong>: se calculan en tu dispositivo a partir del ritmo, la energía y la paleta de cada canción. No son generadas por un modelo de IA.</li>
+            <li>El micrófono y la cámara (opcionales) se analizan en tu dispositivo y nunca se graban ni se envían.</li>
+          </ul>
+        </section>
 
-    <h2>Rastreadores y asistentes de IA</h2>
-    <ul>
-      <li>El sitio es público y su código es abierto (licencia MIT). Los buscadores y asistentes pueden leerlo; hay un resumen para ellos en <a href="../llms.txt">llms.txt</a>.</li>
-      <li>Los videos, la música y las marcas pertenecen a sus dueños (HYBE, BIGHIT MUSIC y los canales oficiales de YouTube): la licencia del proyecto no los incluye.</li>
-    </ul>
+        <section id="desarrollo">
+          <h2><span class="h-ico" aria-hidden="true">🛠️</span> En el desarrollo</h2>
+          <ul>
+            <li>Parte del código y de los textos se escribió con ayuda de asistentes de IA. <strong>Todo lo revisa una persona</strong> antes de publicarse, y pasa las mismas pruebas automáticas que el resto del proyecto.</li>
+            <li>Nunca usamos IA para copiar trabajo ajeno: ni secuencias de luces de otras personas, ni código de otras apps, ni letras de canciones.</li>
+            <li>Las luces de cada canción combinan diseño propio, fuentes públicas (prensa y relatos de fans sobre los conciertos) y, si tú las editas, tus propias secuencias.</li>
+          </ul>
+        </section>
 
-    <h2>Contacto</h2>
-    <p>¿Dudas sobre esta política? Escríbenos abriendo un tema en <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync/issues" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
-    <p class="hint">Actualizada el 5 de noviembre de 2026.</p>
-    <p class="doc-links"><a href="../privacy/">Privacidad</a> · <a href="../terms/">Términos de uso</a> · <a href="../ai/">Política de IA</a></p>
-    <p class="hint">Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS.</p>
+        <section id="rastreadores">
+          <h2><span class="h-ico" aria-hidden="true">🤖</span> Rastreadores y asistentes de IA</h2>
+          <ul>
+            <li>El sitio es público y su código es abierto (licencia MIT). Los buscadores y asistentes pueden leerlo; hay un resumen para ellos en <a href="../llms.txt">llms.txt</a>.</li>
+            <li>Los videos, la música y las marcas pertenecen a sus dueños (HYBE, BIGHIT MUSIC y los canales oficiales de YouTube): la licencia del proyecto no los incluye.</li>
+          </ul>
+        </section>
+
+        <section id="contacto">
+          <h2><span class="h-ico" aria-hidden="true">✉️</span> Contacto</h2>
+          <div class="doc-card">
+            <p>¿Dudas sobre esta política? Escríbenos abriendo un tema en <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync/issues" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+          </div>
+        </section>
+      </article>
+    </div>
   </main>
+  <footer class="doc-foot">
+    <nav aria-label="Documentos">
+      <ul class="doc-foot-links">
+        <li><a href="../privacy/">Privacidad</a></li>
+        <li><a href="../terms/">Términos de uso</a></li>
+        <li><a href="../ai/" aria-current="page">Política de IA</a></li>
+        <li><a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync" target="_blank" rel="noopener noreferrer">Código en GitHub</a></li>
+      </ul>
+    </nav>
+    <p class="hint">Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS.</p>
+  </footer>
 </body>
 </html>

@@ -326,6 +326,20 @@ export default {
     "Menemukan masalah keamanan? Laporkan secara pribadi seperti dijelaskan di",
   "la política de seguridad": "kebijakan keamanan",
   "Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS.": "Proyek fans yang tidak berafiliasi dengan HYBE, BIGHIT MUSIC, maupun BTS.",
+
+  // ---------- Páginas de texto: portada, índice, recuadros y pie ----------
+  "Tus datos": "Datamu",
+  "Condiciones": "Ketentuan",
+  "Transparencia": "Transparansi",
+  "Error 404": "Galat 404",
+  "Actualizada el 6 de noviembre de 2026.": "Diperbarui 6 November 2026.",
+  "En esta página": "Di halaman ini",
+  "Sin publicidad": "Tanpa iklan",
+  "No oficial": "Tidak resmi",
+  "Importante": "Penting",
+  "Cómo pedir que retiremos contenido": "Cara meminta kami menghapus konten",
+  "Sin IA con tus datos": "Tanpa AI untuk datamu",
+  "Documentos": "Dokumen",
 };
 
 // Colores y momentos de la demo (landing.js arma "Color en el momento: …").

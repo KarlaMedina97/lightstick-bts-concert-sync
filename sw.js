@@ -16,6 +16,7 @@ const SHELL = [
   "src/camera.js",
   "src/mobile-nav.js",
   "src/i18n.js",
+  "src/doc.js",
   "src/announce.js",
   "src/nav-menu.js",
   "src/videopalette.js",

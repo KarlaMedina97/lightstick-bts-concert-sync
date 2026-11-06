@@ -326,6 +326,20 @@ export default {
     "Found a security issue? Report it privately as explained in",
   "la política de seguridad": "the security policy",
   "Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS.": "Fan project not affiliated with HYBE, BIGHIT MUSIC or BTS.",
+
+  // ---------- Páginas de texto: portada, índice, recuadros y pie ----------
+  "Tus datos": "Your data",
+  "Condiciones": "Conditions",
+  "Transparencia": "Transparency",
+  "Error 404": "404 error",
+  "Actualizada el 6 de noviembre de 2026.": "Updated November 6, 2026.",
+  "En esta página": "On this page",
+  "Sin publicidad": "No advertising",
+  "No oficial": "Unofficial",
+  "Importante": "Important",
+  "Cómo pedir que retiremos contenido": "How to ask us to remove content",
+  "Sin IA con tus datos": "No AI with your data",
+  "Documentos": "Documents",
 };
 
 // Colores y momentos de la demo (landing.js arma "Color en el momento: …").
