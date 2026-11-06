@@ -320,6 +320,20 @@ export default {
     "보안 문제를 발견했나요? 다음 안내에 따라 비공개로 제보해 주세요:",
   "la política de seguridad": "보안 정책",
   "Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS.": "HYBE, BIGHIT MUSIC, BTS와 관련 없는 팬 프로젝트예요.",
+
+  // ---------- Páginas de texto: portada, índice, recuadros y pie ----------
+  "Tus datos": "내 데이터",
+  "Condiciones": "이용 조건",
+  "Transparencia": "투명성",
+  "Error 404": "오류 404",
+  "Actualizada el 6 de noviembre de 2026.": "2026년 11월 6일 업데이트.",
+  "En esta página": "이 페이지의 내용",
+  "Sin publicidad": "광고 없음",
+  "No oficial": "비공식",
+  "Importante": "중요",
+  "Cómo pedir que retiremos contenido": "콘텐츠 삭제를 요청하는 방법",
+  "Sin IA con tus datos": "내 데이터에 AI를 쓰지 않아요",
+  "Documentos": "문서",
 };
 
 // Colores y momentos de la demo (landing.js arma "Color en el momento: …").

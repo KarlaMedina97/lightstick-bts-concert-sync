@@ -31,53 +31,110 @@
   <link rel="stylesheet" href="../fonts/fonts.css">
   <link rel="stylesheet" href="../landing.css">
   <script type="module" src="../src/i18n.js"></script>
+  <script type="module" src="../src/doc.js"></script>
 </head>
 <body class="doc">
   <header class="nav">
-    <a class="brand" href="../"><img src="../icons/icon.svg" alt="" width="28" height="28"> LumiParty</a>
-    <nav aria-label="Principal"><button class="nav-lang" type="button" data-lang-toggle>EN</button><a class="nav-cta" href="../player/">Ir a la app</a></nav>
+    <a class="brand" href="../"><img src="../icons/icon.svg" alt="" width="28" height="28"> <span class="brand-name">LumiParty</span></a>
+    <nav aria-label="Principal"><a class="nav-back" href="../"><span aria-hidden="true">←</span> Inicio</a><button class="nav-lang" type="button" data-lang-toggle>EN</button><a class="nav-cta" href="../player/">Ir a la app</a></nav>
   </header>
-  <main class="doc-body">
-    <h1>Términos de uso</h1>
-    <p class="lead">Lo importante, en corto. Al usar LumiParty aceptas estas condiciones.</p>
+  <main class="doc-body" id="contenido" tabindex="-1">
+    <header class="doc-hero">
+      <p class="eyebrow">Condiciones</p>
+      <h1>Términos de uso</h1>
+      <p class="lead">Lo importante, en corto. Al usar LumiParty aceptas estas condiciones.</p>
+      <p class="doc-date"><span class="doc-date-ico" aria-hidden="true">🗓️</span> <time datetime="2026-11-05">Actualizados el 5 de noviembre de 2026.</time></p>
+    </header>
 
-    <h2>Qué es LumiParty</h2>
-    <ul>
-      <li>Un proyecto de fans, <strong>gratis, no oficial y de código abierto</strong>, que sincroniza tu ARMY Bomb con videos oficiales de YouTube.</li>
-      <li>No tiene afiliación con HYBE, BIGHIT MUSIC ni BTS. «BTS», «ARMY» y «ARMY Bomb» son marcas de sus dueños y se usan solo para describir con qué funciona la app.</li>
-    </ul>
+    <div class="doc-layout">
+      <nav class="doc-toc" aria-label="En esta página">
+        <details>
+          <summary>En esta página</summary>
+          <ol>
+            <li><a href="#que-es">Qué es LumiParty</a></li>
+            <li><a href="#cuidado">Úsala con cuidado</a></li>
+            <li><a href="#videos">Videos y contenido</a></li>
+            <li><a href="#garantia">Sin garantía</a></li>
+            <li><a href="#donaciones">Donaciones</a></li>
+            <li><a href="#derechos">Derechos de autor y marcas</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ol>
+        </details>
+      </nav>
 
-    <h2>Úsala con cuidado</h2>
-    <ul>
-      <li><strong>Luces y fotosensibilidad:</strong> el modo seguro (activado por defecto) limita los destellos a 3 por segundo. Si tienes epilepsia fotosensible, no lo desactives y deja de usar la app si te sientes mal.</li>
-      <li>Usa pilas nuevas en tu ARMY Bomb y no lo dejes encendido sin vigilar.</li>
-      <li>La conexión Bluetooth depende de tu navegador y tu dispositivo. No todo el hardware está probado.</li>
-      <li>Usar apps no oficiales con tu ARMY Bomb puede no estar cubierto por la garantía del fabricante.</li>
-    </ul>
+      <article class="doc-article">
+        <section id="que-es">
+          <h2><span class="h-ico" aria-hidden="true">✨</span> Qué es LumiParty</h2>
+          <ul>
+            <li>Un proyecto de fans, <strong>gratis, no oficial y de código abierto</strong>, que sincroniza tu ARMY Bomb con videos oficiales de YouTube.</li>
+          </ul>
+          <aside class="callout">
+            <p class="callout-title"><span class="callout-ico" aria-hidden="true">🏷️</span> No oficial</p>
+            <p>No tiene afiliación con HYBE, BIGHIT MUSIC ni BTS. «BTS», «ARMY» y «ARMY Bomb» son marcas de sus dueños y se usan solo para describir con qué funciona la app.</p>
+          </aside>
+        </section>
 
-    <h2>Videos y contenido</h2>
-    <ul>
-      <li>Los videos se reproducen desde YouTube y se rigen por sus <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">términos</a>. LumiParty no guarda ni distribuye audio ni video.</li>
-      <li>Si agregas videos por enlace, usa los de canales oficiales. Los videos que agregas se guardan solo en tu dispositivo.</li>
-    </ul>
+        <section id="cuidado">
+          <h2><span class="h-ico" aria-hidden="true">⚠️</span> Úsala con cuidado</h2>
+          <aside class="callout warn">
+            <p class="callout-title"><span class="callout-ico" aria-hidden="true">💡</span> Importante</p>
+            <p><strong>Luces y fotosensibilidad:</strong> el modo seguro (activado por defecto) limita los destellos a 3 por segundo. Si tienes epilepsia fotosensible, no lo desactives y deja de usar la app si te sientes mal.</p>
+          </aside>
+          <ul>
+            <li>Usa pilas nuevas en tu ARMY Bomb y no lo dejes encendido sin vigilar.</li>
+            <li>La conexión Bluetooth depende de tu navegador y tu dispositivo. No todo el hardware está probado.</li>
+            <li>Usar apps no oficiales con tu ARMY Bomb puede no estar cubierto por la garantía del fabricante.</li>
+          </ul>
+        </section>
 
-    <h2>Sin garantía</h2>
-    <p>La app se ofrece «tal cual», sin garantías, como dice su <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">licencia MIT</a>. Podemos cambiarla o retirar funciones en cualquier momento.</p>
-    <p>En la medida en que lo permita la ley, quienes hacen LumiParty no responden por daños ni pérdidas derivados de usar la app, incluidos fallos de tu dispositivo o de tu ARMY Bomb.</p>
+        <section id="videos">
+          <h2><span class="h-ico" aria-hidden="true">🎬</span> Videos y contenido</h2>
+          <ul>
+            <li>Los videos se reproducen desde YouTube y se rigen por sus <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">términos</a>. LumiParty no guarda ni distribuye audio ni video.</li>
+            <li>Si agregas videos por enlace, usa los de canales oficiales. Los videos que agregas se guardan solo en tu dispositivo.</li>
+          </ul>
+        </section>
 
-    <h2>Donaciones</h2>
-    <p>Las donaciones cubren solo el dominio y el tiempo de desarrollo del código. No dan acceso a ningún contenido: todo es gratis. LumiParty no vende ni cobra por videos, música ni marcas de terceros.</p>
+        <section id="garantia">
+          <h2><span class="h-ico" aria-hidden="true">📄</span> Sin garantía</h2>
+          <p>La app se ofrece «tal cual», sin garantías, como dice su <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">licencia MIT</a>. Podemos cambiarla o retirar funciones en cualquier momento.</p>
+          <p>En la medida en que lo permita la ley, quienes hacen LumiParty no responden por daños ni pérdidas derivados de usar la app, incluidos fallos de tu dispositivo o de tu ARMY Bomb.</p>
+        </section>
 
-    <h2>Derechos de autor y marcas</h2>
-    <p>Si eres titular de derechos y quieres que retiremos un video, una marca o cualquier contenido, escríbenos y lo retiramos en un máximo de 72 h.</p>
-    <!-- TODO: correo legal del responsable -->
-    <p>Por ahora, escríbenos abriendo un tema en <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync/issues" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+        <section id="donaciones">
+          <h2><span class="h-ico" aria-hidden="true">💜</span> Donaciones</h2>
+          <p>Las donaciones cubren solo el dominio y el tiempo de desarrollo del código. No dan acceso a ningún contenido: todo es gratis. LumiParty no vende ni cobra por videos, música ni marcas de terceros.</p>
+        </section>
 
-    <h2>Contacto</h2>
-    <p>¿Algo no está bien? Abre un tema en <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync/issues" target="_blank" rel="noopener noreferrer">GitHub</a> y lo atendemos.</p>
-    <p class="hint">Actualizados el 5 de noviembre de 2026.</p>
-    <p class="doc-links"><a href="../privacy/">Privacidad</a> · <a href="../terms/">Términos de uso</a> · <a href="../ai/">Política de IA</a></p>
-    <p class="hint">Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS.</p>
+        <section id="derechos">
+          <h2><span class="h-ico" aria-hidden="true">©️</span> Derechos de autor y marcas</h2>
+          <aside class="callout info">
+            <p class="callout-title"><span class="callout-ico" aria-hidden="true">📮</span> Cómo pedir que retiremos contenido</p>
+            <p>Si eres titular de derechos y quieres que retiremos un video, una marca o cualquier contenido, escríbenos y lo retiramos en un máximo de 72 h.</p>
+            <!-- TODO: correo legal del responsable -->
+            <p>Por ahora, escríbenos abriendo un tema en <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync/issues" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+          </aside>
+        </section>
+
+        <section id="contacto">
+          <h2><span class="h-ico" aria-hidden="true">✉️</span> Contacto</h2>
+          <div class="doc-card">
+            <p>¿Algo no está bien? Abre un tema en <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync/issues" target="_blank" rel="noopener noreferrer">GitHub</a> y lo atendemos.</p>
+          </div>
+        </section>
+      </article>
+    </div>
   </main>
+  <footer class="doc-foot">
+    <nav aria-label="Documentos">
+      <ul class="doc-foot-links">
+        <li><a href="../privacy/">Privacidad</a></li>
+        <li><a href="../terms/" aria-current="page">Términos de uso</a></li>
+        <li><a href="../ai/">Política de IA</a></li>
+        <li><a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync" target="_blank" rel="noopener noreferrer">Código en GitHub</a></li>
+      </ul>
+    </nav>
+    <p class="hint">Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS.</p>
+  </footer>
 </body>
 </html>

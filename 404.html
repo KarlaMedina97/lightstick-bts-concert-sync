@@ -31,18 +31,31 @@
   <link rel="stylesheet" href="/fonts/fonts.css">
   <link rel="stylesheet" href="/landing.css">
   <script type="module" src="/src/i18n.js"></script>
+  <script type="module" src="/src/doc.js"></script>
 </head>
-<body class="doc">
+<body class="doc doc-404">
   <header class="nav">
-    <a class="brand" href="/"><img src="/icons/icon.svg" alt="" width="28" height="28"> LumiParty</a>
-    <nav aria-label="Principal"><button class="nav-lang" type="button" data-lang-toggle>EN</button><a class="nav-cta" href="/player/">Ir a la app</a></nav>
+    <a class="brand" href="/"><img src="/icons/icon.svg" alt="" width="28" height="28"> <span class="brand-name">LumiParty</span></a>
+    <nav aria-label="Principal"><a class="nav-back" href="/"><span aria-hidden="true">←</span> Inicio</a><button class="nav-lang" type="button" data-lang-toggle>EN</button><a class="nav-cta" href="/player/">Ir a la app</a></nav>
   </header>
-  <main class="doc-body">
-    <h1>Esta luz se apagó</h1>
-    <p class="lead">La página que buscas no existe o cambió de dirección.</p>
-    <p><a class="btn primary" href="/player/">Abrir el reproductor</a> <a class="link-arrow" href="/">Ir al inicio <span aria-hidden="true">→</span></a></p>
-    <p class="doc-links"><a href="/privacy/">Privacidad</a> · <a href="/terms/">Términos de uso</a> · <a href="/ai/">Política de IA</a></p>
-    <p class="hint">Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS.</p>
+  <main class="doc-body" id="contenido" tabindex="-1">
+    <header class="doc-hero">
+      <p class="eyebrow">Error 404</p>
+      <h1>Esta luz se apagó</h1>
+      <p class="lead">La página que buscas no existe o cambió de dirección.</p>
+      <p class="doc-actions"><a class="btn primary" href="/player/">Abrir el reproductor</a> <a class="link-arrow" href="/">Ir al inicio <span aria-hidden="true">→</span></a></p>
+    </header>
   </main>
+  <footer class="doc-foot">
+    <nav aria-label="Documentos">
+      <ul class="doc-foot-links">
+        <li><a href="/privacy/">Privacidad</a></li>
+        <li><a href="/terms/">Términos de uso</a></li>
+        <li><a href="/ai/">Política de IA</a></li>
+        <li><a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync" target="_blank" rel="noopener noreferrer">Código en GitHub</a></li>
+      </ul>
+    </nav>
+    <p class="hint">Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS.</p>
+  </footer>
 </body>
 </html>

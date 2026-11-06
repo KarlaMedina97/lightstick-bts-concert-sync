@@ -31,55 +31,103 @@
   <link rel="stylesheet" href="../fonts/fonts.css">
   <link rel="stylesheet" href="../landing.css">
   <script type="module" src="../src/i18n.js"></script>
+  <script type="module" src="../src/doc.js"></script>
 </head>
 <body class="doc">
   <header class="nav">
-    <a class="brand" href="../"><img src="../icons/icon.svg" alt="" width="28" height="28"> LumiParty</a>
-    <nav aria-label="Principal"><button class="nav-lang" type="button" data-lang-toggle>EN</button><a class="nav-cta" href="../player/">Ir a la app</a></nav>
+    <a class="brand" href="../"><img src="../icons/icon.svg" alt="" width="28" height="28"> <span class="brand-name">LumiParty</span></a>
+    <nav aria-label="Principal"><a class="nav-back" href="../"><span aria-hidden="true">←</span> Inicio</a><button class="nav-lang" type="button" data-lang-toggle>EN</button><a class="nav-cta" href="../player/">Ir a la app</a></nav>
   </header>
-  <main class="doc-body">
-    <h1>Privacidad y seguridad</h1>
-    <p class="lead">LumiParty es un proyecto de fans, gratis y de código abierto. Está hecho para guardar lo mínimo posible.</p>
+  <main class="doc-body" id="contenido" tabindex="-1">
+    <header class="doc-hero">
+      <p class="eyebrow">Tus datos</p>
+      <h1>Privacidad y seguridad</h1>
+      <p class="lead">LumiParty es un proyecto de fans, gratis y de código abierto. Está hecho para guardar lo mínimo posible.</p>
+      <p class="doc-date"><span class="doc-date-ico" aria-hidden="true">🗓️</span> <time datetime="2026-11-06">Actualizada el 6 de noviembre de 2026.</time></p>
+    </header>
 
-    <h2>Qué guardamos</h2>
-    <ul>
-      <li><strong>Nada en servidores propios.</strong> El sitio es estático: no hay cuentas, ni contraseñas, ni base de datos de usuarios.</li>
-      <li><strong>En tu dispositivo</strong> (almacenamiento local del navegador): tus ajustes, tu lista Me gusta, el nickname que elijas para el reto, tus puntajes y los videos que agregues.
-        Puedes borrarlo todo en <em>Ajustes → Borrar mis datos de este dispositivo</em>.</li>
-      <li><strong>Métricas de uso, sin publicidad.</strong> Medimos el uso con Google Analytics 4: qué páginas y funciones se usan, con una cookie propia de analítica (_ga) que no sirve para publicidad. En la Unión Europea, el Reino Unido y Suiza no se guardan cookies. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se carga.</li>
-      <li>YouTube puede mostrar sus anuncios en los videos.</li>
-    </ul>
+    <div class="doc-layout">
+      <nav class="doc-toc" aria-label="En esta página">
+        <details>
+          <summary>En esta página</summary>
+          <ol>
+            <li><a href="#guardamos">Qué guardamos</a></li>
+            <li><a href="#permisos">Permisos del navegador</a></li>
+            <li><a href="#terceros">Servicios de terceros</a></li>
+            <li><a href="#seguridad">Medidas de seguridad</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ol>
+        </details>
+      </nav>
 
-    <h2>Permisos del navegador</h2>
-    <ul>
-      <li><strong>Bluetooth:</strong> solo se usa para enviar colores al lightstick que tú eliges en la lista del navegador. No se lee ningún otro dispositivo.</li>
-      <li><strong>Micrófono</strong> (modo micrófono, opcional): el sonido se analiza en tu dispositivo para calcular el ritmo y <strong>nunca se graba ni se envía</strong>. Se apaga al salir o al ocultar la página.</li>
-      <li><strong>Cámara</strong> (modo concierto, opcional): la imagen se reduce a 48×48 píxeles para detectar el color de un lightstick cercano. Se analiza en tu dispositivo y <strong>nunca se graba ni se envía</strong>. Se apaga al salir del modo concierto o de la página.</li>
-      <li><strong>Pantalla encendida:</strong> se pide solo mientras suena un video o el modo micrófono, y puedes desactivarlo en Ajustes.</li>
-    </ul>
+      <article class="doc-article">
+        <section id="guardamos">
+          <h2><span class="h-ico" aria-hidden="true">💾</span> Qué guardamos</h2>
+          <ul>
+            <li><strong>Nada en servidores propios.</strong> El sitio es estático: no hay cuentas, ni contraseñas, ni base de datos de usuarios.</li>
+            <li><strong>En tu dispositivo</strong> (almacenamiento local del navegador): tus ajustes, tu lista Me gusta, el nickname que elijas para el reto, tus puntajes y los videos que agregues.
+              Puedes borrarlo todo en <em>Ajustes → Borrar mis datos de este dispositivo</em>.</li>
+          </ul>
+          <aside class="callout">
+            <p class="callout-title"><span class="callout-ico" aria-hidden="true">🚫</span> Sin publicidad</p>
+            <ul>
+              <li><strong>Métricas de uso, sin publicidad.</strong> Medimos el uso con Google Analytics 4: qué páginas y funciones se usan, con una cookie propia de analítica (_ga) que no sirve para publicidad. En la Unión Europea, el Reino Unido y Suiza no se guardan cookies. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se carga.</li>
+              <li>YouTube puede mostrar sus anuncios en los videos.</li>
+            </ul>
+          </aside>
+        </section>
 
-    <h2>Servicios de terceros</h2>
-    <ul>
-      <li><strong>YouTube</strong> reproduce los videos en su modo de privacidad mejorada (<code>youtube-nocookie.com</code>). Al reproducir, YouTube aplica su propia
-        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a>.</li>
-      <li><strong>Ranking global y opiniones</strong> (solo si el proyecto los activa): se envían tu nickname, puntaje, o tu opinión anónima con el tipo de dispositivo.
-        Las opiniones no se pueden leer desde la web. Los nicknames no se verifican: no uses tu nombre real si no quieres.</li>
-      <li><strong>Opiniones sin servidor:</strong> se abre GitHub con tu texto listo; solo se publica si tú lo confirmas allí.</li>
-    </ul>
+        <section id="permisos">
+          <h2><span class="h-ico" aria-hidden="true">🔐</span> Permisos del navegador</h2>
+          <ul>
+            <li><strong>Bluetooth:</strong> solo se usa para enviar colores al lightstick que tú eliges en la lista del navegador. No se lee ningún otro dispositivo.</li>
+            <li><strong>Micrófono</strong> (modo micrófono, opcional): el sonido se analiza en tu dispositivo para calcular el ritmo y <strong>nunca se graba ni se envía</strong>. Se apaga al salir o al ocultar la página.</li>
+            <li><strong>Cámara</strong> (modo concierto, opcional): la imagen se reduce a 48×48 píxeles para detectar el color de un lightstick cercano. Se analiza en tu dispositivo y <strong>nunca se graba ni se envía</strong>. Se apaga al salir del modo concierto o de la página.</li>
+            <li><strong>Pantalla encendida:</strong> se pide solo mientras suena un video o el modo micrófono, y puedes desactivarlo en Ajustes.</li>
+          </ul>
+        </section>
 
-    <h2>Medidas de seguridad</h2>
-    <ul>
-      <li>Política de seguridad de contenido (CSP) que solo permite código del propio sitio, de YouTube y de Google Analytics.</li>
-      <li>Las librerías (three.js y GSAP) se sirven desde el propio sitio, copiadas de paquetes verificados de npm.</li>
-      <li>Todo lo que escriben las personas se valida y se muestra como texto, nunca como código.</li>
-      <li>Conexión cifrada (HTTPS) obligatoria.</li>
-    </ul>
+        <section id="terceros">
+          <h2><span class="h-ico" aria-hidden="true">🔗</span> Servicios de terceros</h2>
+          <ul>
+            <li><strong>YouTube</strong> reproduce los videos en su modo de privacidad mejorada (<code>youtube-nocookie.com</code>). Al reproducir, YouTube aplica su propia
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a>.</li>
+            <li><strong>Ranking global y opiniones</strong> (solo si el proyecto los activa): se envían tu nickname, puntaje, o tu opinión anónima con el tipo de dispositivo.
+              Las opiniones no se pueden leer desde la web. Los nicknames no se verifican: no uses tu nombre real si no quieres.</li>
+            <li><strong>Opiniones sin servidor:</strong> se abre GitHub con tu texto listo; solo se publica si tú lo confirmas allí.</li>
+          </ul>
+        </section>
 
-    <h2>Contacto</h2>
-    <p>¿Encontraste un problema de seguridad? Repórtalo en privado como se explica en
-      <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync/security/policy" target="_blank" rel="noopener noreferrer">la política de seguridad</a>.</p>
-    <p class="doc-links"><a href="../privacy/">Privacidad</a> · <a href="../terms/">Términos de uso</a> · <a href="../ai/">Política de IA</a></p>
-    <p class="hint">Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS.</p>
+        <section id="seguridad">
+          <h2><span class="h-ico" aria-hidden="true">🛡️</span> Medidas de seguridad</h2>
+          <ul class="checks">
+            <li>Política de seguridad de contenido (CSP) que solo permite código del propio sitio, de YouTube y de Google Analytics.</li>
+            <li>Las librerías (three.js y GSAP) se sirven desde el propio sitio, copiadas de paquetes verificados de npm.</li>
+            <li>Todo lo que escriben las personas se valida y se muestra como texto, nunca como código.</li>
+            <li>Conexión cifrada (HTTPS) obligatoria.</li>
+          </ul>
+        </section>
+
+        <section id="contacto">
+          <h2><span class="h-ico" aria-hidden="true">✉️</span> Contacto</h2>
+          <div class="doc-card">
+            <p>¿Encontraste un problema de seguridad? Repórtalo en privado como se explica en
+              <a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync/security/policy" target="_blank" rel="noopener noreferrer">la política de seguridad</a>.</p>
+          </div>
+        </section>
+      </article>
+    </div>
   </main>
+  <footer class="doc-foot">
+    <nav aria-label="Documentos">
+      <ul class="doc-foot-links">
+        <li><a href="../privacy/" aria-current="page">Privacidad</a></li>
+        <li><a href="../terms/">Términos de uso</a></li>
+        <li><a href="../ai/">Política de IA</a></li>
+        <li><a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync" target="_blank" rel="noopener noreferrer">Código en GitHub</a></li>
+      </ul>
+    </nav>
+    <p class="hint">Proyecto de fans sin afiliación con HYBE, BIGHIT MUSIC ni BTS.</p>
+  </footer>
 </body>
 </html>
