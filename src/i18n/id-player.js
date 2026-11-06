@@ -1,5 +1,7 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Califica LumiParty": "Beri nilai LumiParty",
+  "¿La usarías en una fiesta, una pijamada o un concierto?": "Apakah kamu akan memakainya di pesta, pesta piyama, atau konser?",
   "Toca una estrella": "Ketuk bintang",
   "¿Qué falló?": "Apa yang salah?",
   "Elige las que quieras": "Pilih sebanyak yang kamu mau",

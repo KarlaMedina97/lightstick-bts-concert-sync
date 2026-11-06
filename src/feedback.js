@@ -80,7 +80,7 @@ export async function sendFeedback(entry) {
   const body = [
     `**Calificación:** ${stars}`,
     `**Facilidad para conectar:** ${entry.ease ?? "—"} / 5`,
-    `**¿La usaría en un concierto?:** ${{ yes: "Sí", maybe: "Tal vez", no: "No" }[entry.would_use] ?? "—"}`,
+    `**¿La usaría en una fiesta, pijamada o concierto?:** ${{ yes: "Sí", maybe: "Tal vez", no: "No" }[entry.would_use] ?? "—"}`,
     `**Etiquetas:** ${entry.tags?.length ? entry.tags.join(", ") : "—"}`,
     `**Dispositivo:** ${entry.os ?? "—"} · ${entry.browser ?? "—"} · Bluetooth web: ${entry.bluetooth === null ? "—" : entry.bluetooth ? "sí" : "no"}`,
     "",

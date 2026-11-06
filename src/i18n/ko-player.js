@@ -1,5 +1,7 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Califica LumiParty": "LumiParty 평가하기",
+  "¿La usarías en una fiesta, una pijamada o un concierto?": "파티나 파자마 파티, 콘서트에서 쓸 것 같나요?",
   "Toca una estrella": "별을 눌러 주세요",
   "¿Qué falló?": "무엇이 문제였나요?",
   "Elige las que quieras": "원하는 만큼 골라 주세요",

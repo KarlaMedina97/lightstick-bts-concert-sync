@@ -83,10 +83,22 @@ const sticks = [];
 function toast(msg, ms = 4500, { assertive = false } = {}) {
   const el = $("toast");
   el.textContent = msg;
-  el.hidden = false;
+  fadeIn(el);
   say(msg, { assertive });
   clearTimeout(toast.timer);
-  toast.timer = setTimeout(() => (el.hidden = true), ms);
+  toast.timer = setTimeout(() => fadeOut(el), ms);
+}
+/** Aparecer / desvanecerse de verdad: [hidden] es display:none, así que primero se apaga la opacidad y luego se oculta. */
+function fadeIn(el) {
+  clearTimeout(el._fade);
+  el.classList.remove("leaving");
+  el.hidden = false;
+}
+function fadeOut(el, ms = 260) {
+  if (el.hidden) return;
+  clearTimeout(el._fade);
+  el.classList.add("leaving");
+  el._fade = setTimeout(() => { el.hidden = true; el.classList.remove("leaving"); }, ms);
 }
 const fmt = (s) => {
   s = Math.max(0, Math.floor(s || 0));
@@ -805,6 +817,13 @@ function bindFeedback() {
   };
   for (const i of form.querySelectorAll("input[name=rating]")) i.addEventListener("change", syncSteps);
   syncSteps();
+  // Desde el aviso: la estrella elegida ya viene marcada y aparecen sus preguntas.
+  bindFeedbackNudge((r, trigger) => {
+    const radio = $(`fb-r${r}`);
+    if (radio) radio.checked = true;
+    syncSteps();
+    showPanel("panel-feedback", trigger);
+  });
   form.onsubmit = async (e) => {
     e.preventDefault();
     const fd = new FormData(form);
@@ -821,6 +840,7 @@ function bindFeedback() {
     btn.disabled = false;
     status.textContent = r.message;
     if (r.ok) {
+      store.set(FB_ASK_KEY, { ...store.get(FB_ASK_KEY, {}), sent: Date.now() });
       form.reset();
       $("fb-count").textContent = "0/1000";
       syncSteps();
@@ -988,6 +1008,7 @@ function loadIndex(i, { autoplay = true } = {}) {
   }
   $("np-open").dataset.tip = `Ahora suena: ${song.title}`;
   maybeNudgeSupport();
+  maybeAskFeedback();
   if (view === "video") $("home").hidden = true;
   setView(view);
   document.title = `${song.title} · LumiParty`;
@@ -2011,7 +2032,7 @@ function bindLibrary() {
   $("btn-feedback-2").onclick = (e) => showPanel("panel-feedback", e.currentTarget);
   const sponsor = DONATIONS.find((d) => d.url)?.url ?? PROJECT.repo;
   ["lib-support", "ex-support", "nudge-link"].forEach((id) => ($(id).href = sponsor));
-  $("nudge-close").onclick = () => ($("support-nudge").hidden = true);
+  $("nudge-close").onclick = () => fadeOut($("support-nudge"));
 }
 
 // ---------- Ahora suena (columna derecha ≥ 1280 px; hoja en pantallas chicas) ----------
@@ -2193,15 +2214,61 @@ function bindTheme() {
   });
 }
 
+// ---------- Pedir la opinión en un buen momento ----------
+// Nunca en medio de una canción ni al entrar: justo cuando empieza la siguiente tras haber terminado (de verdad)
+// 3 canciones en la sesión, o 1 con el ARMY Bomb conectado. Como mucho una vez cada 30 días; tras enviar una
+// opinión o cerrar el aviso dos veces, no se vuelve a pedir.
+const FB_ASK_KEY = "pws.fbask.v1";
+let songsFinished = 0, askFeedbackNext = false, fbShownThisSession = false;
+function feedbackAskAllowed() {
+  const st = store.get(FB_ASK_KEY, {});
+  if (st.sent || (st.dismissed ?? 0) >= 2) return false;
+  return !st.at || Date.now() - st.at > 30 * 864e5;
+}
+function noteSongFinished() {
+  songsFinished++;
+  if (!fbShownThisSession && (songsFinished >= 3 || (sticks.length && songsFinished >= 1)) && feedbackAskAllowed()) askFeedbackNext = true;
+}
+function maybeAskFeedback() {
+  if (!askFeedbackNext) return;
+  askFeedbackNext = false;
+  // Unos segundos después de que arranca la canción (y el fanchant terminó): sin tapar nada.
+  setTimeout(() => {
+    if (document.hidden || openPanel || fanchant?.running || !$("support-nudge").hidden) { askFeedbackNext = true; return; }
+    fbShownThisSession = true;
+    store.set(FB_ASK_KEY, { ...store.get(FB_ASK_KEY, {}), at: Date.now() });
+    const n = $("fb-nudge");
+    fadeIn(n);
+    const hide = () => (n.matches(":hover, :focus-within") ? setTimeout(hide, 1500) : fadeOut(n, 320));
+    setTimeout(hide, 12000);
+  }, 5000);
+}
+function bindFeedbackNudge(openWithRating) {
+  const n = $("fb-nudge");
+  n.querySelector(".fbn-stars").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-r]");
+    if (!b) return;
+    fadeOut(n, 200);
+    openWithRating(Number(b.dataset.r), b);
+  });
+  $("fbn-close").onclick = () => {
+    const st = store.get(FB_ASK_KEY, {});
+    store.set(FB_ASK_KEY, { ...st, dismissed: (st.dismissed ?? 0) + 1 });
+    fadeOut(n);
+  };
+}
+
 // ---------- Apoyo: un aviso discreto, una vez por sesión, tras la quinta canción ----------
 let songsThisSession = 0;
 function maybeNudgeSupport() {
   songsThisSession++;
-  if (songsThisSession !== 5) return;
+  if (songsThisSession !== 5 || !$("fb-nudge").hidden) return;
   try { if (sessionStorage.getItem("pws.nudge")) return; sessionStorage.setItem("pws.nudge", "1"); } catch { return; }
   const n = $("support-nudge");
-  n.hidden = false;
-  setTimeout(() => (n.hidden = true), 15000);
+  fadeIn(n);
+  // 8 s a la vista (más si el puntero o el foco están encima) y se desvanece suave.
+  const hide = () => (n.matches(":hover, :focus-within") ? setTimeout(hide, 1500) : fadeOut(n, 320));
+  setTimeout(hide, 8000);
 }
 
 // ---------- Menús compactos (Concierto) ----------
@@ -2349,20 +2416,20 @@ function jumpTo(uid) {
 
 /** Aviso con un botón (p. ej. "Deshacer"). */
 /** Aviso con acción (Deshacer, Mostrar…): dura al menos 10 s y no se cierra mientras el puntero o el foco estén dentro. */
-function toastAction(msg, label, fn, ms = 10000) {
+function toastAction(msg, label, fn, ms = 6000) {
   const el = $("toast");
   el.replaceChildren(document.createTextNode(msg));
   const b = document.createElement("button");
   b.type = "button";
   b.className = "toast-action";
   b.textContent = label;
-  b.onclick = () => { el.hidden = true; fn(); };
+  b.onclick = () => { fadeOut(el); fn(); };
   el.append(b);
-  el.hidden = false;
+  fadeIn(el);
   say(msg);
-  const hide = () => { if (!el.matches(":hover, :focus-within")) el.hidden = true; else toast.timer = setTimeout(hide, 1500); };
+  const hide = () => { if (!el.matches(":hover, :focus-within")) fadeOut(el); else toast.timer = setTimeout(hide, 1500); };
   clearTimeout(toast.timer);
-  toast.timer = setTimeout(hide, Math.max(10000, ms));
+  toast.timer = setTimeout(hide, Math.max(6000, ms));
 }
 function queuePlayNext(i) {
   const e = pq.playNext(queue[i].song.id);
@@ -3243,6 +3310,7 @@ async function init() {
     onEnded: async () => {
       // Fuegos artificiales al terminar la canción, con sus colores (los del ARMY Bomb en esa canción).
       const done = queue[current];
+      noteSongFinished();
       if (done) (fx ??= fireworks({ z: 30, safe: () => settings.safeMode !== false })).show({ colors: lightColors(done.song, done.album), count: 6 });
       await finishChallenge();
       if (!settings.autoNext) return;

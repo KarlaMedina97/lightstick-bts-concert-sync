@@ -515,6 +515,12 @@
     </aside>
 
     <!-- Aviso de apoyo: una sola vez por sesión, después de la quinta canción -->
+    <!-- Opinión en un buen momento (tras terminar canciones, nunca en medio): una vez cada 30 días como mucho -->
+    <aside id="fb-nudge" class="support-nudge fb-nudge" aria-label="Tu opinión" hidden>
+      <p>¿Qué tal la pasaste?</p>
+      <div class="fbn-stars" role="group" aria-label="Califica LumiParty"><button type="button" data-r="5" aria-label="5 de 5">★</button><button type="button" data-r="4" aria-label="4 de 5">★</button><button type="button" data-r="3" aria-label="3 de 5">★</button><button type="button" data-r="2" aria-label="2 de 5">★</button><button type="button" data-r="1" aria-label="1 de 5">★</button></div>
+      <button id="fbn-close" class="ibtn sm" type="button" aria-label="Ahora no"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    </aside>
     <aside id="support-nudge" class="support-nudge" aria-label="Apoya el proyecto" hidden>
       <span class="sp-stick glow" aria-hidden="true"></span>
       <p>Gracias por escuchar 💜 <a id="nudge-link" href="#" target="_blank" rel="noopener noreferrer">Apoya a LumiParty ↗</a></p>
@@ -738,7 +744,7 @@
             </div>
           </fieldset>
           <fieldset class="fb-set">
-            <legend class="fb-q">¿La usarías en una fiesta o un concierto?</legend>
+            <legend class="fb-q">¿La usarías en una fiesta, una pijamada o un concierto?</legend>
             <div class="fb-faces">
               <label class="fb-face"><input type="radio" name="would_use" value="yes"><span class="fb-emo" aria-hidden="true">💜</span><span>Sí</span></label>
               <label class="fb-face"><input type="radio" name="would_use" value="maybe"><span class="fb-emo" aria-hidden="true">🤔</span><span>Tal vez</span></label>

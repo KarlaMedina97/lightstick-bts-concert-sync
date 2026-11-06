@@ -1,5 +1,7 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Califica LumiParty": "Avalie o LumiParty",
+  "¿La usarías en una fiesta, una pijamada o un concierto?": "Você usaria numa festa, numa festa do pijama ou num show?",
   "Toca una estrella": "Toque em uma estrela",
   "¿Qué falló?": "O que deu errado?",
   "Elige las que quieras": "Escolha quantas quiser",

@@ -1,5 +1,7 @@
 // Inglés del reproductor (player/index.html) y sus módulos, salvo src/app.js.
 export default {
+  "Califica LumiParty": "Rate LumiParty",
+  "¿La usarías en una fiesta, una pijamada o un concierto?": "Would you use it at a party, a sleepover or a concert?",
   "Toca una estrella": "Tap a star",
   "¿Qué falló?": "What went wrong?",
   "Elige las que quieras": "Pick as many as you like",

@@ -945,6 +945,9 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   transition: opacity var(--dur-4) var(--ease-out), display var(--dur-4) allow-discrete;
 }
 .chant[hidden] { opacity: 0; }
+/* El fanchant va por encima del video flotante (z 7); los avisos esperan a que termine */
+#chant { z-index: 9; }
+body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, body.chanting .upnext { visibility: hidden; }
 @starting-style { .chant:not([hidden]) { opacity: 0; } }
 .chant::before { /* halo que respira (lento, sin destellos) */
   content: ""; position: absolute; left: 50%; top: 50%; width: min(70cqw, 560px); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; z-index: -1;
@@ -1101,7 +1104,7 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(
   box-shadow: var(--e-3);
   transition: opacity var(--dur-3) var(--ease-out), transform var(--dur-3) var(--ease-spring), display var(--dur-3) allow-discrete;
 }
-.toast[hidden] { opacity: 0; transform: translate(-50%, -8px) scale(0.98); transition-timing-function: var(--ease-in); }
+.toast.leaving, .toast[hidden] { opacity: 0; transform: translate(-50%, -8px) scale(0.98); transition-timing-function: var(--ease-in); }
 @starting-style { .toast:not([hidden]) { opacity: 0; transform: translate(-50%, -8px) scale(0.98); } }
 
 /* =====================================================================
@@ -1857,9 +1860,15 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
   background: var(--surface-2); border: 1px solid var(--song-line); box-shadow: var(--e-2); font-size: var(--fs-14);
   transition: opacity var(--dur-3), transform var(--dur-3) var(--ease-out), display var(--dur-3) allow-discrete;
 }
-.support-nudge[hidden] { opacity: 0; transform: translate(-50%, 8px); }
+.support-nudge.leaving, .support-nudge[hidden] { opacity: 0; transform: translate(-50%, 8px); }
 @starting-style { .support-nudge:not([hidden]) { opacity: 0; transform: translate(-50%, 8px); } }
 .support-nudge p { white-space: nowrap; }
+.fb-nudge { gap: var(--s-2); }
+.fbn-stars { display: flex; flex-direction: row-reverse; }
+.fbn-stars button { width: 36px; height: 40px; border: 0; background: none; cursor: pointer; font-size: 1.5rem; line-height: 1; color: color-mix(in srgb, var(--text) 28%, transparent); transition: color var(--dur-2), transform var(--dur-2) var(--ease-spring); }
+.fbn-stars button:hover, .fbn-stars button:hover ~ button, .fbn-stars button:focus-visible, .fbn-stars button:focus-visible ~ button { color: var(--warn); }
+.fbn-stars button:hover { transform: scale(1.15); }
+@media (max-width: 420px) { .fb-nudge { gap: 4px; padding-left: var(--s-3); max-width: calc(100% - 16px); } .fb-nudge p { font-size: var(--fs-12); } .fbn-stars button { width: 30px; font-size: 1.3rem; } }
 .support-nudge a { font-weight: 700; }
 .ex-links { display: flex; gap: var(--s-2); flex-wrap: wrap; padding: 0 var(--s-1); }
 

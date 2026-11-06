@@ -77,10 +77,12 @@ export class Fanchant {
       } catch {}
     }
     this.el.hidden = false;
+    document.body.classList.add("chanting"); // el fanchant manda: tapa el video flotante y los avisos esperan
     return new Promise((resolve) => {
       this.resolve = () => {
         clearTimeout(this.timer);
         this.el.hidden = true;
+        document.body.classList.remove("chanting");
         speechSynthesis?.cancel?.();
         ctx?.close?.().catch(() => {});
         this.resolve = null;
