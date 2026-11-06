@@ -74,15 +74,21 @@ ws.addEventListener("message", (e) => {
   }
 });
 const send = (method, params = {}) => new Promise((r) => { const i = ++seq; pending.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
-const evaluate = async (expression) => {
-  if (process.env.UI_DEBUG) console.log("·", expression.slice(0, 70).replace(/\s+/g, " "));
-  const r = await Promise.race([
+const evaluateOnce = async (expression, ms) => {
+  return Promise.race([
     send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true }),
-    sleep(20000).then(async () => {
+    sleep(ms).then(async () => {
       const where = await Promise.race([send("Runtime.evaluate", { expression: "String(window.__p)", returnByValue: true }).then((x) => x.result?.result?.value), sleep(3000).then(() => "(congelada)")]);
-      return { result: { exceptionDetails: { exception: { description: `la página no respondió en 20 s (último paso: ${where})` } } } };
+      return { timeout: true, where };
     }),
   ]);
+};
+// Con el equipo cargado (otros navegadores abiertos) una evaluación puede tardar: 40 s y un reintento antes de fallar.
+const evaluate = async (expression) => {
+  if (process.env.UI_DEBUG) console.log("·", expression.slice(0, 70).replace(/\s+/g, " "));
+  let r = await evaluateOnce(expression, 40000);
+  if (r.timeout) r = await evaluateOnce(expression, 40000);
+  if (r.timeout) throw new Error(`la página no respondió en 40 s (dos intentos) en: ${expression.slice(0, 60).replace(/\s+/g, " ")}… (último paso: ${r.where})`);
   if (r.result?.exceptionDetails) throw new Error(r.result.exceptionDetails.exception?.description ?? "error al evaluar");
   return r.result?.result?.value;
 };

@@ -1,5 +1,10 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Por Bluetooth": "블루투스 연결",
+  "Con tu pantalla": "화면으로",
+  "La más nueva": "최신",
+  "SE": "SE",
+  "Las cinco versiones del ARMY Bomb. Las que no tienen Bluetooth brillan con tu pantalla.": "아미밤 다섯 가지 버전 모두. 블루투스가 없는 버전은 화면이 대신 빛나요.",
   "Mantén presionado y agítalo": "꾹 누른 채로 흔들어 보세요",
   "Presiónalo y agítalo": "꾹 누르고 흔들어 보세요",
   "Tócalo y agítalo": "눌러서 흔들어 보세요",

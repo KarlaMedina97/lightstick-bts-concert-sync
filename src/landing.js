@@ -109,7 +109,11 @@ function focusTarget(el) {
   f.focus({ preventScroll: true });
 }
 function scrollToTarget(el, hash) {
-  const y = el ? el.getBoundingClientRect().top + scrollY - (mobileQ() ? 56 : 70) : 0;
+  // En el teléfono, si la sección (3D + texto) no entra entera, se va al texto: así se ve completo (p. ej. Versiones).
+  const bar = mobileQ() ? 56 : 70;
+  const copy = el?.querySelector?.(":scope > .copy");
+  if (copy && mobileQ() && el.offsetHeight > innerHeight - bar && copy.offsetHeight <= innerHeight - bar) el = copy;
+  const y = el ? el.getBoundingClientRect().top + scrollY - bar : 0;
   scrollTo({ top: Math.max(0, y), behavior: reduceMotion ? "instant" : "smooth" });
   history.replaceState(null, "", hash || location.pathname + location.search);
   const done = () => focusTarget(el ?? document.getElementById("hero-title"));

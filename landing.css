@@ -628,3 +628,19 @@ section[id], #contenido { scroll-margin-top: 76px; }
 @keyframes gh-ping { 70%, 100% { box-shadow: 0 0 0 10px rgba(201, 168, 255, 0); } }
 @keyframes gh-float { 50% { margin-top: -6px; } }
 @media (prefers-reduced-motion: reduce) { .grab-hint.in, .gh-dot { animation: none; } }
+
+/* Versiones: columna compacta y tierna (cuadrícula de 2; la Ver. 4 destacada a lo ancho) */
+#versiones .copy { gap: 1rem; }
+@media (min-width: 720px) { #versiones .copy { padding-block: 7svh; } }
+#versiones .vers { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+#versiones .vers .ver-new { grid-column: 1 / -1; }
+#versiones .ver-card { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "dot name" "dot tag"; column-gap: 10px; row-gap: 2px; align-items: center; padding: 10px 12px; border-radius: 18px; }
+#versiones .ver-card b { grid-area: name; font-size: .98rem; }
+#versiones .vc-dot { grid-area: dot; width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff 0 18%, #c9a8ff 45%, #7b3fe4 100%); box-shadow: 0 0 14px -2px #b388ff; }
+#versiones .ver-card.no-bt .vc-dot { background: radial-gradient(circle at 35% 30%, #fff 0 18%, #ffd6ec 45%, #ff6fb5 100%); box-shadow: 0 0 14px -2px #ff8fc8; }
+#versiones .vc-tag { grid-area: tag; justify-self: start; padding: 2px 8px; border-radius: 999px; font-size: .7rem; font-weight: 700; font-style: normal; letter-spacing: .01em; color: #e6d9ff; background: rgba(150, 110, 255, .22); border: 1px solid rgba(180, 150, 255, .35); }
+#versiones .ver-card.no-bt .vc-tag { color: #ffe1f0; background: rgba(255, 111, 181, .18); border-color: rgba(255, 150, 200, .35); }
+#versiones .ver-new .ver-card { grid-template-areas: "dot name note" "dot tag note"; grid-template-columns: auto minmax(0, 1fr) auto; background: linear-gradient(110deg, rgba(123, 63, 228, .35), rgba(255, 111, 181, .18)), var(--card); }
+#versiones .vc-note { grid-area: note; font-size: .72rem; color: var(--muted); }
+#versiones .ver-card:hover, #versiones .ver-card:focus-visible, #versiones .ver-card.is-hot { transform: translateY(-2px); }
+#versiones .caption { margin: 0; font-size: .78rem; }

@@ -1,5 +1,10 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Por Bluetooth": "Lewat Bluetooth",
+  "Con tu pantalla": "Dengan layarmu",
+  "La más nueva": "Paling baru",
+  "SE": "SE",
+  "Las cinco versiones del ARMY Bomb. Las que no tienen Bluetooth brillan con tu pantalla.": "Kelima versi ARMY Bomb. Yang tanpa Bluetooth bersinar lewat layarmu.",
   "Mantén presionado y agítalo": "Tahan lalu goyangkan",
   "Presiónalo y agítalo": "Tekan dan goyangkan",
   "Tócalo y agítalo": "Sentuh dan goyangkan",

@@ -1,5 +1,10 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Por Bluetooth": "Por Bluetooth",
+  "Con tu pantalla": "Com sua tela",
+  "La más nueva": "A mais nova",
+  "SE": "SE",
+  "Las cinco versiones del ARMY Bomb. Las que no tienen Bluetooth brillan con tu pantalla.": "As cinco versões do ARMY Bomb. As que não têm Bluetooth brilham com sua tela.",
   "Mantén presionado y agítalo": "Segure e agite",
   "Presiónalo y agítalo": "Pressione e agite",
   "Tócalo y agítalo": "Toque e agite",

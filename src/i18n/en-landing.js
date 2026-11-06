@@ -1,5 +1,10 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
+  "Por Bluetooth": "Via Bluetooth",
+  "Con tu pantalla": "With your screen",
+  "La más nueva": "The newest",
+  "SE": "SE",
+  "Las cinco versiones del ARMY Bomb. Las que no tienen Bluetooth brillan con tu pantalla.": "All five ARMY Bomb versions. The ones without Bluetooth glow through your screen.",
   "Mantén presionado y agítalo": "Press and hold, then shake",
   "Presiónalo y agítalo": "Press it and shake it",
   "Tócalo y agítalo": "Tap it and shake it",
