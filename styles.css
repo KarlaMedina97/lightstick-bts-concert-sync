@@ -2526,3 +2526,22 @@ html {
    se oculta y al final quedan los accesos útiles (agregar un video que falta, conciertos completos). */
 .home-view.searching #album-shelf { display: none; }
 .home-view.searching .ex-links { margin-top: var(--s-2); }
+
+/* Modo concierto: botón con presencia (borde de luz que respira, ícono en un círculo de color); encendido, brilla */
+.live-btn { gap: var(--s-2); padding-inline: 6px var(--s-3); border-radius: var(--r-pill); font-weight: 700;
+  background: linear-gradient(var(--surface-1), var(--surface-1)) padding-box, linear-gradient(120deg, #8a2be2, #ff6fb5, #4fc3f7) border-box;
+  border: 1.5px solid transparent; }
+.live-ico { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: #fff;
+  background: linear-gradient(135deg, #8a2be2, #ff6fb5); box-shadow: 0 0 14px -2px color-mix(in srgb, #ff6fb5 70%, transparent); }
+.live-ico svg { width: 18px; height: 18px; }
+.live-btn:hover .live-ico { transform: scale(1.06); }
+.live-btn.on { color: #fff; background: linear-gradient(120deg, #8a2be2, #ff6fb5) padding-box, linear-gradient(120deg, #8a2be2, #ff6fb5, #4fc3f7) border-box; box-shadow: 0 0 24px -6px #ff6fb5; }
+.live-btn.on .live-ico { background: rgba(255, 255, 255, 0.22); animation: live-breathe 2.4s ease-in-out infinite; }
+@keyframes live-breathe { 50% { box-shadow: 0 0 22px 2px rgba(255, 255, 255, 0.45); } }
+@media (prefers-reduced-motion: reduce) { .live-btn.on .live-ico { animation: none; } }
+/* Teléfono: en el dock va como los demás (ícono arriba, texto abajo), con el círculo de color */
+@media (max-width: 640px) { .live-btn { background: none; border: 0; padding: 0; border-radius: var(--r-md); } .live-ico { width: 28px; height: 28px; }
+  .dock .live-btn span:last-child { white-space: normal; overflow: visible; text-overflow: clip; max-width: 7ch; font-size: 0.625rem; line-height: 1.1; text-align: center; } }
+
+/* Video sin nada sonando: deshabilitada a la vista (sigue siendo enfocable y avisa al tocarla) */
+[role="tab"][aria-disabled="true"], [role="menuitemradio"][aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; }

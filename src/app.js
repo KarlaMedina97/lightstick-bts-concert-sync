@@ -280,9 +280,19 @@ function setView(v) {
   app.dataset.view = v;
   if (!exploring) app.classList.remove("mini-off");
   syncMiniButton();
+  syncVideoTab();
   requestAnimationFrame(() => placeMini(false));
 }
 /** Botón del pie de página junto a pantalla completa: Minimizar (en Video) o Expandir (con el video en la ventanita). */
+/** Video sin canción no tiene nada que mostrar: la pestaña (y su opción del menú del teléfono) queda deshabilitada. */
+function syncVideoTab() {
+  const off = current < 0;
+  for (const el of [$("view-video"), document.querySelector('[data-proxy="view-video"]')]) {
+    if (!el) continue;
+    el.toggleAttribute("aria-disabled", off);
+    if (off) { el.setAttribute("aria-disabled", "true"); el.dataset.tip = "Elige una canción primero"; } else delete el.dataset.tip;
+  }
+}
 function syncMiniButton() {
   const b = $("btn-mini");
   if (!b) return;
@@ -2408,7 +2418,7 @@ function bindMenus() {
 function syncLiveButton() {
   const on = Boolean(cam || mic);
   $("btn-live").classList.toggle("on", on);
-  $("btn-live").querySelector("span").textContent = cam ? "En concierto" : mic ? "Micrófono" : "Concierto";
+  $("btn-live").querySelector("span:last-child").textContent = cam ? "En el estadio" : mic ? "Con micrófono" : "Modo concierto";
 }
 
 // ---------- Cola tipo Spotify (modelo en src/queue.js) ----------

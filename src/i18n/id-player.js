@@ -1,5 +1,9 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Elige una canción primero": "Pilih lagu dulu",
+  "Modo concierto": "Mode konser",
+  "Modo concierto: estadio, TV o micrófono": "Mode konser: stadion, TV, atau mikrofon",
+  "Con micrófono": "Dengan mikrofon",
   "Busca canción, álbum o integrante": "Cari lagu, album, atau member",
   "Sostenlo y agítalo · doble toque lo endereza": "Pegang dan goyangkan · ketuk dua kali untuk meluruskan",
   "Elige una canción para ver su video.": "Pilih lagu untuk menonton videonya.",

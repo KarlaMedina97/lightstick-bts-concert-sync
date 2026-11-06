@@ -1,5 +1,9 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Elige una canción primero": "먼저 곡을 골라 주세요",
+  "Modo concierto": "콘서트 모드",
+  "Modo concierto: estadio, TV o micrófono": "콘서트 모드: 공연장, TV 또는 마이크",
+  "Con micrófono": "마이크 사용",
   "Busca canción, álbum o integrante": "곡, 앨범, 멤버 검색",
   "Sostenlo y agítalo · doble toque lo endereza": "잡고 흔들어 보세요 · 두 번 탭하면 원위치",
   "Elige una canción para ver su video.": "영상을 보려면 곡을 골라 주세요.",

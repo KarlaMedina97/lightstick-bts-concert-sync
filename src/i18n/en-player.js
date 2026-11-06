@@ -1,5 +1,9 @@
 // Inglés del reproductor (player/index.html) y sus módulos, salvo src/app.js.
 export default {
+  "Elige una canción primero": "Pick a song first",
+  "Modo concierto": "Concert mode",
+  "Modo concierto: estadio, TV o micrófono": "Concert mode: stadium, TV or microphone",
+  "Con micrófono": "With microphone",
   "Busca canción, álbum o integrante": "Search song, album or member",
   "Sostenlo y agítalo · doble toque lo endereza": "Hold it and shake it · double-tap to reset",
   "Elige una canción para ver su video.": "Pick a song to watch its video.",

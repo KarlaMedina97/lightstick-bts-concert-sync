@@ -1,5 +1,9 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Elige una canción primero": "Escolha uma música primeiro",
+  "Modo concierto": "Modo show",
+  "Modo concierto: estadio, TV o micrófono": "Modo show: estádio, TV ou microfone",
+  "Con micrófono": "Com microfone",
   "Busca canción, álbum o integrante": "Busque música, álbum ou integrante",
   "Sostenlo y agítalo · doble toque lo endereza": "Segure e agite · toque duas vezes para endireitar",
   "Elige una canción para ver su video.": "Escolha uma música para ver o vídeo.",
