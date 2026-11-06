@@ -18,8 +18,8 @@ const FINAL = { ko: "방탄소년단!", roman: "BTS!" };
 // En la app se gritan con la voz del sistema, que tarda ≈ 1 s por nombre de tres sílabas: a menos de 1,1 s no
 // alcanza a decirlos y se amontonan. Por eso el paso va de 1,1 a 1,5 s (3 tiempos si 2 quedan cortos).
 /** Pausa entre un nombre y el siguiente (el público toma aire). */
-export const CHANT_PAUSE_MS = 1000;
-/** Cuánto se ve (y se dice) cada nombre: 2,5 s fijos (decisión del proyecto), más la pausa de 1 s entre nombres. */
+export const CHANT_PAUSE_MS = 650;
+/** Cuánto se ve (y se dice) cada nombre: 2,5 s fijos (decisión del proyecto), más la pausa de 0,65 s entre nombres. */
 export const CHANT_STEP_MS = 2500;
 export function chantStepMs(_bpm) {
   return CHANT_STEP_MS;
@@ -126,7 +126,7 @@ export class Fanchant {
           this.timer = setTimeout(next, minMs * 1.8); // respaldo si el navegador nunca avisa que terminó
         } else this.timer = setTimeout(rest, minMs);
       };
-      // Entre nombres: se apaga un segundo (sin pausa después del último, «BTS!», que da paso a la canción).
+      // Entre nombres: se apaga 0,65 s (sin pausa después del último, «BTS!», que da paso a la canción).
       const rest = () => {
         if (!this.resolve) return;
         if (i >= items.length) return step();
