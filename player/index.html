@@ -110,9 +110,9 @@
       <!-- Logo (lleva a la página de inicio) y, en pantallas anchas, el botón de la biblioteca.
            En teléfono, el menú principal es el desplegable de la derecha. -->
       <div class="hud-start">
+        <!-- A la izquierda del logo: vuelve a la página de inicio (el logo lleva a Explorar) -->
+        <a class="home-link" href="../" aria-label="Página de inicio" data-tip="Página de inicio"><svg aria-hidden="true"><use href="#i-home"/></svg></a>
         <a class="m-brand" href="./" aria-label="LumiParty: ir a Explorar" data-tip="Explorar"><img src="../icons/logo-mark.svg" alt="" width="30" height="30"><span>LumiParty</span></a>
-        <!-- El logo lleva a Explorar; esto vuelve a la página de inicio (la presentación) -->
-        <a class="home-link" href="../" data-tip="Página de inicio"><svg aria-hidden="true"><use href="#i-home"/></svg><span>Inicio</span></a>
         <nav class="menu" aria-label="Menú principal">
           <button id="btn-side" class="menu-item" type="button" aria-expanded="false" aria-controls="side" data-tip="Biblioteca"><svg aria-hidden="true"><use href="#i-rail"/></svg><span class="menu-label">Biblioteca</span></button>
         </nav>
