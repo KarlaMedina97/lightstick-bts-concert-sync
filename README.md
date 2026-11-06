@@ -1,3 +1,11 @@
+<p align="center">
+  <b>🌐 Español</b> ·
+  <a href="README.en.md">English</a> ·
+  <a href="README.pt-BR.md">Português (Brasil)</a> ·
+  <a href="README.ko.md">한국어</a> ·
+  <a href="README.id.md">Bahasa Indonesia</a>
+</p>
+
 <div align="center">
 
 <a href="https://lumiparty.com/"><img src="icons/icon.svg" alt="LumiParty" width="112"></a>
@@ -46,7 +54,7 @@ progresiva (PWA) que se puede instalar y abre sin conexión.
 - [🤝 Contribuir](#contribuir)
 - [💜 Apoyo](#apoyo)
 - [📄 Licencia](#licencia)
-- [🌐 English summary](#english)
+- [🌐 Otros idiomas](#idiomas)
 
 <a id="funciones"></a>
 
@@ -278,15 +286,12 @@ LumiParty es gratis y lo seguirá siendo. Si te gusta, puedes:
 licencia MIT ([`vendor/README.md`](vendor/README.md)) y las fuentes Unbounded y Plus Jakarta Sans, la SIL Open Font
 License (ver [`fonts/`](fonts/)).
 
-<a id="english"></a>
+<a id="idiomas"></a>
 
-## 🌐 English summary
+## 🌐 Otros idiomas
 
-**LumiParty** is a free, open-source and **unofficial** fan web app that syncs the BTS **ARMY Bomb** lightstick over
-**Web Bluetooth** with official YouTube videos. Ver. 4, SE and Ver. 3 connect by Bluetooth; with Ver. 2, Ver. 1 or no
-lightstick at all, your screen becomes the light. It runs in Chrome and Edge (Bluefy on iPhone), installs as a PWA,
-needs no account and is available in Spanish, English, Brazilian Portuguese, Korean and Indonesian.
-Try it at **[lumiparty.com](https://lumiparty.com/)**. Not affiliated with HYBE, BIGHIT MUSIC or BTS.
+Este README también está en [English](README.en.md) · [Português (Brasil)](README.pt-BR.md) · [한국어](README.ko.md) ·
+[Bahasa Indonesia](README.id.md), los mismos idiomas de la app.
 
 <div align="center">
 <br>
