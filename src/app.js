@@ -245,7 +245,7 @@ function bindTabs(tabIds, onSelect) {
 }
 
 // ---------- Vista: video / luces ----------
-let page = "home"; // dentro de Explorar: "home" (inicio) o "likes" (página Me gusta)
+let page = "home"; // dentro de Explorar: "home" (inicio), "likes" (Me gusta) o "videos" (Mis videos)
 function setView(v) {
   view = v;
   const exploring = v === "explore";
@@ -253,8 +253,10 @@ function setView(v) {
   // En Explorar el video sigue sonando en un mini reproductor; sin canción, Video y Explorar muestran el inicio.
   $("video-view").hidden = v === "lights"; // sin canción, .app.home lo deja invisible (el iframe de YouTube sigue cargando)
   const showHome = exploring || (v === "video" && current < 0);
-  $("home").hidden = !showHome || page === "likes";
+  $("home").hidden = !showHome || page !== "home";
   $("likes-page").hidden = !showHome || page !== "likes";
+  $("videos-page").hidden = !showHome || page !== "videos";
+  syncPageItems();
   app.classList.toggle("exploring", exploring && current >= 0);
   app.dataset.view = v;
   if (!exploring) app.classList.remove("mini-off");
@@ -809,6 +811,7 @@ function bindFeedback() {
 function renderMine() {
   const list = $("mine");
   const items = queue.map((q, i) => [q, i]).filter(([q]) => q.album.id === "mine");
+  $("lib-n-mine").textContent = String(items.length);
   if (!items.length) {
     const li = document.createElement("li");
     li.className = "hint";
@@ -871,7 +874,7 @@ async function onAddVideo(e) {
   await addVideoById(id, new FormData(e.target).get("kind"));
   e.target.reset();
 }
-/** Agrega un video a «Tus videos» (o lo actualiza) y lo reproduce con su patrón de luces generado. */
+/** Agrega un video a «Mis videos» (o lo actualiza) y lo reproduce con su patrón de luces generado. */
 async function addVideoById(id, kind = "song") {
   track("agregar_video", { tipo: kind });
   const meta = await fetchTitle(id);
@@ -887,7 +890,7 @@ async function addVideoById(id, kind = "song") {
 }
 /**
  * Compartir desde YouTube a la app instalada (Web Share Target): YouTube manda el enlace dentro del texto. Si la
- * canción ya está (catálogo o tus videos) se reproduce; si no, se agrega a «Tus videos» con su patrón generado.
+ * canción ya está (catálogo o Mis videos) se reproduce; si no, se agrega a «Mis videos» con su patrón generado.
  */
 async function handleShared(params) {
   const raw = ["url", "text", "title"].map((k) => params.get(k) ?? "").join(" ");
@@ -1868,25 +1871,45 @@ function renderLibrary() {
   $("lib-recent").replaceChildren(...recent.map((i) => libItem(i, { actions: true })));
   $("lib-recent-empty").hidden = recent.length > 0;
 }
-/** Me gusta como página propia. `tab`: "songs" o "albums". */
-function openLikes(tab = "songs", { push = true } = {}) {
-  setLikesTab(tab);
-  if (page !== "likes") {
-    page = "likes";
-    if (push) try { history.pushState({ page: "likes" }, "", "#me-gusta"); } catch {}
+// Páginas propias dentro de Explorar (como en las apps de música): Me gusta y Mis videos.
+const PAGES = { likes: { el: "likes-page", title: "lp-title", hash: "#me-gusta" }, videos: { el: "videos-page", title: "vp-title", hash: "#mis-videos" } };
+function openPage(name, { push = true, focus = true } = {}) {
+  if (page !== name) {
+    const replace = page !== "home" && history.state?.page === page; // de una página a otra: sin apilar historial
+    page = name;
+    if (push) try { history[replace ? "replaceState" : "pushState"]({ page: name }, "", PAGES[name].hash); } catch {}
   }
-  // Directo (sin "tocar" la pestaña Explorar, que desde Me gusta significa volver al inicio).
+  // Directo (sin "tocar" la pestaña Explorar, que desde una página significa volver al inicio).
   if (view !== "explore") { selectViewTab("view-explore"); switchView("explore"); } else setView("explore");
-  renderCollections();
-  $("likes-page").scrollTop = 0;
-  requestAnimationFrame(() => { const h = $("lp-title"); h.tabIndex = -1; h.focus({ preventScroll: true }); });
+  $(PAGES[name].el).scrollTop = 0;
+  if (focus) requestAnimationFrame(() => { const h = $(PAGES[name].title); h.tabIndex = -1; h.focus({ preventScroll: true }); });
 }
+/** Me gusta como página propia. `tab`: "songs" o "albums". */
+function openLikes(tab = "songs", opts) {
+  setLikesTab(tab);
+  openPage("likes", opts);
+  renderCollections();
+}
+function openVideos(opts) {
+  renderMine();
+  openPage("videos", opts);
+}
+/** Vuelve al inicio de Explorar desde Me gusta o Mis videos. */
 function closeLikes({ fromHistory = false } = {}) {
-  if (page !== "likes") return;
+  if (page === "home") return;
+  const was = page;
   page = "home";
-  if (!fromHistory && history.state?.page === "likes") { try { history.back(); } catch {} }
-  else if (!fromHistory && location.hash === "#me-gusta") { try { history.replaceState(null, "", location.pathname + location.search); } catch {} }
+  if (!fromHistory && history.state?.page === was) { try { history.back(); } catch {} }
+  else if (!fromHistory && location.hash === PAGES[was].hash) { try { history.replaceState(null, "", location.pathname + location.search); } catch {} }
   setView(view);
+}
+/** La biblioteca marca la página abierta. */
+function syncPageItems() {
+  const open = view === "explore" || current < 0 ? page : "";
+  for (const b of document.querySelectorAll(".lib-item[data-go]")) {
+    const on = (b.dataset.go === "likes" && open === "likes") || (b.dataset.go === "mine" && open === "videos");
+    if (b.dataset.go === "likes" || b.dataset.go === "mine") { b.classList.toggle("is-on", on); if (on) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); }
+  }
 }
 function setLikesTab(tab) {
   const songs = tab !== "albums";
@@ -1933,14 +1956,17 @@ function bindLikesPage() {
     requestAnimationFrame(() => { $("home").scrollTo({ top: 0, behavior: "smooth" }); $("search-explore").focus({ preventScroll: true }); });
   });
   $("lp-back").onclick = () => closeLikes();
+  $("vp-back").onclick = () => closeLikes();
   $("lp-songs").onclick = () => setLikesTab("songs");
   $("lp-albums").onclick = () => setLikesTab("albums");
   $("ls-explore").onclick = () => { closeLikes(); requestAnimationFrame(() => $("search-explore").focus()); };
   addEventListener("popstate", (e) => {
     if (e.state?.page === "likes") openLikes(undefined, { push: false });
+    else if (e.state?.page === "videos") openVideos({ push: false });
     else closeLikes({ fromHistory: true });
   });
   if (location.hash === "#me-gusta") openLikes("songs", { push: false });
+  else if (location.hash === "#mis-videos") openVideos({ push: false, focus: false });
 }
 
 /** Acciones de la biblioteca (también los accesos de Explorar en teléfono). */
@@ -1951,8 +1977,8 @@ function goLibrary(where, trigger) {
   // Me gusta es su propia página (canciones y álbumes); "albums" abre directo la pestaña de álbumes.
   if (where === "likes" || where === "albums") return openLikes(where === "albums" ? "albums" : "songs");
   if (where === "cola") return openSide("cola", trigger);
-  if (where === "mine") return openSide("videos", trigger, () => $("inp-url").focus());
-  if (where === "concerts") return openSide("videos", trigger, () => $("rv-concerts").scrollIntoView({ block: "start", behavior: "smooth" }));
+  if (where === "mine") { openVideos({ focus: false }); return requestAnimationFrame(() => $("inp-url").focus({ preventScroll: true })); }
+  if (where === "concerts") { openVideos({ focus: false }); return requestAnimationFrame(() => $("rv-concerts").scrollIntoView({ block: "start", behavior: "smooth" })); }
 }
 function bindLibrary() {
   document.addEventListener("click", (e) => {
@@ -1972,8 +1998,8 @@ function bindLibrary() {
 const NP_KEY = "pws.np.v1";
 const channelCache = new Map();
 const npDocked = () => matchMedia("(min-width: 1280px)").matches;
-let sideTab = "now"; // pestaña del panel lateral: "now" | "cola" | "videos"
-const SIDE_TABS = { now: "rs-now", cola: "rs-cola", videos: "rs-videos" };
+let sideTab = "now"; // pestaña del panel lateral: "now" | "cola" (Mis videos es una página propia)
+const SIDE_TABS = { now: "rs-now", cola: "rs-cola" };
 const sideIsOpen = () => (npDocked() ? !$("np-side").hidden : openPanel === "np-side");
 function setNpOpen(open, trigger = $("np-open")) {
   if (npDocked()) {
@@ -2020,7 +2046,7 @@ function syncSideState() {
   $("btn-cola").setAttribute("aria-expanded", String(open && sideTab === "cola"));
   $("btn-cola").classList.toggle("on", open && sideTab === "cola");
   for (const b of document.querySelectorAll(".lib-item[data-go]")) {
-    const tab = { cola: "cola", mine: "videos", concerts: "videos" }[b.dataset.go];
+    const tab = { cola: "cola" }[b.dataset.go];
     const on = Boolean(tab) && open && sideTab === tab;
     b.classList.toggle("is-on", on);
     if (tab) b.setAttribute("aria-expanded", String(on));
@@ -2103,7 +2129,6 @@ function bindNowPanel() {
     if (sideIsOpen() && sideTab === "now") return setNpOpen(false);
     openSide("now", e.currentTarget);
   };
-  document.addEventListener("click", (e) => { const b = e.target.closest("[data-side]"); if (b) openSide(b.dataset.side, b, () => $("inp-url").focus()); });
   $("nps-close").onclick = () => setNpOpen(false);
   $("dock-like").onclick = (e) => { const song = queue[current]?.song; if (song) toggleLike(song, e.currentTarget); };
   $("dock-like-m").onclick = (e) => { const song = queue[current]?.song; if (song) toggleLike(song, e.currentTarget); };
@@ -3056,7 +3081,7 @@ async function init() {
   bindLikesPage();
   bindFiltersToggle();
   addEventListener("resize", () => requestAnimationFrame(markTitleOverflow));
-  bindTabs(["rs-now", "rs-cola", "rs-videos"], (id) => setSideTab(id.slice(3), false));
+  bindTabs(["rs-now", "rs-cola"], (id) => setSideTab(id.slice(3), false));
 
   const support = bluetoothSupport();
   if (!support.ok) showBtWarning(IS_IOS ? "ios" : support.reason);

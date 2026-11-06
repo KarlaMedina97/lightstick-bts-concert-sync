@@ -1,5 +1,10 @@
 // Inglés del reproductor (player/index.html) y sus módulos, salvo src/app.js.
 export default {
+  "Videos agregados": "Added videos",
+  "Mis videos y conciertos": "My videos and concerts",
+  "Mi colección": "My collection",
+  "Más en mi biblioteca": "More in my library",
+  "Videos y conciertos que agregas con su enlace de YouTube": "Videos and concerts you add with their YouTube link",
   "Color": "Color",
   "Efecto": "Effect",
   "Efectos de luz": "Light effects",

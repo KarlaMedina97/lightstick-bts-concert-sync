@@ -1,5 +1,10 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Videos agregados": "Vídeos adicionados",
+  "Mis videos y conciertos": "Meus vídeos e shows",
+  "Mi colección": "Minha coleção",
+  "Más en mi biblioteca": "Mais na minha biblioteca",
+  "Videos y conciertos que agregas con su enlace de YouTube": "Vídeos e shows que você adiciona com o link do YouTube",
   "Color": "Cor",
   "Efecto": "Efeito",
   "Efectos de luz": "Efeitos de luz",

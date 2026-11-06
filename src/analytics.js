@@ -11,7 +11,7 @@ const ID = /^G-[A-Z0-9]{4,20}$/.test(ANALYTICS?.ga4 ?? "") ? ANALYTICS.ga4 : "";
 let ready = false;
 
 function allowed() {
-  if (!ID || typeof navigator === "undefined") return false;
+  if (!ID || typeof navigator === "undefined" || typeof location === "undefined" || typeof document === "undefined") return false;
   if (navigator.doNotTrack === "1" || window.doNotTrack === "1" || navigator.globalPrivacyControl === true) return false;
   const h = location.hostname;
   if (h === "localhost" || h === "127.0.0.1" || h === "[::1]" || /^(10|192\.168|172\.(1[6-9]|2\d|3[01]))\./.test(h)) return false;

@@ -380,6 +380,15 @@ kbd {
 .lp-cover { flex: none; display: grid; place-items: center; width: clamp(72px, 12cqw, 132px); aspect-ratio: 1; border-radius: var(--r-lg);
   background: linear-gradient(135deg, #8a2be2, #ff6fb5); color: #fff; box-shadow: 0 16px 40px -16px #ff6fb5; }
 .lp-cover svg { width: 44%; height: 44%; }
+/* Mis videos: página propia. Agregar a la izquierda; lista y conciertos a la derecha en pantallas anchas */
+.vp-cover { background: linear-gradient(135deg, #4fc3f7, #8a2be2); box-shadow: 0 16px 40px -16px #4fc3f7; }
+.vp-grid { display: grid; gap: var(--s-4); align-items: start; }
+.vp-card { display: grid; gap: var(--s-2); min-width: 0; padding: var(--s-4); border-radius: var(--r-xl); background: var(--surface-1); border: 1px solid var(--border); }
+.vp-card .rv-title, .vp-card .group-title { margin: 0; }
+@container (min-width: 760px) {
+  .vp-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .vp-grid > .rv-add { grid-row: span 2; }
+}
 .lp-id { display: grid; gap: var(--s-1); min-width: 0; }
 .lp-title { margin: 0; font-family: var(--font-display); font-size: clamp(1.75rem, 5cqw, 3.25rem); line-height: 1; letter-spacing: -0.035em; }
 .lp-meta { font-size: var(--fs-14); color: var(--text-2); }

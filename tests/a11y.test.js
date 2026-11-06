@@ -57,7 +57,7 @@ test("cada id aparece una sola vez y las etiquetas de bloque cierran (páginas)"
 });
 
 test("el panel lateral reúne Ahora suena, Cola y Tus videos (sin ventanas sueltas)", () => {
-  for (const id of ["rs-now", "rs-cola", "rs-videos", "rp-now", "cola-body", "rp-videos", "form-add", "films"]) assert.match(player, new RegExp(`id="${id}"`));
+  for (const id of ["rs-now", "rs-cola", "rp-now", "cola-body", "videos-page", "vp-back", "form-add", "films", "lib-n-mine"]) assert.match(player, new RegExp(`id="${id}"`));
   assert.doesNotMatch(player, /id="panel-(queue|cola)"/);
   assert.doesNotMatch(app, /panel-(queue|cola)/);
 });

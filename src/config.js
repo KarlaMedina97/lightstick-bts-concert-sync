@@ -6,7 +6,7 @@ export const PROJECT = {
 
 // Métricas de uso (Google Analytics 4 sin cookies, src/analytics.js). Vacío = apagado: no se carga nada.
 // Formato: "G-XXXXXXXXXX" (ID de medición de la propiedad de GA4).
-export const ANALYTICS = { ga4: "" };
+export const ANALYTICS = { ga4: "G-6GWV99P7XV" };
 
 // Enlaces de donación. Deja vacío "url" para ocultar una opción.
 export const DONATIONS = [

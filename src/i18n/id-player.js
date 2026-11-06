@@ -1,5 +1,10 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Videos agregados": "Video yang ditambahkan",
+  "Mis videos y conciertos": "Video dan konserku",
+  "Mi colección": "Koleksiku",
+  "Más en mi biblioteca": "Lainnya di pustakaku",
+  "Videos y conciertos que agregas con su enlace de YouTube": "Video dan konser yang kamu tambahkan dengan tautan YouTube",
   "Color": "Warna",
   "Efecto": "Efek",
   "Efectos de luz": "Efek lampu",

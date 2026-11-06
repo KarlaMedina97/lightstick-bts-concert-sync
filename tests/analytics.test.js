@@ -19,7 +19,7 @@ test("analítica: Google Analytics sin cookies, con privacidad y solo si hay ID"
   assert.match(read("privacy/index.html"), /Google Analytics/);
 });
 
-test("analítica: sin ID no hace nada (ni carga scripts ni envía datos)", async () => {
+test("analítica: fuera de una página (sin ID o sin navegador) no hace nada ni envía datos", async () => {
   const { pageview, event } = await import("../src/analytics.js");
   globalThis.window ??= {};
   assert.doesNotThrow(() => { pageview("/"); event("reproducir", { cancion: "dynamite" }); });

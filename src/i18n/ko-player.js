@@ -1,5 +1,10 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Videos agregados": "추가한 영상",
+  "Mis videos y conciertos": "내 영상과 콘서트",
+  "Mi colección": "내 컬렉션",
+  "Más en mi biblioteca": "내 라이브러리 더 보기",
+  "Videos y conciertos que agregas con su enlace de YouTube": "YouTube 링크로 추가한 영상과 콘서트",
   "Color": "색상",
   "Efecto": "효과",
   "Efectos de luz": "조명 효과",
