@@ -1,117 +1,294 @@
-# 💜 LumiParty
+<div align="center">
 
-> **Lightstick BTS concert sync** · Página web no oficial para sincronizar tu lightstick (ARMY Bomb) con canciones de BTS en modo concierto.
+<a href="https://lumiparty.com/"><img src="icons/icon.svg" alt="LumiParty" width="112"></a>
 
-App web progresiva (PWA), gratuita y de código abierto, para sincronizar tu lightstick con canciones,
-**álbum por álbum**, desde el navegador. Sin instalar nada y sin cuentas.
+# LumiParty
 
-> Proyecto de fans. **No oficial** y sin afiliación con HYBE, BIGHIT MUSIC ni BTS.
-> Los videos se reproducen desde YouTube; este repositorio no contiene audio ni video.
+**Tu ARMY Bomb, al ritmo de cada canción.**
 
-## Qué hace
+Página web de fans, gratuita y de código abierto, que sincroniza tu lightstick por Bluetooth con los videos oficiales de BTS.
+Sin instalar nada, sin cuentas.
 
-- **Conecta por Bluetooth** (Web Bluetooth) una o varias lightsticks compatibles (Ver. 3 / SE y Ver. 4).
-- **Canciones agrupadas por álbum.** Al terminar una canción empieza la siguiente; al terminar el álbum puedes
-  seguir con el siguiente, repetirlo o detener.
-- **Patrones de luz inspirados en conciertos**, generados en tu navegador según el BPM, la energía de la canción y
-  la paleta del álbum: océano morado, respiración, latido, ola de colores, arcoíris, destellos y despedida.
-- **Olas entre varias lightsticks:** cada una lleva un pequeño desfase, como la ola en un estadio.
-- **Sincronía precisa:** reloj interpolado del reproductor, envío del color más reciente (sin colas) y
-  ajuste de latencia manual.
-- **Reto de ritmo con rankings sin cuentas:** toca al compás, suma combos y compite solo con tu nickname de
-  X, Instagram, TikTok, Weverse o YouTube. Ranking por canción y "puntos de fan" globales
-  (local por defecto; global opcional con Supabase, ver [docs/ranking-global.md](docs/ranking-global.md)).
-- **Reproductor de video a pantalla completa** con barra flotante, vista *Video* o *Luces*, y un fondo que
-  brilla con el color actual y un océano de lightsticks que crece con la energía de la canción.
-- **Conciertos:** los conciertos completos oficiales están en Prime Video, Disney+ o Weverse (con DRM, no se
-  pueden incrustar). Ponlos en la TV y activa el **modo micrófono**: las luces siguen la música de la habitación.
-  También puedes agregar presentaciones en vivo oficiales de YouTube en *Mis videos*.
-- **Guía de conexión narrada**, como los anuncios antes de un concierto: pasos animados, subtítulos y voz.
-- **Landing 3D** (three.js + GSAP): una lightstick gigante que cambia de color, reacciona al toque y gira al ritmo
-  de la intro de la canción del grupo más escuchada del momento (configurable en `src/config.js`).
-- **Multitud de fans** con lightsticks detrás del video, que se ilumina con el color y la energía de la canción.
-- **Fanchant entre canciones:** como en los conciertos, aparecen los nombres de los integrantes (hangul y romanización)
-  con ovación y destellos antes de la siguiente canción. Se puede saltar o desactivar.
-- **Menú fijo y lista lateral** con miniaturas de las canciones por álbum, y sección **Opinar** (calificación,
-  facilidad para conectar y comentario anónimo) para medir si la experiencia gusta.
-- **Tu pantalla como lightstick** cuando no hay Bluetooth, con la pantalla siempre encendida (Wake Lock).
-- **Accesible:** navegación con teclado, lector de pantalla, alto contraste y
-  **modo seguro** (máx. 3 destellos/segundo, WCAG 2.3.1).
-- **Funciona como app instalable** y abre sin conexión (los videos sí necesitan internet).
+<a href="https://lumiparty.com/"><img src="https://img.shields.io/badge/abrir-lumiparty.com-a855f7?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Abrir lumiparty.com"></a>
+<a href="LICENSE"><img src="https://img.shields.io/github/license/KarlaMedina97/lightstick-bts-concert-sync?style=for-the-badge&color=22d3ee" alt="Licencia MIT"></a>
+<img src="https://img.shields.io/badge/PWA-instalable-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white" alt="PWA instalable">
+<img src="https://img.shields.io/badge/Web_Bluetooth-ARMY_Bomb-0082FC?style=for-the-badge&logo=bluetooth&logoColor=white" alt="Web Bluetooth">
+<br>
+<img src="https://img.shields.io/badge/idiomas-es_%C2%B7_en_%C2%B7_pt--BR_%C2%B7_ko_%C2%B7_id-ec4899?style=for-the-badge" alt="Idiomas: español, inglés, portugués (Brasil), coreano e indonesio">
+<img src="https://img.shields.io/badge/proyecto_de_fans-no_oficial-ff4fa3?style=for-the-badge" alt="Proyecto de fans no oficial">
+<a href="https://github.com/KarlaMedina97/lightstick-bts-concert-sync/stargazers"><img src="https://img.shields.io/github/stars/KarlaMedina97/lightstick-bts-concert-sync?style=for-the-badge&logo=github&color=8b5cf6" alt="Estrellas en GitHub"></a>
 
-## Más funciones
+</div>
 
-- **131 canciones** de canales oficiales: grupo y solistas (RM, Jin, SUGA, j-hope, Jimin, V, Jung Kook), con filtros por integrante.
-- **Me gusta:** arma tu lista con ♡ (se guarda en tu dispositivo).
-- **Estoy en un concierto:** la cámara copia el color de un ARMY Bomb real cercano y el micrófono marca el ritmo.
-- **Recorrido de bienvenida** con globos sobre los controles reales.
-- Rutas: `/`, `/player/`, `/privacy/`.
+<br>
 
-## Seguridad y privacidad
+Dale play a un video de BTS y tu **ARMY Bomb** cambia de color con la intro, el coro y el puente, como en el
+estadio. Si no tienes uno a mano, **tu pantalla brilla por él**. Todo pasa en el navegador: es una app web
+progresiva (PWA) que se puede instalar y abre sin conexión.
 
-- Sin cuentas ni servidor propio: los datos de cada persona quedan en su dispositivo y se pueden borrar desde Ajustes.
-- Content-Security-Policy en cada página (`npm run csp`), librerías servidas desde `vendor/` (sin CDNs),
-  YouTube en modo de privacidad mejorada y validación de todo lo que llega del almacenamiento o del servidor.
-- Micrófono procesado solo en el dispositivo. Ver [privacidad.html](privacidad.html) y [SECURITY.md](SECURITY.md).
+> [!NOTE]
+> Proyecto de fans **no oficial**, sin afiliación con HYBE, BIGHIT MUSIC ni BTS. Los videos se reproducen desde
+> canales oficiales de YouTube; este repositorio no contiene audio, video ni letras.
 
-## Compatibilidad
+<p align="center">
+  <a href="https://lumiparty.com/"><img src="docs/screenshots/inicio.jpg" alt="Inicio de LumiParty: un ARMY Bomb 3D gigante sobre un estadio lleno de lightsticks" width="100%"></a>
+</p>
 
-| Plataforma | Videos y luces en pantalla | Lightstick por Bluetooth |
-| --- | --- | --- |
-| Android (Chrome, Edge) | ✅ | ✅ |
-| Windows, macOS, ChromeOS, Linux (Chrome, Edge) | ✅ | ✅ |
-| iPhone / iPad (Safari) | ✅ | ❌ (Apple no permite Bluetooth web) |
-| iPhone / iPad ([Bluefy](https://apps.apple.com/app/id1492822055)) | ✅ | ✅ |
+## 📑 Contenido
 
-## Ejecutar en local
+- [✨ Funciones](#funciones)
+- [📱 Compatibilidad](#compatibilidad)
+- [🚀 Cómo usar](#como-usar)
+- [🛠️ Desarrollo](#desarrollo)
+- [🧱 Arquitectura](#arquitectura)
+- [🔒 Privacidad](#privacidad)
+- [⚖️ Aviso legal](#aviso-legal)
+- [🤝 Contribuir](#contribuir)
+- [💜 Apoyo](#apoyo)
+- [📄 Licencia](#licencia)
+- [🌐 English summary](#english)
 
-Necesitas [Node.js](https://nodejs.org) 22 o superior. No hay dependencias.
+<a id="funciones"></a>
+
+## ✨ Funciones
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/screenshots/anatomia.jpg" alt="Sección Pieza por pieza: el ARMY Bomb 3D desarmado con tarjetas para cada parte" width="100%">
+      <h3>🔍 Pieza por pieza</h3>
+      Un ARMY Bomb 3D (ilustración propia, con un emblema de ola original) que se desarma al hacer scroll.
+      Toca una tarjeta y se ilumina su pieza.
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/screenshots/versiones.jpg" alt="Sección Versiones: las cinco versiones del ARMY Bomb sobre el estadio" width="100%">
+      <h3>🪄 Las cinco versiones</h3>
+      Ver. 4, SE y Ver. 3 se conectan por Bluetooth. Ver. 2 y Ver. 1 no tienen Bluetooth: tu pantalla brilla por ellas.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/screenshots/explorar.jpg" alt="Reproductor en la vista Explorar con tarjetas de canciones y filtros por integrante" width="100%">
+      <h3>🎵 Explorar</h3>
+      Canciones agrupadas por álbum, del grupo y de cada integrante, con búsqueda y filtros. Al terminar una
+      canción empieza la siguiente.
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/screenshots/luces.jpg" alt="Vista Luces con una gran bola de luz morada sobre el público" width="100%">
+      <h3>💡 Luces</h3>
+      Una bola de luz gigante (o el ARMY Bomb 3D) con el color de cada momento. Sin ARMY Bomb, tu pantalla es tu lightstick.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/screenshots/me-gusta.jpg" alt="Página Me gusta con la lista de canciones guardadas" width="100%">
+      <h3>💜 Me gusta</h3>
+      Guarda canciones y álbumes con ♡ y reprodúcelos en orden o en aleatorio. Se guarda solo en tu dispositivo.
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/screenshots/opinion.jpg" alt="Panel Tu opinión con cinco estrellas y opciones visuales" width="100%">
+      <h3>⭐ Tu opinión</h3>
+      Primero estrellas; luego, según la nota, unas preguntas con opciones visuales. Anónimo y en segundos.
+    </td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="docs/screenshots/movil.jpg" alt="LumiParty en el teléfono: inicio, Explorar y el ARMY Bomb 3D en la vista Luces" width="100%">
+  <br><sub>En el teléfono: inicio, Explorar y el ARMY Bomb 3D en <i>Luces</i>.</sub>
+</p>
+
+**Y además:**
+
+| | |
+| --- | --- |
+| 🎛️ **Luces de concierto** | Patrones generados en tu navegador según la sección, la energía y la paleta de cada canción. |
+| 🌊 **Olas** | Con varios ARMY Bomb conectados, cada uno lleva un pequeño desfase, como la ola del estadio. |
+| 🏟️ **Modo concierto** | *En el estadio*: la cámara copia el color de los ARMY Bomb de alrededor. *En la TV*: el micrófono sigue la música de la habitación (para conciertos en plataformas de pago). Nada se graba. |
+| 📣 **Fanchant** | Entre canciones aparecen los nombres de los integrantes, en hangul y romanizados. Se puede saltar o apagar. |
+| 🎬 **Mis videos** | Agrega videos de canales oficiales de YouTube y sincronízalos igual. |
+| 🧭 **Guía de conexión** | Cuatro pasos animados y narrados, como los anuncios antes de un concierto. |
+| ♿ **Para cada ARMY** | Modo seguro activado (máx. 3 destellos por segundo, WCAG 2.3.1), teclado, lector de pantalla y `prefers-reduced-motion`. |
+| 🌐 **Cinco idiomas** | Español, English, Português (Brasil), 한국어 y Bahasa Indonesia. |
+| 📲 **Instalable** | PWA con service worker: abre sin conexión (los videos sí necesitan internet). |
+
+<a id="compatibilidad"></a>
+
+## 📱 Compatibilidad
+
+| Plataforma | Videos y luces en pantalla | ARMY Bomb por Bluetooth |
+| --- | :---: | :---: |
+| Android: Chrome, Edge | ✅ | ✅ |
+| Windows, macOS, ChromeOS, Linux: Chrome, Edge | ✅ | ✅ |
+| Brave | ✅ | ⚠️ Hay que activar Web Bluetooth en `brave://flags` (la app explica cómo) |
+| Firefox, Safari en Mac | ✅ | ❌ No tienen Web Bluetooth |
+| iPhone / iPad: Safari | ✅ | ❌ Apple no permite Bluetooth en la web |
+| iPhone / iPad: [Bluefy](https://apps.apple.com/app/id1492822055) (gratis) | ✅ | ✅ |
+
+| Versión del ARMY Bomb | Cómo funciona |
+| --- | --- |
+| **Ver. 4** | Bluetooth (familia V4) |
+| **Special Edition** y **Ver. 3** | Bluetooth (familia SE/V3) |
+| **Ver. 2** y **Ver. 1** | Sin Bluetooth: tu pantalla brilla con la canción |
+
+> [!TIP]
+> Web Bluetooth necesita `https://` o `localhost`. El protocolo está documentado en
+> [docs/protocolo-ble.md](docs/protocolo-ble.md). Aún no hay pruebas con cada modelo de hardware: si tu
+> ARMY Bomb no conecta, [abre un issue](https://github.com/KarlaMedina97/lightstick-bts-concert-sync/issues).
+
+<a id="como-usar"></a>
+
+## 🚀 Cómo usar
+
+1. Abre **[lumiparty.com](https://lumiparty.com/)** en Chrome o Edge (en iPhone, en Bluefy) y toca **Empezar**.
+2. Elige una canción en **Explorar**. Tu pantalla ya brilla con ella.
+3. ¿Tienes ARMY Bomb? Toca **Conectar mi ARMY Bomb** y sigue la guía de 4 pasos: con el ARMY Bomb apagado,
+   mantén presionados sus dos botones unos 2 segundos para que entre en modo Bluetooth y elígelo en la lista.
+4. Cambia entre **Video** y **Luces** cuando quieras. En **Ajustes** puedes cambiar el brillo, el retraso de las
+   luces y el estilo; el idioma, desde el botón de idioma.
+5. ¿Concierto en la TV o en el estadio? Abre **Modo concierto**.
+
+Para tenerla como app, usa *Instalar* o *Agregar a la pantalla de inicio* en tu navegador.
+
+<a id="desarrollo"></a>
+
+## 🛠️ Desarrollo
+
+Sitio estático sin build ni dependencias de npm: JavaScript moderno con módulos ES nativos, three.js y GSAP
+copiados en `vendor/`. Solo necesitas [Node.js](https://nodejs.org) 22 o superior.
 
 ```bash
-npm run dev
+git clone https://github.com/KarlaMedina97/lightstick-bts-concert-sync.git
+cd lightstick-bts-concert-sync
+npm run dev        # http://localhost:5173
 ```
 
-Abre http://localhost:5173. Web Bluetooth funciona en `localhost` y en `https://`.
+| Comando | Qué hace |
+| --- | --- |
+| `npm run dev` | Servidor local en http://localhost:5173 (`npm run dev:lan` para probar en el teléfono) |
+| `npm test` | Pruebas unitarias (`node --test`) |
+| `npm run csp` | Regenera la Content-Security-Policy de las páginas |
+| `npm run check` | Pruebas + CSP al día + build: lo mismo que corre CI |
+| `npm run check:ui` | Prueba en un navegador real sin ventana (390 y 1440 px): excepciones, scroll horizontal, anatomía pegajosa, íconos. Deja capturas en `.ui-check/` |
+| `npm run check:embeds` | Comprueba que cada video del catálogo se pueda ver dentro de la página |
+| `npm run check:commits` | Verifica los mensajes de commit contra `origin/main` |
+| `npm run build` | Arma `_site/` con solo lo que se publica |
 
-## Publicar
+Activa una vez el gancho que corre `check:ui` antes de cada push:
 
-El repositorio incluye un flujo de GitHub Actions que publica la app en **GitHub Pages** en cada push a `main`
-(Settings → Pages → Source: *GitHub Actions*).
-
-## Estructura
-
-```
-index.html            Landing 3D (three.js + GSAP)
-app.html              Reproductor y panel principal
-landing.css           Estilos de la landing
-src/landing.js        Escena 3D de la lightstick
-src/guide.js          Guía de conexión narrada
-src/mic.js            Modo micrófono
-src/youtube.js        Enlaces de YouTube
-styles.css            Estilos del reproductor
-src/app.js            Interfaz, cola de reproducción y bucle de sincronía
-src/ble.js            Conexión Bluetooth y envío de colores
-src/player.js         Reproductor de YouTube con reloj de alta precisión
-src/patterns.js       Generador de patrones de luz
-src/catalog.js        Álbumes y canciones
-src/rhythm.js         Reto de ritmo (puntuación)
-src/leaderboard.js    Rankings por nickname (local u online)
-src/config.js         Enlaces, donación, canción destacada y ranking global
-docs/protocolo-ble.md Notas del protocolo Bluetooth
+```bash
+git config core.hooksPath .githooks
 ```
 
-## Contribuir
+El sitio se publica en GitHub Pages desde `.github/workflows/ci.yml` en cada push a `main`. Las reglas completas
+del proyecto (legales, seguridad, idioma, accesibilidad) están en [CLAUDE.md](CLAUDE.md).
 
-¡Toda ayuda es bienvenida! Lee [CONTRIBUTING.md](CONTRIBUTING.md). Ideas: más álbumes, nuevos estilos de luz,
-traducciones, detección de BPM automática.
+<a id="arquitectura"></a>
 
-## Apoya el proyecto
+## 🧱 Arquitectura
 
-Si te gusta, puedes apoyarlo desde el botón **Sponsor** del repositorio o los enlaces dentro de la app.
+```
+index.html · landing.css · src/landing.js    Inicio 3D (three.js + GSAP): ARMY Bomb, anatomía, versiones, estadio
+player/index.html · styles.css · src/app.js  Reproductor: Explorar, Video, Luces, Me gusta, Mis videos, paneles
+src/ble.js                                   Web Bluetooth: descubrimiento, familias V4 y SE/V3, ritmo de escritura
+src/player.js                                Reproductor de YouTube con reloj interpolado
+src/patterns.js                              Patrones de luz por secciones y looks por canción
+src/catalog.js                               Álbumes, canciones (videos oficiales) y conciertos
+src/stick3d.js                               ARMY Bomb 3D de la vista Luces
+src/camera.js · src/mic.js                   Modo concierto: cámara y micrófono (todo en el dispositivo)
+src/fanchant.js · src/crowd.js               Fanchant entre canciones y público en canvas
+src/guide.js · src/tour.js                   Guía de conexión y recorrido de bienvenida
+src/favorites.js · src/feedback.js           Me gusta y opiniones
+src/i18n.js · src/i18n/                      Español (fuente) + en, pt-BR, ko, id
+sw.js · manifest.webmanifest                 PWA: caché sin conexión e instalación
+vendor/ · fonts/                             three.js, GSAP y fuentes servidas localmente (sin CDNs)
+scripts/ · tests/                            Servidor local, CSP, build, pruebas y check:ui
+```
 
-## Licencia
+```mermaid
+flowchart LR
+  YT["YouTube<br>(video oficial)"] -->|tiempo| P["src/player.js"]
+  P --> PAT["src/patterns.js<br>color por sección"]
+  PAT --> BLE["src/ble.js<br>Web Bluetooth"]
+  PAT --> UI["Pantalla<br>Luces · estadio"]
+  BLE --> AB(("ARMY Bomb"))
+```
 
-[MIT](LICENSE). Los nombres de artistas y álbumes se usan solo para identificar la música; pertenecen a sus dueños.
+<a id="privacidad"></a>
 
-La licencia MIT cubre solo el código propio del proyecto. **No cubre `vendor/gsap/`**: GSAP 3.13.0 se usa con la
-licencia Standard «sin costo» de GreenSock (ver [`vendor/gsap/LICENSE.txt`](vendor/gsap/LICENSE.txt) y https://gsap.com/standard-license).
+## 🔒 Privacidad
+
+- **Sin cuentas ni servidor propio.** Me gusta, ajustes e historial se guardan solo en tu dispositivo y se pueden borrar desde *Ajustes*.
+- **Google Analytics 4 sin cookies**: solo páginas visitadas y eventos con nombres fijos, con IP anonimizada y sin señales
+  de anuncios. No se carga con *Do Not Track* ni *Global Privacy Control*, ni en localhost.
+- **Cámara y micrófono** se procesan en el dispositivo: nada se graba ni se envía.
+- YouTube en modo de privacidad mejorada (`youtube-nocookie.com`), Content-Security-Policy en cada página y librerías
+  servidas desde `vendor/`.
+
+Detalles en la [política de privacidad](https://lumiparty.com/privacy/) y en [SECURITY.md](SECURITY.md).
+
+<a id="aviso-legal"></a>
+
+## ⚖️ Aviso legal
+
+LumiParty es un **proyecto de fans no oficial**. No está afiliado, patrocinado ni aprobado por HYBE, BIGHIT MUSIC,
+BTS ni los fabricantes del ARMY Bomb. BTS, ARMY Bomb y los nombres de artistas, álbumes y canciones son marcas o
+propiedad de sus respectivos dueños y se usan solo para identificar la música.
+
+- El repositorio **no contiene** letras, audio, video ni logos oficiales. Los videos se ven desde canales oficiales de
+  YouTube con su reproductor; las miniaturas de las capturas de este README están difuminadas a propósito.
+- El ARMY Bomb 3D es una ilustración propia con un emblema original en forma de ola.
+- El protocolo Bluetooth se documentó para interoperabilidad; la implementación es propia.
+
+¿Eres titular de derechos y quieres que se retire algo? [Abre un issue](https://github.com/KarlaMedina97/lightstick-bts-concert-sync/issues)
+y lo atendemos lo antes posible.
+
+<a id="contribuir"></a>
+
+## 🤝 Contribuir
+
+¡Toda ayuda es bienvenida! Lee [CONTRIBUTING.md](CONTRIBUTING.md) antes de empezar.
+
+- **Commits** con [Conventional Commits](https://www.conventionalcommits.org/es/) en español: `feat(luces): …`, `fix(ble): …`.
+- **Canciones nuevas**: solo videos de canales oficiales, con luces ricas (el control de calidad de `tests/looks.test.js`
+  lo exige). Ver [docs/patrones-luces.md](docs/patrones-luces.md).
+- **Textos visibles** en español, con su traducción en `src/i18n/`.
+- Antes de abrir el pull request: `npm run check` y, si tocas la interfaz, `npm run check:ui`.
+
+¿Probaste con tu ARMY Bomb? Cuéntanos cómo te fue desde **Tu opinión** dentro de la app.
+
+<a id="apoyo"></a>
+
+## 💜 Apoyo
+
+LumiParty es gratis y lo seguirá siendo. Si te gusta, puedes:
+
+- dejar una ⭐ en el repositorio,
+- apoyar el desarrollo con [GitHub Sponsors](https://github.com/sponsors/KarlaMedina97),
+- compartirla con otras ARMY.
+
+<a id="licencia"></a>
+
+## 📄 Licencia
+
+[MIT](LICENSE) © Karla Medina, para el código propio del proyecto.
+
+**No cubre `vendor/gsap/`**: GSAP 3.13.0 se usa con la licencia Standard «sin costo» de GreenSock
+(ver [`vendor/gsap/LICENSE.txt`](vendor/gsap/LICENSE.txt) y https://gsap.com/standard-license). three.js mantiene su
+licencia MIT ([`vendor/README.md`](vendor/README.md)) y las fuentes Unbounded y Plus Jakarta Sans, la SIL Open Font
+License (ver [`fonts/`](fonts/)).
+
+<a id="english"></a>
+
+## 🌐 English summary
+
+**LumiParty** is a free, open-source and **unofficial** fan web app that syncs the BTS **ARMY Bomb** lightstick over
+**Web Bluetooth** with official YouTube videos. Ver. 4, SE and Ver. 3 connect by Bluetooth; with Ver. 2, Ver. 1 or no
+lightstick at all, your screen becomes the light. It runs in Chrome and Edge (Bluefy on iPhone), installs as a PWA,
+needs no account and is available in Spanish, English, Brazilian Portuguese, Korean and Indonesian.
+Try it at **[lumiparty.com](https://lumiparty.com/)**. Not affiliated with HYBE, BIGHIT MUSIC or BTS.
+
+<div align="center">
+<br>
+<sub>Hecho con 💜 por ARMY · <a href="https://lumiparty.com/">lumiparty.com</a></sub>
+</div>
