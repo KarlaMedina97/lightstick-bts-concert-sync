@@ -699,6 +699,32 @@ if (renderer) {
     return o;
   }
 
+  // ---------- Invitación a tocarlo: una pastilla que flota sobre el globo hasta la primera vez que se agarra ----------
+  const HINT_KEY = "pws.landing.grabbed";
+  const hint = document.getElementById("grab-hint");
+  let hintOn = false, hintFrame = 0;
+  try { hintOn = Boolean(hint) && localStorage.getItem(HINT_KEY) !== "1"; } catch { hintOn = Boolean(hint); }
+  if (hintOn) setTimeout(() => hint.classList.add("in"), 1800); // después de la entrada del título
+  const _hintP = new THREE.Vector3();
+  function placeGrabHint() {
+    if (!hintOn || ++hintFrame % 2) return;
+    // Solo en el inicio (al bajar se va) y encima del globo, siga donde siga el ARMY Bomb.
+    const inHero = scrollY < innerHeight * 0.5;
+    hint.classList.toggle("away", !inHero);
+    if (!inHero) return;
+    stick.updateWorldMatrix(true, false);
+    _hintP.set(0, v4.metrics.top + 0.35, 0).applyMatrix4(stick.matrixWorld).project(camera);
+    const cr = canvas.getBoundingClientRect();
+    hint.style.transform = `translate(${Math.round((_hintP.x + 1) / 2 * cr.width)}px, ${Math.round((1 - _hintP.y) / 2 * cr.height + cr.top)}px) translate(-50%, -100%)`;
+  }
+  function dismissGrabHint() {
+    if (!hintOn) return;
+    hintOn = false;
+    try { localStorage.setItem(HINT_KEY, "1"); } catch {}
+    hint.classList.add("gone");
+    setTimeout(() => hint.remove(), 400);
+  }
+
   // ---------- Interacción: arrastrar para girar (yaw + pitch con inercia), clic para color y sacudida ----------
   const pointer = new THREE.Vector2();
   const raycaster = new THREE.Raycaster();
@@ -782,6 +808,7 @@ if (renderer) {
   };
   canvas.addEventListener("pointerdown", (e) => {
     const onStick = !!pick(e);
+    if (onStick) dismissGrabHint();
     const onRing = !onStick && (ringHit() || inRingArea(e));
     if (!onStick && !onRing) return;
     ring.dragging = ring.mainIn > 0.3 || onRing;
@@ -1634,6 +1661,7 @@ if (renderer) {
     const t0 = performance.now();
     if (DEBUG) renderer.info.reset();
     if (useBloom) composer.render(); else renderer.render(scene, camera);
+    placeGrabHint();
     perfTick(dt, performance.now() - t0);
   }
   // ---------- Rendimiento: calidad adaptativa y medición con ?debug=1 ----------

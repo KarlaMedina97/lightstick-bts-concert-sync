@@ -1,5 +1,6 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Tócalo y agítalo": "Sentuh dan goyangkan",
   "Código en GitHub (se abre en otra pestaña)": "Kode di GitHub (terbuka di tab baru)",
   "Código en GitHub ↗": "Kode di GitHub ↗",
   "Métricas de uso, sin publicidad.": "Statistik penggunaan, tanpa iklan.",

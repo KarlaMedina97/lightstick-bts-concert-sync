@@ -1,5 +1,6 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Tócalo y agítalo": "Toque e agite",
   "Código en GitHub (se abre en otra pestaña)": "Código no GitHub (abre em outra aba)",
   "Código en GitHub ↗": "Código no GitHub ↗",
   "Métricas de uso, sin publicidad.": "Métricas de uso, sem publicidade.",

@@ -614,3 +614,15 @@ section[id], #contenido { scroll-margin-top: 76px; }
 .nav-gh:hover .ext-mark { opacity: 1; }
 .nav-gh-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (max-width: 719px) { .nav-gh { gap: 8px; } .nav-gh-label { position: static; width: auto; height: auto; overflow: visible; clip: auto; } .nav-gh .ext-mark { margin-top: 0; } }
+
+/* Invitación sobre el ARMY Bomb del inicio: flota suave, sin tapar el globo; se va al agarrarlo */
+.grab-hint { position: fixed; left: 0; top: -6px; z-index: 3; display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px 7px 10px; border-radius: 999px;
+  background: rgba(14, 10, 32, .72); border: 1px solid rgba(255, 255, 255, .22); color: #fff; font: 600 .8rem/1 var(--body); white-space: nowrap;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 10px 30px -12px rgba(0, 0, 0, .7);
+  pointer-events: none; opacity: 0; transition: opacity .5s ease; will-change: transform; }
+.grab-hint.in { opacity: 1; animation: gh-float 2.6s ease-in-out infinite; }
+.grab-hint.away, .grab-hint.gone { opacity: 0; }
+.gh-dot { width: 10px; height: 10px; border-radius: 50%; background: #c9a8ff; box-shadow: 0 0 0 0 rgba(201, 168, 255, .7); animation: gh-ping 1.6s ease-out infinite; }
+@keyframes gh-ping { 70%, 100% { box-shadow: 0 0 0 10px rgba(201, 168, 255, 0); } }
+@keyframes gh-float { 50% { margin-top: -6px; } }
+@media (prefers-reduced-motion: reduce) { .grab-hint.in, .gh-dot { animation: none; } }
