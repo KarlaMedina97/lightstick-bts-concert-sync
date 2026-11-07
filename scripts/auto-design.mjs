@@ -144,3 +144,32 @@ export function autoDesign({ song, look = null, video = null, f }) {
     paleta, tramos,
   };
 }
+
+/**
+ * Recolorea una secuencia automática con la línea de tiempo de Gemini (docs/secuencias/gemini/<id>.json): cada tramo
+ * toma los colores de lo que se ve en su momento, eligiendo según el papel del sonido (pesado → el más cálido,
+ * brillante → el más luminoso, suave → el más frío). Los tiempos, efectos, brillos y acentos medidos no cambian.
+ * Una paleta obligatoria (look.lock) manda y no se recolorea.
+ */
+export function recolor(seq, tl, look = null) {
+  if (look?.lock || !tl?.tramos?.length) return seq;
+  const lum = (h) => { const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  const sat = (h) => { const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); const M = Math.max(r, g, b); return M ? (M - Math.min(r, g, b)) / M : 0; };
+  const warmth = (h) => { const hu = hueOf(h); return hu < 0 ? -1 : Math.cos(((hu - 15) * Math.PI) / 180); }; // 1 = rojo/naranja, −1 = azul
+  const at = (t) => tl.tramos.find((x) => t >= x.inicio && t < x.fin) ?? tl.tramos.at(-1);
+  // Preferencia de la usuaria: menos celeste fuera de lo suave (el celeste se vuelve blanco o morado).
+  const prefer = (h, role) => { const hu = hueOf(h); return hu >= 180 && hu <= 215 && sat(h) > 0.3 && role !== "suave" ? (role === "brillo" ? P.blanco : P.morado) : h; };
+  const tramos = seq.tramos.map((t) => {
+    const role = (t.evidencia.match(/\((\w+)\)$/) ?? [])[1];
+    if (!role || ["pausa", "subida"].includes(role)) return t; // apagones y bombillo naranja→amarillo se quedan
+    const g = at((t.inicio + t.fin) / 2), cols = (g.colores ?? []).filter((c) => /^#[0-9a-fA-F]{6}$/.test(c)).map((c) => c.toLowerCase());
+    if (!cols.length) return t;
+    const by = (fn) => [...cols].sort((a, b) => fn(b) - fn(a));
+    const order = role === "pesado" ? by((c) => warmth(c) + sat(c)) : role === "brillo" ? by(lum) : role === "suave" || role === "intro" ? by((c) => -warmth(c)) : cols;
+    const color = prefer(order[0], role);
+    const color2 = order[1] ? prefer(order[1], role) : t.color2;
+    return { ...t, color, color2: t.efecto === "fadeout" ? null : color2, evidencia: `${t.evidencia} · escena: ${g.escena}`.slice(0, 300) };
+  });
+  const paleta = [...new Set(tramos.flatMap((t) => [t.color, t.color2]).filter((c) => c && c !== "#000000"))].map((hex) => ({ nombre: hex, hex, de: "colores del MV según Gemini, por momento" }));
+  return { ...seq, paleta, tramos, verificacion: { ...seq.verificacion, imagen: `Colores por momento según Gemini (${tl.modelo ?? "API"}); aura: ${tl.aura}` } };
+}

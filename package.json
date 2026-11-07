@@ -41,6 +41,8 @@
     "check:sequence": "node scripts/check-sequence.mjs",
     "import:sequences": "node scripts/import-sequences.mjs",
     "design:songs": "node scripts/design-songs.mjs",
+    "gemini:colors": "node scripts/gemini-colors.mjs",
+    "recolor:sequences": "node scripts/recolor-sequences.mjs",
     "prompts:sequences": "node scripts/make-sequence-prompts.mjs",
     "build": "node scripts/build-site.mjs"
   },

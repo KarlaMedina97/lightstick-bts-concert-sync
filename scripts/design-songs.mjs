@@ -10,14 +10,14 @@
 // Lo que pasa check:sequence se importa a src/sequences.js al momento (si se corta, no se pierde lo hecho).
 // Ojo: la canción suena por los parlantes mientras se escucha (se puede bajar el volumen de Windows).
 import { spawn, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ALBUMS } from "../src/catalog.js";
 import { lookFor } from "../src/patterns.js";
 import { audioFeatures } from "./audio-features.mjs";
-import { autoDesign } from "./auto-design.mjs";
+import { autoDesign, recolor } from "./auto-design.mjs";
 import { checkAll, loadMeasuredDurations } from "./check-sequence.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
@@ -100,7 +100,10 @@ try {
       const f = audioFeatures(await listen(song), { bpmHint: song.bpm || 0 });
       // Colores del MV recién medidos (el análisis de video puede ir corriendo a la vez).
       const { VIDEO_LOOKS: vl } = await import(new URL("../src/video-looks.js", import.meta.url).href + "?" + Date.now()).catch(() => ({ VIDEO_LOOKS }));
-      const seq = autoDesign({ song, look: lookFor(song.id), video: vl[song.id] ?? VIDEO_LOOKS[song.id] ?? null, f });
+      let seq = autoDesign({ song, look: lookFor(song.id), video: vl[song.id] ?? VIDEO_LOOKS[song.id] ?? null, f });
+      // Si Gemini ya describió el video (npm run gemini:colors), cada tramo toma los colores de su momento.
+      const gem = join(root, "docs", "secuencias", "gemini", `${id}.json`);
+      if (existsSync(gem)) seq = recolor(seq, JSON.parse(readFileSync(gem, "utf8")), lookFor(song.id));
       const [{ errors }] = checkAll([{ seq }]);
       const file = join(OUTDIR, `${id}.json`);
       writeFileSync(file, JSON.stringify(seq, null, 2));
