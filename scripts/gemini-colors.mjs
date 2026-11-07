@@ -76,7 +76,13 @@ async function ask(model, song, dur) {
     contents: [{ role: "user", parts: [{ fileData: { fileUri: `https://www.youtube.com/watch?v=${song.yt}`, mimeType: "video/*" } }, { text: prompt(song, dur) }] }],
     generationConfig: { responseMimeType: "application/json", responseSchema: SCHEMA, temperature: 0.2 },
   };
-  const r = await fetch(`${API}/models/${model}:generateContent`, { method: "POST", headers, body: JSON.stringify(body) });
+  let r;
+  // Servidores saturados (500/503): hasta 4 intentos, esperando 20, 40 y 80 s.
+  for (let k = 0; k < 4; k++) {
+    r = await fetch(`${API}/models/${model}:generateContent`, { method: "POST", headers, body: JSON.stringify(body) });
+    if (![500, 502, 503, 504].includes(r.status)) break;
+    await new Promise((res) => setTimeout(res, 20000 * 2 ** k));
+  }
   if (r.status === 429) { const e = new Error("límite de consultas de Gemini alcanzado (429)"); e.stop = true; throw e; }
   if (!r.ok) throw new Error(`Gemini respondió ${r.status}: ${(await r.text()).slice(0, 200)}`);
   const j = await r.json();
