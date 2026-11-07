@@ -23,7 +23,7 @@ import { checkAll, loadMeasuredDurations } from "./check-sequence.mjs";
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const OUTDIR = join(root, "docs", "secuencias", "auto");
 mkdirSync(OUTDIR, { recursive: true });
-const MANUAL = new Set(["we-are-bulletproof-pt2"]); // diseñadas a mano con la usuaria: no se pisan
+const MANUAL = new Set(["we-are-bulletproof-pt2", "dynamite"]); // aprobadas por la usuaria: el diseño automático nunca las pisa
 const args = process.argv.slice(2);
 const songs = ALBUMS.flatMap((a) => a.songs.map((s) => ({ ...s, album: a }))).filter((s) => s.yt && s.kind !== "concert");
 const ids = args.includes("--missing")
