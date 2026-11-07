@@ -98,7 +98,9 @@ try {
     const t0 = Date.now();
     try {
       const f = audioFeatures(await listen(song), { bpmHint: song.bpm || 0 });
-      const seq = autoDesign({ song, look: lookFor(song.id), video: VIDEO_LOOKS[song.id] ?? null, f });
+      // Colores del MV recién medidos (el análisis de video puede ir corriendo a la vez).
+      const { VIDEO_LOOKS: vl } = await import(new URL("../src/video-looks.js", import.meta.url).href + "?" + Date.now()).catch(() => ({ VIDEO_LOOKS }));
+      const seq = autoDesign({ song, look: lookFor(song.id), video: vl[song.id] ?? VIDEO_LOOKS[song.id] ?? null, f });
       const [{ errors }] = checkAll([{ seq }]);
       const file = join(OUTDIR, `${id}.json`);
       writeFileSync(file, JSON.stringify(seq, null, 2));
