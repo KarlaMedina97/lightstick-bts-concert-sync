@@ -38,6 +38,7 @@
     "check:embeds": "node scripts/check-embeds.mjs",
     "check:ui": "node scripts/check-ui.mjs",
     "analyze:video": "node scripts/analyze-video.mjs",
+    "check:sequence": "node scripts/check-sequence.mjs",
     "build": "node scripts/build-site.mjs"
   },
   "engines": {

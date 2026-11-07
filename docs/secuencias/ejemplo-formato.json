@@ -1,0 +1,88 @@
+{
+  "_aviso": "EJEMPLO DE FORMATO. Los tiempos, colores y valores de este archivo son ilustrativos y NO corresponden a ninguna canción real (es un fragmento de 72 s). Las marcas reales salen de analizar el audio y la imagen del video.",
+  "formato": 1,
+  "song": "id-del-catalogo",
+  "yt": "ID_DE_YOUTUBE",
+  "duracion": 72.0,
+  "bpm": 120,
+  "primerTiempo": 0.5,
+  "verificacion": {
+    "audio": "Cómo se obtuvieron tempo, golpes y secciones (p. ej. «escuché el video completo; BPM contado en el coro»).",
+    "imagen": "Qué se tomó del video para los colores (vestuario, escenario, luces).",
+    "confianza": "media",
+    "dudas": ["Marcas o tramos que no se pudieron confirmar."]
+  },
+  "paleta": [
+    { "nombre": "base", "hex": "#8a2be2", "de": "concepto (morado del ARMY Bomb)" },
+    { "nombre": "calido", "hex": "#ffb638", "de": "escenografía de la primera mitad" },
+    { "nombre": "acento", "hex": "#3accff", "de": "luces del coro" }
+  ],
+  "tramos": [
+    {
+      "inicio": 0.0, "fin": 8.0,
+      "seccion": "intro",
+      "sigue": "sostenido, sin pulso",
+      "color": "#8a2be2", "color2": null,
+      "brillo": 0.25, "brilloFin": 0.4,
+      "transicion": "fundido",
+      "transicionSeg": 2.0,
+      "efecto": "breathe",
+      "cadaTiempos": 4,
+      "destellosPorSeg": 0,
+      "nota": "Arranque suave; la luz crece hacia el verso."
+    },
+    {
+      "inicio": 8.0, "fin": 40.0,
+      "seccion": "verso",
+      "sigue": "pulso en cada tiempo 1 del compás",
+      "color": "#ffb638", "color2": "#8a2be2",
+      "brillo": 0.55, "brilloFin": 0.6,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "pulse",
+      "cadaTiempos": 2,
+      "destellosPorSeg": 0,
+      "nota": "Pulso medio; deja espacio para que el coro pegue más."
+    },
+    {
+      "inicio": 40.0, "fin": 48.0,
+      "seccion": "pre-coro",
+      "sigue": "tensión creciente",
+      "color": "#ffb638", "color2": "#3accff",
+      "brillo": 0.6, "brilloFin": 0.9,
+      "transicion": "crescendo",
+      "transicionSeg": 8.0,
+      "efecto": "rise",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 0,
+      "nota": "Sube poco a poco hasta el coro."
+    },
+    {
+      "inicio": 48.0, "fin": 48.6,
+      "seccion": "pausa",
+      "sigue": "silencio antes del coro",
+      "color": "#000000", "color2": null,
+      "brillo": 0.0, "brilloFin": 0.0,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "blackout",
+      "cadaTiempos": 0,
+      "destellosPorSeg": 0,
+      "nota": "Silencio visual breve: el coro entra con más fuerza."
+    },
+    {
+      "inicio": 48.6, "fin": 72.0,
+      "seccion": "coro",
+      "sigue": "golpe fuerte en cada tiempo; acento en los golpes de bombo",
+      "color": "#3accff", "color2": "#ff4fa3",
+      "brillo": 1.0, "brilloFin": 1.0,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "hit",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 2,
+      "acentos": [48.6, 60.6],
+      "nota": "Clímax del primer coro; destellos solo en los acentos marcados."
+    }
+  ]
+}

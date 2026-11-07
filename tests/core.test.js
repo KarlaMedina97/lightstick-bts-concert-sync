@@ -63,3 +63,19 @@ test("aviso de actualización: versión de sw.js y despliegue en curso de GitHub
   assert.equal(deployingRun({ total_count: 1, workflow_runs: [{ id: 7, status: "completed" }] }), null);
   assert.equal(deployingRun(null), null);
 });
+
+import { checkSequence, extractJson } from "../scripts/check-sequence.mjs";
+import { readFileSync } from "node:fs";
+test("secuencias por marcas de tiempo: el ejemplo es válido y se detectan huecos, destellos y luz plana", () => {
+  const ok = JSON.parse(readFileSync("docs/secuencias/ejemplo-formato.json", "utf8"));
+  assert.deepEqual(checkSequence(ok).errors, []);
+  const bad = structuredClone(ok);
+  bad.tramos[1].inicio = 9; // hueco
+  bad.tramos[4].destellosPorSeg = 6;
+  bad.tramos[4].acentos = [50, 50.2, 50.4, 50.6];
+  const r = checkSequence(bad);
+  assert.ok(r.errors.some((e) => /hueco/.test(e)));
+  assert.ok(r.errors.some((e) => /destellos\/s/.test(e)));
+  assert.ok(r.errors.some((e) => /3 acentos/.test(e)));
+  assert.equal(extractJson("Aquí va:\n" + JSON.stringify(ok) + "\n| tabla |").song, ok.song); // respuesta de Gemini con texto
+});
