@@ -83,7 +83,7 @@ export function checkSequence(seq, { catalog = ALBUMS } = {}) {
     if (!(t.fin > t.inicio)) err(`${at}: «fin» debe ser mayor que «inicio»`);
     prevEnd = t.fin;
     if (!SECTIONS.includes(t.seccion)) warn(`${at}: sección poco común «${t.seccion}»`);
-    if (t.evidencia === undefined) warn(`${at}: sin «evidencia» (qué se oye/ve en ese momento): no se puede revisar`);
+    if (t.evidencia === undefined && t.evidence === undefined) warn(`${at}: sin «evidencia» (qué se oye/ve en ese momento): no se puede revisar`);
     if (!HEX.test(t.color)) err(`${at}: color inválido ${t.color}`);
     if (t.color2 != null && !HEX.test(t.color2)) err(`${at}: color2 inválido ${t.color2}`);
     for (const k of ["brillo", "brilloFin"]) if (!(t[k] >= 0 && t[k] <= 1)) err(`${at}: ${k} fuera de 0–1 (${t[k]})`);
@@ -132,9 +132,9 @@ export function checkBatch(list) {
   for (const [, ids] of group(shape)) if (ids.length >= 3) for (const id of ids) add(id, `mismos tiempos relativos que otras ${ids.length - 1} canciones: parece una plantilla, no un análisis de su video`);
   for (const [d, ids] of group((s) => s.duracion)) if (ids.length >= Math.max(5, list.length * 0.3)) for (const id of ids) add(id, `${ids.length} canciones con la misma duración (${d} s): no es la duración real de cada video`);
   const ev = new Map();
-  for (const { seq } of list) for (const t of seq.tramos ?? []) if (t.evidencia) ev.set(t.evidencia, (ev.get(t.evidencia) ?? new Set()).add(seq.song));
+  for (const { seq } of list) for (const t of seq.tramos ?? []) { const e = t.evidencia ?? t.evidence; if (e) ev.set(e, (ev.get(e) ?? new Set()).add(seq.song)); }
   for (const { seq } of list) {
-    const reused = (seq.tramos ?? []).filter((t) => t.evidencia && ev.get(t.evidencia).size >= 3).length;
+    const reused = (seq.tramos ?? []).filter((t) => (t.evidencia ?? t.evidence) && ev.get(t.evidencia ?? t.evidence).size >= 3).length;
     if (reused > (seq.tramos?.length ?? 0) / 2) add(seq.song, `la «evidencia» se repite igual en otras canciones (${reused} tramos): no describe este video`);
   }
   return out;
