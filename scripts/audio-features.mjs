@@ -6,7 +6,7 @@ const median = (a) => { const s = [...a].sort((x, y) => x - y); return s[Math.fl
 const smooth = (a, w) => { const o = new Float32Array(a.length); let s = 0; for (let i = 0; i < a.length; i++) { s += a[i]; if (i >= w) s -= a[i - w]; o[i] = s / Math.min(i + 1, w); } return o; };
 
 /** @param {number[][]} raw muestras [t, total, graves, medios, agudos, flujo] */
-export function audioFeatures(raw, FS = 50) {
+export function audioFeatures(raw, { FS = 50, bpmHint = 0 } = {}) {
   const dur = raw.at(-1)[0];
   const N = Math.floor(dur * FS);
   const grid = (k) => { const a = new Float32Array(N); let j = 0; for (let i = 0; i < N; i++) { const t = i / FS; while (j < raw.length - 1 && raw[j + 1][0] <= t) j++; a[i] = raw[j][k]; } return a; };
@@ -15,11 +15,15 @@ export function audioFeatures(raw, FS = 50) {
   const mf = median(flux), ml = median(lowRise);
   const on = new Float32Array(N); for (let i = 0; i < N; i++) on[i] = flux[i] / mf + (2 * lowRise[i]) / ml;
   // Tempo por autocorrelación del onset (70–180 BPM).
+  const score = (bpm) => { const lag = (60 / bpm) * FS; let s = 0; for (let i = 0; i + lag * 2 < N; i += 2) s += on[i] * (on[Math.round(i + lag)] + 0.5 * on[Math.round(i + 2 * lag)]); return s; };
   let best = { bpm: 100, s: -1 };
-  for (let bpm = 70; bpm <= 180; bpm += 0.5) {
-    const lag = (60 / bpm) * FS; let s = 0;
-    for (let i = 0; i + lag * 2 < N; i += 2) s += on[i] * (on[Math.round(i + lag)] + 0.5 * on[Math.round(i + 2 * lag)]);
-    if (s > best.s) best = { bpm, s };
+  for (let bpm = 70; bpm <= 180; bpm += 0.5) { const s = score(bpm); if (s > best.s) best = { bpm, s }; }
+  // Con el BPM aproximado del catálogo: si cerca de él (±8 %, o su doble/mitad) hay un pulso casi tan claro, se usa ese
+  // (la autocorrelación a veces engancha un múltiplo raro del tempo real).
+  if (bpmHint > 0) {
+    let near = { bpm: 0, s: -1 };
+    for (const h of [bpmHint, bpmHint * 2, bpmHint / 2].filter((x) => x >= 60 && x <= 200)) for (let bpm = h * 0.92; bpm <= h * 1.08; bpm += 0.25) { const s = score(bpm); if (s > near.s) near = { bpm: +bpm.toFixed(2), s }; }
+    if (near.s >= best.s * 0.6) best = near;
   }
   const beat = 60 / best.bpm;
   let ph = { p: 0, s: -1 };

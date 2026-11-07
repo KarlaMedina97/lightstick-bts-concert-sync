@@ -97,7 +97,7 @@ try {
     if (!song) { console.log(`✗ ${id}: no está en el catálogo`); continue; }
     const t0 = Date.now();
     try {
-      const f = audioFeatures(await listen(song));
+      const f = audioFeatures(await listen(song), { bpmHint: song.bpm || 0 });
       const seq = autoDesign({ song, look: lookFor(song.id), video: VIDEO_LOOKS[song.id] ?? null, f });
       const [{ errors }] = checkAll([{ seq }]);
       const file = join(OUTDIR, `${id}.json`);

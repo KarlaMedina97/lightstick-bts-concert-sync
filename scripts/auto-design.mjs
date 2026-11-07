@@ -19,6 +19,7 @@ const r1 = (x) => Math.round(x * 10) / 10;
  */
 export function autoDesign({ song, look = null, video = null, f }) {
   const dur = f.dur, ballad = song.energy === "ballad" || (f.bpm < 80 && f.hits.length / dur < 0.6);
+  const strong = !ballad && (song.energy === "high" || Boolean(look?.rap));
   const bars = f.bars;
   const mE = med(bars.map((b) => b.e)), mG = med(bars.map((b) => b.g)), mH = med(bars.map((b) => b.h));
 
@@ -28,11 +29,27 @@ export function autoDesign({ song, look = null, video = null, f }) {
   for (const c of cuts) if (c.t > 3 && c.t < dur - 3 && kept.every((k) => Math.abs(k - c.t) >= 6)) kept.push(c.t);
   kept.sort((a, b) => a - b);
   // 2) Pausas reales (0,25–3 s) como apagones; un silencio largo al final se queda en el cierre.
-  const pauses = f.pauses.filter((p) => p.fin - p.t <= 3 && p.fin < dur - 2);
+  // Solo silencios de verdad (≥ 0,4 s) y como mucho uno cada 20 s (el más largo): los cortes cortos no apagan todo.
+  const pauses = [];
+  for (const p of [...f.pauses].filter((p) => p.fin - p.t >= 0.4 && p.fin - p.t <= 3 && p.fin < dur - 2).sort((a, b) => (b.fin - b.t) - (a.fin - a.t)))
+    if (pauses.every((q) => Math.abs(q.t - p.t) >= 20)) pauses.push(p);
   let edges = [0, ...kept, dur];
   for (const p of pauses) edges.push(p.t, p.fin);
   edges = [...new Set(edges.map(r1))].sort((a, b) => a - b).filter((t, i, a) => i === 0 || t - a[i - 1] >= 0.2);
   edges[edges.length - 1] = dur;
+  // Tramos de menos de 4 s (que no sean apagones) se unen al anterior: menos cortes, más legible para el público.
+  const isPauseEdge = (a, b) => pauses.some((p) => Math.abs(p.t - a) < 0.25 && Math.abs(p.fin - b) < 0.25);
+  // Se borra una frontera del tramo corto (la de su final, o la de su inicio si es el último), sin tocar las de un apagón.
+  for (let guard = 0; guard < 200; guard++) {
+    let k = -1;
+    for (let i = 0; i < edges.length - 1; i++) if (edges[i + 1] - edges[i] < 4 && !isPauseEdge(edges[i], edges[i + 1])) { k = i; break; }
+    if (k < 0) break;
+    const endIdx = k + 1, startIdx = k;
+    const touchesPause = (idx) => pauses.some((p) => Math.abs(p.t - edges[idx]) < 0.25 || Math.abs(p.fin - edges[idx]) < 0.25);
+    if (endIdx < edges.length - 1 && !touchesPause(endIdx)) edges.splice(endIdx, 1);
+    else if (startIdx > 0 && !touchesPause(startIdx)) edges.splice(startIdx, 1);
+    else break;
+  }
 
   // 3) Clase de cada tramo según su sonido.
   const segs = [];
@@ -50,9 +67,11 @@ export function autoDesign({ song, look = null, video = null, f }) {
     else if (i === segs.length - 1) s.k = "final";
     else if (i === 0 && s.E < mE) s.k = "intro";
     else if (next && next.E > s.E * 1.2 && s.hLast > s.hFirst * 1.25 && s.G < mG * 1.1) s.k = "subida";
-    else if (s.G >= Math.max(3, mG * 1.45) && s.hps >= 0.8) s.k = "pesado";
-    else if (s.H >= mH * 1.35 && s.E >= mE * 0.95) s.k = "brillo";
-    else if (s.E < mE * 0.7) s.k = "suave";
+    else if (s.G >= Math.max(2, mG * 1.25) && s.hps >= 0.7) s.k = "pesado";
+    else if (s.H >= mH * 1.25 && s.E >= mE * 0.9) s.k = "brillo";
+    else if (s.E < mE * 0.55 && s.G < mG * 0.75) s.k = "suave";
+    // Canciones fuertes (energía alta o rap): lo «normal» con golpes también es pesado; aquí casi nunca hay luz quieta.
+    else if (strong && s.hps >= 0.9) s.k = "pesado";
     else s.k = "medio";
   });
 
@@ -66,7 +85,7 @@ export function autoDesign({ song, look = null, video = null, f }) {
     const n = (count[k] = (count[k] ?? 0) + 1) - 1, v = vidAt(t);
     if (lock) return [lock[n % lock.length], lock[(n + 1) % lock.length]];
     switch (k) {
-      case "pesado": return [pick(v, warm) ?? [P.rojo, P.carmesi][n % 2], [P.blanco, P.dorado, P.amarillo][n % 3]];
+      case "pesado": return n % 4 === 3 ? [P.dorado, P.rojo] : [pick(v, warm) ?? [P.rojo, P.carmesi, P.morado][n % 3], [P.blanco, P.dorado, P.amarillo][n % 3]];
       case "brillo": return [pick(v, gold) ?? [P.amarillo, P.dorado, P.blanco][n % 3], [P.blanco, P.rojo, P.naranja][n % 3]];
       case "subida": return [P.naranja, P.amarillo];
       case "suave": return [pick(v, violet) ?? [P.morado, P.lila][n % 2], v[0] ?? P.blanco];
@@ -87,7 +106,7 @@ export function autoDesign({ song, look = null, video = null, f }) {
       pausa: ["blackout", 0, 0, "corte", 0],
       intro: [ballad ? "breathe" : "hold", 0.25, 0.45, "fundido", 1.5],
       subida: [ballad ? "rise" : "bulb", ballad ? 0.45 : 0.7, 1, "corte", 0],
-      pesado: [ballad ? "bloom" : n % 3 === 2 ? "flame" : "hit", ballad ? 0.75 : rap ? 0.9 : 0.86, ballad ? 0.85 : 0.95, "corte", 0],
+      pesado: [ballad ? "bloom" : ["hit", "flame", "hit", "duo"][n % 4], ballad ? 0.75 : rap ? 0.9 : 0.86, ballad ? 0.85 : 0.95, "corte", 0],
       brillo: [ballad ? ["aurora", "bloom"][n % 2] : ["bloom", "disco", "sparkle"][n % 3], 1, 1, "corte", 0],
       suave: [ballad ? ["aurora", "hold"][n % 2] : ["breathe", "hold"][n % 2], 0.35, 0.5, "fundido", 2],
       medio: [ballad ? "breathe" : ["pulse", "duo", "wave"][n % 3], ballad ? 0.5 : 0.72, ballad ? 0.6 : 0.8, "corte", 0],
