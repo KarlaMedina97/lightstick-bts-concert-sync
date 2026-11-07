@@ -159,16 +159,25 @@ export function recolor(seq, tl, look = null) {
   const at = (t) => tl.tramos.find((x) => t >= x.inicio && t < x.fin) ?? tl.tramos.at(-1);
   // Preferencia de la usuaria: menos celeste fuera de lo suave (el celeste se vuelve blanco o morado).
   const prefer = (h, role) => { const hu = hueOf(h); return hu >= 180 && hu <= 215 && sat(h) > 0.3 && role !== "suave" ? (role === "brillo" ? P.blanco : P.morado) : h; };
+  // Para un LED: negro y grises no sirven (se descartan); tonos apagados (sepia, beige) se ven como blanco.
+  const usable = (h) => { const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); if (Math.max(r, g, b) < 70) return null; return sat(h) < 0.28 ? P.blanco : h; };
+  const ROT = [P.dorado, P.blanco, P.morado, P.amarillo, P.naranja];
+  let prev = null, rot = 0;
   const tramos = seq.tramos.map((t) => {
-    const role = (t.evidencia.match(/\((\w+)\)$/) ?? [])[1];
+    const role = (t.evidencia.split(" · escena:")[0].match(/\((\w+)\)$/) ?? [])[1];
     if (!role || ["pausa", "subida"].includes(role)) return t; // apagones y bombillo naranja→amarillo se quedan
-    const g = at((t.inicio + t.fin) / 2), cols = (g.colores ?? []).filter((c) => /^#[0-9a-fA-F]{6}$/.test(c)).map((c) => c.toLowerCase());
+    const g = at((t.inicio + t.fin) / 2);
+    const cols = [...new Set((g.colores ?? []).filter((c) => /^#[0-9a-fA-F]{6}$/.test(c)).map((c) => usable(c.toLowerCase())).filter(Boolean))];
     if (!cols.length) return t;
     const by = (fn) => [...cols].sort((a, b) => fn(b) - fn(a));
     const order = role === "pesado" ? by((c) => warmth(c) + sat(c)) : role === "brillo" ? by(lum) : role === "suave" || role === "intro" ? by((c) => -warmth(c)) : cols;
-    const color = prefer(order[0], role);
-    const color2 = order[1] ? prefer(order[1], role) : t.color2;
-    return { ...t, color, color2: t.efecto === "fadeout" ? null : color2, evidencia: `${t.evidencia} · escena: ${g.escena}`.slice(0, 300) };
+    let color = prefer(order[0], role);
+    // Nunca el mismo color dos tramos seguidos: se toma el siguiente de la escena o uno de la paleta preferida.
+    const near = (a, b) => a && b && Math.hypot(...[1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16) - parseInt(b.slice(i, i + 2), 16))) < 70;
+    if (near(color, prev)) color = order.slice(1).map((c) => prefer(c, role)).find((c) => !near(c, prev)) ?? ROT[rot++ % ROT.length];
+    let color2 = order.map((c) => prefer(c, role)).find((c) => !near(c, color)) ?? ROT[(rot + 1) % ROT.length];
+    prev = color;
+    return { ...t, color, color2: t.efecto === "fadeout" ? null : color2, evidencia: `${t.evidencia.split(" · escena:")[0]} · escena: ${g.escena}`.slice(0, 300) };
   });
   const paleta = [...new Set(tramos.flatMap((t) => [t.color, t.color2]).filter((c) => c && c !== "#000000"))].map((hex) => ({ nombre: hex, hex, de: "colores del MV según Gemini, por momento" }));
   return { ...seq, paleta, tramos, verificacion: { ...seq.verificacion, imagen: `Colores por momento según Gemini (${tl.modelo ?? "API"}); aura: ${tl.aura}` } };

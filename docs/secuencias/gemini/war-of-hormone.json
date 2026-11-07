@@ -1,0 +1,184 @@
+{
+  "song": "war-of-hormone",
+  "yt": "XQmpVHUi-0A",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-07",
+  "duracion": 298,
+  "aura": "energía juvenil rebelde, hip-hop rockero desenfadado y contagioso",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 8,
+      "escena": "Introducción animada con esferas 3D y logo sobre fondo blanco minimalista",
+      "ambiente": "calma",
+      "colores": [
+        "#ffffff",
+        "#cccccc"
+      ]
+    },
+    {
+      "inicio": 8,
+      "fin": 30,
+      "escena": "Plaza exterior urbana en estética monocromática sepia con detalles en rojo, RM inicia el rap",
+      "ambiente": "fuerza",
+      "colores": [
+        "#b52a2a",
+        "#d8c4a5",
+        "#222222"
+      ]
+    },
+    {
+      "inicio": 30,
+      "fin": 50,
+      "escena": "RM y los miembros caminando bajo contraluz solar por la calle con actitud desenfadada",
+      "ambiente": "alegria",
+      "colores": [
+        "#d9b48f",
+        "#1e1e1e",
+        "#b82626"
+      ]
+    },
+    {
+      "inicio": 50,
+      "fin": 69,
+      "escena": "Jungkook rapea y baila en primer plano con suéter rojo y negro deshilachado",
+      "ambiente": "fuerza",
+      "colores": [
+        "#9b1b1b",
+        "#333333",
+        "#d6c7b2"
+      ]
+    },
+    {
+      "inicio": 69,
+      "fin": 90,
+      "escena": "Primer estribillo enérgico liderado por V con coreografía grupal frente al portal",
+      "ambiente": "fiesta",
+      "colores": [
+        "#b32020",
+        "#2c2c2c",
+        "#c8bca7"
+      ]
+    },
+    {
+      "inicio": 90,
+      "fin": 103,
+      "escena": "Coreografía rítmica y movimientos picarescos con los miembros cantando en formación",
+      "ambiente": "fiesta",
+      "colores": [
+        "#a81d1d",
+        "#222222",
+        "#dad0c0"
+      ]
+    },
+    {
+      "inicio": 103,
+      "fin": 128,
+      "escena": "Gancho coral melódico con pasos coordinados y saltos sincronizados en la acera",
+      "ambiente": "alegria",
+      "colores": [
+        "#b82424",
+        "#1f1f1f",
+        "#e0d5c1"
+      ]
+    },
+    {
+      "inicio": 128,
+      "fin": 149,
+      "escena": "Verso de Suga con boina subido a hombros de Jungkook exhibiendo carisma rap",
+      "ambiente": "fuerza",
+      "colores": [
+        "#232323",
+        "#9b1b1b",
+        "#dcd0be"
+      ]
+    },
+    {
+      "inicio": 149,
+      "fin": 167,
+      "escena": "J-Hope rapea junto a un coche clásico celeste cortejando a la chica",
+      "ambiente": "alegria",
+      "colores": [
+        "#5db0a6",
+        "#992222",
+        "#2b2b2b"
+      ]
+    },
+    {
+      "inicio": 167,
+      "fin": 188,
+      "escena": "Jin y Jungkook cantan conduciendo bicicletas chopper customizadas por la calle",
+      "ambiente": "fiesta",
+      "colores": [
+        "#b32525",
+        "#2e2e2e",
+        "#cbbca3"
+      ]
+    },
+    {
+      "inicio": 188,
+      "fin": 206,
+      "escena": "Repetición del coro potente frente al edificio clásico con baile sincronizado",
+      "ambiente": "fiesta",
+      "colores": [
+        "#a81f1f",
+        "#5bb3a8",
+        "#222222"
+      ]
+    },
+    {
+      "inicio": 206,
+      "fin": 227,
+      "escena": "Transición hacia el interior de un pabellón oscuro con humo y contraluz dramático",
+      "ambiente": "tension",
+      "colores": [
+        "#2d3338",
+        "#d2c092",
+        "#111111"
+      ]
+    },
+    {
+      "inicio": 227,
+      "fin": 246,
+      "escena": "Baile dinámico en la cancha interior con potentes haces de luz creando siluetas",
+      "ambiente": "fuerza",
+      "colores": [
+        "#d9b870",
+        "#181a1d",
+        "#8c1d1d"
+      ]
+    },
+    {
+      "inicio": 246,
+      "fin": 270,
+      "escena": "Clímax de la coreografía con máxima intensidad visual bajo potentes focos cenitales",
+      "ambiente": "climax",
+      "colores": [
+        "#e5c87a",
+        "#15171a",
+        "#942020"
+      ]
+    },
+    {
+      "inicio": 270,
+      "fin": 294,
+      "escena": "La chica abraza a V ante el festejo y las reacciones cómicas del resto de miembros",
+      "ambiente": "alegria",
+      "colores": [
+        "#c5a968",
+        "#1c1f24",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 294,
+      "fin": 298,
+      "escena": "Pantalla final con el título de la canción en grafía blanca sobre fondo negro",
+      "ambiente": "calma",
+      "colores": [
+        "#ffffff",
+        "#000000"
+      ]
+    }
+  ]
+}
