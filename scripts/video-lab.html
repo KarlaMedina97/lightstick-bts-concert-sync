@@ -18,9 +18,11 @@
   window.onYouTubeIframeAPIReady = () => {
     player = new YT.Player("p", {
       width: 640, height: 360, videoId: id,
-      playerVars: { autoplay: 1, mute: 1, controls: 0, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3 },
+      playerVars: { autoplay: 1, mute: 1, controls: 0, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3, cc_load_policy: 0 },
       events: {
-        onReady: (e) => { e.target.mute(); e.target.playVideo(); window.lab.ready = true; },
+        onReady: (e) => { e.target.mute(); e.target.unloadModule?.("captions"); e.target.unloadModule?.("cc"); e.target.playVideo(); window.lab.ready = true; },
+        // Subtítulos apagados: son la letra (no se captura) y además ensucian los colores.
+        onApiChange: (e) => { e.target.unloadModule?.("captions"); e.target.unloadModule?.("cc"); },
         onError: (e) => { window.lab.error = e.data; },
       },
     });
@@ -28,6 +30,7 @@
   window.lab.state = () => (player?.getPlayerState ? { s: player.getPlayerState(), t: player.getCurrentTime(), d: player.getDuration() } : null);
   window.lab.rate = (r) => { player?.setPlaybackRate?.(r); return player?.getPlaybackRate?.(); };
   window.lab.pause = () => player?.pauseVideo?.();
+  window.lab.seek = (t) => { player?.seekTo?.(t, true); player?.playVideo?.(); };
 
   // Una captura (PNG de 80×45) → píxeles diminutos (32×18, para colores por sección), brillo, saturación y cuánto cambió
   // respecto a la anterior (movimiento / corte de escena).

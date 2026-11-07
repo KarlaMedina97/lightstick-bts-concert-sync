@@ -6,13 +6,37 @@
 // Revisa: formato, tramos en orden sin huecos ni superposiciones, brillos 0–1, colores hex, efectos conocidos,
 // máximo 3 destellos por segundo (también contando los acentos en cualquier ventana de 1 s), que la canción exista
 // en el catálogo con ese video, y avisa si la luz queda plana (poco contraste o un solo efecto).
-import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { basename, join } from "node:path";
 import { ALBUMS } from "../src/catalog.js";
 
 export const EFFECTS = ["breathe", "pulse", "hit", "rise", "bloom", "wave", "duo", "disco", "aurora", "sparkle", "rainbow", "ocean", "flame", "fadeout", "blackout", "hold", "split", "flash", "borahae"];
 const SECTIONS = ["intro", "verso", "pre-coro", "coro", "verso 2", "coro 2", "puente", "coro final", "final", "pausa", "post-coro", "outro", "interludio", "break", "rap", "verso 3", "coro 3"];
 const HEX = /^#[0-9a-fA-F]{6}$/;
 
+/** Todos los objetos JSON de primer nivel de un texto (respuesta de Gemini con varios bloques). */
+export function extractAll(text) {
+  const out = [];
+  let from = 0;
+  while (true) {
+    const i = text.indexOf("{", from);
+    if (i < 0) return out;
+    try { const { obj, end } = readObject(text, i); if (obj?.tramos) out.push(obj); from = end; } catch { from = i + 1; }
+  }
+}
+function readObject(text, start) {
+  let depth = 0, inStr = false, esc = false;
+  for (let i = start; i < text.length; i++) {
+    const c = text[i];
+    if (inStr) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === '"') inStr = false; continue; }
+    if (c === '"') inStr = true;
+    else if (c === "{") depth++;
+    else if (c === "}" && --depth === 0) return { obj: JSON.parse(text.slice(start, i + 1)), end: i + 1 };
+  }
+  throw new Error("el JSON está incompleto");
+}
 /** Extrae el JSON de un texto (la respuesta de Gemini puede traer una tabla después). */
 export function extractJson(text) {
   const start = text.indexOf("{");
@@ -57,6 +81,7 @@ export function checkSequence(seq, { catalog = ALBUMS } = {}) {
     if (!(t.fin > t.inicio)) err(`${at}: «fin» debe ser mayor que «inicio»`);
     prevEnd = t.fin;
     if (!SECTIONS.includes(t.seccion)) warn(`${at}: sección poco común «${t.seccion}»`);
+    if (t.evidencia === undefined) warn(`${at}: sin «evidencia» (qué se oye/ve en ese momento): no se puede revisar`);
     if (!HEX.test(t.color)) err(`${at}: color inválido ${t.color}`);
     if (t.color2 != null && !HEX.test(t.color2)) err(`${at}: color2 inválido ${t.color2}`);
     for (const k of ["brillo", "brilloFin"]) if (!(t[k] >= 0 && t[k] <= 1)) err(`${at}: ${k} fuera de 0–1 (${t[k]})`);
@@ -85,14 +110,34 @@ export function checkSequence(seq, { catalog = ALBUMS } = {}) {
   return { errors, warnings };
 }
 
+/** Secuencias de un archivo .json/.txt, una carpeta o un .zip (respuesta de Gemini por lotes). */
+export function loadSequences(path) {
+  if (statSync(path).isDirectory()) return readdirSync(path, { recursive: true }).filter((f) => /\.(json|txt|md)$/i.test(f)).flatMap((f) => loadSequences(join(path, f)).map((x) => ({ ...x, file: f })));
+  if (/\.zip$/i.test(path)) {
+    const dir = mkdtempSync(join(tmpdir(), "pws-seq-"));
+    const r = process.platform === "win32"
+      ? spawnSync("powershell", ["-NoProfile", "-Command", `Expand-Archive -LiteralPath '${path.replace(/'/g, "''")}' -DestinationPath '${dir.replace(/'/g, "''")}' -Force`])
+      : spawnSync("unzip", ["-q", path, "-d", dir]);
+    if (r.status !== 0) throw new Error("no se pudo abrir el zip");
+    try { return loadSequences(dir); } finally { rmSync(dir, { recursive: true, force: true }); }
+  }
+  return extractAll(readFileSync(path, "utf8")).map((seq) => ({ seq, file: basename(path) }));
+}
+
 if (process.argv[1]?.endsWith("check-sequence.mjs")) {
   const file = process.argv[2];
-  if (!file) { console.log("Uso: npm run check:sequence -- <archivo.json | respuesta de Gemini.txt>"); process.exit(1); }
-  let seq;
-  try { seq = extractJson(readFileSync(file, "utf8")); } catch (e) { console.log(`✗ ${file}: ${e.message}`); process.exit(1); }
-  const { errors, warnings } = checkSequence(seq);
-  for (const e of errors) console.log(`✗ ${e}`);
-  for (const w of warnings) console.log(`⚠ ${w}`);
-  console.log(errors.length ? `✗ ${errors.length} error(es): corrige y vuelve a validar.` : `✓ Secuencia válida (${seq.tramos.length} tramos, ${seq.duracion} s, ${seq.bpm} BPM).`);
-  process.exit(errors.length ? 1 : 0);
+  if (!file) { console.log("Uso: npm run check:sequence -- <archivo.json | respuesta.txt | carpeta | lote.zip>"); process.exit(1); }
+  let all;
+  try { all = loadSequences(file); } catch (e) { console.log(`✗ ${file}: ${e.message}`); process.exit(1); }
+  if (!all.length) { console.log(`✗ ${file}: no encontré secuencias`); process.exit(1); }
+  let bad = 0;
+  for (const { seq, file: f } of all) {
+    const { errors, warnings } = checkSequence(seq);
+    console.log(`${errors.length ? "✗" : "✓"} ${seq.song} (${f}): ${seq.tramos?.length ?? 0} tramos, confianza ${seq.verificacion?.confianza ?? "?"}${errors.length ? `, ${errors.length} error(es)` : ""}${warnings.length ? `, ${warnings.length} aviso(s)` : ""}`);
+    for (const e of errors) console.log(`   ✗ ${e}`);
+    for (const w of warnings) console.log(`   ⚠ ${w}`);
+    if (errors.length) bad++;
+  }
+  console.log(bad ? `✗ ${bad} de ${all.length} con errores.` : `✓ ${all.length} secuencia(s) válidas.`);
+  process.exit(bad ? 1 : 0);
 }
