@@ -21,6 +21,7 @@ const SHELL = [
   "src/nav-menu.js",
   "src/videopalette.js",
   "src/video-looks.js",
+  "src/sequences.js",
   "src/update-watch.js",
   "src/inapp.js",
   "src/carousel.js",

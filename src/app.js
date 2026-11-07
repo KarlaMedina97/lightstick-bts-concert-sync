@@ -26,6 +26,7 @@ import { earcon, buzz, configureEarcons } from "./earcons.js";
 import { colorName } from "./palette.js";
 import { videoPalette } from "./videopalette.js";
 import { VIDEO_LOOKS } from "./video-looks.js";
+import { SEQUENCES } from "./sequences.js";
 import { watchUpdates } from "./update-watch.js";
 import { inAppBrowser, showInAppNotice, redirectConnectButtons, chromeIntent } from "./inapp.js";
 
@@ -1107,7 +1108,7 @@ function buildPattern() {
   const dur = player.duration();
   if (!item || !(dur > 0)) return;
   const bpm = Number(settings.bpm[item.song.id] ?? item.song.bpm);
-  const opts = { styleOverride: settings.style === "auto" ? null : settings.style, safeMode: settings.safeMode, video: currentVideoPal, phase: settings.phase?.[item.song.id] ?? 0 };
+  const opts = { styleOverride: settings.style === "auto" ? null : settings.style, safeMode: settings.safeMode, video: currentVideoPal, phase: settings.phase?.[item.song.id] ?? 0, sequence: SEQUENCES[item.song.id]?.yt === item.song.yt ? SEQUENCES[item.song.id] : null };
   pattern =
     item.song.kind === "concert"
       ? generateConcertPattern(dur, { ...opts, bpm, palettes: ALBUMS.map((a) => a.palette) })

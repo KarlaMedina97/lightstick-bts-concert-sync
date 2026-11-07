@@ -18,6 +18,8 @@ const HEX = /^#[0-9a-fA-F]{6}$/;
 
 /** Todos los objetos JSON de primer nivel de un texto (respuesta de Gemini con varios bloques). */
 export function extractAll(text) {
+  // Copiado del chat de Gemini, el JSON trae escapes de Markdown (\[ \] \_): se quitan antes de leerlo.
+  text = text.replace(/\\([[\]_*#])/g, "$1");
   const out = [];
   let from = 0;
   while (true) {

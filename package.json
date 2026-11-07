@@ -39,6 +39,7 @@
     "check:ui": "node scripts/check-ui.mjs",
     "analyze:video": "node scripts/analyze-video.mjs",
     "check:sequence": "node scripts/check-sequence.mjs",
+    "import:sequences": "node scripts/import-sequences.mjs",
     "prompts:sequences": "node scripts/make-sequence-prompts.mjs",
     "build": "node scripts/build-site.mjs"
   },

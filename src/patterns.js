@@ -165,6 +165,33 @@ function hueSat([r, g, b]) {
   const h = max === r ? ((g - b) / d + (g < b ? 6 : 0)) / 6 : max === g ? ((b - r) / d + 2) / 6 : ((r - g) / d + 4) / 6;
   return [h, d / max];
 }
+/** Efectos de la secuencia → estilos del generador (los que no existen se aproximan). */
+const SEQ_STYLE = { breathe: "breathe", pulse: "pulse", hit: "hit", rise: "rise", bloom: "bloom", wave: "wave", duo: "duo", disco: "disco", aurora: "aurora", sparkle: "sparkle", rainbow: "rainbow", ocean: "ocean", flame: "flame", fadeout: "fadeout", blackout: "blackout", hold: "hold", split: "split", flash: "flash", borahae: "borahae" };
+/**
+ * Tramos de una secuencia por marcas de tiempo → secciones del generador.
+ * @param {number} minGap segundos mínimos entre destellos de acento (modo seguro)
+ */
+function sequenceSections(seq, palette, minGap) {
+  return seq.tramos.map((t) => {
+    const color = lightable(t.color) ?? palette[1] ?? palette[0];
+    const accent = (t.color2 && lightable(t.color2)) || palette.find((p) => p !== color && Math.hypot(p[0] - color[0], p[1] - color[1], p[2] - color[2]) > 90) || palette[0];
+    const lvl = clamp01(t.brillo), lvlEnd = clamp01(t.brilloFin ?? t.brillo), top = Math.max(lvl, lvlEnd);
+    // Acentos: solo dentro del tramo y nunca más juntos que el límite de destellos.
+    const accents = [];
+    for (const a of [...(t.acentos ?? [])].sort((x, y) => x - y)) if (a >= t.inicio && a < t.fin && (!accents.length || a - accents[accents.length - 1] >= Math.max(0.4, minGap))) accents.push(a);
+    const style = t.efecto === "blackout" || top === 0 ? "blackout" : SEQ_STYLE[t.efecto] ?? "breathe";
+    return {
+      label: t.seccion, start: t.inicio, end: t.fin, style, seq: true,
+      color: style === "blackout" ? [0, 0, 0] : color, accent, third: mix(color, [255, 255, 255], 0.45),
+      lvl, lvlEnd, gain: 0.4 + 0.6 * top,
+      floor: style === "blackout" || t.efecto === "fadeout" ? 0 : 0.04 + 0.5 * top ** 2,
+      div: t.cadaTiempos >= 4 || !t.cadaTiempos ? 4 : t.cadaTiempos >= 2 ? 2 : 1,
+      xfade: t.transicion === "corte" ? 0.05 : Math.min(4, Math.max(0.15, Number(t.transicionSeg) || 0.6)),
+      accents: style === "blackout" ? [] : accents,
+    };
+  });
+}
+
 /** Apertura de tonos (grados) de una lista de colores vivos; 0 si hay uno solo. */
 function hueSpread(hexes = []) {
   const hs = hexes.map((h) => hueSat(hexToRgb(h))).filter(([, sat]) => sat > 0.25).map(([h]) => h * 360).sort((x, y) => x - y);
@@ -323,7 +350,9 @@ export function generatePattern(song, album, duration, opts = {}) {
     const extra = (look?.palette ?? album?.palette ?? []).filter((h) => !vid.overall.includes(h));
     if (extra.length) vid = { ...vid, overall: [...vid.overall, ...extra].slice(0, 4), frames: (vid.frames ?? []).map((f) => [...(f?.length ? f : vid.overall), ...extra].slice(0, 4)) };
   }
-  const source = (vid?.overall ?? look?.palette ?? album.palette).map(lightable).filter(Boolean);
+  // Secuencia por marcas de tiempo (docs/secuencias/, validada con check:sequence): manda su paleta, tiempos y brillos.
+  const SEQ = opts.sequence?.tramos?.length ? opts.sequence : null;
+  const source = (SEQ?.paleta?.map((p) => p.hex) ?? vid?.overall ?? look?.palette ?? album.palette).map(lightable).filter(Boolean);
   const palette = [hexToRgb(PURPLE), ...(source.length ? (look?.lock ? source : withCompanion(source)) : [hexToRgb("#b388ff")])];
   // Cada sección con sus colores del video; si son de un solo tono (todo cálido, todo celeste…), se suma el color
   // compañero de la canción (withCompanion) como acento para que haya contraste de color, no una luz plana.
@@ -340,10 +369,10 @@ export function generatePattern(song, album, duration, opts = {}) {
   const flamePal = (look?.palette ?? FLAME).slice(0, 2).map(hexToRgb);
   if (look?.explode && flamePal.length === 2) flamePal[1] = mix(flamePal[0], flamePal[1], 0.45); // brasa: rojo→naranja
   const white = [255, 255, 255];
-  const beat = 60 / (song.bpm || 100);
+  const beat = 60 / (SEQ?.bpm || song.bpm || 100);
   // Fase: segundo del video donde cae un tiempo (lo marca la persona con "Marcar ritmo"). Sin ella, el compás
   // empezaría en el segundo 0 del video, y casi ningún MV empieza la música justo ahí.
-  const phase0 = Number(opts.phase) || 0;
+  const phase0 = Number(opts.phase) || Number(SEQ?.primerTiempo) || 0;
   // WCAG 2.3.1: no más de 3 destellos por segundo en modo seguro.
   // Margen bajo el límite: a 3 Hz exactos, un cambio de sección puede sumar un cuarto destello en el mismo segundo.
   const maxFlashHz = opts.safeMode === false ? 8 : 2.5;
@@ -383,6 +412,7 @@ export function generatePattern(song, album, duration, opts = {}) {
     sections[7].end = cut;
     Object.assign(sections[8], { start: cut, style: "borahae", floor: 0 });
   }
+  if (SEQ) sections = sequenceSections(SEQ, palette, beatsPerFlash * beat);
   const safe = opts.safeMode !== false;
   // Pseudoaleatorio estable (mismo resultado en cada cuadro) para las chispas.
   const hash = (x) => { const v = Math.sin(x * 127.1 + 311.7) * 43758.5453; return v - Math.floor(v); };
@@ -552,6 +582,13 @@ export function generatePattern(song, album, duration, opts = {}) {
         const prev = sections[sections.indexOf(sec) - 1]?.color ?? palette[0];
         return scale(mixVivid(palette[0], prev, 0.35 * Math.max(0, 1 - k * 4)), breath * fade);
       }
+      case "hold": {
+        // Luz sostenida: el color principal, con un vaivén muy lento hacia el segundo color (16 tiempos).
+        const u = 0.5 - 0.5 * Math.cos(2 * Math.PI * (beats / 16 - phase));
+        return mixVivid(sec.color, sec.accent, 0.35 * u);
+      }
+      case "blackout":
+        return [0, 0, 0];
       case "fadeout": {
         // Cierre "Borahae": del color de la canción al morado, y del morado a apagado.
         const k = clamp01(local / Math.max(0.1, sec.end - sec.start));
@@ -573,6 +610,7 @@ export function generatePattern(song, album, duration, opts = {}) {
     const sec = sections[k], next = sections[k + 1];
     const len = Math.max(0.1, sec.end - sec.start);
     const u = clamp01((tt - sec.start) / len);
+    if (sec.seq) return clamp01(sec.lvl + (sec.lvlEnd - sec.lvl) * u); // la secuencia ya dice cómo sube o baja
     const bars = (tt - phase0) / beat / 4;
     const inPhrase = ((bars % 8) + 8) % 8; // 0–8 compases
     const fill = inPhrase >= 7 ? inPhrase - 7 : 0; // último compás de la frase
@@ -623,11 +661,17 @@ export function generatePattern(song, album, duration, opts = {}) {
       const g = scale(col, (0.4 + 0.6 * E) * sing);
       return crest ? mix(g, scale([255, 255, 255], Math.max(...g) / 255), crest) : g;
     };
-    const c = withGain(sec, styleColor(sec, tt, i, n));
+    let c = withGain(sec, styleColor(sec, tt, i, n));
+    // Acentos marcados en la secuencia: un destello blanco breve que se apaga en ~0,3 s (ya espaciados ≥ 0,4 s).
+    if (sec.accents?.length) {
+      const a = sec.accents.findLast((x) => x <= tt);
+      if (a != null && tt - a < 0.35) c = mix(c, scale([255, 255, 255], Math.max(0.6, Math.max(...c) / 255)), 0.75 * Math.exp(-(tt - a) * 9));
+    }
     const prev = sections[idx - 1];
-    if (prev && tt - sec.start < CROSSFADE) {
+    const xf = sec.xfade ?? CROSSFADE;
+    if (prev && tt - sec.start < xf) {
       const p = withGain(prev, styleColor(prev, tt, i, n));
-      return mix(p, c, (tt - sec.start) / CROSSFADE);
+      return mix(p, c, (tt - sec.start) / xf);
     }
     return c;
   }

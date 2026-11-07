@@ -349,3 +349,32 @@ test("calidad con el video: ningún look analizado queda plano", () => {
     assert.ok(score >= 55, `${id}: ${score.toFixed(0)} (plano)`);
   }
 });
+
+import { SEQUENCES } from "../src/sequences.js";
+import { checkSequence } from "../scripts/check-sequence.mjs";
+
+test("secuencias importadas: válidas, del mismo video, y en modo seguro nunca pasan de 3 destellos por segundo", () => {
+  for (const [id, seq] of Object.entries(SEQUENCES)) {
+    const s = songs.find((x) => x.id === id);
+    assert.ok(s, `${id} no está en el catálogo`);
+    assert.equal(seq.yt, s.yt, `${id}: la secuencia es de otro video`);
+    assert.deepEqual(checkSequence({ formato: 1, song: id, ...seq, verificacion: { audio: "-", confianza: seq.confianza } }).errors, [], id);
+    const p = generatePattern(s, s.album, seq.duracion, { safeMode: true, sequence: seq });
+    assert.equal(p.sections.length, seq.tramos.length, `${id}: no usa los tramos de la secuencia`);
+    assert.ok(maxFlashesPerSecond(p, seq.duracion, 30) <= 3, `${id}: pasa de 3 destellos/s`);
+  }
+});
+
+test("secuencia: respeta tiempos, color, brillo que sube y apagón", () => {
+  const s = songs.find((x) => x.id === "dynamite");
+  const seq = { yt: s.yt, duracion: 30, bpm: 120, primerTiempo: 0, paleta: [{ hex: "#ff0000" }, { hex: "#0000ff" }], tramos: [
+    { inicio: 0, fin: 10, seccion: "intro", color: "#ff0000", color2: null, brillo: 0.2, brilloFin: 0.8, transicion: "crescendo", transicionSeg: 10, efecto: "hold", cadaTiempos: 0 },
+    { inicio: 10, fin: 10.5, seccion: "pausa", color: "#000000", color2: null, brillo: 0, brilloFin: 0, transicion: "corte", transicionSeg: 0, efecto: "blackout", cadaTiempos: 0 },
+    { inicio: 10.5, fin: 30, seccion: "coro", color: "#0000ff", color2: "#ff0000", brillo: 1, brilloFin: 1, transicion: "corte", transicionSeg: 0, efecto: "pulse", cadaTiempos: 1, acentos: [10.5, 10.6, 20] },
+  ] };
+  const p = generatePattern(s, s.album, 30, { safeMode: true, sequence: seq });
+  assert.equal(p.sectionAt(5).label, "intro");
+  assert.ok(Math.max(...p.colorAt(9)) > Math.max(...p.colorAt(1)), "el brillo debería subir dentro del tramo");
+  assert.ok(Math.max(...p.colorAt(10.3)) < 5, "el apagón debería ser negro");
+  assert.deepEqual(p.sectionAt(15).accents, [10.5, 20], "acentos demasiado juntos se descartan");
+});

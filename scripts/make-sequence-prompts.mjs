@@ -14,6 +14,7 @@ const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
 const SIZE = Number(opt("--lote", 10));
 const OUT = resolve(opt("--out", "prompts-secuencias.zip"));
+const FULL = args.includes("--completo"); // cada lote repite todas las reglas (para una sesión nueva de Gemini)
 const SKIP = new Set((opt("--sin", "dynamite") || "").split(",").filter(Boolean)); // ya hechas
 
 const songs = ALBUMS.flatMap((a) => a.songs.map((s) => ({ ...s, album: a }))).filter((s) => s.yt && s.kind !== "concert" && !SKIP.has(s.id));
@@ -85,21 +86,35 @@ Reglas: tiempos en segundos con un decimal (0 = inicio del video); tramos en ord
 ${list}
 `;
 
+// Prompts CORTOS (por defecto): para seguir en la misma sesión de Gemini que ya hizo Dynamite y conoce las reglas.
+function shortLine(s) {
+  const v = VIDEO_LOOKS[s.id], look = lookFor(s.id);
+  const cols = v?.overall?.length ? ` · colores medidos: ${v.overall.join(" ")}` : "";
+  const curated = look?.palette ? ` · paleta curada${look.lock ? " obligatoria" : ""}: ${look.palette.join(" ")}` : "";
+  return `- \`${s.id}\` · ${s.title} · https://youtu.be/${s.yt} · ~${s.bpm ?? "?"} BPM${look?.rap ? " · RAP (sube fuerte)" : ""}${cols}${curated}`;
+}
+const SHORT = (lote, total, part) => `Lote ${lote}/${total}. Mismo formato y reglas que Dynamite, para estas canciones:
+
+${part.map(shortLine).join("\n")}
+
+Comprueba cada marca contra el video (no redondees), agrega "evidencia" por tramo (qué se oye/ve, sin letra), marca puente y pausas si existen y pon en "dudas" lo no verificado. Entrega un zip \`secuencias-lote-${String(lote).padStart(2, "0")}.zip\` con un \`<id>.json\` por canción (si no puedes crear archivos: un bloque \`### <id>.json\` por canción).
+`;
+
 const tmp = mkdtempSync(join(tmpdir(), "pws-prompts-"));
 const dir = join(tmp, "prompts-secuencias");
 mkdirSync(join(dir, "lotes"), { recursive: true });
 const total = Math.ceil(songs.length / SIZE);
 for (let l = 0; l < total; l++) {
   const part = songs.slice(l * SIZE, (l + 1) * SIZE);
-  writeFileSync(join(dir, "lotes", `lote-${String(l + 1).padStart(2, "0")}.md`), BASE(l + 1, total, part.map((s, i) => songBlock(s, l * SIZE + i + 1)).join("\n\n")));
+  writeFileSync(join(dir, "lotes", `lote-${String(l + 1).padStart(2, "0")}.md`), FULL ? BASE(l + 1, total, part.map((s, i) => songBlock(s, l * SIZE + i + 1)).join("\n\n")) : SHORT(l + 1, total, part));
 }
 cpSync(join("docs", "secuencias", "ejemplo-formato.json"), join(dir, "ejemplo-formato.json"));
 writeFileSync(join(dir, "LEEME.md"), `# Prompts de secuencias de luces (LumiParty)
 
 ${songs.length} canciones en ${total} lotes de hasta ${SIZE}. Para cada lote:
 
-1. Abre Gemini (app o AI Studio, con un modelo que vea video de YouTube).
-2. Copia todo el contenido de \`lotes/lote-NN.md\` y envíalo.
+${FULL ? "1. Abre Gemini (app o AI Studio, con un modelo que vea video de YouTube)." : "1. Sigue en la **misma sesión de Gemini** que hizo Dynamite (ya conoce el formato y las reglas)."}
+2. Copia el contenido de \`lotes/lote-NN.md\` y envíalo, un lote a la vez.
 3. Guarda lo que entregue: el zip \`secuencias-lote-NN.zip\` (o su respuesta completa en un .txt si escribió los JSON en bloques).
 4. Pásaselo a Claude, o valídalo tú: \`npm run check:sequence -- secuencias-lote-NN.zip\`.
 
