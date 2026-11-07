@@ -166,7 +166,7 @@ function hueSat([r, g, b]) {
   return [h, d / max];
 }
 /** Efectos de la secuencia → estilos del generador (los que no existen se aproximan). */
-const SEQ_STYLE = { breathe: "breathe", pulse: "pulse", hit: "hit", rise: "rise", bloom: "bloom", wave: "wave", duo: "duo", disco: "disco", aurora: "aurora", sparkle: "sparkle", rainbow: "rainbow", ocean: "ocean", flame: "flame", fadeout: "fadeout", blackout: "blackout", hold: "hold", split: "split", flash: "flash", borahae: "borahae" };
+const SEQ_STYLE = { bulb: "bulb", breathe: "breathe", pulse: "pulse", hit: "hit", rise: "rise", bloom: "bloom", wave: "wave", duo: "duo", disco: "disco", aurora: "aurora", sparkle: "sparkle", rainbow: "rainbow", ocean: "ocean", flame: "flame", fadeout: "fadeout", blackout: "blackout", hold: "hold", split: "split", flash: "flash", borahae: "borahae" };
 /**
  * Tramos de una secuencia por marcas de tiempo → secciones del generador.
  * @param {number} minGap segundos mínimos entre destellos de acento (modo seguro)
@@ -589,6 +589,20 @@ export function generatePattern(song, album, duration, opts = {}) {
       }
       case "blackout":
         return [0, 0, 0];
+      case "bulb": {
+        // Bombillo a punto de estallar: se enciende y se apaga cada vez más rápido (de 1,1 s a 0,4 s por ciclo, nunca
+        // más de 2,5 destellos/s), del color principal al segundo, y en el último 10 % baja antes del golpe.
+        const len = Math.max(0.1, sec.end - sec.start), k = clamp01(local / len);
+        if (k > 0.9) return scale(mix(sec.color, sec.accent, 0.8), 0.18);
+        const p0 = 1.1, p1 = Math.max(0.4, 1 / maxFlashHz); // periodo al empezar y al final
+        // Fase acumulada con periodo que baja lineal: ∫ dt / p(t)
+        const a = (p1 - p0) / (len * 0.9), x = local;
+        const cycles = Math.abs(a) < 1e-6 ? x / p0 : Math.log((p0 + a * x) / p0) / a;
+        const f = cycles - Math.floor(cycles);
+        const flick = 0.04 * Math.sin(2 * Math.PI * t * 7.3); // vibración leve del filamento (no es destello)
+        const on = f < 0.55 ? 1 : 0.12;
+        return scale(mix(sec.color, sec.accent, k), clamp01(on + flick) * (0.8 + 0.2 * k));
+      }
       case "fadeout": {
         // Cierre "Borahae": del color de la canción al morado, y del morado a apagado.
         const k = clamp01(local / Math.max(0.1, sec.end - sec.start));
