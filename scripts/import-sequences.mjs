@@ -9,7 +9,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { checkSequence, loadSequences } from "./check-sequence.mjs";
+import { checkAll, loadMeasuredDurations, loadSequences } from "./check-sequence.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const OUT = join(root, "src", "sequences.js");
@@ -22,8 +22,8 @@ if (qi >= 0) for (const id of args[qi + 1].split(",")) { delete all[id]; console
 
 let ok = 0, bad = 0;
 for (const path of args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--quitar")) {
-  for (const { seq, file } of loadSequences(path)) {
-    const { errors } = checkSequence(seq);
+  await loadMeasuredDurations();
+  for (const { seq, file, errors } of checkAll(loadSequences(path))) {
     if (errors.length) { bad++; console.log(`✗ ${seq.song} (${file}): ${errors.length} error(es), no se importa. Revísalo con npm run check:sequence`); continue; }
     all[seq.song] = {
       yt: seq.yt, duracion: seq.duracion, bpm: seq.bpm, primerTiempo: seq.primerTiempo,

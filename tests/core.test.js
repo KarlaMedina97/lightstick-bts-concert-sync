@@ -79,3 +79,15 @@ test("secuencias por marcas de tiempo: el ejemplo es válido y se detectan hueco
   assert.ok(r.errors.some((e) => /3 acentos/.test(e)));
   assert.equal(extractJson("Aquí va:\n" + JSON.stringify(ok) + "\n| tabla |").song, ok.song); // respuesta de Gemini con texto
 });
+
+import { checkBatch, setDurations } from "../scripts/check-sequence.mjs";
+test("secuencias: una plantilla repetida en muchas canciones o con otra duración se rechaza", () => {
+  const base = JSON.parse(readFileSync("docs/secuencias/ejemplo-formato.json", "utf8"));
+  const copy = (song) => ({ seq: { ...structuredClone(base), song, _aviso: undefined } });
+  const batch = checkBatch([copy("a"), copy("b"), copy("c")]);
+  assert.ok(batch.get("a").some((e) => /plantilla/.test(e)));
+  setDurations({ dynamite: 224 });
+  const s = { ...structuredClone(base), _aviso: undefined, song: "dynamite", yt: "gdZLi9oWNZg", duracion: 72 };
+  assert.ok(checkSequence(s).errors.some((e) => /el video dura 224 s/.test(e)));
+  setDurations({});
+});

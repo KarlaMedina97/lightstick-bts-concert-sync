@@ -109,7 +109,35 @@ export function checkSequence(seq, { catalog = ALBUMS } = {}) {
   const verse = T.filter((t) => /verso/.test(t.seccion)).map((t) => t.brillo);
   if (chorus.length && verse.length && Math.min(...chorus) <= Math.max(...verse)) warn("algún verso brilla tanto como un coro: el coro no se va a sentir");
   if (example) warn("es el archivo de EJEMPLO (tiempos ilustrativos, no de una canción real)");
+  // Duración real del video (medida con npm run analyze:video): si no coincide, los tiempos no son de este video.
+  const measured = durations[seq.song];
+  if (!example && measured && Math.abs(seq.duracion - measured) > Math.max(4, measured * 0.03)) err(`dice que dura ${seq.duracion} s pero el video dura ${measured} s: los tiempos no son de este video`);
   return { errors, warnings };
+}
+
+let durations = {};
+/** Duraciones medidas por id ({ id: segundos }); las usa checkSequence. */
+export function setDurations(map) { durations = map ?? {}; }
+
+/**
+ * Revisión de un lote: secuencias copiadas de una plantilla (mismos tiempos, misma duración o misma «evidencia» en
+ * muchas canciones) no son un análisis de cada video. Devuelve los errores por canción.
+ * @param {{seq:object}[]} list
+ */
+export function checkBatch(list) {
+  const out = new Map(), add = (id, m) => out.set(id, [...(out.get(id) ?? []), m]);
+  if (list.length < 3) return out;
+  const group = (key) => { const g = new Map(); for (const { seq } of list) { const k = key(seq); g.set(k, [...(g.get(k) ?? []), seq.song]); } return g; };
+  const shape = (s) => (s.tramos ?? []).map((t) => (t.inicio / s.duracion).toFixed(2)).join(",");
+  for (const [, ids] of group(shape)) if (ids.length >= 3) for (const id of ids) add(id, `mismos tiempos relativos que otras ${ids.length - 1} canciones: parece una plantilla, no un análisis de su video`);
+  for (const [d, ids] of group((s) => s.duracion)) if (ids.length >= Math.max(5, list.length * 0.3)) for (const id of ids) add(id, `${ids.length} canciones con la misma duración (${d} s): no es la duración real de cada video`);
+  const ev = new Map();
+  for (const { seq } of list) for (const t of seq.tramos ?? []) if (t.evidencia) ev.set(t.evidencia, (ev.get(t.evidencia) ?? new Set()).add(seq.song));
+  for (const { seq } of list) {
+    const reused = (seq.tramos ?? []).filter((t) => t.evidencia && ev.get(t.evidencia).size >= 3).length;
+    if (reused > (seq.tramos?.length ?? 0) / 2) add(seq.song, `la «evidencia» se repite igual en otras canciones (${reused} tramos): no describe este video`);
+  }
+  return out;
 }
 
 /** Secuencias de un archivo .json/.txt, una carpeta o un .zip (respuesta de Gemini por lotes). */
@@ -126,15 +154,29 @@ export function loadSequences(path) {
   return extractAll(readFileSync(path, "utf8")).map((seq) => ({ seq, file: basename(path) }));
 }
 
+/** Duraciones medidas en los videos (src/video-looks.js), para comparar con lo que dice cada secuencia. */
+export async function loadMeasuredDurations() {
+  try {
+    const { VIDEO_LOOKS } = await import(new URL("../src/video-looks.js", import.meta.url).href);
+    setDurations(Object.fromEntries(Object.entries(VIDEO_LOOKS).map(([id, v]) => [id, v.dur])));
+  } catch {}
+}
+
+/** Valida un lote completo: errores de cada secuencia más los de plantilla entre canciones. */
+export function checkAll(all) {
+  const batch = checkBatch(all);
+  return all.map((x) => { const r = checkSequence(x.seq); return { ...x, errors: [...r.errors, ...(batch.get(x.seq.song) ?? [])], warnings: r.warnings }; });
+}
+
 if (process.argv[1]?.endsWith("check-sequence.mjs")) {
   const file = process.argv[2];
   if (!file) { console.log("Uso: npm run check:sequence -- <archivo.json | respuesta.txt | carpeta | lote.zip>"); process.exit(1); }
   let all;
   try { all = loadSequences(file); } catch (e) { console.log(`✗ ${file}: ${e.message}`); process.exit(1); }
   if (!all.length) { console.log(`✗ ${file}: no encontré secuencias`); process.exit(1); }
+  await loadMeasuredDurations();
   let bad = 0;
-  for (const { seq, file: f } of all) {
-    const { errors, warnings } = checkSequence(seq);
+  for (const { seq, file: f, errors, warnings } of checkAll(all)) {
     console.log(`${errors.length ? "✗" : "✓"} ${seq.song} (${f}): ${seq.tramos?.length ?? 0} tramos, confianza ${seq.verificacion?.confianza ?? "?"}${errors.length ? `, ${errors.length} error(es)` : ""}${warnings.length ? `, ${warnings.length} aviso(s)` : ""}`);
     for (const e of errors) console.log(`   ✗ ${e}`);
     for (const w of warnings) console.log(`   ⚠ ${w}`);

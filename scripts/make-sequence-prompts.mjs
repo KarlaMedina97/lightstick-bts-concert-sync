@@ -91,7 +91,7 @@ function shortLine(s) {
   const v = VIDEO_LOOKS[s.id], look = lookFor(s.id);
   const cols = v?.overall?.length ? ` · colores medidos: ${v.overall.join(" ")}` : "";
   const curated = look?.palette ? ` · paleta curada${look.lock ? " obligatoria" : ""}: ${look.palette.join(" ")}` : "";
-  return `- \`${s.id}\` · ${s.title} · https://youtu.be/${s.yt} · ~${s.bpm ?? "?"} BPM${look?.rap ? " · RAP (sube fuerte)" : ""}${cols}${curated}`;
+  return `- \`${s.id}\` · ${s.title} · https://youtu.be/${s.yt}${v?.dur ? ` · dura ${v.dur} s` : ""} · ~${s.bpm ?? "?"} BPM${look?.rap ? " · RAP (sube fuerte)" : ""}${cols}${curated}`;
 }
 const SHORT = (lote, total, part) => `Lote ${lote}/${total}. Mismo formato y reglas que Dynamite, para estas canciones:
 
