@@ -13,16 +13,18 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 <script type="module">
   const id = new URLSearchParams(location.search).get("v");
+  const SOUND = new URLSearchParams(location.search).has("sonido"); // para «escuchar» (lab.listen)
   let player = null, prev = null;
   window.lab = { ready: false, error: null };
   window.onYouTubeIframeAPIReady = () => {
     player = new YT.Player("p", {
       width: 640, height: 360, videoId: id,
-      playerVars: { autoplay: 1, mute: 1, controls: 0, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3, cc_load_policy: 0 },
+      playerVars: { autoplay: 1, mute: SOUND ? 0 : 1, controls: 0, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3, cc_load_policy: 0 },
       events: {
-        onReady: (e) => { e.target.mute(); e.target.unloadModule?.("captions"); e.target.unloadModule?.("cc"); e.target.playVideo(); window.lab.ready = true; },
+        onReady: (e) => { if (SOUND) { e.target.unMute(); e.target.setVolume(100); } else e.target.mute(); e.target.unloadModule?.("captions"); e.target.unloadModule?.("cc"); e.target.playVideo(); window.lab.ready = true; },
         // Subtítulos apagados: son la letra (no se captura) y además ensucian los colores.
-        onApiChange: (e) => { e.target.unloadModule?.("captions"); e.target.unloadModule?.("cc"); },
+        onApiChange: (e) => { e.target.setOption?.("captions", "track", {}); e.target.unloadModule?.("captions"); e.target.unloadModule?.("cc"); },
+        onStateChange: (e) => { if (e.data === 1) { e.target.setOption?.("captions", "track", {}); e.target.unloadModule?.("captions"); } },
         onError: (e) => { window.lab.error = e.data; },
       },
     });
@@ -31,6 +33,39 @@
   window.lab.rate = (r) => { player?.setPlaybackRate?.(r); return player?.getPlaybackRate?.(); };
   window.lab.pause = () => player?.pauseVideo?.();
   window.lab.seek = (t) => { player?.seekTo?.(t, true); player?.playVideo?.(); };
+  window.lab.peek = (t) => { player?.pauseVideo?.(); player?.seekTo?.(t, true); }; // cuadro exacto, en pausa
+
+  // «Escuchar»: captura el audio de esta misma pestaña (el reproductor oficial sonando) y lo reduce a números cada
+  // ~23 ms: energía total, graves (< 150 Hz), medios y agudos (> 2 kHz) y flujo espectral (golpes). No se graba nada.
+  window.lab.listen = async () => {
+    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: { suppressLocalAudioPlayback: false }, preferCurrentTab: true, selfBrowserSurface: "include" });
+    const track = stream.getAudioTracks()[0];
+    if (!track) throw new Error("sin pista de audio");
+    stream.getVideoTracks().forEach((v) => v.stop());
+    const ctx = new AudioContext();
+    const src = ctx.createMediaStreamSource(new MediaStream([track]));
+    const an = ctx.createAnalyser(); an.fftSize = 2048; an.smoothingTimeConstant = 0;
+    src.connect(an);
+    const bins = new Float32Array(an.frequencyBinCount), hz = ctx.sampleRate / an.fftSize;
+    let prev = null;
+    window.lab.audio = [];
+    window.lab.audioTimer = setInterval(() => {
+      an.getFloatFrequencyData(bins);
+      let tot = 0, low = 0, mid = 0, high = 0, flux = 0;
+      const mag = new Float32Array(bins.length);
+      for (let i = 1; i < bins.length; i++) {
+        const m = Math.pow(10, bins[i] / 20); mag[i] = m;
+        const f = i * hz;
+        tot += m; if (f < 150) low += m; else if (f < 2000) mid += m; else high += m;
+        if (prev) flux += Math.max(0, m - prev[i]);
+      }
+      prev = mag;
+      const st = window.lab.state();
+      if (st?.s === 1) window.lab.audio.push([+st.t.toFixed(3), +tot.toFixed(4), +low.toFixed(4), +mid.toFixed(4), +high.toFixed(4), +flux.toFixed(4)]);
+    }, 23);
+    return { sampleRate: ctx.sampleRate, label: track.label };
+  };
+  window.lab.stopListening = () => { clearInterval(window.lab.audioTimer); return window.lab.audio?.length ?? 0; };
 
   // Una captura (PNG de 80×45) → píxeles diminutos (32×18, para colores por sección), brillo, saturación y cuánto cambió
   // respecto a la anterior (movimiento / corte de escena).
