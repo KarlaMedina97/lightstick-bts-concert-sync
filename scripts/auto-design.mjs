@@ -126,6 +126,15 @@ export function autoDesign({ song, look = null, video = null, f }) {
       acentos, nota: "",
     };
   });
+  // Ráfagas (golpes seguidos, disparos, «pa pa pa»): se recortan como tramos de parpadeo dentro de lo fuerte.
+  if (!ballad) for (const b of f.bursts ?? []) {
+    const a0 = r1(b.t - 0.05), a1 = r1(Math.min(dur, b.fin + 0.25));
+    const i = tramos.findIndex((t) => a0 >= t.inicio && a1 <= t.fin && /\((pesado|brillo|medio)\)$/.test(t.evidencia));
+    if (i < 0 || a0 - tramos[i].inicio < 0.3 || tramos[i].fin - a1 < 0.3) continue;
+    const p = tramos[i], keep = (acc) => acc.filter((x) => x < b.t - 1 || x > b.fin + 1);
+    const blink = { ...p, inicio: a0, fin: a1, evidencia: `ráfaga de ${b.golpes.length} golpes seguidos (parpadeo)`, sigue: "cada golpe de la ráfaga", brillo: 1, brilloFin: 1, transicion: "corte", transicionSeg: 0, efecto: "blink", cadaTiempos: 1, destellosPorSeg: Math.min(3, Math.ceil(b.golpes.length / Math.max(0.5, a1 - a0))), acentos: [], rafaga: b.golpes };
+    tramos.splice(i, 1, { ...p, fin: a0, acentos: keep(p.acentos.filter((x) => x < a0)) }, blink, { ...p, inicio: a1, transicion: "corte", transicionSeg: 0, acentos: keep(p.acentos.filter((x) => x >= a1)) });
+  }
   // Coros: el último brillante después del 70 % es el coro final; el segundo, coro 2.
   const choruses = tramos.filter((t) => t.seccion === "coro");
   choruses.forEach((t, i) => { if (i === 1) t.seccion = "coro 2"; });

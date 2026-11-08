@@ -12,7 +12,8 @@ import { buildFeedback, sendFeedback } from "./feedback.js";
 import { MicSync } from "./mic.js";
 import { fetchTitle, parseYouTubeId, isOfficialChannel } from "./youtube.js";
 import { Guide } from "./guide.js";
-import { Fanchant } from "./fanchant.js";
+import { Fanchant, MEMBERS as CHANT_MEMBERS } from "./fanchant.js";
+const MEMBER_CHANT_COUNT = CHANT_MEMBERS.length;
 import { favorites } from "./favorites.js";
 import { Tour } from "./tour.js";
 import { CameraColor } from "./camera.js";
@@ -83,6 +84,7 @@ let tourScheduled = false;
 let fanchant = null;
 let guideRef = null; // guía de conexión (para que Conectar la retome si está minimizada)
 let chantFlashAt = -1e9;
+let chantFinal = false; // en «BTS!» (el último grito del fanchant) la luz queda en morado fijo
 const sticks = [];
 
 // ---------- Utilidades ----------
@@ -1353,8 +1355,11 @@ function step(now) {
   let colors;
 
   if (fanchant?.running) {
-    const kf = 0.25 + 0.75 * Math.exp(-(now - chantFlashAt) / 260);
-    const c = hexToRgb(PURPLE).map((v) => v * kf);
+    // Fanchant: morado a toda intensidad; con cada nombre, un parpadeo blanco que vuelve al morado en ~0,3 s
+    // (un nombre cada ~2,5 s: muy por debajo del límite de destellos). En el «BTS!» final, morado fijo.
+    const purple = hexToRgb(PURPLE), since = now - chantFlashAt;
+    const w = chantFinal ? 0 : since < 120 ? 1 : Math.max(0, 1 - (since - 120) / 200);
+    const c = purple.map((v) => v + (255 - v) * w);
     colors = Array.from({ length: total }, () => c);
   } else if (cam) {
     // La cámara manda si ve una luz de color; si no, el micrófono marca el ritmo.
@@ -3463,8 +3468,9 @@ async function init() {
   $("btn-next").onclick = () => { fanchant?.stop(); next(false); };
   $("btn-prev").onclick = () => { fanchant?.stop(); prev(); };
   fanchant = new Fanchant({
-    onBeat: () => {
+    onBeat: (i) => {
       chantFlashAt = performance.now();
+      chantFinal = i >= MEMBER_CHANT_COUNT; // los 7 nombres parpadean; el «BTS!» final queda en morado fijo
       crowd?.flash();
     },
   });

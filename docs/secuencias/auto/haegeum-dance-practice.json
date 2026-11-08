@@ -1,0 +1,314 @@
+{
+  "formato": 1,
+  "song": "haegeum-dance-practice",
+  "yt": "0zN2YxoPnD8",
+  "duracion": 97.4,
+  "bpm": 82.96,
+  "primerTiempo": 0.37,
+  "verificacion": {
+    "audio": "Escuchado completo desde el reproductor oficial (graves, agudos y golpes medidos cada ~23 ms, sin grabar audio); tempo por autocorrelación; fronteras por cambios de energía; acentos en golpes de bajo reales.",
+    "imagen": "Colores del análisis cuadro a cuadro del MV en cada momento, con preferencia por blanco, amarillo, naranja, rojo y morado.",
+    "confianza": "media",
+    "dudas": [
+      "Los nombres de sección se deducen del sonido (no de la letra)."
+    ]
+  },
+  "paleta": [
+    {
+      "nombre": "#ff1f51",
+      "hex": "#ff1f51",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ffffff",
+      "hex": "#ffffff",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ffd000",
+      "hex": "#ffd000",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#c8102e",
+      "hex": "#c8102e",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ffc840",
+      "hex": "#ffc840",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#8a2be2",
+      "hex": "#8a2be2",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ff5b01",
+      "hex": "#ff5b01",
+      "de": "paleta del MV y preferencia de la usuaria"
+    }
+  ],
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 6.2,
+      "seccion": "rap",
+      "evidencia": "graves ×1.6, agudos ×1.5, energía ×1.6 y 1.1 golpes por segundo (pesado)",
+      "sigue": "golpes de bombo y retumbones de bajo",
+      "color": "#ff1f51",
+      "color2": "#ffffff",
+      "brillo": 0.9,
+      "brilloFin": 0.95,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "hit",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        2.06,
+        2.8,
+        3.58
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 6.2,
+      "fin": 14.8,
+      "seccion": "coro",
+      "evidencia": "graves ×1, agudos ×1.8, energía ×1.9 y 0.6 golpes por segundo (brillo)",
+      "sigue": "el pulso del compás",
+      "color": "#ffd000",
+      "color2": "#ffffff",
+      "brillo": 1,
+      "brilloFin": 1,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "bloom",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        9.04,
+        14.02
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 14.8,
+      "fin": 23.5,
+      "seccion": "rap",
+      "evidencia": "graves ×3.4, agudos ×1.6, energía ×1.3 y 2 golpes por segundo (pesado)",
+      "sigue": "golpes de bombo y retumbones de bajo",
+      "color": "#c8102e",
+      "color2": "#ffc840",
+      "brillo": 0.9,
+      "brilloFin": 0.95,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "flame",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        15.16,
+        15.9,
+        16.6,
+        17.36,
+        19.32,
+        20.74,
+        21.28,
+        22.28
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 23.5,
+      "fin": 32.2,
+      "seccion": "coro 2",
+      "evidencia": "graves ×1.7, agudos ×1.6, energía ×1.1 y 1.3 golpes por segundo (brillo)",
+      "sigue": "el pulso del compás",
+      "color": "#ffc840",
+      "color2": "#ff1f51",
+      "brillo": 1,
+      "brilloFin": 1,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "disco",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        26.58,
+        29.04,
+        31.62
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 32.2,
+      "fin": 43.8,
+      "seccion": "rap",
+      "evidencia": "graves ×1.5, agudos ×1.1, energía ×0.9 y 1.2 golpes por segundo (pesado)",
+      "sigue": "golpes de bombo y retumbones de bajo",
+      "color": "#8a2be2",
+      "color2": "#ffd000",
+      "brillo": 0.9,
+      "brilloFin": 0.95,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "hit",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        34.1,
+        35.84,
+        36.3,
+        37.5
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 43.8,
+      "fin": 52.4,
+      "seccion": "rap",
+      "evidencia": "graves ×2.5, agudos ×0.9, energía ×0.9 y 1.6 golpes por segundo (pesado)",
+      "sigue": "golpes de bombo y retumbones de bajo",
+      "color": "#ffc840",
+      "color2": "#ff1f51",
+      "brillo": 0.9,
+      "brilloFin": 0.95,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "duo",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        46.08,
+        46.6,
+        47.38,
+        48.92,
+        49.72,
+        50.36,
+        51.3,
+        52.26
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 52.4,
+      "fin": 58.4,
+      "seccion": "rap",
+      "evidencia": "graves ×3.5, agudos ×1.6, energía ×1.3 y 1.8 golpes por segundo (pesado)",
+      "sigue": "golpes de bombo y retumbones de bajo",
+      "color": "#c8102e",
+      "color2": "#ffc840",
+      "brillo": 0.9,
+      "brilloFin": 0.95,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "hit",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        52.68,
+        54.42,
+        55.2,
+        55.92,
+        56.82
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 58.4,
+      "fin": 59.1,
+      "seccion": "pausa",
+      "evidencia": "graves ×2.1, agudos ×2.1, energía ×1.7 y 0 golpes por segundo (pausa)",
+      "sigue": "el silencio",
+      "color": "#000000",
+      "color2": null,
+      "brillo": 0,
+      "brilloFin": 0,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "blackout",
+      "cadaTiempos": 0,
+      "destellosPorSeg": 0,
+      "acentos": [],
+      "nota": ""
+    },
+    {
+      "inicio": 59.1,
+      "fin": 69.8,
+      "seccion": "rap",
+      "evidencia": "graves ×2.7, agudos ×1.9, energía ×1.6 y 1.9 golpes por segundo (pesado)",
+      "sigue": "golpes de bombo y retumbones de bajo",
+      "color": "#8a2be2",
+      "color2": "#ffd000",
+      "brillo": 0.9,
+      "brilloFin": 0.95,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "flame",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        60.2,
+        60.94,
+        61.58,
+        62.04,
+        63.04,
+        63.84,
+        67.98,
+        69.48
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 69.8,
+      "fin": 87.2,
+      "seccion": "rap",
+      "evidencia": "graves ×1.6, agudos ×1.1, energía ×0.9 y 1.4 golpes por segundo (pesado)",
+      "sigue": "golpes de bombo y retumbones de bajo",
+      "color": "#ff1f51",
+      "color2": "#ffffff",
+      "brillo": 0.9,
+      "brilloFin": 0.95,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "hit",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        71.22,
+        73.04,
+        74.38,
+        74.84,
+        78.18,
+        79.42,
+        82.72,
+        83.5,
+        84.16,
+        85.1,
+        86.5
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 87.2,
+      "fin": 97.4,
+      "seccion": "final",
+      "evidencia": "graves ×0.5, agudos ×0.3, energía ×0.2 y 0.4 golpes por segundo (final)",
+      "sigue": "el pulso del compás",
+      "color": "#ff5b01",
+      "color2": null,
+      "brillo": 0.6,
+      "brilloFin": 0,
+      "transicion": "decrescendo",
+      "transicionSeg": 4,
+      "efecto": "fadeout",
+      "cadaTiempos": 0,
+      "destellosPorSeg": 0,
+      "acentos": [],
+      "nota": ""
+    }
+  ]
+}

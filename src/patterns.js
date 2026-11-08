@@ -56,7 +56,7 @@ export const SONG_LOOKS = {
   bst: { palette: ["#8a1240", "#c9a227", "#ffffff"], plan: ["breathe", "breathe", "wave", "pulse", "breathe", "pulse", "breathe", "pulse", "fadeout"] },
   "not-today": { explode: true, palette: ["#ffffff", "#e53935", "#5a5a5a"], plan: ["breathe", "hit", "pulse", "hit", "pulse", "hit", "breathe", "hit", "fadeout"] },
   dope: { palette: ["#ffffff", "#ff1744"] },
-  run: { palette: ["#ff9a3c", "#ffd27a"] },
+  run: { palette: ["#ff9a3c", "#ffd27a", "#4f8cff"] }, // el azul sale del propio MV (análisis cuadro a cuadro)
   "save-me": { palette: ["#00e5ff", "#ff5ab4"] },
   "i-need-u": { palette: ["#c62828", "#ff8a65"], plan: ["breathe", "breathe", "ocean", "pulse", "breathe", "pulse", "breathe", "pulse", "fadeout"], oceanColor: "#c62828" },
   "epilogue-young-forever": { palette: ["#ffffff", "#ffd6e8", "#8a2be2"], energy: B, finale: "borahae" },
@@ -166,12 +166,12 @@ function hueSat([r, g, b]) {
   return [h, d / max];
 }
 /** Efectos de la secuencia → estilos del generador (los que no existen se aproximan). */
-const SEQ_STYLE = { bulb: "bulb", breathe: "breathe", pulse: "pulse", hit: "hit", rise: "rise", bloom: "bloom", wave: "wave", duo: "duo", disco: "disco", aurora: "aurora", sparkle: "sparkle", rainbow: "rainbow", ocean: "ocean", flame: "flame", fadeout: "fadeout", blackout: "blackout", hold: "hold", split: "split", flash: "flash", borahae: "borahae" };
+const SEQ_STYLE = { blink: "blink", bulb: "bulb", breathe: "breathe", pulse: "pulse", hit: "hit", rise: "rise", bloom: "bloom", wave: "wave", duo: "duo", disco: "disco", aurora: "aurora", sparkle: "sparkle", rainbow: "rainbow", ocean: "ocean", flame: "flame", fadeout: "fadeout", blackout: "blackout", hold: "hold", split: "split", flash: "flash", borahae: "borahae" };
 /**
  * Tramos de una secuencia por marcas de tiempo → secciones del generador.
  * @param {number} minGap segundos mínimos entre destellos de acento (modo seguro)
  */
-function sequenceSections(seq, palette, minGap) {
+function sequenceSections(seq, palette, minGap, blinkGap = 0.4) {
   return seq.tramos.map((t) => {
     const color = lightable(t.color) ?? palette[1] ?? palette[0];
     const accent = (t.color2 && lightable(t.color2)) || palette.find((p) => p !== color && Math.hypot(p[0] - color[0], p[1] - color[1], p[2] - color[2]) > 90) || palette[0];
@@ -180,8 +180,11 @@ function sequenceSections(seq, palette, minGap) {
     const accents = [];
     for (const a of [...(t.acentos ?? [])].sort((x, y) => x - y)) if (a >= t.inicio && a < t.fin && (!accents.length || a - accents[accents.length - 1] >= Math.max(0.4, minGap))) accents.push(a);
     const style = t.efecto === "blackout" || top === 0 ? "blackout" : SEQ_STYLE[t.efecto] ?? "breathe";
+    // Ráfaga (parpadeo): un golpe por cada «pa» de la canción, sin pasar del límite de destellos del modo actual.
+    const rafaga = [];
+    for (const g of [...(t.rafaga ?? [])].sort((x, y) => x - y)) if (g >= t.inicio - 0.05 && g < t.fin && (!rafaga.length || g - rafaga[rafaga.length - 1] >= blinkGap)) rafaga.push(g);
     return {
-      label: t.seccion, start: t.inicio, end: t.fin, style, seq: true,
+      label: t.seccion, start: t.inicio, end: t.fin, style, seq: true, rafaga,
       color: style === "blackout" ? [0, 0, 0] : color, accent, third: mix(color, [255, 255, 255], 0.45),
       lvl, lvlEnd, gain: 0.4 + 0.6 * top,
       floor: style === "blackout" || t.efecto === "fadeout" ? 0 : 0.04 + 0.5 * top ** 2,
@@ -412,7 +415,7 @@ export function generatePattern(song, album, duration, opts = {}) {
     sections[7].end = cut;
     Object.assign(sections[8], { start: cut, style: "borahae", floor: 0 });
   }
-  if (SEQ) sections = sequenceSections(SEQ, palette, beatsPerFlash * beat);
+  if (SEQ) sections = sequenceSections(SEQ, palette, beatsPerFlash * beat, Math.max(0.12, 1 / maxFlashHz));
   const safe = opts.safeMode !== false;
   // Pseudoaleatorio estable (mismo resultado en cada cuadro) para las chispas.
   const hash = (x) => { const v = Math.sin(x * 127.1 + 311.7) * 43758.5453; return v - Math.floor(v); };
@@ -589,6 +592,14 @@ export function generatePattern(song, album, duration, opts = {}) {
       }
       case "blackout":
         return [0, 0, 0];
+      case "blink": {
+        // Parpadeo: en cada golpe de la ráfaga se enciende de golpe (alternando los dos colores) y se apaga del todo.
+        const g = sec.rafaga ?? [];
+        let k = -1; for (let j = 0; j < g.length && g[j] <= t; j++) k = j;
+        if (k < 0) return scale(sec.color, 0.05);
+        const since = t - g[k], on = Math.min(0.16, (g[k + 1] ?? Infinity) - g[k] - 0.04);
+        return since < on ? (k % 2 ? sec.accent : sec.color) : scale(sec.color, 0.04);
+      }
       case "bulb": {
         // Bombillo a punto de estallar: se enciende y se apaga cada vez más rápido (de 1,1 s a 0,4 s por ciclo, nunca
         // más de 2,5 destellos/s), del color principal al segundo, y en el último 10 % baja antes del golpe.

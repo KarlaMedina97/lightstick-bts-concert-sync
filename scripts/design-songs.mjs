@@ -11,7 +11,7 @@
 // Ojo: la canción suena por los parlantes mientras se escucha (se puede bajar el volumen de Windows).
 import { spawn, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ALBUMS } from "../src/catalog.js";
@@ -98,7 +98,15 @@ try {
     if (!song) { console.log(`✗ ${id}: no está en el catálogo`); continue; }
     const t0 = Date.now();
     try {
-      const f = audioFeatures(await listen(song), { bpmHint: song.bpm || 0 });
+      // Energía medida (solo números, no es audio) guardada fuera del proyecto: con --redisenar se rediseña con las
+      // reglas nuevas sin volver a escuchar.
+      const cache = join(homedir(), ".cache", "lumiparty", "audio");
+      mkdirSync(cache, { recursive: true });
+      const rawFile = join(cache, `${id}.json`);
+      let raw;
+      if (args.includes("--redisenar") && existsSync(rawFile)) raw = JSON.parse(readFileSync(rawFile, "utf8"));
+      else { raw = await listen(song); writeFileSync(rawFile, JSON.stringify(raw)); }
+      const f = audioFeatures(raw, { bpmHint: song.bpm || 0 });
       // Colores del MV recién medidos (el análisis de video puede ir corriendo a la vez).
       const { VIDEO_LOOKS: vl } = await import(new URL("../src/video-looks.js", import.meta.url).href + "?" + Date.now()).catch(() => ({ VIDEO_LOOKS }));
       let seq = autoDesign({ song, look: lookFor(song.id), video: vl[song.id] ?? VIDEO_LOOKS[song.id] ?? null, f });

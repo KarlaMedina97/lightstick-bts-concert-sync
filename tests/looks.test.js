@@ -342,9 +342,11 @@ test("con el video: los coros no bajan, el rap sigue arriba y un video quieto ca
   assert.ok(Math.abs(still.sections[0].lvl - base.sections[0].lvl) < 0.05, "un video quieto movió la intro");
 });
 
-test("calidad con el video: ningún look analizado queda plano", () => {
+test("calidad con el video: ningún look analizado queda plano", async () => {
+  const { SEQUENCES } = await import("../src/sequences.js");
   for (const [id, v] of Object.entries(VIDEO_LOOKS)) {
     const s = songs.find((x) => x.id === id);
+    if (SEQUENCES[id]?.yt === s.yt) continue; // con secuencia escuchada, la app no usa este patrón
     const score = lightScore(generatePattern(s, s.album, 210, { safeMode: true, video: v }));
     assert.ok(score >= 55, `${id}: ${score.toFixed(0)} (plano)`);
   }

@@ -32,7 +32,7 @@ for (const path of args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== 
       tramos: seq.tramos.map((t) => ({
         inicio: t.inicio, fin: t.fin, seccion: t.seccion, color: t.color.toLowerCase(), color2: t.color2 ? t.color2.toLowerCase() : null,
         brillo: t.brillo, brilloFin: t.brilloFin, transicion: t.transicion, transicionSeg: t.transicionSeg, efecto: t.efecto,
-        cadaTiempos: t.cadaTiempos, destellosPorSeg: t.destellosPorSeg, ...(t.acentos?.length ? { acentos: t.acentos } : {}),
+        cadaTiempos: t.cadaTiempos, destellosPorSeg: t.destellosPorSeg, ...(t.acentos?.length ? { acentos: t.acentos } : {}), ...(t.rafaga?.length ? { rafaga: t.rafaga } : {}),
       })),
     };
     ok++;

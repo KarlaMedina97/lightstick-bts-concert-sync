@@ -12,7 +12,7 @@ import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 import { ALBUMS } from "../src/catalog.js";
 
-export const EFFECTS = ["bulb", "breathe", "pulse", "hit", "rise", "bloom", "wave", "duo", "disco", "aurora", "sparkle", "rainbow", "ocean", "flame", "fadeout", "blackout", "hold", "split", "flash", "borahae"];
+export const EFFECTS = ["blink", "bulb", "breathe", "pulse", "hit", "rise", "bloom", "wave", "duo", "disco", "aurora", "sparkle", "rainbow", "ocean", "flame", "fadeout", "blackout", "hold", "split", "flash", "borahae"];
 const SECTIONS = ["intro", "verso", "pre-coro", "coro", "verso 2", "coro 2", "puente", "coro final", "final", "pausa", "post-coro", "outro", "interludio", "break", "rap", "verso 3", "coro 3"];
 const HEX = /^#[0-9a-fA-F]{6}$/;
 

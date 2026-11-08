@@ -1,0 +1,443 @@
+{
+  "formato": 1,
+  "song": "let-there-be-love-cover",
+  "yt": "2davNWu3mr4",
+  "duracion": 185.3,
+  "bpm": 72.92,
+  "primerTiempo": 0.48,
+  "verificacion": {
+    "audio": "Escuchado completo desde el reproductor oficial (graves, agudos y golpes medidos cada ~23 ms, sin grabar audio); tempo por autocorrelación; fronteras por cambios de energía; acentos en golpes de bajo reales.",
+    "imagen": "Colores del análisis cuadro a cuadro del MV en cada momento, con preferencia por blanco, amarillo, naranja, rojo y morado.",
+    "confianza": "media",
+    "dudas": [
+      "Los nombres de sección se deducen del sonido (no de la letra)."
+    ]
+  },
+  "paleta": [
+    {
+      "nombre": "#ffd000",
+      "hex": "#ffd000",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ffffff",
+      "hex": "#ffffff",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ffc840",
+      "hex": "#ffc840",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ff1f51",
+      "hex": "#ff1f51",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ff134f",
+      "hex": "#ff134f",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ff6e2e",
+      "hex": "#ff6e2e",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ff7a00",
+      "hex": "#ff7a00",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#0025ff",
+      "hex": "#0025ff",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#8a2be2",
+      "hex": "#8a2be2",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ff1b4f",
+      "hex": "#ff1b4f",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ff25c8",
+      "hex": "#ff25c8",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ff2965",
+      "hex": "#ff2965",
+      "de": "paleta del MV y preferencia de la usuaria"
+    },
+    {
+      "nombre": "#ff1953",
+      "hex": "#ff1953",
+      "de": "paleta del MV y preferencia de la usuaria"
+    }
+  ],
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 2.7,
+      "seccion": "pausa",
+      "evidencia": "graves ×0.1, agudos ×0.1, energía ×0.2 y 0 golpes por segundo (pausa)",
+      "sigue": "el silencio",
+      "color": "#000000",
+      "color2": null,
+      "brillo": 0,
+      "brilloFin": 0,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "blackout",
+      "cadaTiempos": 0,
+      "destellosPorSeg": 0,
+      "acentos": [],
+      "nota": ""
+    },
+    {
+      "inicio": 2.7,
+      "fin": 7.1,
+      "seccion": "coro",
+      "evidencia": "graves ×1.3, agudos ×4.1, energía ×3.8 y 0.7 golpes por segundo (brillo)",
+      "sigue": "el pulso del compás",
+      "color": "#ffd000",
+      "color2": "#ffffff",
+      "brillo": 1,
+      "brilloFin": 1,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "aurora",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 0,
+      "acentos": [],
+      "nota": ""
+    },
+    {
+      "inicio": 7.1,
+      "fin": 16.9,
+      "seccion": "coro 2",
+      "evidencia": "graves ×1.3, agudos ×4.6, energía ×3.6 y 0.9 golpes por segundo (brillo)",
+      "sigue": "el pulso del compás",
+      "color": "#ffc840",
+      "color2": "#ff1f51",
+      "brillo": 1,
+      "brilloFin": 1,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "bloom",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        9.1,
+        12.38
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 16.9,
+      "fin": 30,
+      "seccion": "verso",
+      "evidencia": "graves ×0.5, agudos ×2.2, energía ×1.7 y 0.3 golpes por segundo (medio)",
+      "sigue": "el pulso del compás",
+      "color": "#ff134f",
+      "color2": "#ff1f51",
+      "brillo": 0.5,
+      "brilloFin": 0.6,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "breathe",
+      "cadaTiempos": 2,
+      "destellosPorSeg": 0,
+      "acentos": [],
+      "nota": ""
+    },
+    {
+      "inicio": 30,
+      "fin": 30.7,
+      "seccion": "pausa",
+      "evidencia": "graves ×0.8, agudos ×1.3, energía ×1.3 y 0 golpes por segundo (pausa)",
+      "sigue": "el silencio",
+      "color": "#000000",
+      "color2": null,
+      "brillo": 0,
+      "brilloFin": 0,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "blackout",
+      "cadaTiempos": 0,
+      "destellosPorSeg": 0,
+      "acentos": [],
+      "nota": ""
+    },
+    {
+      "inicio": 30.7,
+      "fin": 59.7,
+      "seccion": "verso",
+      "evidencia": "graves ×2.9, agudos ×1.8, energía ×1.6 y 1.3 golpes por segundo (pesado)",
+      "sigue": "golpes de bombo y retumbones de bajo",
+      "color": "#ff134f",
+      "color2": "#ffffff",
+      "brillo": 0.75,
+      "brilloFin": 0.85,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "bloom",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        34.72,
+        37.86,
+        41.12,
+        44.56,
+        47.88,
+        50.68,
+        53.96,
+        57.48
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 59.7,
+      "fin": 69.6,
+      "seccion": "verso",
+      "evidencia": "graves ×10.7, agudos ×4, energía ×4.3 y 2.3 golpes por segundo (pesado)",
+      "sigue": "golpes de bombo y retumbones de bajo",
+      "color": "#ff6e2e",
+      "color2": "#ffc840",
+      "brillo": 0.75,
+      "brilloFin": 0.85,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "bloom",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        60.6,
+        63.04,
+        65.32,
+        67.56
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 69.6,
+      "fin": 82.8,
+      "seccion": "pre-coro",
+      "evidencia": "graves ×1, agudos ×1.7, energía ×1.1 y 0 golpes por segundo (subida)",
+      "sigue": "la subida de tensión hasta el golpe",
+      "color": "#ff7a00",
+      "color2": "#ffd000",
+      "brillo": 0.45,
+      "brilloFin": 1,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "rise",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 0,
+      "acentos": [],
+      "nota": ""
+    },
+    {
+      "inicio": 82.8,
+      "fin": 95.9,
+      "seccion": "coro",
+      "evidencia": "graves ×1.7, agudos ×3.8, energía ×2.2 y 1.2 golpes por segundo (brillo)",
+      "sigue": "el pulso del compás",
+      "color": "#ffffff",
+      "color2": "#ff7a00",
+      "brillo": 1,
+      "brilloFin": 1,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "aurora",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 0,
+      "acentos": [],
+      "nota": ""
+    },
+    {
+      "inicio": 95.9,
+      "fin": 121.7,
+      "seccion": "verso",
+      "evidencia": "graves ×0.7, agudos ×1.3, energía ×0.9 y 0.2 golpes por segundo (medio)",
+      "sigue": "el pulso del compás",
+      "color": "#0025ff",
+      "color2": "#8a2be2",
+      "brillo": 0.5,
+      "brilloFin": 0.6,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "breathe",
+      "cadaTiempos": 2,
+      "destellosPorSeg": 0,
+      "acentos": [],
+      "nota": ""
+    },
+    {
+      "inicio": 121.7,
+      "fin": 124.3,
+      "seccion": "pausa",
+      "evidencia": "graves ×0.2, agudos ×0, energía ×0.2 y 0 golpes por segundo (pausa)",
+      "sigue": "el silencio",
+      "color": "#000000",
+      "color2": null,
+      "brillo": 0,
+      "brilloFin": 0,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "blackout",
+      "cadaTiempos": 0,
+      "destellosPorSeg": 0,
+      "acentos": [],
+      "nota": ""
+    },
+    {
+      "inicio": 124.3,
+      "fin": 135.4,
+      "seccion": "verso",
+      "evidencia": "graves ×4.5, agudos ×2.8, energía ×2.9 y 1.9 golpes por segundo (pesado)",
+      "sigue": "golpes de bombo y retumbones de bajo",
+      "color": "#ff1b4f",
+      "color2": "#ffd000",
+      "brillo": 0.75,
+      "brilloFin": 0.85,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "bloom",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        127.5,
+        130.72,
+        133.92
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 135.4,
+      "fin": 151.9,
+      "seccion": "verso",
+      "evidencia": "graves ×12.1, agudos ×6.5, energía ×4.9 y 2.1 golpes por segundo (pesado)",
+      "sigue": "golpes de bombo y retumbones de bajo",
+      "color": "#ffc840",
+      "color2": "#ff1f51",
+      "brillo": 0.75,
+      "brilloFin": 0.85,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "bloom",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        137.04,
+        139.1,
+        141.44,
+        143.7,
+        145.72
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 151.9,
+      "fin": 161.8,
+      "seccion": "coro final",
+      "evidencia": "graves ×1.9, agudos ×2.6, energía ×1.5 y 2 golpes por segundo (brillo)",
+      "sigue": "el pulso del compás",
+      "color": "#ffd000",
+      "color2": "#ffffff",
+      "brillo": 1,
+      "brilloFin": 1,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "bloom",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        158.32
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 161.8,
+      "fin": 166.7,
+      "seccion": "verso",
+      "evidencia": "graves ×3.7, agudos ×1.2, energía ×1.1 y 0.6 golpes por segundo (medio)",
+      "sigue": "el pulso del compás",
+      "color": "#ff25c8",
+      "color2": "#ffc840",
+      "brillo": 0.5,
+      "brilloFin": 0.6,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "breathe",
+      "cadaTiempos": 2,
+      "destellosPorSeg": 0,
+      "acentos": [],
+      "nota": ""
+    },
+    {
+      "inicio": 166.7,
+      "fin": 167.3,
+      "seccion": "pausa",
+      "evidencia": "graves ×0, agudos ×0, energía ×0 y 0 golpes por segundo (pausa)",
+      "sigue": "el silencio",
+      "color": "#000000",
+      "color2": null,
+      "brillo": 0,
+      "brilloFin": 0,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "blackout",
+      "cadaTiempos": 0,
+      "destellosPorSeg": 0,
+      "acentos": [],
+      "nota": ""
+    },
+    {
+      "inicio": 167.3,
+      "fin": 171.6,
+      "seccion": "verso",
+      "evidencia": "graves ×13.6, agudos ×2.7, energía ×2.4 y 2.3 golpes por segundo (pesado)",
+      "sigue": "golpes de bombo y retumbones de bajo",
+      "color": "#ff2965",
+      "color2": "#ffc840",
+      "brillo": 0.75,
+      "brilloFin": 0.85,
+      "transicion": "corte",
+      "transicionSeg": 0,
+      "efecto": "bloom",
+      "cadaTiempos": 1,
+      "destellosPorSeg": 1,
+      "acentos": [
+        167.58,
+        170.06
+      ],
+      "nota": ""
+    },
+    {
+      "inicio": 171.6,
+      "fin": 185.3,
+      "seccion": "final",
+      "evidencia": "graves ×0.4, agudos ×0, energía ×0 y 0.2 golpes por segundo (final)",
+      "sigue": "el pulso del compás",
+      "color": "#ff1953",
+      "color2": null,
+      "brillo": 0.6,
+      "brilloFin": 0,
+      "transicion": "decrescendo",
+      "transicionSeg": 4,
+      "efecto": "fadeout",
+      "cadaTiempos": 0,
+      "destellosPorSeg": 1,
+      "acentos": [
+        171.98
+      ],
+      "nota": ""
+    }
+  ]
+}

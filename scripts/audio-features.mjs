@@ -34,6 +34,24 @@ export function audioFeatures(raw, { FS = 50, bpmHint = 0 } = {}) {
   const lowS = smooth(low, 3), lowMed = median(lowS);
   const hits = [];
   for (let i = 2; i < N - 2; i++) if (on[i] > on[i - 1] && on[i] >= on[i + 1] && on[i] > 6 && lowS[i] > lowMed * 1.6 && (!hits.length || i / FS - hits.at(-1).t >= 0.35)) hits.push({ t: +(i / FS).toFixed(2), f: +on[i].toFixed(1), bajo: +(lowS[i] / lowMed).toFixed(1) });
+  // Ráfagas: golpes de cualquier tipo (palmas, cajas, disparos, «pa pa pa») muy seguidos: ≥ 3 golpes con menos de
+  // 0,45 s entre uno y otro. Se quedan las más fuertes, como mucho una cada 8 s.
+  // Un golpe de ráfaga sobresale de lo que suena alrededor (≥ 2,5 veces la mediana local de ±1,5 s).
+  const W = Math.round(1.5 * FS), localMed = new Float32Array(N);
+  for (let i = 0; i < N; i += 5) { const seg = Array.from(on.subarray(Math.max(0, i - W), Math.min(N, i + W))).sort((a, b) => a - b); const m = seg[Math.floor(seg.length / 2)] || 1e-9; for (let k = i; k < Math.min(N, i + 5); k++) localMed[k] = m; }
+  const onsets = [];
+  for (let i = 2; i < N - 2; i++) if (on[i] > on[i - 1] && on[i] >= on[i + 1] && on[i] > 2.5 * localMed[i] && (!onsets.length || i / FS - onsets.at(-1).t >= 0.1)) onsets.push({ t: +(i / FS).toFixed(2), f: on[i] / localMed[i] });
+  const runs = [];
+  for (let i = 0; i < onsets.length; ) {
+    let j = i; while (j + 1 < onsets.length && onsets[j + 1].t - onsets[j].t <= 0.45 && j - i < 11) j++;
+    const g = onsets.slice(i, j + 1), gaps = g.slice(1).map((o, k) => o.t - g[k].t), mg = gaps.reduce((a, x) => a + x, 0) / Math.max(1, gaps.length);
+    const regular = gaps.every((x) => Math.abs(x - mg) <= mg * 0.45); // ritmo parejo: «pa pa pa pa»
+    if (g.length >= 3 && g.at(-1).t - g[0].t <= 3 && regular) runs.push({ t: g[0].t, fin: g.at(-1).t, golpes: g.map((o) => o.t), fuerza: g.reduce((a, o) => a + o.f, 0) / g.length });
+    i = j + 1;
+  }
+  const bursts = [];
+  for (const r of [...runs].sort((a, b) => b.fuerza - a.fuerza)) if (bursts.length < Math.ceil(dur / 20) && bursts.every((b) => Math.abs(b.t - r.t) >= 8)) bursts.push({ ...r, fuerza: +r.fuerza.toFixed(1) });
+  bursts.sort((a, b) => a.t - b.t);
   // Pausas: energía < 12 % de la mediana durante ≥ 0,25 s.
   const totS = smooth(tot, 5), totMed = median(totS);
   const pauses = []; let st = -1;
@@ -54,5 +72,5 @@ export function audioFeatures(raw, { FS = 50, bpmHint = 0 } = {}) {
     return Math.hypot(...A.map((v, j) => v - B[j]));
   });
   const peaks = nov.map((v, i) => ({ i, v })).filter(({ i, v }) => v > 0.35 && v >= (nov[i - 1] ?? 0) && v >= (nov[i + 1] ?? 0));
-  return { dur: +dur.toFixed(1), bpm: best.bpm, beat, primerTiempo: +ph.p.toFixed(2), hits, pauses, bars, cambios: peaks.map(({ i, v }) => ({ t: bars[i].t, fuerza: +v.toFixed(2) })) };
+  return { dur: +dur.toFixed(1), bpm: best.bpm, beat, primerTiempo: +ph.p.toFixed(2), hits, bursts, pauses, bars, cambios: peaks.map(({ i, v }) => ({ t: bars[i].t, fuerza: +v.toFixed(2) })) };
 }
