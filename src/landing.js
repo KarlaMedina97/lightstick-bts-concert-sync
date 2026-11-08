@@ -9,7 +9,10 @@ import { showInAppNotice, redirectConnectButtons } from "./inapp.js";
 import { carousel } from "./carousel.js";
 import { fireworks } from "./fireworks.js";
 import { pageview } from "./analytics.js";
+import { showConsent } from "./consent.js";
 pageview();
+// Aviso de privacidad cuando la portada ya se pintó (no compite con la primera carga).
+addEventListener("load", () => setTimeout(showConsent, 1200), { once: true });
 // three.js y el modelo se importan aparte, cuando la portada ya se pintó (ver buildScene): así no compiten con el
 // HTML, el CSS y las fuentes. index.html los pide desde el principio con prioridad baja (modulepreload).
 let THREE, EffectComposer, RenderPass, UnrealBloomPass, mergeGeometries, RoomEnvironment;
