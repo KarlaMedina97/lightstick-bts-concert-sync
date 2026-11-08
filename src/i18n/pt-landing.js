@@ -25,8 +25,7 @@ export default {
   "Código en GitHub (se abre en otra pestaña)": "Código no GitHub (abre em outra aba)",
   "Código en GitHub ↗": "Código no GitHub ↗",
   "Métricas de uso, sin publicidad.": "Métricas de uso, sem publicidade.",
-  "Medimos el uso con Google Analytics 4: qué páginas y funciones se usan, con una cookie propia de analítica (_ga) que no sirve para publicidad. En la Unión Europea, el Reino Unido y Suiza no se guardan cookies. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se carga.":
-    "Medimos o uso com o Google Analytics 4: quais páginas e funções são usadas, com um cookie próprio de análise (_ga) que não serve para publicidade. Na União Europeia, no Reino Unido e na Suíça não são salvos cookies. Você pode desativar em Ajustes › Métricas de uso; se ativar «Não rastrear» ou o Controle Global de Privacidade, ele não é carregado.",
+  "Medimos el uso con PostHog (servidor en la Unión Europea) para saber por dónde llegan las personas, qué funciones usan y dónde abandonan: la ruta de la página (sin parámetros), el sitio del que vienes, el navegador, el sistema y el tipo de pantalla, y eventos como reproducir una canción o conectar el ARMY Bomb. Sin cookies, sin publicidad y sin tu nombre o correo: solo un número al azar que se borra al cerrar la pestaña. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se envía nada.": "Medimos o uso com o PostHog (servidores na União Europeia) para saber por onde as pessoas chegam, que funções usam e onde abandonam: o caminho da página (sem parâmetros), o site de onde você veio, o navegador, o sistema e o tipo de tela, e eventos como tocar uma música ou conectar o ARMY Bomb. Sem cookies, sem publicidade e sem seu nome ou e-mail: só um número aleatório que é apagado ao fechar a aba. Você pode desligar em Ajustes › Métricas de uso; com «Não rastrear» ou Controle Global de Privacidade nada é enviado.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "As cinco versões do ARMY Bomb. Ver. 3, SE e Ver. 4 sincronizam por Bluetooth; Ver. 1 e 2 não têm Bluetooth: sua tela brilha por elas.",
   "Sin Bluetooth · con tu pantalla": "Sem Bluetooth · com a sua tela",
   "Términos de uso": "Termos de uso",
@@ -328,8 +327,7 @@ export default {
   "se abre GitHub con tu texto listo; solo se publica si tú lo confirmas allí.":
     "o GitHub abre com seu texto pronto; só é publicado se você confirmar lá.",
   "Medidas de seguridad": "Medidas de segurança",
-  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio, de YouTube y de Google Analytics.":
-    "Política de segurança de conteúdo (CSP) que só permite código do próprio site, do YouTube e do Google Analytics.",
+  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio y de YouTube.": "Política de segurança de conteúdo (CSP) que só permite código do próprio site e do YouTube.",
   "Las librerías (three.js y GSAP) se sirven desde el propio sitio, copiadas de paquetes verificados de npm.":
     "As bibliotecas (three.js e GSAP) são servidas pelo próprio site, copiadas de pacotes verificados do npm.",
   "Todo lo que escriben las personas se valida y se muestra como texto, nunca como código.":

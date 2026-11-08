@@ -25,8 +25,7 @@ export default {
   "Código en GitHub (se abre en otra pestaña)": "Kode di GitHub (terbuka di tab baru)",
   "Código en GitHub ↗": "Kode di GitHub ↗",
   "Métricas de uso, sin publicidad.": "Statistik penggunaan, tanpa iklan.",
-  "Medimos el uso con Google Analytics 4: qué páginas y funciones se usan, con una cookie propia de analítica (_ga) que no sirve para publicidad. En la Unión Europea, el Reino Unido y Suiza no se guardan cookies. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se carga.":
-    "Kami mengukur penggunaan dengan Google Analytics 4: halaman dan fitur yang dipakai, dengan cookie analitik milik sendiri (_ga) yang tidak dipakai untuk iklan. Di Uni Eropa, Inggris, dan Swiss tidak ada cookie yang disimpan. Kamu bisa mematikannya di Pengaturan › Statistik penggunaan; jika kamu mengaktifkan «Jangan Lacak» atau Global Privacy Control, tidak dimuat.",
+  "Medimos el uso con PostHog (servidor en la Unión Europea) para saber por dónde llegan las personas, qué funciones usan y dónde abandonan: la ruta de la página (sin parámetros), el sitio del que vienes, el navegador, el sistema y el tipo de pantalla, y eventos como reproducir una canción o conectar el ARMY Bomb. Sin cookies, sin publicidad y sin tu nombre o correo: solo un número al azar que se borra al cerrar la pestaña. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se envía nada.": "Kami mengukur penggunaan dengan PostHog (server di Uni Eropa) untuk tahu dari mana orang datang, fitur apa yang dipakai, dan di mana mereka berhenti: jalur halaman (tanpa parameter), situs asalmu, browser, sistem dan jenis layar, serta peristiwa seperti memutar lagu atau menyambungkan ARMY Bomb. Tanpa cookie, tanpa iklan, dan tanpa nama atau email: hanya angka acak yang dihapus saat tab ditutup. Kamu bisa mematikannya di Pengaturan › Metrik penggunaan; dengan «Jangan lacak» atau Global Privacy Control tidak ada yang dikirim.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "Kelima versi ARMY Bomb. Ver. 3, SE, dan Ver. 4 sinkron lewat Bluetooth; Ver. 1 dan 2 tidak punya Bluetooth, jadi layarmu yang bersinar untuk mereka.",
   "Sin Bluetooth · con tu pantalla": "Tanpa Bluetooth · pakai layarmu",
   "Términos de uso": "Ketentuan penggunaan",
@@ -328,8 +327,7 @@ export default {
   "se abre GitHub con tu texto listo; solo se publica si tú lo confirmas allí.":
     "GitHub terbuka dengan teksmu yang sudah siap; baru dipublikasikan kalau kamu konfirmasi di sana.",
   "Medidas de seguridad": "Langkah keamanan",
-  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio, de YouTube y de Google Analytics.":
-    "Content Security Policy (CSP) yang hanya mengizinkan kode dari situs ini sendiri, YouTube, dan Google Analytics.",
+  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio y de YouTube.": "Kebijakan keamanan konten (CSP) yang hanya mengizinkan kode dari situs ini sendiri dan YouTube.",
   "Las librerías (three.js y GSAP) se sirven desde el propio sitio, copiadas de paquetes verificados de npm.":
     "Library (three.js dan GSAP) disajikan dari situs ini sendiri, disalin dari paket npm yang terverifikasi.",
   "Todo lo que escriben las personas se valida y se muestra como texto, nunca como código.":
