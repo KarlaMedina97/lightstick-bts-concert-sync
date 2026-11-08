@@ -539,6 +539,7 @@ function showBtWarning(reason) {
 let lastBtError = null; // { kind, detail, at } del último intento fallido
 async function onConnect() {
   lastBtError = null;
+  track("conectar_intento"); // embudo: intentó conectar → conectó (conectar_army_bomb) o falló (conectar_fallo)
   const btn = $("btn-connect");
   btn.disabled = true;
   btn.textContent = "Conectando…";
@@ -572,6 +573,7 @@ async function onConnect() {
     const kind = classifyBtError(e);
     // El motivo real queda a la vista (guía y diagnóstico) y en la consola: así se puede saber qué pasó.
     lastBtError = { kind, detail: `${e?.name ?? "Error"}: ${String(e?.message ?? e).slice(0, 160)}`, at: Date.now() };
+    track("conectar_fallo", { motivo: kind }); // solo el tipo de fallo (cancelled, gatt, denied…), nada más
     console.warn("[LumiParty] Bluetooth:", lastBtError.detail);
     if (kind === "cancelled") say("Lista cerrada sin elegir un dispositivo.");
     else if (kind === "disabled") { showBtWarning(isBrave() ? "brave" : "disabled"); showPanel("panel-bt"); earcon("error"); }
@@ -1213,6 +1215,7 @@ function announceLights() { lastDescribed = performance.now(); say(describeLight
 let cam = null;
 let concertBrightnessBackup = null;
 async function toggleConcert() {
+  track("modo_concierto");
   const btn = $("btn-concert");
   if (cam) {
     cam.stop();
@@ -2373,6 +2376,7 @@ function syncRoute() {
   const replace = isSongSlug(prev) && isSongSlug(slug); // otra canción en el mismo video: no es navegar
   try { history[replace ? "replaceState" : "pushState"]({ r: slug }, "", next); } catch {}
   document.title = routeTitle(slug);
+  pageview(next); // cada pantalla del reproductor cuenta como visita (para ver por dónde navegan y dónde se van)
 }
 function routeTitle(slug) {
   const item = queue[current];
@@ -3180,7 +3184,7 @@ function bindSettings() {
     toast("Modo seguro desactivado.");
   };
   $("chk-wake").onchange = (e) => { settings.wake = e.target.checked; saveSettings(); if (!settings.wake) wakeLock?.release(); };
-  // Métricas de uso (Google Analytics): se pueden apagar; queda guardado en este dispositivo.
+  // Métricas de uso (PostHog, src/analytics.js): se pueden apagar; queda guardado en este dispositivo.
   $("chk-metrics").checked = !analyticsOff();
   $("chk-metrics").onchange = (e) => { setAnalyticsOff(!e.target.checked); if (e.target.checked) pageview(); };
   const access = { "chk-sounds": "sounds", "chk-describe": "describe", "chk-keys": "keys", "chk-calm": "calm" };
@@ -3618,6 +3622,7 @@ async function init() {
         const up = pq.peek({ auto: true });
         const upItem = up ? queue[idxOf(up.id ?? up)] : null;
         const bpm = upItem ? Number(settings.bpm[upItem.song.id] ?? upItem.song.bpm) : 0;
+        track("fanchant");
         await fanchant.run({ voice: settings.chantVoice, bpm });
         if (current !== endedAt) return; // la persona eligió otra canción durante el fanchant
       }

@@ -91,3 +91,17 @@ test("secuencias: una plantilla repetida en muchas canciones o con otra duració
   assert.ok(checkSequence(s).errors.some((e) => /el video dura 224 s/.test(e)));
   setDurations({});
 });
+
+test("métricas (PostHog): sin datos personales ni parámetros, sin cookies", async () => {
+  globalThis.location ??= { origin: "https://lumiparty.com", host: "lumiparty.com", hostname: "lumiparty.com", pathname: "/player/dynamite" };
+  globalThis.navigator ??= { userAgent: "Mozilla/5.0 (Windows NT 10.0) Chrome/130" };
+  globalThis.document ??= { referrer: "https://www.google.com/search?q=lumiparty", documentElement: { lang: "es" }, title: "LumiParty" };
+  globalThis.screen ??= { width: 1440, height: 900 }; globalThis.innerWidth ??= 1440; globalThis.matchMedia ??= () => ({ matches: false });
+  const { buildCapture } = await import("../src/analytics.js");
+  const ev = buildCapture("reproducir", { cancion: "dynamite" }, "/player/dynamite");
+  assert.match(ev.api_key, /^phc_/);
+  assert.equal(ev.properties.$process_person_profile, false);
+  assert.equal(ev.properties.$referrer, "https://www.google.com"); // solo el sitio de origen, sin la búsqueda
+  assert.ok(!JSON.stringify(ev).includes("?"), "sin parámetros de ninguna dirección");
+  assert.ok(!("$ip" in ev.properties) && !("$set" in ev.properties) && !("email" in ev.properties));
+});

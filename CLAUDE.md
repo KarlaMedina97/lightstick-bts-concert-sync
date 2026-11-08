@@ -87,10 +87,11 @@ Las páginas dentro de carpetas usan rutas relativas con `../`. No uses `<base>`
   permitidos son el importmap y los datos estructurados JSON-LD de `index.html` (no se ejecutan); si los cambias,
   ejecuta `npm run csp`.
 - Si añades un origen externo (fetch, iframe, imagen), actualízalo en `scripts/csp.mjs` y regenera.
-- **Única excepción a "nada de CDNs": Google Analytics 4** (decisión del proyecto, 2026-11-05), cargado por
-  `src/analytics.js` **sin cookies** (`client_storage: "none"`, sin señales de anuncios, IP anonimizada), solo si
-  `ANALYTICS.ga4` en `src/config.js` tiene un ID, y nunca con Do Not Track / Global Privacy Control, en localhost
-  ni en la red local. Solo rutas sin parámetros y eventos con nombres fijos: nunca datos de la persona.
+- **Métricas de uso: PostHog (UE)** (decisión del proyecto, 2026-11-07; reemplazó a Google Analytics 4) con código
+  propio en `src/analytics.js` (sin su librería ni CDN): eventos a la API de captura, **sin cookies** ni perfiles de
+  persona (un número al azar en `sessionStorage`), solo si `ANALYTICS.posthog.key` tiene clave, y nunca con Do Not
+  Track / Global Privacy Control, con las métricas apagadas en Ajustes, en localhost ni en la red local (ahí se
+  muestra en la consola lo que se enviaría). Solo rutas sin parámetros y eventos con nombres fijos: nunca datos de la persona.
 - Muestra datos del usuario o del servidor con `textContent`, nunca `innerHTML`. Valida con `sanitizeRow`
   (`src/leaderboard.js`) o equivalentes.
 - Nunca pongas claves `service_role` ni secretos en el repo. La clave `anon` de Supabase es pública por diseño.

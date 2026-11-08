@@ -25,8 +25,7 @@ export default {
   "Código en GitHub (se abre en otra pestaña)": "GitHub 코드 (새 탭에서 열림)",
   "Código en GitHub ↗": "GitHub 코드 ↗",
   "Métricas de uso, sin publicidad.": "사용 통계, 광고 없음.",
-  "Medimos el uso con Google Analytics 4: qué páginas y funciones se usan, con una cookie propia de analítica (_ga) que no sirve para publicidad. En la Unión Europea, el Reino Unido y Suiza no se guardan cookies. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se carga.":
-    "Google Analytics 4로 어떤 페이지와 기능이 쓰이는지 측정해요. 광고에는 쓰이지 않는 자체 분석 쿠키(_ga)를 사용해요. 유럽연합, 영국, 스위스에서는 쿠키를 저장하지 않아요. 설정 › 사용 통계에서 끌 수 있고, '추적 안 함'이나 글로벌 개인정보 보호 제어를 켜면 불러오지 않아요.",
+  "Medimos el uso con PostHog (servidor en la Unión Europea) para saber por dónde llegan las personas, qué funciones usan y dónde abandonan: la ruta de la página (sin parámetros), el sitio del que vienes, el navegador, el sistema y el tipo de pantalla, y eventos como reproducir una canción o conectar el ARMY Bomb. Sin cookies, sin publicidad y sin tu nombre o correo: solo un número al azar que se borra al cerrar la pestaña. Puedes apagarlo en Ajustes › Métricas de uso; si activas «No rastrear» o Control Global de Privacidad, no se envía nada.": "PostHog(유럽연합 서버)로 사람들이 어디서 들어오는지, 어떤 기능을 쓰는지, 어디서 떠나는지 측정해요: 페이지 경로(매개변수 제외), 들어온 사이트, 브라우저·운영체제·화면 종류, 그리고 노래 재생이나 아미밤 연결 같은 이벤트예요. 쿠키·광고·이름·이메일은 없고, 탭을 닫으면 지워지는 임의의 번호만 써요. 설정 › 사용 통계에서 끌 수 있고, ‘추적 안 함’이나 GPC를 켜면 아무것도 보내지 않아요.",
   "Las cinco versiones del ARMY Bomb. Ver. 3, SE y Ver. 4 se sincronizan por Bluetooth; Ver. 1 y 2 no tienen Bluetooth: tu pantalla brilla por ellas.": "ARMY Bomb 다섯 가지 버전 모두 OK. Ver. 3, SE, Ver. 4는 Bluetooth로 동기화되고, Bluetooth가 없는 Ver. 1과 2는 대신 화면이 빛나요.",
   "Sin Bluetooth · con tu pantalla": "Bluetooth 없음 · 화면으로",
   "Términos de uso": "이용약관",
@@ -328,8 +327,7 @@ export default {
   "se abre GitHub con tu texto listo; solo se publica si tú lo confirmas allí.":
     "작성한 내용이 담긴 GitHub가 열려요. 거기서 직접 확인해야만 게시돼요.",
   "Medidas de seguridad": "보안 조치",
-  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio, de YouTube y de Google Analytics.":
-    "사이트 자체, YouTube, Google Analytics의 코드만 허용하는 콘텐츠 보안 정책(CSP).",
+  "Política de seguridad de contenido (CSP) que solo permite código del propio sitio y de YouTube.": "사이트 자체와 YouTube의 코드만 허용하는 콘텐츠 보안 정책(CSP).",
   "Las librerías (three.js y GSAP) se sirven desde el propio sitio, copiadas de paquetes verificados de npm.":
     "라이브러리(three.js, GSAP)는 검증된 npm 패키지에서 복사해 사이트에서 직접 제공해요.",
   "Todo lo que escriben las personas se valida y se muestra como texto, nunca como código.":

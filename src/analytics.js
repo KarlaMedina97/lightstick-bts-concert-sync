@@ -1,83 +1,78 @@
-// Métricas de uso con Google Analytics 4 (ver /privacy/): cookie propia de analítica fuera de Europa, sin cookies en
-// Europa salvo permiso, nunca publicidad ni señales de Google, y se puede apagar en Ajustes.
-// - Solo la ruta de la página (sin ?song=… ni parámetros) y eventos con nombres fijos del código.
-// - No se carga nada si el navegador pide no ser rastreado (Do Not Track / Global Privacy Control), en localhost o
-//   en la red local, ni si ANALYTICS.ga4 está vacío en src/config.js.
-// La configuración va en este archivo (no en un script en línea), así se respeta la CSP.
+// Métricas de uso con PostHog (posthog.com, servidor en la UE; ver /privacy/): para entender por dónde llegan las
+// personas, qué usan y dónde abandonan (embudos), no para identificarlas.
+// - Código propio y liviano (sin la librería de PostHog ni CDN): se envían eventos a su API pública de captura.
+// - Sin cookies ni identidad: un número al azar que vive solo mientras la pestaña está abierta (sessionStorage), sin
+//   perfiles de persona. Solo la ruta de la página (sin ?song=… ni #), el sitio de donde vino (sin su dirección
+//   completa), navegador, sistema y tipo de pantalla.
+// - Nunca con «No rastrear» (Do Not Track / Global Privacy Control), si la persona apagó las métricas en Ajustes, ni en
+//   local o la red local: ahí se muestra en la consola lo que SE ENVIARÍA (para revisarlo).
+// La API (pageview, event, analyticsOff, setAnalyticsOff) es la misma que usaba GA4: el resto de la app no cambia.
 import { ANALYTICS } from "./config.js";
 
-const ID = /^G-[A-Z0-9]{4,20}$/.test(ANALYTICS?.ga4 ?? "") ? ANALYTICS.ga4 : "";
-let ready = false;
-// UE/EEE + Reino Unido + Suiza: ahí las cookies de analítica necesitan permiso.
-const EU_REGIONS = ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "IS", "LI", "NO", "GB", "CH"];
+const PH = ANALYTICS?.posthog ?? {};
+const KEY = /^phc_[A-Za-z0-9]{20,}$/.test(PH.key ?? "") ? PH.key : "";
+const HOST = /^https:\/\/[a-z.]+\.posthog\.com$/.test(PH.host ?? "") ? PH.host : "https://eu.i.posthog.com";
 const OPT_OUT_KEY = "pws.analytics.off";
+const SID_KEY = "pws.ph.sid";
+
 /** La persona apagó las métricas en Ajustes. */
 export function analyticsOff() { try { return localStorage.getItem(OPT_OUT_KEY) === "1"; } catch { return false; } }
-/** Prende o apaga las métricas (al apagar, se borran las cookies _ga y no se vuelve a cargar). */
+/** Prende o apaga las métricas (al apagar, se olvida el número de la visita). */
 export function setAnalyticsOff(off) {
   try { off ? localStorage.setItem(OPT_OUT_KEY, "1") : localStorage.removeItem(OPT_OUT_KEY); } catch {}
-  if (off) {
-    if (ID) window[`ga-disable-${ID}`] = true;
-    for (const c of document.cookie.split(";")) {
-      const name = c.split("=")[0].trim();
-      if (/^_ga/.test(name)) for (const d of ["", `; domain=${location.hostname}`, `; domain=.${location.hostname.replace(/^www\./, "")}`]) document.cookie = `${name}=; Max-Age=0; path=/${d}`;
-    }
-  }
+  if (off) try { sessionStorage.removeItem(SID_KEY); } catch {}
 }
 
+const local = () => { const h = location.hostname; return h === "localhost" || h === "127.0.0.1" || h === "[::1]" || /^(10|192\.168|172\.(1[6-9]|2\d|3[01]))\./.test(h) || !/(^|\.)lumiparty\.com$/.test(h); };
 function allowed() {
-  if (!ID || typeof navigator === "undefined" || typeof location === "undefined" || typeof document === "undefined") return false;
+  if (!KEY || typeof navigator === "undefined" || typeof location === "undefined") return false;
   if (navigator.doNotTrack === "1" || window.doNotTrack === "1" || navigator.globalPrivacyControl === true) return false;
-  if (analyticsOff()) return false;
-  const h = location.hostname;
-  if (h === "localhost" || h === "127.0.0.1" || h === "[::1]" || /^(10|192\.168|172\.(1[6-9]|2\d|3[01]))\./.test(h)) return false;
-  return true;
+  return !analyticsOff();
+}
+/** Número al azar de esta visita (se borra al cerrar la pestaña). */
+function visitId() {
+  try { let id = sessionStorage.getItem(SID_KEY); if (!id) { id = crypto.randomUUID(); sessionStorage.setItem(SID_KEY, id); } return id; } catch { return (visitId.mem ??= crypto.randomUUID()); }
 }
 
-function gtag() { window.dataLayer.push(arguments); }
+const browser = (ua) => (/Edg\//.test(ua) ? "Microsoft Edge" : /OPR\//.test(ua) ? "Opera" : /SamsungBrowser/.test(ua) ? "Samsung Internet" : /Firefox\//.test(ua) ? "Firefox" : /CriOS|Chrome\//.test(ua) ? (navigator.brave ? "Brave" : "Chrome") : /Safari\//.test(ua) ? "Safari" : "Otro");
+const os = (ua) => (/Android/.test(ua) ? "Android" : /iPhone|iPad|iPod/.test(ua) ? "iOS" : /Windows/.test(ua) ? "Windows" : /Mac OS/.test(ua) ? "Mac OS X" : /CrOS/.test(ua) ? "Chrome OS" : /Linux/.test(ua) ? "Linux" : "Otro");
+const device = () => (matchMedia("(pointer: coarse)").matches ? (Math.min(screen.width, screen.height) >= 600 ? "Tablet" : "Mobile") : "Desktop");
+/** Origen del que vino (solo el sitio, nunca la dirección completa). */
+function referrer() {
+  try { const r = new URL(document.referrer); return r.origin === location.origin ? { $referrer: location.origin + r.pathname, $referring_domain: r.hostname } : { $referrer: r.origin, $referring_domain: r.hostname }; } catch { return { $referrer: "$direct", $referring_domain: "$direct" }; }
+}
 
-function init() {
-  if (ready || !allowed()) return ready;
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = gtag;
-  // Métricas reales: GA4 con su cookie propia (_ga, solo de lumiparty.com) para contar visitantes y sesiones.
-  // Sin cookies Google recibe las visitas pero no las muestra en los informes (se comprobó: todo en cero).
-  // - Europa (UE/EEE, Reino Unido, Suiza): sin cookies salvo permiso, como pide su ley (consentimiento denegado).
-  // - Nunca publicidad: ad_storage, ad_user_data y ad_personalization siempre denegados; sin señales de Google.
-  // - La persona puede apagarlo en Ajustes («Métricas de uso»); con «No rastrear» o GPC ni se carga.
-  const denied = { ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" };
-  gtag("consent", "default", { ...denied, analytics_storage: "granted", functionality_storage: "denied", personalization_storage: "denied" });
-  gtag("consent", "default", { ...denied, analytics_storage: "denied", region: EU_REGIONS });
-  gtag("js", new Date());
-  gtag("config", ID, {
-    allow_google_signals: false, allow_ad_personalization_signals: false,
-    // lumiparty.com/#ga-debug: las visitas aparecen en Analytics › Administrar › DebugView (para comprobar que llegan).
-    ...(/ga-debug/.test(location.hash) ? { debug_mode: true } : {}),
-    send_page_view: false,
-  });
-  // gtag.js (~150 KB) se pide cuando la página ya cargó y el hilo está libre: no compite con la primera pintura ni
-  // con la escena 3D. Lo que se registre antes queda en dataLayer y se envía al llegar el script.
-  const load = () => {
-    const s = document.createElement("script");
-    s.async = true;
-    s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ID)}`;
-    document.head.append(s);
+/** Arma el evento de PostHog (sin datos personales). Exportado para las pruebas. */
+export function buildCapture(name, params = {}, path = location.pathname) {
+  const ua = navigator.userAgent, sid = visitId();
+  return {
+    api_key: KEY,
+    event: name,
+    distinct_id: sid,
+    timestamp: new Date().toISOString(),
+    properties: {
+      $current_url: location.origin + path, $host: location.host, $pathname: path, ...referrer(),
+      $browser: browser(ua), $os: os(ua), $device_type: device(), $screen_width: screen.width, $viewport_width: innerWidth,
+      $session_id: sid, $process_person_profile: false, $lib: "lumiparty", idioma: document.documentElement.lang || "es",
+      ...params,
+    },
   };
-  const idle = () => (window.requestIdleCallback ? requestIdleCallback(load, { timeout: 4000 }) : setTimeout(load, 1500));
-  if (document.readyState === "complete") idle(); else addEventListener("load", idle, { once: true });
-  ready = true;
-  return ready;
+}
+
+function send(payload) {
+  if (local()) { console.info("[LumiParty] (prueba local) se enviaría a PostHog:", payload); return; }
+  fetch(`${HOST}/i/v0/e/`, { method: "POST", body: JSON.stringify(payload), keepalive: true, headers: { "content-type": "application/json" } }).catch(() => {});
 }
 
 /** Visita a una página (solo la ruta, sin parámetros que identifiquen nada). */
 export function pageview(path = location.pathname) {
-  if (!init()) return;
-  gtag("event", "page_view", { page_location: location.origin + path, page_path: path, page_title: document.title.slice(0, 80) });
+  if (!allowed()) return;
+  send(buildCapture("$pageview", { $title: document.title.slice(0, 80) }, path));
 }
 
-/** Evento anónimo: "play", "conectar", "idioma"… (nombres fijos del código, nunca datos de la persona). */
+/** Evento anónimo: "reproducir", "conectar_army_bomb", "idioma"… (nombres fijos del código, nunca datos de la persona). */
 export function event(name, params = {}) {
-  if (!/^[a-z0-9_]{1,40}$/.test(name) || !init()) return;
+  if (!/^[a-z0-9_]{1,40}$/.test(name) || !allowed()) return;
   const clean = Object.fromEntries(Object.entries(params).filter(([k, v]) => /^[a-z_]{1,24}$/.test(k) && /^[\w.-]{0,40}$/.test(String(v))));
-  gtag("event", name, clean);
+  send(buildCapture(name, clean));
 }
