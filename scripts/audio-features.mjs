@@ -21,8 +21,10 @@ export function audioFeatures(raw, { FS = 50, bpmHint = 0 } = {}) {
   // Con el BPM aproximado del catálogo: si cerca de él (±8 %, o su doble/mitad) hay un pulso casi tan claro, se usa ese
   // (la autocorrelación a veces engancha un múltiplo raro del tempo real).
   if (bpmHint > 0) {
-    let near = { bpm: 0, s: -1 };
-    for (const h of [bpmHint, bpmHint * 2, bpmHint / 2].filter((x) => x >= 60 && x <= 200)) for (let bpm = h * 0.92; bpm <= h * 1.08; bpm += 0.25) { const s = score(bpm); if (s > near.s) near = { bpm: +bpm.toFixed(2), s }; }
+    // Se prefiere el tempo cercano al del catálogo; su doble o su mitad solo si su pulso es claramente más fuerte.
+    const around = (h) => { let n = { bpm: 0, s: -1 }; if (h < 50 || h > 210) return n; for (let bpm = h * 0.92; bpm <= h * 1.08; bpm += 0.25) { const s = score(bpm); if (s > n.s) n = { bpm: +bpm.toFixed(2), s }; } return n; };
+    const same = around(bpmHint), alt = [around(bpmHint * 2), around(bpmHint / 2)].sort((x, y) => y.s - x.s)[0];
+    const near = same.s >= alt.s * 0.7 ? same : alt;
     if (near.s >= best.s * 0.6) best = near;
   }
   const beat = 60 / best.bpm;

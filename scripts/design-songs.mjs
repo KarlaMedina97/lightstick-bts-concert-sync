@@ -39,7 +39,7 @@ const server = spawn(process.execPath, [join(root, "scripts", "serve.mjs")], { e
 const profile = mkdtempSync(join(tmpdir(), "pws-listen-"));
 const dport = 9600 + Math.floor(Math.random() * 300);
 spawn("C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", [
-  "--headless=new", "--host-resolver-rules=MAP lumiparty.com 127.0.0.1", // algunos videos solo se dejan insertar en lumiparty.com: el laboratorio se sirve con ese nombre desde esta PC
+  "--headless=new", "--host-resolver-rules=MAP lumiparty.com 127.0.0.1", `--unsafely-treat-insecure-origin-as-secure=http://lumiparty.com:${port}`, // la captura de audio necesita contexto seguro // algunos videos solo se dejan insertar en lumiparty.com: el laboratorio se sirve con ese nombre desde esta PC
    "--autoplay-policy=no-user-gesture-required", "--auto-accept-this-tab-capture",
   "--auto-select-desktop-capture-source=Laboratorio de video", "--auto-select-tab-capture-source-by-title=Laboratorio de video",
   "--enable-features=AutoAcceptThisTabCapture", "--window-size=640,360", `--remote-debugging-port=${dport}`, `--user-data-dir=${profile}`, "about:blank",
