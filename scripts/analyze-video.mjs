@@ -47,7 +47,8 @@ const server = spawn(process.execPath, [join(root, "scripts", "serve.mjs")], { e
 const profile = mkdtempSync(join(tmpdir(), "pws-video-"));
 const dport = 9300 + Math.floor(Math.random() * 300);
 const browser = spawn("C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", [
-  "--headless=new", "--autoplay-policy=no-user-gesture-required", "--mute-audio", "--window-size=640,360",
+  "--headless=new", "--host-resolver-rules=MAP lumiparty.com 127.0.0.1", // algunos videos solo se dejan insertar en lumiparty.com: el laboratorio se sirve con ese nombre desde esta PC
+   "--autoplay-policy=no-user-gesture-required", "--mute-audio", "--window-size=640,360",
   `--remote-debugging-port=${dport}`, `--user-data-dir=${profile}`, "about:blank",
 ], { stdio: "ignore" });
 function cleanup() {
@@ -74,7 +75,7 @@ await send("Emulation.setDeviceMetricsOverride", { width: 640, height: 360, devi
 
 // --- análisis de un video ------------------------------------------------------------------------------------------
 async function analyze(song) {
-  await send("Page.navigate", { url: `http://127.0.0.1:${port}/scripts/video-lab.html?v=${song.yt}` });
+  await send("Page.navigate", { url: `http://lumiparty.com:${port}/scripts/video-lab.html?v=${song.yt}` });
   let st = null;
   for (let i = 0; i < 80; i++) { // hasta 20 s para que empiece
     await sleep(250);

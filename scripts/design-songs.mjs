@@ -39,7 +39,8 @@ const server = spawn(process.execPath, [join(root, "scripts", "serve.mjs")], { e
 const profile = mkdtempSync(join(tmpdir(), "pws-listen-"));
 const dport = 9600 + Math.floor(Math.random() * 300);
 spawn("C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", [
-  "--headless=new", "--autoplay-policy=no-user-gesture-required", "--auto-accept-this-tab-capture",
+  "--headless=new", "--host-resolver-rules=MAP lumiparty.com 127.0.0.1", // algunos videos solo se dejan insertar en lumiparty.com: el laboratorio se sirve con ese nombre desde esta PC
+   "--autoplay-policy=no-user-gesture-required", "--auto-accept-this-tab-capture",
   "--auto-select-desktop-capture-source=Laboratorio de video", "--auto-select-tab-capture-source-by-title=Laboratorio de video",
   "--enable-features=AutoAcceptThisTabCapture", "--window-size=640,360", `--remote-debugging-port=${dport}`, `--user-data-dir=${profile}`, "about:blank",
 ], { stdio: "ignore" });
@@ -63,7 +64,7 @@ await send("Page.enable");
 await send("Emulation.setFocusEmulationEnabled", { enabled: true });
 
 async function listen(song) {
-  await send("Page.navigate", { url: `http://127.0.0.1:${port}/scripts/video-lab.html?v=${song.yt}&sonido` });
+  await send("Page.navigate", { url: `http://lumiparty.com:${port}/scripts/video-lab.html?v=${song.yt}&sonido` });
   let st;
   for (let i = 0; i < 80; i++) { await sleep(250); const err = await ev("window.lab?.error"); if (err) throw new Error(`YouTube no deja reproducirlo aquí (error ${err})`); st = await ev("window.lab?.state?.()"); if (st?.s === 1 && st.t > 0) break; }
   if (st?.s !== 1) throw new Error("el video no empezó a reproducirse");
