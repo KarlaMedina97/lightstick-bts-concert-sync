@@ -1,0 +1,164 @@
+{
+  "song": "war-of-hormone-dance-practice",
+  "yt": "JumcC5jFcQc",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-07",
+  "duracion": 269,
+  "aura": "energía juvenil desbordante, hip-hop rebelde y coreografía lúdica al aire libre",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 20.2,
+      "escena": "Plaza exterior sobre césped frente a edificio clásico, V corre al frente y los miembros van apareciendo uno a uno con ropa casual y urbana.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#687a48",
+        "#c8bca2",
+        "#1e1e1e"
+      ]
+    },
+    {
+      "inicio": 20.2,
+      "fin": 40,
+      "escena": "RM toma el centro rapeando con estilo desenfadado mientras el grupo baila sincronizado en el césped.",
+      "ambiente": "fiesta",
+      "colores": [
+        "#5f7243",
+        "#d0c3ab",
+        "#c92a2a"
+      ]
+    },
+    {
+      "inicio": 40,
+      "fin": 60.8,
+      "escena": "Suga pasa al frente con pasos rítmicos y gesticulación alegre, rodeado por la formación del grupo.",
+      "ambiente": "alegria",
+      "colores": [
+        "#687a48",
+        "#1c1c1c",
+        "#eaeaea"
+      ]
+    },
+    {
+      "inicio": 60.8,
+      "fin": 80.5,
+      "escena": "Pre-coro melódico con reverencias y saludos en la coreografía, avanzando hacia el centro.",
+      "ambiente": "emocion",
+      "colores": [
+        "#647746",
+        "#c3b79d",
+        "#d9383a"
+      ]
+    },
+    {
+      "inicio": 80.5,
+      "fin": 99.8,
+      "escena": "Estribillo explosivo con patadas al aire y pasos dinámicos en formación completa sobre la hierba.",
+      "ambiente": "climax",
+      "colores": [
+        "#5d7040",
+        "#222222",
+        "#c83535"
+      ]
+    },
+    {
+      "inicio": 99.8,
+      "fin": 119.5,
+      "escena": "Post-coro contagioso con movimiento de caderas y balanceo alegre alineados frente a las escaleras.",
+      "ambiente": "fiesta",
+      "colores": [
+        "#687a48",
+        "#cbc0a7",
+        "#1f1f1f"
+      ]
+    },
+    {
+      "inicio": 119.5,
+      "fin": 144,
+      "escena": "Verso de J-Hope con acrobacia humana y formación escalonada con gran potencia física.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#5f7142",
+        "#1a1a1a",
+        "#d44040"
+      ]
+    },
+    {
+      "inicio": 144,
+      "fin": 157,
+      "escena": "Transición rápida con interacción de juego entre los miembros antes del siguiente verso.",
+      "ambiente": "tension",
+      "colores": [
+        "#687948",
+        "#c5b99e",
+        "#252525"
+      ]
+    },
+    {
+      "inicio": 157,
+      "fin": 177,
+      "escena": "Segundo pre-coro cantado mientras marchan rítmicamente al unísono hacia la cámara.",
+      "ambiente": "emocion",
+      "colores": [
+        "#627544",
+        "#1c1c1c",
+        "#d12b2b"
+      ]
+    },
+    {
+      "inicio": 177,
+      "fin": 196.5,
+      "escena": "Segundo estribillo con sincronización perfecta, saltos y movimientos enérgicos de piernas.",
+      "ambiente": "climax",
+      "colores": [
+        "#5d6f3f",
+        "#c9be9f",
+        "#202020"
+      ]
+    },
+    {
+      "inicio": 196.5,
+      "fin": 216.5,
+      "escena": "Sección repetitiva y pegadiza de baile de cadera y hombros con expresiones juguetonas.",
+      "ambiente": "alegria",
+      "colores": [
+        "#697b49",
+        "#242424",
+        "#d43d3d"
+      ]
+    },
+    {
+      "inicio": 216.5,
+      "fin": 236,
+      "escena": "Puente musical con paso firme, avance frontal en bloque y tensión rítmica ascendente.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#5b6d3e",
+        "#c5b9a0",
+        "#181818"
+      ]
+    },
+    {
+      "inicio": 236,
+      "fin": 262.5,
+      "escena": "Explosión final del coro con máxima intensidad coreográfica hasta la pose final estática.",
+      "ambiente": "climax",
+      "colores": [
+        "#657846",
+        "#1c1c1c",
+        "#d93333"
+      ]
+    },
+    {
+      "inicio": 262.5,
+      "fin": 269,
+      "escena": "El grupo rompe la formación exhausto, ríe, aplaude y camina fuera de cuadro.",
+      "ambiente": "calma",
+      "colores": [
+        "#6a7c49",
+        "#c8bca2",
+        "#2e2e2e"
+      ]
+    }
+  ]
+}

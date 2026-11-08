@@ -1,0 +1,175 @@
+{
+  "song": "wab2-nmd-practice-record",
+  "yt": "_vJIzDBvPKU",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-07",
+  "duracion": 314,
+  "aura": "Puro hip-hop de la era debut con coreografías acrobáticas, potencia rítmica y actitud callejera imparable",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 30,
+      "escena": "Sala de prácticas con parqué de madera; BTS con atuendos urbanos oscuros y estampados ejecutando la intro y versos de rap",
+      "ambiente": "fuerza",
+      "colores": [
+        "#8B4513",
+        "#1A1A1A",
+        "#D4AF37"
+      ]
+    },
+    {
+      "inicio": 30,
+      "fin": 50,
+      "escena": "Transición melódica y preparación hacia el estribillo con pasos rápidos y coordinados",
+      "ambiente": "tension",
+      "colores": [
+        "#B8860B",
+        "#262626",
+        "#8B0000"
+      ]
+    },
+    {
+      "inicio": 50,
+      "fin": 63,
+      "escena": "Estribillo de We Are Bulletproof Pt.2 con movimientos cortantes y marcados en formación",
+      "ambiente": "fuerza",
+      "colores": [
+        "#D2691E",
+        "#0D0D0D",
+        "#CD853F"
+      ]
+    },
+    {
+      "inicio": 63,
+      "fin": 97,
+      "escena": "Dance break acrobático, truco con la gorra y salto mortal con deslizamiento por el suelo",
+      "ambiente": "climax",
+      "colores": [
+        "#C0392B",
+        "#1C1C1C",
+        "#E67E22"
+      ]
+    },
+    {
+      "inicio": 97,
+      "fin": 112,
+      "escena": "Cambio a No More Dream; alineación con camisetas y dorsales deportivos en blanco y negro",
+      "ambiente": "tension",
+      "colores": [
+        "#111111",
+        "#FFFFFF",
+        "#8D5B4C"
+      ]
+    },
+    {
+      "inicio": 112,
+      "fin": 135,
+      "escena": "Versos de rap con pasos pesados de hip-hop y gestos retadores frente al espejo",
+      "ambiente": "fuerza",
+      "colores": [
+        "#1C1C1C",
+        "#ECECEC",
+        "#966F33"
+      ]
+    },
+    {
+      "inicio": 135,
+      "fin": 157,
+      "escena": "Sección pre-estribillo con dinámicas grupales fluidas y juego de brazos coordinado",
+      "ambiente": "tension",
+      "colores": [
+        "#222222",
+        "#F5F5F5",
+        "#A0522D"
+      ]
+    },
+    {
+      "inicio": 157,
+      "fin": 180,
+      "escena": "Primer estribillo de No More Dream con saltos y energía desbordante",
+      "ambiente": "fiesta",
+      "colores": [
+        "#1F1F1F",
+        "#FFFFFF",
+        "#D4A373"
+      ]
+    },
+    {
+      "inicio": 180,
+      "fin": 204,
+      "escena": "Segundo verso con rimas veloces y coreografía de aislamiento corporal",
+      "ambiente": "fuerza",
+      "colores": [
+        "#141414",
+        "#E0E0E0",
+        "#8B5A2B"
+      ]
+    },
+    {
+      "inicio": 204,
+      "fin": 226,
+      "escena": "Nueva preparación al estribillo incrementando la velocidad de los pasos en bloque",
+      "ambiente": "tension",
+      "colores": [
+        "#1B1B1B",
+        "#FAFAFA",
+        "#CD853F"
+      ]
+    },
+    {
+      "inicio": 226,
+      "fin": 249,
+      "escena": "Segundo estribillo con el emblemático movimiento visual de abdomen y marcha sincronizada",
+      "ambiente": "fuerza",
+      "colores": [
+        "#111111",
+        "#FFFFFF",
+        "#B87333"
+      ]
+    },
+    {
+      "inicio": 249,
+      "fin": 274,
+      "escena": "Puente rítmico con posturas agachadas y tensión vocal previa al clímax",
+      "ambiente": "tension",
+      "colores": [
+        "#181818",
+        "#EAEAEA",
+        "#7F5539"
+      ]
+    },
+    {
+      "inicio": 274,
+      "fin": 289,
+      "escena": "Paso acrobático icónico caminando sobre las espaldas inclinadas del grupo",
+      "ambiente": "climax",
+      "colores": [
+        "#B22222",
+        "#0F0F0F",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 289,
+      "fin": 303,
+      "escena": "Estribillo final a máxima potencia y celebración en grupo con gran precisión",
+      "ambiente": "fiesta",
+      "colores": [
+        "#1A1A1A",
+        "#F0F0F0",
+        "#A0522D"
+      ]
+    },
+    {
+      "inicio": 303,
+      "fin": 314,
+      "escena": "Pose final compacta, discurso final en sala y transición a pantalla negra con logotipo",
+      "ambiente": "calma",
+      "colores": [
+        "#000000",
+        "#FFFFFF",
+        "#333333"
+      ]
+    }
+  ]
+}

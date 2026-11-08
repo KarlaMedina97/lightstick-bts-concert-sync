@@ -1,0 +1,139 @@
+{
+  "song": "we-are-bulletproof-pt2",
+  "yt": "lE9lkSdtZeQ",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-07",
+  "duracion": 233,
+  "aura": "fuerza y poder, hip hop agresivo y precisión coreográfica con contrastes monocromáticos y dorados",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 8.5,
+      "escena": "Animación de esferas y logotipo sobre fondo blanco puro",
+      "ambiente": "calma",
+      "colores": [
+        "#FFFFFF",
+        "#D3D3D3"
+      ]
+    },
+    {
+      "inicio": 8.5,
+      "fin": 29.5,
+      "escena": "Foco cenital sobre suelo ajedrezado y primeros planos desafiantes de los miembros",
+      "ambiente": "tension",
+      "colores": [
+        "#0B0B0E",
+        "#EAEAEA",
+        "#B8860B"
+      ]
+    },
+    {
+      "inicio": 29.5,
+      "fin": 55.5,
+      "escena": "Versos de rap y coreografía enérgica con atuendos urbanos, cascos y accesorios de hip hop",
+      "ambiente": "fuerza",
+      "colores": [
+        "#1A1A1A",
+        "#F5F5F5",
+        "#C5A059"
+      ]
+    },
+    {
+      "inicio": 55.5,
+      "fin": 69,
+      "escena": "Precoro vocal con chaqueta de cuero tachonada y contraluz intenso",
+      "ambiente": "tension",
+      "colores": [
+        "#111111",
+        "#DAA520",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 69,
+      "fin": 96,
+      "escena": "Estribillo explosivo con camiseta roja de baloncesto, baile grupal sincronizado y gráficos tipográficos",
+      "ambiente": "fuerza",
+      "colores": [
+        "#C41E3A",
+        "#0A0A0A",
+        "#E5E5E5"
+      ]
+    },
+    {
+      "inicio": 96,
+      "fin": 122,
+      "escena": "Rap rápido con pañuelo bandana, visera metálica y bastón con signo de dólar",
+      "ambiente": "fuerza",
+      "colores": [
+        "#121212",
+        "#D4AF37",
+        "#F0F0F0"
+      ]
+    },
+    {
+      "inicio": 122,
+      "fin": 136,
+      "escena": "Sección solista de rap con gafas oscuras frente a proyector en ambiente oscuro",
+      "ambiente": "fuerza",
+      "colores": [
+        "#050505",
+        "#E0E0E0",
+        "#CFB53B"
+      ]
+    },
+    {
+      "inicio": 136,
+      "fin": 149,
+      "escena": "Precoro melódico con chaquetas oscuras y juego de sombras marcadas",
+      "ambiente": "tension",
+      "colores": [
+        "#181818",
+        "#E6E6E6"
+      ]
+    },
+    {
+      "inicio": 149,
+      "fin": 176,
+      "escena": "Segundo estribillo con baile coordinado, balón dorado y ritmo acelerado",
+      "ambiente": "fiesta",
+      "colores": [
+        "#C41E3A",
+        "#0D0D0D",
+        "#E0AC2C"
+      ]
+    },
+    {
+      "inicio": 176,
+      "fin": 189,
+      "escena": "Puente rítmico con gesticulación firme de rap preparando el quiebre de baile",
+      "ambiente": "tension",
+      "colores": [
+        "#0A0A0A",
+        "#FFFFFF",
+        "#B8860B"
+      ]
+    },
+    {
+      "inicio": 189,
+      "fin": 225,
+      "escena": "Dance break acrobático con saltos mortales, giros de suelo y trucos con gorras",
+      "ambiente": "climax",
+      "colores": [
+        "#FFFFFF",
+        "#0A0A0A",
+        "#C41E3A"
+      ]
+    },
+    {
+      "inicio": 225,
+      "fin": 233,
+      "escena": "Pose final sincronizada bajo el reflector y fundido a negro",
+      "ambiente": "fuerza",
+      "colores": [
+        "#000000",
+        "#EAEAEA"
+      ]
+    }
+  ]
+}
