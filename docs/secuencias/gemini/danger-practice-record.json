@@ -1,0 +1,152 @@
+{
+  "song": "danger-practice-record",
+  "yt": "bs8SfZdb4us",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-07",
+  "duracion": 218,
+  "aura": "Intensidad y sincronización explosiva, hip-hop potente con coreografía precisa y actitud desafiante",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 6.5,
+      "escena": "Integrantes acomodándose en sus posiciones iniciales dentro de la sala de ensayo con piso de madera y camisetas de práctica.",
+      "ambiente": "calma",
+      "colores": [
+        "#C5A073",
+        "#FFFFFF",
+        "#1E1E1E"
+      ]
+    },
+    {
+      "inicio": 6.5,
+      "fin": 23.5,
+      "escena": "Arranque del beat y ejecución de la introducción con movimientos cortantes y sincronizados.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#B8860B",
+        "#1C1C1C",
+        "#F4F4F4"
+      ]
+    },
+    {
+      "inicio": 23.5,
+      "fin": 41,
+      "escena": "RM al frente liderando el verso de rap mientras el grupo acompaña con movimientos rítmicos.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#C5A073",
+        "#1A1A1A",
+        "#EAEAEA"
+      ]
+    },
+    {
+      "inicio": 41,
+      "fin": 55.5,
+      "escena": "Transición entre Jungkook y J-Hope con quiebres corporales precisos y saltos coordinados.",
+      "ambiente": "tension",
+      "colores": [
+        "#BA8E57",
+        "#222222",
+        "#F0F0F0"
+      ]
+    },
+    {
+      "inicio": 55.5,
+      "fin": 77,
+      "escena": "Precoro melódico con Jin y Jimin, formaciones lineales y pasos fluidos en crescendo.",
+      "ambiente": "emocion",
+      "colores": [
+        "#C9A679",
+        "#111111",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 77,
+      "fin": 111.5,
+      "escena": "Estribillo principal con coreografía icónica, brazos cruzados y patadas sincronizadas a máxima potencia.",
+      "ambiente": "climax",
+      "colores": [
+        "#A77A44",
+        "#0D0D0D",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 111.5,
+      "fin": 130,
+      "escena": "Transición rítmica intensa con juego de niveles hacia el suelo y formaciones de ataque.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#BE9362",
+        "#181818",
+        "#E6E6E6"
+      ]
+    },
+    {
+      "inicio": 130,
+      "fin": 149,
+      "escena": "Verso rápido de J-Hope desplazándose al centro con saltos ágiles y actitud enérgica.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#C29767",
+        "#141414",
+        "#F5F5F5"
+      ]
+    },
+    {
+      "inicio": 149,
+      "fin": 164,
+      "escena": "Verso rap de Suga en posición central con gestos cortantes y el grupo marcando el pulso.",
+      "ambiente": "tension",
+      "colores": [
+        "#B98B58",
+        "#1E1E1E",
+        "#ECECEC"
+      ]
+    },
+    {
+      "inicio": 164,
+      "fin": 184,
+      "escena": "Segundo precoro con voces emotivas y preparación para el clímax final.",
+      "ambiente": "emocion",
+      "colores": [
+        "#C79E6F",
+        "#1A1A1A",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 184,
+      "fin": 201,
+      "escena": "Coro final de alto impacto con Jimin al centro y todos ejecutando la coreografía completa.",
+      "ambiente": "climax",
+      "colores": [
+        "#AB7E49",
+        "#0F0F0F",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 201,
+      "fin": 211,
+      "escena": "Remate coreográfico final con pose fija y respiración agitada tras la exigencia física.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#B88B59",
+        "#1B1B1B",
+        "#E9E9E9"
+      ]
+    },
+    {
+      "inicio": 211,
+      "fin": 218,
+      "escena": "Pantalla negra con el logo blanco de Festa en perspectiva.",
+      "ambiente": "calma",
+      "colores": [
+        "#000000",
+        "#FFFFFF"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+{
+  "song": "no-more-dream",
+  "yt": "rBG5L7UsUxA",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-07",
+  "duracion": 289,
+  "aura": "Rebeldía juvenil noventera y potencia hip-hop cargada de fuerza callejera",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 8,
+      "escena": "Animación del logotipo minimalista de Big Hit en entorno blanco",
+      "ambiente": "calma",
+      "colores": [
+        "#FFFFFF",
+        "#DCDCDC"
+      ]
+    },
+    {
+      "inicio": 8,
+      "fin": 23.5,
+      "escena": "Autobús escolar amarillo avanza en la noche y choca derribando cajas de cartón",
+      "ambiente": "tension",
+      "colores": [
+        "#F1B816",
+        "#141824",
+        "#D8781B"
+      ]
+    },
+    {
+      "inicio": 23.5,
+      "fin": 49,
+      "escena": "Los integrantes bajan del autobús con patinadores y tarjetas de presentación en blanco y negro",
+      "ambiente": "fiesta",
+      "colores": [
+        "#F1B816",
+        "#1B1D22",
+        "#9C9EA5"
+      ]
+    },
+    {
+      "inicio": 49,
+      "fin": 70,
+      "escena": "Aparición del título 'No More Dream' y primer baile grupal en almacén con grafitis",
+      "ambiente": "fuerza",
+      "colores": [
+        "#25655E",
+        "#F0BA17",
+        "#11141A"
+      ]
+    },
+    {
+      "inicio": 70,
+      "fin": 93.5,
+      "escena": "Versos de rap de Suga y Rap Monster frente al autobús con faros encendidos y en el aula",
+      "ambiente": "fuerza",
+      "colores": [
+        "#F3BA16",
+        "#1F3836",
+        "#C92828"
+      ]
+    },
+    {
+      "inicio": 93.5,
+      "fin": 128,
+      "escena": "Transición melódica con Jungkook, Jin y J-Hope rimando con actitud desafiante",
+      "ambiente": "tension",
+      "colores": [
+        "#2D5E62",
+        "#F2BA18",
+        "#1E1F29"
+      ]
+    },
+    {
+      "inicio": 128,
+      "fin": 151,
+      "escena": "Estribillo principal con coreografía explosiva en la calle nocturna con fuego",
+      "ambiente": "climax",
+      "colores": [
+        "#161922",
+        "#E8541D",
+        "#F4BA16"
+      ]
+    },
+    {
+      "inicio": 151,
+      "fin": 171,
+      "escena": "Coreografía rápida con juego de pies y cánticos al unísono en sala urbana",
+      "ambiente": "fiesta",
+      "colores": [
+        "#25625F",
+        "#B42121",
+        "#0F1116"
+      ]
+    },
+    {
+      "inicio": 171,
+      "fin": 207,
+      "escena": "Segundo verso con trucos de bicicleta BMX, aula con pizarrón y rap incisivo",
+      "ambiente": "fuerza",
+      "colores": [
+        "#2A5950",
+        "#EEB61B",
+        "#1C1C22"
+      ]
+    },
+    {
+      "inicio": 207,
+      "fin": 228,
+      "escena": "Pre-estribillo con Jin y Jimin cantando en primer plano aumentando la intensidad",
+      "ambiente": "tension",
+      "colores": [
+        "#F3BA16",
+        "#2B5E59",
+        "#1D2128"
+      ]
+    },
+    {
+      "inicio": 228,
+      "fin": 253.5,
+      "escena": "Estribillo potente con pasos de baile en formación cerrada frente al autobús",
+      "ambiente": "fuerza",
+      "colores": [
+        "#F4BA16",
+        "#CE2F25",
+        "#161821"
+      ]
+    },
+    {
+      "inicio": 253.5,
+      "fin": 267,
+      "escena": "Puente pausado con atmósfera oscura y rap contundente de Rap Monster",
+      "ambiente": "drama",
+      "colores": [
+        "#172430",
+        "#306161",
+        "#0D0F14"
+      ]
+    },
+    {
+      "inicio": 267,
+      "fin": 279,
+      "escena": "Despliegue final con breakdance, rebeldes destrozando objetos y energía desatada",
+      "ambiente": "climax",
+      "colores": [
+        "#F3BA16",
+        "#DE3C1F",
+        "#191B24"
+      ]
+    },
+    {
+      "inicio": 279,
+      "fin": 289,
+      "escena": "Foco de helicóptero sobre la multitud y explosión del escudo blindado con logo de BTS",
+      "ambiente": "drama",
+      "colores": [
+        "#E8EEF5",
+        "#F6BB26",
+        "#0D0E12"
+      ]
+    }
+  ]
+}

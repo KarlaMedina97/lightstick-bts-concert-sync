@@ -1,0 +1,153 @@
+{
+  "song": "wab2-dance-practice",
+  "yt": "bV9Svms-LYY",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-07",
+  "duracion": 223,
+  "aura": "Poderosa energía hip-hop con coreografía intensa y actitud desafiante",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 7,
+      "escena": "Sala de prácticas con piso de madera y persianas rojas; el grupo en formación inmóvil de espaldas y RM al frente esperando el inicio",
+      "ambiente": "tension",
+      "colores": [
+        "#1A1A1A",
+        "#8F2D24",
+        "#C8A46B"
+      ]
+    },
+    {
+      "inicio": 7,
+      "fin": 20,
+      "escena": "Comienza la música con fuerza, coreografía rítmica introductoria con saltos y movimientos marcados en ropa deportiva negra y blanca",
+      "ambiente": "fuerza",
+      "colores": [
+        "#161616",
+        "#F2F2F2",
+        "#8E2B22"
+      ]
+    },
+    {
+      "inicio": 20,
+      "fin": 46.5,
+      "escena": "Primer verso rapeado liderado por Jungkook y Suga, formación dinámica con pasos ágiles y precisos de hip-hop",
+      "ambiente": "fuerza",
+      "colores": [
+        "#1F1F1F",
+        "#BA8E55",
+        "#9A3026"
+      ]
+    },
+    {
+      "inicio": 46.5,
+      "fin": 59.5,
+      "escena": "Pre-estribillo vocal, transiciones fluidas de los integrantes sincronizando movimientos de brazos y pecho",
+      "ambiente": "emocion",
+      "colores": [
+        "#EEEEEE",
+        "#232323",
+        "#B58954"
+      ]
+    },
+    {
+      "inicio": 59.5,
+      "fin": 86,
+      "escena": "Estribillo explosivo con Jimin al frente, saltos enérgicos y gesto icónico de disparos sincronizados",
+      "ambiente": "fiesta",
+      "colores": [
+        "#0E0E0E",
+        "#EAEAEA",
+        "#A03126"
+      ]
+    },
+    {
+      "inicio": 86,
+      "fin": 100,
+      "escena": "Sección de gancho con RM marcando el paso en el centro, brazos en alto y coordinación grupal estricta",
+      "ambiente": "fuerza",
+      "colores": [
+        "#1A1A1A",
+        "#B88A52",
+        "#932A21"
+      ]
+    },
+    {
+      "inicio": 100,
+      "fin": 127,
+      "escena": "Segundo verso rapeado por J-Hope y RM, movimientos elásticos y despliegue rápido por toda la pista",
+      "ambiente": "fuerza",
+      "colores": [
+        "#252525",
+        "#FFFFFF",
+        "#AF824E"
+      ]
+    },
+    {
+      "inicio": 127,
+      "fin": 140,
+      "escena": "Segundo pre-estribillo, avance coordinado hacia adelante con pasos calculados y creciente intensidad rítmica",
+      "ambiente": "emocion",
+      "colores": [
+        "#1A1A1A",
+        "#D8D8D8",
+        "#A32D25"
+      ]
+    },
+    {
+      "inicio": 140,
+      "fin": 167,
+      "escena": "Segundo estribillo con gran despliegue de energía grupal y movimientos cortantes al ritmo del beat pesado",
+      "ambiente": "fiesta",
+      "colores": [
+        "#121212",
+        "#F0F0F0",
+        "#982F26"
+      ]
+    },
+    {
+      "inicio": 167,
+      "fin": 180,
+      "escena": "Transición de gancho con formaciones en fila y movimientos defensivos característicos",
+      "ambiente": "fuerza",
+      "colores": [
+        "#1E1E1E",
+        "#B88A53",
+        "#8A261D"
+      ]
+    },
+    {
+      "inicio": 180,
+      "fin": 206,
+      "escena": "Dance break acrobático: solo de suelo de J-Hope, voltereta asistida de Jimin y truco de gorra de Jungkook",
+      "ambiente": "climax",
+      "colores": [
+        "#0A0A0A",
+        "#E0E0E0",
+        "#A83025"
+      ]
+    },
+    {
+      "inicio": 206,
+      "fin": 213,
+      "escena": "Embate final en el centro del salón, avance frontal unificado a máxima potencia",
+      "ambiente": "fuerza",
+      "colores": [
+        "#171717",
+        "#B98D59",
+        "#9B2C24"
+      ]
+    },
+    {
+      "inicio": 213,
+      "fin": 223,
+      "escena": "Cierre de la coreografía: el grupo da la espalda a la cámara, gira para la pose final y se desvanece la música",
+      "ambiente": "calma",
+      "colores": [
+        "#1B1B1B",
+        "#992F27",
+        "#AC7D47"
+      ]
+    }
+  ]
+}
