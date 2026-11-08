@@ -6,6 +6,7 @@ import { createHash } from "node:crypto";
 const YT = "https://www.youtube.com https://s.ytimg.com";
 // Google Analytics 4 sin cookies (src/analytics.js): el script de gtag y el envío de métricas.
 const GA_SCRIPT = "https://www.googletagmanager.com";
+const SENTRY_CONNECT = "https://o4512394183573504.ingest.us.sentry.io"; // errores (src/errors.js)
 const GA_CONNECT = "https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com";
 const base = {
   "default-src": "'self'",
@@ -47,9 +48,9 @@ function apply(file, extra) {
   console.log(`${file}: ${csp}`);
 }
 
-apply("index.html", { "connect-src": `'self' ${GA_CONNECT}`, "form-action": "'none'" });
+apply("index.html", { "connect-src": `'self' ${GA_CONNECT} ${SENTRY_CONNECT}`, "form-action": "'none'" });
 apply("player/index.html", {
   // oEmbed para títulos de videos y, si se configura, el ranking global de Supabase.
-  "connect-src": `'self' https://www.youtube.com https://*.supabase.co https://docs.google.com https://api.github.com ${GA_CONNECT}`, // docs.google.com: opiniones (FEEDBACK_FORM); api.github.com: aviso de actualización (src/update-watch.js)
+  "connect-src": `'self' https://www.youtube.com https://*.supabase.co https://docs.google.com https://api.github.com ${GA_CONNECT} ${SENTRY_CONNECT}`, // docs.google.com: opiniones (FEEDBACK_FORM); api.github.com: aviso de actualización (src/update-watch.js)
   "form-action": "'self'",
 });

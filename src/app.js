@@ -29,6 +29,8 @@ import { videoPalette } from "./videopalette.js";
 import { VIDEO_LOOKS } from "./video-looks.js";
 import { SEQUENCES } from "./sequences.js";
 import { watchUpdates } from "./update-watch.js";
+import { watchErrors } from "./errors.js";
+watchErrors(); // errores no atrapados → Sentry (sin datos personales; ver src/errors.js)
 import { inAppBrowser, showInAppNotice, redirectConnectButtons, chromeIntent } from "./inapp.js";
 
 const $ = (id) => document.getElementById(id);

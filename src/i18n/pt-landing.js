@@ -1,5 +1,7 @@
 // Portugués (Brasil): mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Reporte de errores:": "Relatório de erros:",
+  "si la página falla en tu navegador, se envía a Sentry (sentry.io) el tipo de error, el mensaje, en qué parte de nuestro código ocurrió, el nombre del navegador y del sistema, y la página (sin parámetros). Nada que hayas escrito, ni tu nombre, correo o cuenta. Se apaga con «No rastrear», con la opción de métricas en Ajustes y en las copias locales.": "se a página falhar no seu navegador, o tipo de erro, a mensagem, em que parte do nosso código aconteceu, o nome do navegador e do sistema e a página (sem parâmetros) são enviados ao Sentry (sentry.io). Nada do que você digitou, nem seu nome, e-mail ou conta. Fica desligado com «Não rastrear», com a opção de métricas em Ajustes e nas cópias locais.",
   "Avisos de actualización:": "Avisos de atualização:",
   "mientras usas el reproductor, la página consulta cada pocos minutos a la API pública de GitHub si se está publicando una versión nueva de LumiParty, para avisarte que recargues. No se envía ningún dato tuyo; GitHub solo ve la consulta, como cualquier visita.": "enquanto você usa o player, a página consulta a API pública do GitHub a cada poucos minutos para saber se uma nova versão do LumiParty está sendo publicada e avisar você para recarregar. Nenhum dado seu é enviado; o GitHub só vê a consulta, como qualquer visita.",
   "Opiniones:": "Opiniões:",

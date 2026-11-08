@@ -1,5 +1,7 @@
 // Indonesio: mismas claves que en-*.js (texto fuente en español).
 export default {
+  "Reporte de errores:": "Laporan error:",
+  "si la página falla en tu navegador, se envía a Sentry (sentry.io) el tipo de error, el mensaje, en qué parte de nuestro código ocurrió, el nombre del navegador y del sistema, y la página (sin parámetros). Nada que hayas escrito, ni tu nombre, correo o cuenta. Se apaga con «No rastrear», con la opción de métricas en Ajustes y en las copias locales.": "jika halaman gagal di browsermu, jenis error, pesannya, di bagian mana kode kami terjadi, nama browser dan sistem, serta halamannya (tanpa parameter) dikirim ke Sentry (sentry.io). Tidak ada yang kamu ketik, juga nama, email, atau akunmu. Nonaktif dengan «Jangan lacak», opsi metrik di Pengaturan, dan pada salinan lokal.",
   "Avisos de actualización:": "Pemberitahuan pembaruan:",
   "mientras usas el reproductor, la página consulta cada pocos minutos a la API pública de GitHub si se está publicando una versión nueva de LumiParty, para avisarte que recargues. No se envía ningún dato tuyo; GitHub solo ve la consulta, como cualquier visita.": "saat kamu memakai pemutar, halaman memeriksa API publik GitHub setiap beberapa menit untuk tahu apakah versi baru LumiParty sedang diterbitkan, agar bisa memintamu memuat ulang. Tidak ada datamu yang dikirim; GitHub hanya melihat permintaannya, seperti kunjungan biasa.",
   "Opiniones:": "Masukan:",

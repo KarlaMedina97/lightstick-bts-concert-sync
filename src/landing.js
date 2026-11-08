@@ -3,6 +3,8 @@
 // otras versiones y termina en el océano de lightsticks. Ilustraciones inspiradas, no los diseños oficiales:
 // los emblemas son originales (una ola), nunca el logo de BTS.
 import { FEATURED } from "./config.js";
+import { watchErrors } from "./errors.js";
+watchErrors(); // errores no atrapados → Sentry (sin datos personales; ver src/errors.js)
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
 import { spanishClone, localize } from "./i18n.js";
 import { showInAppNotice, redirectConnectButtons } from "./inapp.js";
