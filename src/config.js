@@ -4,9 +4,9 @@ export const PROJECT = {
   repo: "https://github.com/KarlaMedina97/lightstick-bts-concert-sync",
 };
 
-// Métricas de uso con PostHog (src/analytics.js), servidor en la UE. La clave de proyecto es pública por diseño (solo
+// Métricas de uso con PostHog (src/analytics.js), proyecto en la región de EE. UU. (us.i.posthog.com). La clave de proyecto es pública por diseño (solo
 // sirve para ENVIAR eventos). Vacía = sin métricas.
-export const ANALYTICS = { posthog: { key: "phc_BnzssvsNqGp8teidinuKgg8A9YvEgtfAf43gGg3hDdh6", host: "https://eu.i.posthog.com" } };
+export const ANALYTICS = { posthog: { key: "phc_BnzssvsNqGp8teidinuKgg8A9YvEgtfAf43gGg3hDdh6", host: "https://us.i.posthog.com" } };
 
 // Enlaces de donación. Deja vacío "url" para ocultar una opción.
 export const DONATIONS = [

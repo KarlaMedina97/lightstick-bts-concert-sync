@@ -1,4 +1,4 @@
-// Métricas de uso con PostHog (posthog.com, servidor en la UE; ver /privacy/): para entender por dónde llegan las
+// Métricas de uso con PostHog (posthog.com, región EE. UU.; ver /privacy/): para entender por dónde llegan las
 // personas, qué usan y dónde abandonan (embudos), no para identificarlas.
 // - Código propio y liviano (sin la librería de PostHog ni CDN): se envían eventos a su API pública de captura.
 // - Sin cookies ni identidad: un número al azar que vive solo mientras la pestaña está abierta (sessionStorage), sin
@@ -11,7 +11,7 @@ import { ANALYTICS } from "./config.js";
 
 const PH = ANALYTICS?.posthog ?? {};
 const KEY = /^phc_[A-Za-z0-9]{20,}$/.test(PH.key ?? "") ? PH.key : "";
-const HOST = /^https:\/\/[a-z.]+\.posthog\.com$/.test(PH.host ?? "") ? PH.host : "https://eu.i.posthog.com";
+const HOST = /^https:\/\/[a-z.]+\.posthog\.com$/.test(PH.host ?? "") ? PH.host : "https://us.i.posthog.com";
 const OPT_OUT_KEY = "pws.analytics.off";
 const SID_KEY = "pws.ph.sid";
 
