@@ -5,7 +5,7 @@ import { createHash } from "node:crypto";
 
 const YT = "https://www.youtube.com https://s.ytimg.com";
 // Google Analytics 4 sin cookies (src/analytics.js): el script de gtag y el envío de métricas.
-const GA_CONNECT = "https://eu.i.posthog.com"; // métricas de uso (src/analytics.js, PostHog UE)
+const GA_CONNECT = "https://us.i.posthog.com"; // métricas de uso (src/analytics.js, PostHog EE. UU.)
 const base = {
   "default-src": "'self'",
   "style-src": "'self' 'unsafe-inline'", // atributos style generados por la app; sin scripts en línea

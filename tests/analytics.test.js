@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 
-test("analítica: PostHog (UE) con código propio, sin cookies, con opción de apagarlo y sin Google", () => {
+test("analítica: PostHog con código propio, sin cookies, con opción de apagarlo y sin Google", () => {
   const src = read("src/analytics.js");
   assert.match(src, /analyticsOff\(\)/); // se puede apagar en Ajustes
   assert.match(src, /doNotTrack|globalPrivacyControl/); // respeta "no rastrear"
@@ -15,9 +15,9 @@ test("analítica: PostHog (UE) con código propio, sin cookies, con opción de a
   assert.doesNotMatch(src, /location\.search|location\.href|location\.hash/); // nunca la URL completa (?song=…)
   assert.doesNotMatch(src, /googletagmanager|gtag\(/); // GA4 retirado
   const cfg = read("src/config.js");
-  assert.match(cfg, /posthog: \{ key: "(phc_[A-Za-z0-9]+)?", host: "https:\/\/eu\.i\.posthog\.com" \}/);
+  assert.match(cfg, /posthog: \{ key: "(phc_[A-Za-z0-9]+)?", host: "https:\/\/us\.i\.posthog\.com" \}/);
   for (const page of ["index.html", "player/index.html"]) {
-    assert.match(read(page), /connect-src[^"]*https:\/\/eu\.i\.posthog\.com/);
+    assert.match(read(page), /connect-src[^"]*https:\/\/us\.i\.posthog\.com/);
     assert.doesNotMatch(read(page), /googletagmanager|google-analytics/);
   }
   assert.match(read("privacy/index.html"), /PostHog/);

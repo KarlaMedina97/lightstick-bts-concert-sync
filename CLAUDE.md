@@ -87,7 +87,7 @@ Las páginas dentro de carpetas usan rutas relativas con `../`. No uses `<base>`
   permitidos son el importmap y los datos estructurados JSON-LD de `index.html` (no se ejecutan); si los cambias,
   ejecuta `npm run csp`.
 - Si añades un origen externo (fetch, iframe, imagen), actualízalo en `scripts/csp.mjs` y regenera.
-- **Métricas de uso: PostHog (UE)** (decisión del proyecto, 2026-11-07; reemplazó a Google Analytics 4) con código
+- **Métricas de uso: PostHog (región EE. UU., us.i.posthog.com)** (decisión del proyecto, 2026-11-07; reemplazó a Google Analytics 4) con código
   propio en `src/analytics.js` (sin su librería ni CDN): eventos a la API de captura, **sin cookies** ni perfiles de
   persona (un número al azar en `sessionStorage`), solo si `ANALYTICS.posthog.key` tiene clave, y nunca con Do Not
   Track / Global Privacy Control, con las métricas apagadas en Ajustes, en localhost ni en la red local (ahí se

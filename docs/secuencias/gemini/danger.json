@@ -1,0 +1,152 @@
+{
+  "song": "danger",
+  "yt": "bagj78IQ3l0",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-08",
+  "duracion": 292,
+  "aura": "Hip hop oscuro y agresivo con potente descarga coreográfica y frustración emocional",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 13,
+      "escena": "Logotipo de Big Hit Entertainment animado en entorno blanco minimalista",
+      "ambiente": "calma",
+      "colores": [
+        "#ffffff",
+        "#dcdcdc"
+      ]
+    },
+    {
+      "inicio": 13,
+      "fin": 47,
+      "escena": "Introducción de piano melancólico; miembros solitarios en un almacén abandonado con espejos y saco de boxeo",
+      "ambiente": "melancolia",
+      "colores": [
+        "#1c222b",
+        "#4a5568",
+        "#8a9ba8"
+      ]
+    },
+    {
+      "inicio": 47,
+      "fin": 71,
+      "escena": "Entrada del beat en el túnel de metro subterráneo con coreografía inicial sincronizada",
+      "ambiente": "fuerza",
+      "colores": [
+        "#171a21",
+        "#4e5d6c",
+        "#94a3b8"
+      ]
+    },
+    {
+      "inicio": 71,
+      "fin": 88,
+      "escena": "Verso de rap de RM entre la mesa de tatuajes y el pasillo subterráneo",
+      "ambiente": "fuerza",
+      "colores": [
+        "#1f242d",
+        "#5a6577",
+        "#cbd5e1"
+      ]
+    },
+    {
+      "inicio": 88,
+      "fin": 105,
+      "escena": "Sección vocal de Jungkook en el túnel y almacén oscuro expresando angustia",
+      "ambiente": "tension",
+      "colores": [
+        "#222b38",
+        "#596b82",
+        "#a0aec0"
+      ]
+    },
+    {
+      "inicio": 105,
+      "fin": 124,
+      "escena": "Pre-coro melódico con Jin y Jimin en el andén subterráneo",
+      "ambiente": "drama",
+      "colores": [
+        "#2a3441",
+        "#7b8794",
+        "#e2e8f0"
+      ]
+    },
+    {
+      "inicio": 124,
+      "fin": 158,
+      "escena": "Estribillo explosivo con coreografía enérgica en el túnel y carros de compra en llamas",
+      "ambiente": "fuerza",
+      "colores": [
+        "#181c24",
+        "#f97316",
+        "#e5e7eb"
+      ]
+    },
+    {
+      "inicio": 158,
+      "fin": 177,
+      "escena": "Rap rítmico de J-Hope alternando entre la sala de espejos y el fuego",
+      "ambiente": "fuerza",
+      "colores": [
+        "#1a1e24",
+        "#ea580c",
+        "#475569"
+      ]
+    },
+    {
+      "inicio": 177,
+      "fin": 194,
+      "escena": "Verso de rap de Suga sentado contra el muro y frente a fogatas industriales",
+      "ambiente": "drama",
+      "colores": [
+        "#161922",
+        "#f59e0b",
+        "#64748b"
+      ]
+    },
+    {
+      "inicio": 194,
+      "fin": 212,
+      "escena": "Segundo pre-coro; agujas de tatuar, piano humeante y aumento progresivo de tensión",
+      "ambiente": "tension",
+      "colores": [
+        "#1f2937",
+        "#dc2626",
+        "#9ca3af"
+      ]
+    },
+    {
+      "inicio": 212,
+      "fin": 246,
+      "escena": "Segundo estribillo con baile dinámico en el túnel y siluetas danzando entre llamas",
+      "ambiente": "climax",
+      "colores": [
+        "#0f172a",
+        "#ff6b00",
+        "#cbd5e1"
+      ]
+    },
+    {
+      "inicio": 246,
+      "fin": 285,
+      "escena": "Puente y desenlace dramático; V cortándose el cabello con tijeras frente al espejo y golpes finales al piano",
+      "ambiente": "climax",
+      "colores": [
+        "#111827",
+        "#f97316",
+        "#94a3b8"
+      ]
+    },
+    {
+      "inicio": 285,
+      "fin": 292,
+      "escena": "Pose final del grupo en el túnel subterráneo y transición a pantalla negra",
+      "ambiente": "calma",
+      "colores": [
+        "#0b0f19",
+        "#334155",
+        "#000000"
+      ]
+    }
+  ]
+}
