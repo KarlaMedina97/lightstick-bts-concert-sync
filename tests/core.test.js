@@ -91,19 +91,3 @@ test("secuencias: una plantilla repetida en muchas canciones o con otra duració
   assert.ok(checkSequence(s).errors.some((e) => /el video dura 224 s/.test(e)));
   setDurations({});
 });
-
-import { endpointOf, parseStack, buildEvent } from "../src/errors.js";
-import { SENTRY } from "../src/config.js";
-test("errores a Sentry: dirección de envío, pila, sin datos personales y versión al día", () => {
-  assert.equal(endpointOf("https://abc123@o1.ingest.us.sentry.io/42"), "https://o1.ingest.us.sentry.io/api/42/envelope/?sentry_key=abc123&sentry_version=7");
-  assert.equal(endpointOf("no-es-dsn"), null);
-  const f = parseStack("Error: x\n    at play (https://lumiparty.com/src/app.js?v=1:10:5)\n    at https://lumiparty.com/src/ble.js:3:2");
-  assert.equal(f.length, 2);
-  assert.equal(f[1].function, "play");
-  assert.equal(f[1].filename, "https://lumiparty.com/src/app.js"); // sin parámetros
-  const ev = buildEvent(new TypeError("falló"));
-  assert.equal(ev.exception.values[0].type, "TypeError");
-  assert.ok(!("user" in ev) && !JSON.stringify(ev).includes("?"), "sin usuario ni parámetros de la dirección");
-  const cache = readFileSync("sw.js", "utf8").match(/const CACHE = "([^"]+)"/)[1];
-  assert.equal(SENTRY.release, cache, "SENTRY.release en src/config.js debe ser igual a CACHE en sw.js");
-});

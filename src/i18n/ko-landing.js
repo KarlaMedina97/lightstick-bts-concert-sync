@@ -1,7 +1,5 @@
 // Coreano: mismas claves que en-*.js (texto fuente en español).
 export default {
-  "Reporte de errores:": "오류 보고:",
-  "si la página falla en tu navegador, se envía a Sentry (sentry.io) el tipo de error, el mensaje, en qué parte de nuestro código ocurrió, el nombre del navegador y del sistema, y la página (sin parámetros). Nada que hayas escrito, ni tu nombre, correo o cuenta. Se apaga con «No rastrear», con la opción de métricas en Ajustes y en las copias locales.": "페이지가 브라우저에서 오류가 나면 오류 종류, 메시지, 우리 코드의 어느 부분에서 났는지, 브라우저와 운영체제 이름, 페이지 주소(매개변수 제외)를 Sentry(sentry.io)로 보내요. 입력한 내용이나 이름, 이메일, 계정은 보내지 않아요. ‘추적 안 함’, 설정의 측정 옵션, 로컬 사본에서는 꺼져 있어요.",
   "Avisos de actualización:": "업데이트 알림:",
   "mientras usas el reproductor, la página consulta cada pocos minutos a la API pública de GitHub si se está publicando una versión nueva de LumiParty, para avisarte que recargues. No se envía ningún dato tuyo; GitHub solo ve la consulta, como cualquier visita.": "플레이어를 쓰는 동안 페이지가 몇 분마다 GitHub 공개 API에 LumiParty 새 버전이 배포 중인지 확인해 새로고침을 안내해요. 내 정보는 보내지 않아요. GitHub는 일반 방문처럼 요청만 볼 수 있어요.",
   "Opiniones:": "의견:",

@@ -23,7 +23,6 @@ const SHELL = [
   "src/video-looks.js",
   "src/sequences.js",
   "src/update-watch.js",
-  "src/errors.js",
   "src/inapp.js",
   "src/carousel.js",
   "src/fireworks.js",

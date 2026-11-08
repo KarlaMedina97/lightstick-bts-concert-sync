@@ -7,9 +7,6 @@ export const PROJECT = {
 // Métricas de uso (Google Analytics 4 sin cookies, src/analytics.js). Vacío = apagado: no se carga nada.
 // Formato: "G-XXXXXXXXXX" (ID de medición de la propiedad de GA4).
 export const ANALYTICS = { ga4: "G-6GWV99P7XV" };
-// Errores de la página a Sentry (src/errors.js). El DSN es público por diseño (solo sirve para ENVIAR errores).
-// release: la misma versión que CACHE en sw.js (lo comprueba tests/core.test.js).
-export const SENTRY = { dsn: "https://be56af7d97a29567d07c8a2e169b4f7b@o4512394183573504.ingest.us.sentry.io/4512394226696192", release: "pws-v81" };
 
 // Enlaces de donación. Deja vacío "url" para ocultar una opción.
 export const DONATIONS = [

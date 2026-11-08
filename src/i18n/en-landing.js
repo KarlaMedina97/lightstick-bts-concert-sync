@@ -1,7 +1,5 @@
 // Inglés de la landing (index.html, src/landing.js) y de la página de privacidad.
 export default {
-  "Reporte de errores:": "Error reports:",
-  "si la página falla en tu navegador, se envía a Sentry (sentry.io) el tipo de error, el mensaje, en qué parte de nuestro código ocurrió, el nombre del navegador y del sistema, y la página (sin parámetros). Nada que hayas escrito, ni tu nombre, correo o cuenta. Se apaga con «No rastrear», con la opción de métricas en Ajustes y en las copias locales.": "if the page fails in your browser, the error type, message, where in our code it happened, your browser and system name, and the page (without parameters) are sent to Sentry (sentry.io). Nothing you typed, nor your name, email or account. It’s turned off by Do Not Track, by the metrics option in Settings, and on local copies.",
   "Avisos de actualización:": "Update notices:",
   "mientras usas el reproductor, la página consulta cada pocos minutos a la API pública de GitHub si se está publicando una versión nueva de LumiParty, para avisarte que recargues. No se envía ningún dato tuyo; GitHub solo ve la consulta, como cualquier visita.": "while you use the player, the page checks GitHub’s public API every few minutes to see whether a new version of LumiParty is being published, so it can tell you to reload. None of your data is sent; GitHub only sees the request, like any visit.",
   "Opiniones:": "Feedback:",
