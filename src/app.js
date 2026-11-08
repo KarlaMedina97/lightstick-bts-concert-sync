@@ -29,6 +29,7 @@ import { videoPalette } from "./videopalette.js";
 import { VIDEO_LOOKS } from "./video-looks.js";
 import { SEQUENCES } from "./sequences.js";
 import { watchUpdates } from "./update-watch.js";
+import { showConsent } from "./consent.js";
 import { inAppBrowser, showInAppNotice, redirectConnectButtons, chromeIntent } from "./inapp.js";
 
 const $ = (id) => document.getElementById(id);
@@ -3648,6 +3649,7 @@ async function init() {
   if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("../sw.js", { scope: "../" }).catch(() => {});
   // Mientras publicamos una versión nueva (y cuando ya está), aviso con «Recargar»: en ese rato pueden mezclarse
   // archivos viejos y nuevos, y si algo falla o se desincroniza lo que sirve es recargar y volver a conectar.
+  showConsent(); // aviso de privacidad la primera vez (sin cookies; métricas anónimas que se pueden rechazar)
   watchUpdates({
     swUrl: new URL("../sw.js", location.href).href,
     onUpdating: () => toastAction(t("Estamos actualizando LumiParty. Si algo deja de responder o las luces se desincronizan, recarga la página y vuelve a conectar tu ARMY Bomb."), t("Recargar"), () => location.reload(), 20000),

@@ -2659,3 +2659,14 @@ html {
 /* Guía: detalle técnico del error de Bluetooth (copiable) */
 .g-connected .g-detail { display: block; margin-top: 4px; font-size: 0.6875rem; line-height: 1.35; color: var(--text-2); opacity: 0.85; word-break: break-word; user-select: all; }
 .g-connected .g-detail[hidden] { display: none; }
+
+/* Aviso de privacidad / consentimiento (src/consent.js): abajo, sin tapar el video, hasta que la persona elige */
+.consent { position: fixed; z-index: 60; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); margin: 0 auto; max-width: 560px; display: grid; gap: 10px; padding: 14px 16px; border-radius: 16px; background: rgba(22, 12, 38, 0.94); color: #f3ecff; border: 1px solid rgba(179, 136, 255, 0.35); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45); font-size: 0.9rem; line-height: 1.45; backdrop-filter: blur(10px); }
+.consent p { margin: 0; }
+.consent a { color: #d4bbff; text-decoration: underline; }
+.consent-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.consent button { min-height: 44px; padding: 0 18px; border-radius: 999px; font: inherit; font-weight: 600; cursor: pointer; }
+.consent-yes { background: #8a2be2; color: #fff; border: 0; }
+.consent-no { background: transparent; color: #f3ecff; border: 1px solid rgba(243, 236, 255, 0.45); }
+.consent button:focus-visible, .consent a:focus-visible { outline: 3px solid #d4bbff; outline-offset: 2px; }
+@media (min-width: 720px) { .consent { right: auto; left: max(24px, env(safe-area-inset-left, 0px)); margin: 0; } }
