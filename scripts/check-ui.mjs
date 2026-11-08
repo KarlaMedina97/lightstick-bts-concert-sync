@@ -139,6 +139,7 @@ const YT_POLICY = `(async () => {
   const $ = (s) => document.querySelector(s);
   const shown = (el) => el && !el.hidden && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== "hidden" && getComputedStyle(el).display !== "none";
   const hit = (a, b) => Math.min(a.right, b.right) > Math.max(a.left, b.left) + 1 && Math.min(a.bottom, b.bottom) > Math.max(a.top, b.top) + 1;
+  for (let i = 0; i < 40 && !window.__yt; i++) await wait(200); // con la PC cargada el reproductor simulado tarda más
   if (!window.__yt) return "la canción no empezó (YouTube simulado)";
   document.querySelectorAll(".tour .tour-skip").forEach((b) => b.click());
   const errs = [];
