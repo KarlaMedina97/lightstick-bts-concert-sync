@@ -1,0 +1,153 @@
+{
+  "song": "danger-jp",
+  "yt": "rdLkxbjK9aM",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-08",
+  "duracion": 252,
+  "aura": "energía oscura y agresiva con hip-hop contundente y coreografía sincronizada",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 10.5,
+      "escena": "Habitación oscura con sofá desgastado, miembros descansando y V mirando el móvil",
+      "ambiente": "tension",
+      "colores": [
+        "#2a2c30",
+        "#696b6d",
+        "#d4a373"
+      ]
+    },
+    {
+      "inicio": 10.5,
+      "fin": 35.5,
+      "escena": "Nave industrial oscura con columnas, BTS de negro inicia la coreografía potente",
+      "ambiente": "fuerza",
+      "colores": [
+        "#14171a",
+        "#c8d6e5",
+        "#833434"
+      ]
+    },
+    {
+      "inicio": 35.5,
+      "fin": 52,
+      "escena": "Rap de RM al frente con chaqueta de cuero negra y fuerte contraluz blanco",
+      "ambiente": "fuerza",
+      "colores": [
+        "#0f1416",
+        "#e2e8f0",
+        "#2c3e50"
+      ]
+    },
+    {
+      "inicio": 52,
+      "fin": 69,
+      "escena": "Jungkook lidera el baile dinámico con el grupo en el almacén subterráneo",
+      "ambiente": "fuerza",
+      "colores": [
+        "#161b22",
+        "#cfd8dc",
+        "#a93226"
+      ]
+    },
+    {
+      "inicio": 69,
+      "fin": 87,
+      "escena": "Pre-coro melódico con Jin y Jimin en escaleras luminosas alternado con V pensativo",
+      "ambiente": "emocion",
+      "colores": [
+        "#f1f2f6",
+        "#2f3542",
+        "#747d8c"
+      ]
+    },
+    {
+      "inicio": 87,
+      "fin": 123,
+      "escena": "Estribillo explosivo con chaquetas blancas y negras bajo lámpara hexagonal y fiesta roja",
+      "ambiente": "climax",
+      "colores": [
+        "#ffffff",
+        "#111111",
+        "#b71c1c"
+      ]
+    },
+    {
+      "inicio": 123,
+      "fin": 142,
+      "escena": "Corte tenso a pasillo oscuro iluminado de rojo con V aislado mientras sigue el baile",
+      "ambiente": "tension",
+      "colores": [
+        "#c0392b",
+        "#1e272e",
+        "#2c3e50"
+      ]
+    },
+    {
+      "inicio": 142,
+      "fin": 160,
+      "escena": "Verso rap enérgico de J-Hope alternando entre almacén industrial y fiesta subterránea roja",
+      "ambiente": "fuerza",
+      "colores": [
+        "#922b21",
+        "#17202a",
+        "#d5dbdb"
+      ]
+    },
+    {
+      "inicio": 160,
+      "fin": 176.5,
+      "escena": "Rap afilado de Suga con gorra negra y ropa blanca, cortes a la multitud en el club",
+      "ambiente": "fuerza",
+      "colores": [
+        "#ffffff",
+        "#1b2631",
+        "#b03a2e"
+      ]
+    },
+    {
+      "inicio": 176.5,
+      "fin": 194.5,
+      "escena": "Pre-coro vocal en la escalera iluminada y angustia solitaria de V en el callejón",
+      "ambiente": "emocion",
+      "colores": [
+        "#dfe6e9",
+        "#b71540",
+        "#2d3436"
+      ]
+    },
+    {
+      "inicio": 194.5,
+      "fin": 230.5,
+      "escena": "Estribillo final culminante con baile sincronizado bajo luz hexagonal y fiesta eufórica roja",
+      "ambiente": "climax",
+      "colores": [
+        "#c0392b",
+        "#ffffff",
+        "#1e272e"
+      ]
+    },
+    {
+      "inicio": 230.5,
+      "fin": 248,
+      "escena": "Remate con rap grupal rodeados de público en el club rojo y pose final en la nave",
+      "ambiente": "fuerza",
+      "colores": [
+        "#b71540",
+        "#1b1e23",
+        "#dfe6e9"
+      ]
+    },
+    {
+      "inicio": 248,
+      "fin": 252,
+      "escena": "Pose final congelada en penumbra y corte al logotipo de chaleco antibalas de BTS",
+      "ambiente": "calma",
+      "colores": [
+        "#000000",
+        "#34495e",
+        "#ecf0f1"
+      ]
+    }
+  ]
+}
