@@ -1,0 +1,172 @@
+{
+  "song": "no-more-dream-jp",
+  "yt": "Q3n6wMdqnhk",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-08",
+  "duracion": 230,
+  "aura": "Rebeldía juvenil, hip-hop contundente y energía explosiva sin concesiones",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 7.5,
+      "escena": "Pasillo oscuro de escuela abandonada con luces parpadeantes y silueta caminando",
+      "ambiente": "tension",
+      "colores": [
+        "#0b0e14",
+        "#1f2a38"
+      ]
+    },
+    {
+      "inicio": 7.5,
+      "fin": 19.5,
+      "escena": "Aparición del grupo en set grunge oscuro con ropa urbana negra y accesorios plateados",
+      "ambiente": "fuerza",
+      "colores": [
+        "#111111",
+        "#e0e0e0"
+      ]
+    },
+    {
+      "inicio": 19.5,
+      "fin": 42,
+      "escena": "Coreografía grupal en salón escolar iluminado y versos de rap de Suga y RM",
+      "ambiente": "fuerza",
+      "colores": [
+        "#2d3238",
+        "#ffffff",
+        "#1a1a1a"
+      ]
+    },
+    {
+      "inicio": 42,
+      "fin": 54,
+      "escena": "V y J-Hope rapeando mientras pintan casilleros con spray en actitud desafiante",
+      "ambiente": "fiesta",
+      "colores": [
+        "#e67e22",
+        "#2c3e50",
+        "#dcdcdc"
+      ]
+    },
+    {
+      "inicio": 54,
+      "fin": 65.5,
+      "escena": "Jungkook y Jin en la sala de audio y aula con pupitres desordenados",
+      "ambiente": "drama",
+      "colores": [
+        "#222629",
+        "#86c232",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 65.5,
+      "fin": 76.5,
+      "escena": "Pre-estribillo en ambiente lúgubre con close-ups intensos y acumulación rítmica",
+      "ambiente": "tension",
+      "colores": [
+        "#121212",
+        "#4a4a4a",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 76.5,
+      "fin": 99,
+      "escena": "Estribillo potente con coreografía sincronizada en aula y set de fondo caótico",
+      "ambiente": "fuerza",
+      "colores": [
+        "#000000",
+        "#ffffff",
+        "#4b6584"
+      ]
+    },
+    {
+      "inicio": 99,
+      "fin": 122.5,
+      "escena": "Suga y J-Hope rapeando en pasillos escolares con skateboards y chispas",
+      "ambiente": "fiesta",
+      "colores": [
+        "#1c1c1c",
+        "#ff9f43",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 122.5,
+      "fin": 134,
+      "escena": "Vocales melódicas de Jin y Jimin con movimientos fluidos al centro",
+      "ambiente": "drama",
+      "colores": [
+        "#2f3542",
+        "#ced6e0",
+        "#1e272e"
+      ]
+    },
+    {
+      "inicio": 134,
+      "fin": 144,
+      "escena": "Crecendo y cuenta regresiva de RM mirando fijamente a cámara",
+      "ambiente": "tension",
+      "colores": [
+        "#0a0a0a",
+        "#747d8c",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 144,
+      "fin": 168,
+      "escena": "Segundo estribillo con pasos de baile enérgicos y planos rápidos",
+      "ambiente": "fuerza",
+      "colores": [
+        "#1e272e",
+        "#f1f2f6",
+        "#2f3542"
+      ]
+    },
+    {
+      "inicio": 168,
+      "fin": 191.5,
+      "escena": "Puente pausado con versos reflexivos de rap y tensión contenida",
+      "ambiente": "tension",
+      "colores": [
+        "#182c3f",
+        "#ffffff",
+        "#2c3e50"
+      ]
+    },
+    {
+      "inicio": 191.5,
+      "fin": 196.5,
+      "escena": "Acrobacia icónica de Jimin corriendo sobre las espaldas de los miembros",
+      "ambiente": "climax",
+      "colores": [
+        "#ffffff",
+        "#1e272e"
+      ]
+    },
+    {
+      "inicio": 196.5,
+      "fin": 219.5,
+      "escena": "Gran estribillo final bajo una lluvia torrencial de aspersores de emergencia",
+      "ambiente": "climax",
+      "colores": [
+        "#2c3a47",
+        "#54a0ff",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 219.5,
+      "fin": 230,
+      "escena": "Los miembros salen por la puerta de emergencia al exterior bajo la luz del día",
+      "ambiente": "alegria",
+      "colores": [
+        "#2e86de",
+        "#8395a7",
+        "#ffffff"
+      ]
+    }
+  ]
+}

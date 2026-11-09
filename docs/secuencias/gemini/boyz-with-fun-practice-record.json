@@ -1,0 +1,174 @@
+{
+  "song": "boyz-with-fun-practice-record",
+  "yt": "8I9d5ZFKMCM",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-08",
+  "duracion": 251,
+  "aura": "funk festivo y energía desbordante, hip hop cómico y coreografía contagiosa",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 15.2,
+      "escena": "Sala de prácticas con piso de madera, miembros agachados en formación marcando el compás inicial",
+      "ambiente": "alegria",
+      "colores": [
+        "#d8be96",
+        "#1a1a1a",
+        "#f3f3f3"
+      ]
+    },
+    {
+      "inicio": 15.2,
+      "fin": 31,
+      "escena": "Entra la base funky, los miembros forman un círculo animado y bailan con rebote dinámico",
+      "ambiente": "fiesta",
+      "colores": [
+        "#cca36e",
+        "#232323",
+        "#ba2828"
+      ]
+    },
+    {
+      "inicio": 31,
+      "fin": 50,
+      "escena": "Suga pasa al centro para su verso de rap, mientras el grupo ejecuta pasos sincronizados y sueltos",
+      "ambiente": "fuerza",
+      "colores": [
+        "#d6bb8c",
+        "#2a2a2a",
+        "#d83434"
+      ]
+    },
+    {
+      "inicio": 50,
+      "fin": 67.5,
+      "escena": "RM lidera el centro con sudadera gris y capucha rapeando con ademanes amplios y poses del grupo",
+      "ambiente": "fuerza",
+      "colores": [
+        "#b2b2b2",
+        "#cfa976",
+        "#1e1e1e"
+      ]
+    },
+    {
+      "inicio": 67.5,
+      "fin": 81,
+      "escena": "Pre-coro melódico con Jimin y Jungkook al frente con pasos fluidos y giros de torso",
+      "ambiente": "emocion",
+      "colores": [
+        "#2d2d2d",
+        "#dfc599",
+        "#ebebeb"
+      ]
+    },
+    {
+      "inicio": 81,
+      "fin": 99.5,
+      "escena": "Estribillo principal con baile coordinado y gestos cómicos cantando al unísono",
+      "ambiente": "fiesta",
+      "colores": [
+        "#cca774",
+        "#1b1b1b",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 99.5,
+      "fin": 114,
+      "escena": "Gancho rítmico festivo, el grupo realiza saltos sincronizados en el centro del salón",
+      "ambiente": "alegria",
+      "colores": [
+        "#d5b789",
+        "#212121",
+        "#bd2f2f"
+      ]
+    },
+    {
+      "inicio": 114,
+      "fin": 139,
+      "escena": "Sección cómica y teatral donde V hace poses exageradas y los demás miembros bromean y reaccionan",
+      "ambiente": "alegria",
+      "colores": [
+        "#252525",
+        "#d6b583",
+        "#f0f0f0"
+      ]
+    },
+    {
+      "inicio": 139,
+      "fin": 157.8,
+      "escena": "Verso ágil de rap con J-Hope al frente mostrando footwork rápido, secundado por RM",
+      "ambiente": "fuerza",
+      "colores": [
+        "#c42e2e",
+        "#cfae7c",
+        "#1d1d1d"
+      ]
+    },
+    {
+      "inicio": 157.8,
+      "fin": 171.5,
+      "escena": "Segundo pre-coro con juego de brazos sincronizado y avance escalonado hacia la cámara",
+      "ambiente": "emocion",
+      "colores": [
+        "#dfc294",
+        "#2c2c2c",
+        "#a8a8a8"
+      ]
+    },
+    {
+      "inicio": 171.5,
+      "fin": 190.5,
+      "escena": "Segundo estribillo cargado de energía con expresiones festivas y pasos enérgicos de cadera y brazos",
+      "ambiente": "fiesta",
+      "colores": [
+        "#d1b080",
+        "#181818",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 190.5,
+      "fin": 206.5,
+      "escena": "Puente rítmico con formación en tren y llamadas corales grupales hacia ambos lados del salón",
+      "ambiente": "fuerza",
+      "colores": [
+        "#262626",
+        "#cca46f",
+        "#eeeeee"
+      ]
+    },
+    {
+      "inicio": 206.5,
+      "fin": 224,
+      "escena": "Clímax de la canción con estallido del coro, saltos colectivos y máxima intensidad coreográfica",
+      "ambiente": "climax",
+      "colores": [
+        "#cca26c",
+        "#1f1f1f",
+        "#b52828"
+      ]
+    },
+    {
+      "inicio": 224,
+      "fin": 242,
+      "escena": "Cierre rítmico con el gancho vocal final, saltos desordenados de júbilo y pose agachada final",
+      "ambiente": "fiesta",
+      "colores": [
+        "#d8bb8c",
+        "#232323",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 242,
+      "fin": 251,
+      "escena": "Corte a negro con el logotipo blanco de BTS Festa en el centro",
+      "ambiente": "calma",
+      "colores": [
+        "#000000",
+        "#ffffff"
+      ]
+    }
+  ]
+}

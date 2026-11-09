@@ -7,7 +7,7 @@
   "primerTiempo": 0.08,
   "verificacion": {
     "audio": "Escuchado completo desde el reproductor oficial (graves, agudos y golpes medidos cada ~23 ms, sin grabar audio); tempo por autocorrelación; fronteras por cambios de energía; acentos en golpes de bajo reales.",
-    "imagen": "Colores del análisis cuadro a cuadro del MV en cada momento, con preferencia por blanco, amarillo, naranja, rojo y morado.",
+    "imagen": "Colores por momento según Gemini (gemini-3.8-flash); aura: funk festivo y energía desbordante, hip hop cómico y coreografía contagiosa",
     "confianza": "media",
     "dudas": [
       "Los nombres de sección se deducen del sonido (no de la letra)."
@@ -15,39 +15,109 @@
   },
   "paleta": [
     {
-      "nombre": "#ffd000",
-      "hex": "#ffd000",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
       "nombre": "#ffffff",
       "hex": "#ffffff",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#d8be96",
+      "hex": "#d8be96",
+      "de": "colores del MV según Gemini, por momento"
     },
     {
       "nombre": "#ff7a00",
       "hex": "#ff7a00",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "de": "colores del MV según Gemini, por momento"
     },
     {
-      "nombre": "#ff1f51",
-      "hex": "#ff1f51",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "nombre": "#ffd000",
+      "hex": "#ffd000",
+      "de": "colores del MV según Gemini, por momento"
     },
     {
-      "nombre": "#c8102e",
-      "hex": "#c8102e",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "nombre": "#ba2828",
+      "hex": "#ba2828",
+      "de": "colores del MV según Gemini, por momento"
     },
     {
-      "nombre": "#ffc840",
-      "hex": "#ffc840",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "nombre": "#cca36e",
+      "hex": "#cca36e",
+      "de": "colores del MV según Gemini, por momento"
     },
     {
-      "nombre": "#8a2be2",
-      "hex": "#8a2be2",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "nombre": "#d6bb8c",
+      "hex": "#d6bb8c",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#d83434",
+      "hex": "#d83434",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#cfa976",
+      "hex": "#cfa976",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#dfc599",
+      "hex": "#dfc599",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#cca774",
+      "hex": "#cca774",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#bd2f2f",
+      "hex": "#bd2f2f",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#d5b789",
+      "hex": "#d5b789",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#d6b583",
+      "hex": "#d6b583",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#c42e2e",
+      "hex": "#c42e2e",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#cfae7c",
+      "hex": "#cfae7c",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#dfc294",
+      "hex": "#dfc294",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#d1b080",
+      "hex": "#d1b080",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#b52828",
+      "hex": "#b52828",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#cca26c",
+      "hex": "#cca26c",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#d8bb8c",
+      "hex": "#d8bb8c",
+      "de": "colores del MV según Gemini, por momento"
     }
   ],
   "tramos": [
@@ -55,10 +125,10 @@
       "inicio": 0,
       "fin": 4.3,
       "seccion": "coro",
-      "evidencia": "graves ×0.4, agudos ×2.7, energía ×1.9 y 0.5 golpes por segundo (brillo)",
+      "evidencia": "graves ×0.4, agudos ×2.7, energía ×1.9 y 0.5 golpes por segundo (brillo) · escena: Sala de prácticas con piso de madera, miembros agachados en formación marcando el compás inicial",
       "sigue": "el pulso del compás",
-      "color": "#ffd000",
-      "color2": "#ffffff",
+      "color": "#ffffff",
+      "color2": "#d8be96",
       "brillo": 1,
       "brilloFin": 1,
       "transicion": "corte",
@@ -91,10 +161,10 @@
       "inicio": 14.8,
       "fin": 33.7,
       "seccion": "verso",
-      "evidencia": "graves ×3.4, agudos ×1.8, energía ×1.3 y 2 golpes por segundo (pesado)",
+      "evidencia": "graves ×3.4, agudos ×1.8, energía ×1.3 y 2 golpes por segundo (pesado) · escena: Entra la base funky, los miembros forman un círculo animado y bailan con rebote dinámico",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ff1f51",
-      "color2": "#ffffff",
+      "color": "#ba2828",
+      "color2": "#cca36e",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -130,10 +200,10 @@
       "inicio": 33.7,
       "fin": 50.5,
       "seccion": "verso",
-      "evidencia": "graves ×2.8, agudos ×1.6, energía ×1.2 y 1.7 golpes por segundo (pesado)",
+      "evidencia": "graves ×2.8, agudos ×1.6, energía ×1.2 y 1.7 golpes por segundo (pesado) · escena: Suga pasa al centro para su verso de rap, mientras el grupo ejecuta pasos sincronizados y sueltos",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#c8102e",
-      "color2": "#ffc840",
+      "color": "#d6bb8c",
+      "color2": "#d83434",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -163,10 +233,10 @@
       "inicio": 50.5,
       "fin": 61,
       "seccion": "verso",
-      "evidencia": "graves ×3.6, agudos ×1.6, energía ×1.2 y 2.2 golpes por segundo (pesado)",
+      "evidencia": "graves ×3.6, agudos ×1.6, energía ×1.2 y 2.2 golpes por segundo (pesado) · escena: RM lidera el centro con sudadera gris y capucha rapeando con ademanes amplios y poses del grupo",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#8a2be2",
-      "color2": "#ffd000",
+      "color": "#ffffff",
+      "color2": "#cfa976",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -192,10 +262,10 @@
       "inicio": 61,
       "fin": 71.5,
       "seccion": "coro 2",
-      "evidencia": "graves ×2.1, agudos ×1.7, energía ×1.3 y 1.5 golpes por segundo (brillo)",
+      "evidencia": "graves ×2.1, agudos ×1.7, energía ×1.3 y 1.5 golpes por segundo (brillo) · escena: RM lidera el centro con sudadera gris y capucha rapeando con ademanes amplios y poses del grupo",
       "sigue": "el pulso del compás",
-      "color": "#ffc840",
-      "color2": "#ff1f51",
+      "color": "#cfa976",
+      "color2": "#ffffff",
       "brillo": 1,
       "brilloFin": 1,
       "transicion": "corte",
@@ -219,10 +289,10 @@
       "inicio": 71.5,
       "fin": 90.4,
       "seccion": "verso",
-      "evidencia": "graves ×1.8, agudos ×1.2, energía ×0.9 y 1.5 golpes por segundo (pesado)",
+      "evidencia": "graves ×1.8, agudos ×1.2, energía ×0.9 y 1.5 golpes por segundo (pesado) · escena: Pre-coro melódico con Jimin y Jungkook al frente con pasos fluidos y giros de torso",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ffc840",
-      "color2": "#ff1f51",
+      "color": "#ffffff",
+      "color2": "#dfc599",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -249,10 +319,10 @@
       "inicio": 90.4,
       "fin": 100.9,
       "seccion": "verso",
-      "evidencia": "graves ×3.1, agudos ×1.1, energía ×0.9 y 1.5 golpes por segundo (pesado)",
+      "evidencia": "graves ×3.1, agudos ×1.1, energía ×0.9 y 1.5 golpes por segundo (pesado) · escena: Estribillo principal con baile coordinado y gestos cómicos cantando al unísono",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#c8102e",
-      "color2": "#ffc840",
+      "color": "#cca774",
+      "color2": "#ffffff",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -279,10 +349,10 @@
       "inicio": 100.9,
       "fin": 109.3,
       "seccion": "verso",
-      "evidencia": "graves ×4.2, agudos ×1.1, energía ×0.9 y 1.9 golpes por segundo (pesado)",
+      "evidencia": "graves ×4.2, agudos ×1.1, energía ×0.9 y 1.9 golpes por segundo (pesado) · escena: Gancho rítmico festivo, el grupo realiza saltos sincronizados en el centro del salón",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#8a2be2",
-      "color2": "#ffd000",
+      "color": "#bd2f2f",
+      "color2": "#d5b789",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -307,9 +377,9 @@
       "inicio": 109.3,
       "fin": 128.2,
       "seccion": "verso",
-      "evidencia": "graves ×3.3, agudos ×1.4, energía ×1.1 y 1.8 golpes por segundo (pesado)",
+      "evidencia": "graves ×3.3, agudos ×1.4, energía ×1.1 y 1.8 golpes por segundo (pesado) · escena: Sección cómica y teatral donde V hace poses exageradas y los demás miembros bromean y reaccionan",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ff1f51",
+      "color": "#d6b583",
       "color2": "#ffffff",
       "brillo": 0.86,
       "brilloFin": 0.95,
@@ -363,10 +433,10 @@
       "inicio": 140.8,
       "fin": 147.1,
       "seccion": "verso",
-      "evidencia": "graves ×4.3, agudos ×2.1, energía ×1.6 y 2.1 golpes por segundo (pesado)",
+      "evidencia": "graves ×4.3, agudos ×2.1, energía ×1.6 y 2.1 golpes por segundo (pesado) · escena: Verso ágil de rap con J-Hope al frente mostrando footwork rápido, secundado por RM",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ffc840",
-      "color2": "#ff1f51",
+      "color": "#c42e2e",
+      "color2": "#cfae7c",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -390,10 +460,10 @@
       "inicio": 147.1,
       "fin": 155.5,
       "seccion": "verso",
-      "evidencia": "graves ×4.2, agudos ×1.5, energía ×1.1 y 1.8 golpes por segundo (pesado)",
+      "evidencia": "graves ×4.2, agudos ×1.5, energía ×1.1 y 1.8 golpes por segundo (pesado) · escena: Verso ágil de rap con J-Hope al frente mostrando footwork rápido, secundado por RM",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#8a2be2",
-      "color2": "#ffd000",
+      "color": "#cfae7c",
+      "color2": "#c42e2e",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -420,10 +490,10 @@
       "inicio": 155.5,
       "fin": 163.9,
       "seccion": "coro",
-      "evidencia": "graves ×3.2, agudos ×1.8, energía ×1.3 y 1.9 golpes por segundo (brillo)",
+      "evidencia": "graves ×3.2, agudos ×1.8, energía ×1.3 y 1.9 golpes por segundo (brillo) · escena: Segundo pre-coro con juego de brazos sincronizado y avance escalonado hacia la cámara",
       "sigue": "el pulso del compás",
       "color": "#ffffff",
-      "color2": "#ff7a00",
+      "color2": "#dfc294",
       "brillo": 1,
       "brilloFin": 1,
       "transicion": "corte",
@@ -445,9 +515,9 @@
       "inicio": 163.9,
       "fin": 180.6,
       "seccion": "verso",
-      "evidencia": "graves ×2.1, agudos ×1.3, energía ×1 y 1.7 golpes por segundo (pesado)",
+      "evidencia": "graves ×2.1, agudos ×1.3, energía ×1 y 1.7 golpes por segundo (pesado) · escena: Segundo estribillo cargado de energía con expresiones festivas y pasos enérgicos de cadera y brazos",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ff1f51",
+      "color": "#d1b080",
       "color2": "#ffffff",
       "brillo": 0.86,
       "brilloFin": 0.95,
@@ -480,10 +550,10 @@
       "inicio": 180.6,
       "fin": 191.1,
       "seccion": "verso",
-      "evidencia": "graves ×3, agudos ×1, energía ×0.8 y 1.6 golpes por segundo (pesado)",
+      "evidencia": "graves ×3, agudos ×1, energía ×0.8 y 1.6 golpes por segundo (pesado) · escena: Segundo estribillo cargado de energía con expresiones festivas y pasos enérgicos de cadera y brazos",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#c8102e",
-      "color2": "#ffc840",
+      "color": "#ffffff",
+      "color2": "#d1b080",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -526,10 +596,10 @@
       "inicio": 207.9,
       "fin": 216.3,
       "seccion": "verso",
-      "evidencia": "graves ×3.6, agudos ×1.4, energía ×1.2 y 2 golpes por segundo (pesado)",
+      "evidencia": "graves ×3.6, agudos ×1.4, energía ×1.2 y 2 golpes por segundo (pesado) · escena: Clímax de la canción con estallido del coro, saltos colectivos y máxima intensidad coreográfica",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ffc840",
-      "color2": "#ff1f51",
+      "color": "#b52828",
+      "color2": "#cca26c",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -571,9 +641,9 @@
       "inicio": 224.7,
       "fin": 241.5,
       "seccion": "verso",
-      "evidencia": "graves ×3.5, agudos ×1.3, energía ×1 y 1.7 golpes por segundo (pesado)",
+      "evidencia": "graves ×3.5, agudos ×1.3, energía ×1 y 1.7 golpes por segundo (pesado) · escena: Cierre rítmico con el gancho vocal final, saltos desordenados de júbilo y pose agachada final",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ff1f51",
+      "color": "#d8bb8c",
       "color2": "#ffffff",
       "brillo": 0.86,
       "brilloFin": 0.95,
@@ -603,9 +673,9 @@
       "inicio": 241.5,
       "fin": 251.1,
       "seccion": "final",
-      "evidencia": "graves ×0, agudos ×0, energía ×0 y 0 golpes por segundo (final)",
+      "evidencia": "graves ×0, agudos ×0, energía ×0 y 0 golpes por segundo (final) · escena: Corte a negro con el logotipo blanco de BTS Festa en el centro",
       "sigue": "el pulso del compás",
-      "color": "#8a2be2",
+      "color": "#ffffff",
       "color2": null,
       "brillo": 0.6,
       "brilloFin": 0,

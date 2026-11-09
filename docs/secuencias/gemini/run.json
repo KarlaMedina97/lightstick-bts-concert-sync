@@ -1,0 +1,184 @@
+{
+  "song": "run",
+  "yt": "wKysONrSmew",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-08",
+  "duracion": 451,
+  "aura": "juventud rebelde y melancólica, euforia rock-pop y camaradería nostálgica",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 20,
+      "escena": "Fondo negro minimalista y caída de espaldas al agua provocando salpicaduras.",
+      "ambiente": "calma",
+      "colores": [
+        "#ffffff",
+        "#050505"
+      ]
+    },
+    {
+      "inicio": 20,
+      "fin": 56,
+      "escena": "Vías de tren solitarias con vagones de carga azul oscuro y cielo nublado.",
+      "ambiente": "melancolia",
+      "colores": [
+        "#25364b",
+        "#64748b",
+        "#1e293b"
+      ]
+    },
+    {
+      "inicio": 56,
+      "fin": 86,
+      "escena": "Reunión caótica en habitación cerrada, humo, risas y grafitis en la pared.",
+      "ambiente": "fiesta",
+      "colores": [
+        "#f59e0b",
+        "#475569",
+        "#78350f"
+      ]
+    },
+    {
+      "inicio": 86,
+      "fin": 100,
+      "escena": "Jin concentrado armando un castillo de cartas sobre un fondo sombrío.",
+      "ambiente": "tension",
+      "colores": [
+        "#0f172a",
+        "#10b981",
+        "#334155"
+      ]
+    },
+    {
+      "inicio": 100,
+      "fin": 129,
+      "escena": "Carreras grupales en campo abierto y túneles, alternadas con patrullas policiales.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#4ade80",
+        "#ef4444",
+        "#1e3a8a"
+      ]
+    },
+    {
+      "inicio": 129,
+      "fin": 144,
+      "escena": "Guerra de almohadas desatada, plumas blancas flotando en cámara lenta.",
+      "ambiente": "alegria",
+      "colores": [
+        "#f8fafc",
+        "#cbd5e1"
+      ]
+    },
+    {
+      "inicio": 144,
+      "fin": 173,
+      "escena": "Discusión intensa y pelea física desgarradora entre dos miembros en la sala.",
+      "ambiente": "drama",
+      "colores": [
+        "#0d9488",
+        "#1c1917",
+        "#b45309"
+      ]
+    },
+    {
+      "inicio": 173,
+      "fin": 193,
+      "escena": "El castillo de naipes colapsa y Jungkook se queda solo sentado en el suelo.",
+      "ambiente": "drama",
+      "colores": [
+        "#059669",
+        "#991b1b",
+        "#18181b"
+      ]
+    },
+    {
+      "inicio": 193,
+      "fin": 208,
+      "escena": "El grupo corriendo libre por la calle nocturna y disfrutando junto al muelle.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#38bdf8",
+        "#1e293b",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 208,
+      "fin": 236,
+      "escena": "Habitación blanca de hospital y el grupo recostado en círculo sobre el césped verde.",
+      "ambiente": "melancolia",
+      "colores": [
+        "#65a30d",
+        "#0284c7",
+        "#f1f5f9"
+      ]
+    },
+    {
+      "inicio": 236,
+      "fin": 270,
+      "escena": "Túnel vial iluminado con tráfico bloqueado, fiesta y rebeldía sobre los autos.",
+      "ambiente": "fiesta",
+      "colores": [
+        "#f59e0b",
+        "#0f172a",
+        "#f8fafc"
+      ]
+    },
+    {
+      "inicio": 270,
+      "fin": 292,
+      "escena": "Cuarto de baño de azulejos blancos donde empujan a Jimin a la tina con agua.",
+      "ambiente": "alegria",
+      "colores": [
+        "#0284c7",
+        "#f8fafc",
+        "#3b82f6"
+      ]
+    },
+    {
+      "inicio": 292,
+      "fin": 303,
+      "escena": "Montaje acelerado de carreras desesperadas y planos de asfixia bajo el agua.",
+      "ambiente": "climax",
+      "colores": [
+        "#0891b2",
+        "#dc2626",
+        "#020617"
+      ]
+    },
+    {
+      "inicio": 303,
+      "fin": 332,
+      "escena": "Caminata solitaria por carretera oscura, mirada hacia atrás y salida a flote en el agua.",
+      "ambiente": "calma",
+      "colores": [
+        "#09090b",
+        "#27272a",
+        "#facc15"
+      ]
+    },
+    {
+      "inicio": 332,
+      "fin": 427,
+      "escena": "Créditos acompañados de videos nostálgicos de viajes y momentos felices en la playa.",
+      "ambiente": "emocion",
+      "colores": [
+        "#38bdf8",
+        "#fbbf24",
+        "#09090b"
+      ]
+    },
+    {
+      "inicio": 427,
+      "fin": 451,
+      "escena": "Jimin empapado en la tina encendiendo y quemando la foto polaroid del grupo.",
+      "ambiente": "melancolia",
+      "colores": [
+        "#f97316",
+        "#e2e8f0",
+        "#18181b"
+      ]
+    }
+  ]
+}

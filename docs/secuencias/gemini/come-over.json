@@ -1,0 +1,149 @@
+{
+  "song": "come-over",
+  "yt": "MEoxtFRfPoc",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-08",
+  "duracion": 179,
+  "aura": "nostalgia y emoción conmovedora, reencuentro íntimo y gratitud en el escenario",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 21.5,
+      "escena": "Tomas de concierto en blanco y negro con filtro de cámara analógica y mar de luces de fans",
+      "ambiente": "melancolia",
+      "colores": [
+        "#111111",
+        "#ffffff",
+        "#666666"
+      ]
+    },
+    {
+      "inicio": 21.5,
+      "fin": 41,
+      "escena": "Práctica de coreografía en la sala de ensayo con ropa cómoda frente al espejo",
+      "ambiente": "calma",
+      "colores": [
+        "#1a1a1a",
+        "#d2d2d2",
+        "#6e6e6e"
+      ]
+    },
+    {
+      "inicio": 41,
+      "fin": 46.5,
+      "escena": "Caminata por pasillos tras bambalinas con chaquetas negras y brillantes rumbo al escenario",
+      "ambiente": "tension",
+      "colores": [
+        "#141414",
+        "#e8e8e8"
+      ]
+    },
+    {
+      "inicio": 46.5,
+      "fin": 60.5,
+      "escena": "Fondo oscuro con texto tipográfico de la letra intercalado con destellos de backstage",
+      "ambiente": "melancolia",
+      "colores": [
+        "#080808",
+        "#f0f0f0"
+      ]
+    },
+    {
+      "inicio": 60.5,
+      "fin": 66.5,
+      "escena": "Momentos de complicidad y ensayo de baile coordinado en el estudio",
+      "ambiente": "alegria",
+      "colores": [
+        "#202020",
+        "#dddddd"
+      ]
+    },
+    {
+      "inicio": 66.5,
+      "fin": 86.5,
+      "escena": "Pantalla negra con animación tipográfica de los versos y textura analógica",
+      "ambiente": "melancolia",
+      "colores": [
+        "#140d10",
+        "#ede0e4",
+        "#4a323a"
+      ]
+    },
+    {
+      "inicio": 86.5,
+      "fin": 106.5,
+      "escena": "Prueba de sonido de día en el estadio abierto con público y gradas visibles",
+      "ambiente": "alegria",
+      "colores": [
+        "#8597a4",
+        "#2c2c2c",
+        "#d0d7dc"
+      ]
+    },
+    {
+      "inicio": 106.5,
+      "fin": 127,
+      "escena": "Concierto nocturno masivo iluminado con luces moradas del lightstick y canto emotivo",
+      "ambiente": "emocion",
+      "colores": [
+        "#140b24",
+        "#7b4cb8",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 127,
+      "fin": 133,
+      "escena": "Primeros planos de pancartas y carteles de apoyo sostenidos por fans en la noche",
+      "ambiente": "emocion",
+      "colores": [
+        "#1b132e",
+        "#5f3f8c",
+        "#47cb78"
+      ]
+    },
+    {
+      "inicio": 133,
+      "fin": 152.5,
+      "escena": "Secuencia lírica sobre fondo oscuro con tenue neblina y textura de cinta VHS",
+      "ambiente": "melancolia",
+      "colores": [
+        "#0d0814",
+        "#f2e8ec",
+        "#52374b"
+      ]
+    },
+    {
+      "inicio": 152.5,
+      "fin": 168,
+      "escena": "Presentación enérgica en el escenario central con columnas de fuego y pirotecnia brillante",
+      "ambiente": "fuerza",
+      "colores": [
+        "#3b1b60",
+        "#e2a443",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 168,
+      "fin": 175,
+      "escena": "Fuegos artificiales masivos sobre el estadio y acercamiento con el público en la valla",
+      "ambiente": "climax",
+      "colores": [
+        "#ffffff",
+        "#271442",
+        "#db852f"
+      ]
+    },
+    {
+      "inicio": 175,
+      "fin": 179,
+      "escena": "Fundido a negro final con logotipo institucional en blanco",
+      "ambiente": "calma",
+      "colores": [
+        "#000000",
+        "#ffffff"
+      ]
+    }
+  ]
+}
