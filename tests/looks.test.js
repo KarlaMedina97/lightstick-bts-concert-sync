@@ -27,9 +27,9 @@ test("las variantes heredan el look de su canción y no se cuelan otras", () => 
 
 // Destello (aprox. WCAG 2.3.1): subida y bajada de luminancia relativa ≥ 0,2 cada una.
 const lum = ([r, g, b]) => (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
-function maxFlashesPerSecond(p, dur, fps = 60) {
+function maxFlashesPerSecond(p, dur, fps = 60, i = 0, n = 1) {
   const L = [];
-  for (let f = 0; f < dur * fps; f++) L.push(lum(p.colorAt(f / fps, 0, 1)));
+  for (let f = 0; f < dur * fps; f++) L.push(lum(p.colorAt(f / fps, i, n)));
   const events = [];
   let dir = 0, ref = L[0], refIdx = 0;
   for (let f = 1; f < L.length; f++) {
@@ -379,4 +379,47 @@ test("secuencia: respeta tiempos, color, brillo que sube y apagón", () => {
   assert.ok(Math.max(...p.colorAt(9)) > Math.max(...p.colorAt(1)), "el brillo debería subir dentro del tramo");
   assert.ok(Math.max(...p.colorAt(10.3)) < 5, "el apagón debería ser negro");
   assert.deepEqual(p.sectionAt(15).accents, [10.5, 20], "acentos demasiado juntos se descartan");
+});
+
+
+test("cadena con n ARMY Bomb: se encienden en orden (1, 2, 3… n) y luego parpadean todas juntas", () => {
+  const s = songs.find((x) => x.id === "mic-drop");
+  for (const n of [2, 3, 5, 12]) {
+    const p = generatePattern(s, s.album, 90, { styleOverride: "chain" });
+    const sec = p.sections[0], fps = 120;
+    const len = sec.end - sec.start, cyc = len / Math.max(1, Math.round(len / (p.beat * 16)));
+    // Primer instante en que cada una se enciende dentro del primer ciclo.
+    const firstOn = Array.from({ length: n }, (_, i) => {
+      for (let f = 0; f < cyc * 0.6 * fps; f++) if (lum(p.colorAt(sec.start + f / fps, i, n)) > 0.12) return f;
+      return Infinity;
+    });
+    for (let i = 1; i < n; i++) assert.ok(firstOn[i] > firstOn[i - 1], `n=${n}: la ${i + 1} se enciende antes que la ${i}`);
+    assert.ok(firstOn.every(Number.isFinite), `n=${n}: alguna no se encendió`);
+    // En el tramo conjunto todas tienen el mismo color.
+    const t = sec.start + cyc * 0.75;
+    const ref = p.colorAt(t, 0, n).map(Math.round).join();
+    for (let i = 1; i < n; i++) assert.equal(p.colorAt(t, i, n).map(Math.round).join(), ref, `n=${n}: la ${i + 1} no va al unísono`);
+  }
+});
+
+test("cadena: modo seguro (≤ 3 destellos/s) en cada ARMY Bomb, de 60 a 240 BPM", () => {
+  for (const bpm of [60, 120, 180, 240]) for (const n of [2, 4, 9]) {
+    const p = generatePattern({ id: "prueba-cadena", title: "x", bpm, energy: "high" }, { palette: ["#ff2e88", "#00c2a8"] }, 40, { styleOverride: "chain", safeMode: true });
+    for (let i = 0; i < n; i++) { const fl = maxFlashesPerSecond(p, 40, 60, i, n); assert.ok(fl <= 3, `${bpm} BPM, ${n} ARMY Bomb (#${i + 1}): ${fl} destellos/s`); }
+  }
+});
+
+test("cadena automática: las subidas se vuelven cadena solo con 2 o más; Dynamite y We Are Bulletproof Pt.2 no cambian", () => {
+  // Canción sin look propio, plan intenso: el pre-coro es «rise».
+  const p = generatePattern({ id: "prueba-subida", title: "x", bpm: 120, energy: "high" }, { palette: ["#ff2e88", "#00c2a8"] }, 200, {});
+  const ts = Array.from({ length: 400 }, (_, k) => k / 2);
+  assert.ok(ts.some((t) => p.styleAt(t, 3) === "chain"), "con 3 ARMY Bomb ninguna subida es cadena");
+  assert.ok(!ts.some((t) => p.styleAt(t, 1) === "chain"), "con una sola no debe haber cadena");
+  for (const id of ["dynamite", "we-are-bulletproof-pt2"]) {
+    const seq = SEQUENCES[id], song = songs.find((x) => x.id === id);
+    if (!seq || !song) continue;
+    const q = generatePattern(song, song.album, seq.duracion, { sequence: seq });
+    const tt = Array.from({ length: Math.floor(seq.duracion * 2) }, (_, k) => k / 2);
+    assert.ok(!tt.some((t) => q.styleAt(t, 5) === "chain"), `${id} cambió con varias ARMY Bomb`);
+  }
 });

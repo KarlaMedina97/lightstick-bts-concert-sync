@@ -23,7 +23,16 @@ export const STYLES = {
   sparkle: { label: "Chispas", description: "Base tenue con chispas breves, como estrellas (máximo 2 por segundo en modo seguro)." },
   borahae: { label: "Océano morado (cierre)", description: "Cierre de concierto: todo el público en morado que respira despacio, con olas lentas, hasta apagarse." },
   duo: { label: "Dúo", description: "Dos colores de la canción se reparten las ARMY Bomb y se intercambian en cada compás; con una sola, va y viene entre los dos." },
+  chain: { label: "Cadena", description: "Con varias ARMY Bomb, se encienden de una en una y al final parpadean todas juntas." },
 };
+
+// Efectos que solo usan las secuencias (no salen en el menú de estilos, pero sí en el aviso «Luces: …»).
+const SEQ_ONLY_LABELS = { blink: "Parpadeo", bulb: "Bombillo", hold: "Luz fija", blackout: "Apagón" };
+/** Nombre visible de un estilo (también los de las secuencias). */
+export const styleLabel = (style) => STYLES[style]?.label ?? SEQ_ONLY_LABELS[style] ?? STYLES.breathe.label;
+
+// Efectos de grupo (cadena): solo con 2 o más ARMY Bomb conectadas. Las secuencias aprobadas a mano no cambian.
+const GROUP_SKIP = new Set(["dynamite", "we-are-bulletproof-pt2"]);
 
 // Looks por canción (docs/patrones-luces.md). Casi todo es PROPUESTA CREATIVA: no hay fuentes públicas del color
 // del ARMY Bomb canción por canción. Confirmado solo el morado de base y de cierre; FIRE en rojo es parcial (luces
@@ -166,7 +175,7 @@ function hueSat([r, g, b]) {
   return [h, d / max];
 }
 /** Efectos de la secuencia → estilos del generador (los que no existen se aproximan). */
-const SEQ_STYLE = { blink: "blink", bulb: "bulb", breathe: "breathe", pulse: "pulse", hit: "hit", rise: "rise", bloom: "bloom", wave: "wave", duo: "duo", disco: "disco", aurora: "aurora", sparkle: "sparkle", rainbow: "rainbow", ocean: "ocean", flame: "flame", fadeout: "fadeout", blackout: "blackout", hold: "hold", split: "split", flash: "flash", borahae: "borahae" };
+const SEQ_STYLE = { blink: "blink", bulb: "bulb", breathe: "breathe", pulse: "pulse", hit: "hit", rise: "rise", bloom: "bloom", wave: "wave", duo: "duo", disco: "disco", aurora: "aurora", sparkle: "sparkle", rainbow: "rainbow", ocean: "ocean", flame: "flame", fadeout: "fadeout", blackout: "blackout", hold: "hold", split: "split", flash: "flash", borahae: "borahae", chain: "chain" };
 /**
  * Tramos de una secuencia por marcas de tiempo → secciones del generador.
  * @param {number} minGap segundos mínimos entre destellos de acento (modo seguro)
@@ -416,9 +425,16 @@ export function generatePattern(song, album, duration, opts = {}) {
     Object.assign(sections[8], { start: cut, style: "borahae", floor: 0 });
   }
   if (SEQ) sections = sequenceSections(SEQ, palette, beatsPerFlash * beat, Math.max(0.12, 1 / maxFlashHz));
+  // Estilo elegido a mano en Ajustes: manda también sobre la secuencia (que conserva sus tiempos, colores y brillos).
+  if (SEQ && opts.styleOverride) sections.forEach((s) => { s.style = opts.styleOverride; });
   const safe = opts.safeMode !== false;
   // Pseudoaleatorio estable (mismo resultado en cada cuadro) para las chispas.
   const hash = (x) => { const v = Math.sin(x * 127.1 + 311.7) * 43758.5453; return v - Math.floor(v); };
+  sections.forEach((s, k) => { s.k = k; });
+  // Con varias ARMY Bomb, las subidas se vuelven una cadena: cada «rise» y uno de cada dos «bulb» (el otro sigue
+  // siendo bombillo, para que no se pierda). No en las secuencias aprobadas ni si la persona eligió un estilo.
+  const group = !GROUP_SKIP.has(song.id) && !opts.styleOverride;
+  const styleOf = (sec, n) => (n >= 2 && group && (sec.style === "rise" || (sec.style === "bulb" && sec.k % 2)) ? "chain" : sec.style);
 
   let ext = null;
   function styleColor(sec, t, i, n) {
@@ -427,7 +443,30 @@ export function generatePattern(song, album, duration, opts = {}) {
     // al cambiar de una a otra caerían dos golpes casi juntos y se pasaría del límite de destellos.
     const beats = (t - phase0) / beat;
     const phase = n > 1 ? i / n : 0; // desfase por lightstick → efecto ola
-    switch (sec.style) {
+    switch (styleOf(sec, n)) {
+      case "chain": {
+        // Cadena para n ARMY Bomb: se encienden de una en una (1, 2, 3… n) en el primer 60 % del ciclo, luego
+        // parpadean todas a la vez, al tiempo (≤ 2,5 destellos/s en modo seguro), y toman aire antes de repetir.
+        // El ciclo dura unos 4 compases y la sección se reparte en ciclos enteros: el parpadeo conjunto cae justo
+        // antes de lo que sigue (el coro). Cada ARMY Bomb se enciende una sola vez por ciclo.
+        const len = Math.max(0.1, sec.end - sec.start);
+        const cycles = Math.max(1, Math.round(len / (beat * 16)));
+        const u = clamp01((local % (len / cycles)) / (len / cycles));
+        const own = n > 1 && i % 2 ? sec.accent : sec.color; // pares e impares con los dos colores de la sección
+        const BUILD = 0.6, ALL = 0.92;
+        if (u < BUILD) {
+          const on = (BUILD * i) / Math.max(1, n); // turno de esta ARMY Bomb
+          if (u < on) return scale(own, 0.07); // esperando su turno: brasa tenue, no negro
+          const lit = Math.min(n, Math.floor((u / BUILD) * n) + 1); // cuántas van encendidas
+          return scale(own, clamp01((u - on) / 0.03) * (0.7 + 0.3 * (lit / n))); // la luz crece con la cadena
+        }
+        if (u < ALL) {
+          const s = beats / beatsPerFlash, k = Math.floor(s);
+          const c = ((k % 2) + 2) % 2 ? sec.accent : mix(sec.color, white, 0.35);
+          return s - k < 0.5 ? c : scale(c, 0.1);
+        }
+        return scale(own, 0.12 + 0.5 * (1 - (u - ALL) / (1 - ALL))); // respiro antes del golpe
+      }
       case "ocean": {
         const w = Math.sin(2 * Math.PI * (beats / 8 - phase));
         const k = 0.75 + 0.25 * w;
@@ -713,7 +752,10 @@ export function generatePattern(song, album, duration, opts = {}) {
     return sections.find((s) => t >= s.start && t < s.end) ?? sections[sections.length - 1];
   }
 
-  return { sections, colorAt, sectionAt, floorAt, energyAt, beat };
+  /** Estilo que de verdad suena en el segundo t con n ARMY Bomb (con varias, una subida puede ser «chain»). */
+  const styleAt = (t, n = 1) => styleOf(sectionAt(t), n);
+
+  return { sections, colorAt, sectionAt, styleAt, floorAt, energyAt, beat };
 }
 
 /**

@@ -1,5 +1,5 @@
 import { ALBUMS, CONCERT_FILMS } from "./catalog.js";
-import { PURPLE, STYLES, generateConcertPattern, generatePattern, hexToRgb, rgbToHex, ledLevel, lightColors } from "./patterns.js";
+import { PURPLE, STYLES, styleLabel, generateConcertPattern, generatePattern, hexToRgb, rgbToHex, ledLevel, lightColors } from "./patterns.js";
 import { fireworks } from "./fireworks.js";
 import { pageview, event as track, analyticsOff, setAnalyticsOff } from "./analytics.js";
 let fx = null; // fuegos artificiales (se crean la primera vez que termina una canción)
@@ -1202,7 +1202,7 @@ function describeLights() {
   else parts.push(t(current >= 0 ? "En pausa" : "Luces listas"));
   if (pattern && player?.state === "playing" && !mic && !cam) {
     const sec = pattern.sectionAt(player.time());
-    parts.push(t(sec.label), `${t("estilo")} ${t(STYLES[sec.style].label)}`);
+    parts.push(t(sec.label), `${t("estilo")} ${t(styleLabel(pattern.styleAt(player.time(), sticks.length)))}`);
   }
   const n = sticks.length;
   const CONN = { en: `${n} ARMY Bomb connected`, pt: `${n} ARMY Bomb conectado${n > 1 ? "s" : ""}`, ko: `ARMY Bomb ${n}개 연결됨`, id: `${n} ARMY Bomb terhubung` };
@@ -1356,7 +1356,7 @@ function step(now) {
   if (!player?.ready) { if (!document.hidden) crowd?.draw(now); return; } // el fondo se dibuja aunque YouTube aún no cargue
   const k = settings.brightness / 100;
   const total = Math.max(SIM_COUNT, sticks.length);
-  let colors;
+  let colors, stickColors = null;
 
   if (fanchant?.running) {
     // Fanchant: morado a toda intensidad; con cada nombre, un parpadeo blanco que vuelve al morado en ~0,3 s
@@ -1382,18 +1382,23 @@ function step(now) {
     // Con el sonido del video, el golpe real (graves del micrófono) dispara las explosiones de los estilos "Golpes".
     const ext = mic?.hybrid && playing ? { hit: (micGain = mic.intensity(now), mic.flash) } : null;
     colors = Array.from({ length: total }, (_, i) => (pattern && playing ? pattern.colorAt(lt, i, total, ext) : [45, 20, 90]));
+    // Las ARMY Bomb reales se reparten el patrón entre las que hay de verdad (1, 2, 3… n), no entre las 7 de la
+    // pantalla: así la cadena y la ola recorren todas las conectadas, sean 2 o 20.
+    if (pattern && playing && sticks.length > 1) stickColors = sticks.map((_, i) => pattern.colorAt(lt, i, sticks.length, ext));
   }
 
   // Con el sonido del video: el patrón da los colores y el micrófono, cuánto brillan.
   if (mic?.hybrid && pattern && player.state === "playing") {
     const g = 0.45 + 0.55 * micGain; // el volumen real sube o baja todo el patrón, sin apagarlo
     colors = colors.map((c) => c.map((v) => v * g));
+    stickColors = stickColors?.map((c) => c.map((v) => v * g)) ?? null;
   }
+  stickColors ??= colors;
   // Los LED del ARMY Bomb responden lineal y el ojo no: sin esta curva, un 40 % se ve casi como un 100 %
   // y la diferencia entre lo suave y lo intenso se pierde.
   // Piso de la sección: lo intenso nunca se ve apagado; solo el cierre de la canción puede llegar a negro.
   const floor = pattern && player.state === "playing" && !cam && (!mic || mic.hybrid) ? pattern.floorAt(player.time()) : 0;
-  sticks.forEach((s, i) => s.setColor(ledLevel(colors[i].map((v) => v * k), floor * k, LED_GAMMA)));
+  sticks.forEach((s, i) => s.setColor(ledLevel(stickColors[i].map((v) => v * k), floor * k, LED_GAMMA)));
   if (crowd && !document.hidden) { crowd.setColor(colors[0].map((v) => Math.max(40, v * k))); crowd.draw(now); } // oculto: solo el ARMY Bomb
 
   // La interfaz se actualiza a ~20 fps para ahorrar batería.
@@ -1410,7 +1415,7 @@ function step(now) {
   sticks.forEach((s, i) => {
     let dot = dotEls[i];
     if (!dot?.isConnected) dot = dotEls[i] = document.querySelector(`.dot[data-index="${i}"]`);
-    if (dot) dot.style.background = rgbToHex(colors[i]);
+    if (dot) dot.style.background = rgbToHex(stickColors[i]);
   });
 
   const t = player.time();
@@ -1441,7 +1446,7 @@ function step(now) {
   if (mic && !mic.hybrid) label = "🎙 Luces siguiendo el micrófono";
   else if (pattern && player.state === "playing") {
     const sec = pattern.sectionAt(t);
-    label = `Luces: ${STYLES[sec.style].label} · ${sec.label}`;
+    label = `Luces: ${styleLabel(pattern.styleAt(t, sticks.length))} · ${sec.label}`;
   } else label = current >= 0 ? "En pausa" : "Luces listas";
   if (label !== lastLabel) {
     // Modo opcional "Describir las luces": un aviso por sección, nunca más de uno cada 8 s ni al empezar.
