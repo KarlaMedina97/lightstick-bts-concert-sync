@@ -10,6 +10,7 @@
 // Solo se envían el enlace público del video y las instrucciones; se pide no citar letras.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
+import { request } from "node:https";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ALBUMS } from "../src/catalog.js";
@@ -71,21 +72,40 @@ Necesito su línea de tiempo de AMBIENTE y COLORES para diseñar las luces de un
 - Los tramos van en orden, sin huecos, de 0 a la duración real del video${dur ? ` (dura ${dur} s)` : ""}.
 - NO cites ni transcribas la letra ni los subtítulos. Si no puedes ver el video, devuelve tramos vacíos y escribe el motivo en "aura".`;
 
+/**
+ * POST con node:https y espera de hasta 15 min. fetch() de Node se rinde si el servidor tarda más de 5 min en
+ * empezar a responder («fetch failed»), y Gemini puede tardar eso con un video largo.
+ */
+function post(url, body) {
+  return new Promise((resolve, reject) => {
+    const req = request(url, { method: "POST", headers: { ...headers, "content-length": Buffer.byteLength(body) } }, (res) => {
+      let text = "";
+      res.setEncoding("utf8");
+      res.on("data", (d) => { text += d; });
+      res.on("end", () => resolve({ status: res.statusCode, text }));
+      res.on("error", reject);
+    });
+    req.setTimeout(15 * 60 * 1000, () => req.destroy(new Error("Gemini tardó más de 15 min")));
+    req.on("error", reject);
+    req.end(body);
+  });
+}
+
 async function ask(model, song, dur) {
   const body = {
     contents: [{ role: "user", parts: [{ fileData: { fileUri: `https://www.youtube.com/watch?v=${song.yt}`, mimeType: "video/*" } }, { text: prompt(song, dur) }] }],
     generationConfig: { responseMimeType: "application/json", responseSchema: SCHEMA, temperature: 0.2 },
   };
   let r;
-  // Servidores saturados (500/503): hasta 4 intentos, esperando 20, 40 y 80 s.
+  // Servidores saturados (500/503) o la conexión se cortó: hasta 4 intentos, esperando 20, 40 y 80 s.
   for (let k = 0; k < 4; k++) {
-    r = await fetch(`${API}/models/${model}:generateContent`, { method: "POST", headers, body: JSON.stringify(body) });
-    if (![500, 502, 503, 504].includes(r.status)) break;
+    try { r = await post(`${API}/models/${model}:generateContent`, JSON.stringify(body)); } catch (e) { r = { status: 0, text: e.message }; }
+    if (![0, 500, 502, 503, 504].includes(r.status)) break;
     await new Promise((res) => setTimeout(res, 20000 * 2 ** k));
   }
   if (r.status === 429) { const e = new Error("límite de consultas de Gemini alcanzado (429)"); e.stop = true; throw e; }
-  if (!r.ok) throw new Error(`Gemini respondió ${r.status}: ${(await r.text()).slice(0, 200)}`);
-  const j = await r.json();
+  if (r.status !== 200) throw new Error(r.status ? `Gemini respondió ${r.status}: ${r.text.slice(0, 200)}` : `sin conexión con Gemini (${r.text})`);
+  const j = JSON.parse(r.text);
   const text = j.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
   return JSON.parse(text);
 }
