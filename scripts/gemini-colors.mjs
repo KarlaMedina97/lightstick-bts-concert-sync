@@ -14,6 +14,7 @@ import { request } from "node:https";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ALBUMS } from "../src/catalog.js";
+import { checkTimeline, fitTimeline } from "./gemini-timeline.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const OUTDIR = join(root, "docs", "secuencias", "gemini");
@@ -110,22 +111,6 @@ async function ask(model, song, dur) {
   return JSON.parse(text);
 }
 
-/** Valida la línea de tiempo: duración real, orden, colores, sin letras. Devuelve la lista de problemas. */
-export function checkTimeline(tl, dur) {
-  const bad = [];
-  const T = tl?.tramos ?? [];
-  if (!T.length) bad.push(`sin tramos (${tl?.aura ?? "?"})`);
-  const end = T.at(-1)?.fin ?? 0;
-  if (dur && Math.abs(end - dur) > Math.max(5, dur * 0.04)) bad.push(`termina en ${end} s y el video dura ${dur} s`);
-  T.forEach((t, i) => {
-    if (i && Math.abs(t.inicio - T[i - 1].fin) > 1) bad.push(`hueco o superposición en ${t.inicio} s`);
-    if (!(t.fin > t.inicio)) bad.push(`tramo ${i + 1} sin duración`);
-    if (!t.colores?.length || t.colores.some((c) => !/^#[0-9a-fA-F]{6}$/.test(c))) bad.push(`colores inválidos en ${t.inicio} s`);
-    if (/[가-힯぀-ヿ]|«[^»]{12,}»|"[^"]{20,}"/.test(t.escena)) bad.push(`posible letra citada en ${t.inicio} s`);
-  });
-  return bad;
-}
-
 const songs = ALBUMS.flatMap((a) => a.songs).filter((s) => s.yt && s.kind !== "concert");
 const max = Number(opt("--max", 999));
 const ids = (args.includes("--missing") ? songs.filter((s) => !existsSync(join(OUTDIR, `${s.id}.json`))).map((s) => s.id) : args.filter((a, i) => !a.startsWith("--") && !args[i - 1]?.startsWith("--"))).slice(0, max);
@@ -139,12 +124,12 @@ for (const id of ids) {
   if (!song) { console.log(`✗ ${id}: no está en el catálogo`); continue; }
   const dur = VIDEO_LOOKS[id]?.dur ?? null;
   try {
-    const tl = await ask(model, song, dur);
+    const { tl, notas } = fitTimeline(await ask(model, song, dur), dur);
     const bad = checkTimeline(tl, dur);
     if (bad.length) { console.log(`✗ ${id}: ${bad.slice(0, 2).join("; ")}`); continue; }
-    writeFileSync(join(OUTDIR, `${id}.json`), JSON.stringify({ song: id, yt: song.yt, modelo: model, fecha: new Date().toISOString().slice(0, 10), ...tl }, null, 2));
+    writeFileSync(join(OUTDIR, `${id}.json`), JSON.stringify({ song: id, yt: song.yt, modelo: model, fecha: new Date().toISOString().slice(0, 10), ...(notas.length ? { ajustes: notas } : {}), ...tl }, null, 2));
     ok++;
-    console.log(`✓ ${id}: ${tl.tramos.length} tramos · ${tl.aura}`);
+    console.log(`✓ ${id}: ${tl.tramos.length} tramos · ${tl.aura}${notas.length ? ` (${notas.join("; ")})` : ""}`);
   } catch (e) {
     console.log(`✗ ${id}: ${e.message}`);
     if (e.stop) break;
