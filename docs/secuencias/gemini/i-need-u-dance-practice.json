@@ -1,0 +1,142 @@
+{
+  "song": "i-need-u-dance-practice",
+  "yt": "hvUZb9NT7EY",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-09",
+  "duracion": 213.9,
+  "aura": "melancolía apasionada y potente con sincronización explosiva",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 24.5,
+      "escena": "Sala de prácticas con suelo de madera, integrantes tendidos en el suelo mientras Suga se incorpora.",
+      "ambiente": "melancolia",
+      "colores": [
+        "#C49A6C",
+        "#2A2A2E",
+        "#E3E1DC"
+      ]
+    },
+    {
+      "inicio": 24.5,
+      "fin": 36.2,
+      "escena": "Los miembros se agrupan en cuclillas y realizan movimientos rítmicos en el suelo.",
+      "ambiente": "tension",
+      "colores": [
+        "#B58A5B",
+        "#1C1C1F",
+        "#F2F2F2"
+      ]
+    },
+    {
+      "inicio": 36.2,
+      "fin": 48,
+      "escena": "Transición de pie con formaciones fluidas y giros dinámicos en la sala de ensayo.",
+      "ambiente": "emocion",
+      "colores": [
+        "#C9A071",
+        "#782329",
+        "#212124"
+      ]
+    },
+    {
+      "inicio": 48,
+      "fin": 66.5,
+      "escena": "Estribillo principal con coreografía sincronizada, enérgica y llena de emoción.",
+      "ambiente": "climax",
+      "colores": [
+        "#D0A777",
+        "#1E1E22",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 66.5,
+      "fin": 84.8,
+      "escena": "Remate del estribillo con pasos de onda corporal y formación en bloque central.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#BF9463",
+        "#222328",
+        "#5A738E"
+      ]
+    },
+    {
+      "inicio": 84.8,
+      "fin": 105.8,
+      "escena": "Sección de rap con formación en línea y desplazamientos rítmicos marcados.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#C59D6E",
+        "#17171A",
+        "#E6E6E6"
+      ]
+    },
+    {
+      "inicio": 105.8,
+      "fin": 120.2,
+      "escena": "Pre-coro melódico, gestos expresivos mirando hacia arriba simulando pétalos de flor.",
+      "ambiente": "drama",
+      "colores": [
+        "#C99F70",
+        "#3E4C63",
+        "#D2CECA"
+      ]
+    },
+    {
+      "inicio": 120.2,
+      "fin": 146.4,
+      "escena": "Segundo estribillo con pasos de gran despliegue físico y cambios de frente coordinados.",
+      "ambiente": "climax",
+      "colores": [
+        "#CCA171",
+        "#1B1B1E",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 146.4,
+      "fin": 169.1,
+      "escena": "Puente emotivo con Jungkook arrodillado al centro y los demás integrantes caminando alrededor.",
+      "ambiente": "melancolia",
+      "colores": [
+        "#BA905F",
+        "#2B2B30",
+        "#D8D6D2"
+      ]
+    },
+    {
+      "inicio": 169.1,
+      "fin": 191,
+      "escena": "Estribillo final culminante con saltos enérgicos y máxima intensidad en la ejecución.",
+      "ambiente": "climax",
+      "colores": [
+        "#CFA675",
+        "#141416",
+        "#F5F5F5"
+      ]
+    },
+    {
+      "inicio": 191,
+      "fin": 206.5,
+      "escena": "Cierre coreográfico con rebotes rítmicos y pasos característicos en bloque.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#C69B69",
+        "#242429",
+        "#6B2027"
+      ]
+    },
+    {
+      "inicio": 206.5,
+      "fin": 213.9,
+      "escena": "Fin de la música, los chicos rompen la formación y caminan relajados hacia el espejo.",
+      "ambiente": "calma",
+      "colores": [
+        "#C49A6C",
+        "#2A2A2E",
+        "#ECEAE7"
+      ]
+    }
+  ]
+}

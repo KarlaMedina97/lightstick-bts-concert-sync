@@ -1,0 +1,109 @@
+{
+  "song": "hug-me-cover",
+  "yt": "tv_HQ-0upns",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-09",
+  "duracion": 244,
+  "aura": "balada acústica íntima y desgarradora en blanco y negro con rap emotivo",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 29,
+      "escena": "V en la cabina de grabación en blanco y negro, cantando suavemente frente al micrófono con auriculares.",
+      "ambiente": "calma",
+      "colores": [
+        "#FFFFFF",
+        "#808080",
+        "#1A1A1A"
+      ]
+    },
+    {
+      "inicio": 29,
+      "fin": 55,
+      "escena": "Primer plano de V interpretando la primera estrofa con expresión melancólica y sentida.",
+      "ambiente": "melancolia",
+      "colores": [
+        "#E6E6E6",
+        "#737373",
+        "#141414"
+      ]
+    },
+    {
+      "inicio": 55,
+      "fin": 85,
+      "escena": "V canta el primer estribillo con sentida emoción en la intimidad del estudio monocromático.",
+      "ambiente": "emocion",
+      "colores": [
+        "#FFFFFF",
+        "#999999",
+        "#222222"
+      ]
+    },
+    {
+      "inicio": 85,
+      "fin": 114,
+      "escena": "V continúa la segunda estrofa con voz profunda y serena frente al filtro antipop.",
+      "ambiente": "melancolia",
+      "colores": [
+        "#D9D9D9",
+        "#666666",
+        "#0D0D0D"
+      ]
+    },
+    {
+      "inicio": 114,
+      "fin": 140,
+      "escena": "Crecimiento dramático en la voz de V reflejando dolor y súplica en tonos grises.",
+      "ambiente": "drama",
+      "colores": [
+        "#F0F0F0",
+        "#7F7F7F",
+        "#1F1F1F"
+      ]
+    },
+    {
+      "inicio": 140,
+      "fin": 172,
+      "escena": "j-hope rapea con capucha y teléfono en mano, imprimiendo intensidad y fuerza al micrófono.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#FFFFFF",
+        "#595959",
+        "#111111"
+      ]
+    },
+    {
+      "inicio": 172,
+      "fin": 200,
+      "escena": "V retoma el canto con fragilidad y ternura, pidiendo un abrazo en plano medio.",
+      "ambiente": "emocion",
+      "colores": [
+        "#E0E0E0",
+        "#8C8C8C",
+        "#1C1C1C"
+      ]
+    },
+    {
+      "inicio": 200,
+      "fin": 222,
+      "escena": "Clímax vocal de V cantando con notas altas, máxima entrega y gestos apasionados.",
+      "ambiente": "climax",
+      "colores": [
+        "#FFFFFF",
+        "#A6A6A6",
+        "#262626"
+      ]
+    },
+    {
+      "inicio": 222,
+      "fin": 244,
+      "escena": "Conclusión al piano, V reflexiona en silencio, se retira los auriculares y la toma se desvanece.",
+      "ambiente": "calma",
+      "colores": [
+        "#CCCCCC",
+        "#4D4D4D",
+        "#000000"
+      ]
+    }
+  ]
+}

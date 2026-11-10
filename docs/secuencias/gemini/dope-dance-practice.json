@@ -1,0 +1,186 @@
+{
+  "song": "dope-dance-practice",
+  "yt": "NnbIIXNPtPU",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-09",
+  "duracion": 242,
+  "aura": "energía imparable, precisión milimétrica y rap dinámico con drops intensos",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 9,
+      "escena": "RM introduce la coreografía solo frente a la cámara en la sala de ensayo con suelo de madera.",
+      "ambiente": "tension",
+      "colores": [
+        "#F5F5F5",
+        "#212121",
+        "#D7B58A"
+      ]
+    },
+    {
+      "inicio": 9,
+      "fin": 21.5,
+      "escena": "Jungkook aparece bailando con soltura y precisión luciendo camiseta blanca y vaqueros.",
+      "ambiente": "alegria",
+      "colores": [
+        "#FFFFFF",
+        "#3E2723",
+        "#D7B58A"
+      ]
+    },
+    {
+      "inicio": 21.5,
+      "fin": 31,
+      "escena": "J-Hope entra al centro rapeando con gorra y pantalón deportivo gris.",
+      "ambiente": "fiesta",
+      "colores": [
+        "#FFFFFF",
+        "#757575",
+        "#D7B58A"
+      ]
+    },
+    {
+      "inicio": 31,
+      "fin": 46.5,
+      "escena": "Todo el grupo se reúne de golpe ejecutando una formación dinámica y veloz.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#D32F2F",
+        "#1976D2",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 46.5,
+      "fin": 65,
+      "escena": "Jimin lidera la formación con camiseta de baloncesto azul y movimientos rápidos de brazos.",
+      "ambiente": "fiesta",
+      "colores": [
+        "#1976D2",
+        "#212121",
+        "#F5F5F5"
+      ]
+    },
+    {
+      "inicio": 65,
+      "fin": 71.5,
+      "escena": "Suga pasa al frente con su estilo de rap marcado y el grupo sincronizado de fondo.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#212121",
+        "#FFFFFF",
+        "#D7B58A"
+      ]
+    },
+    {
+      "inicio": 71.5,
+      "fin": 81,
+      "escena": "V destaca en el centro vistiendo un suéter rojo brillante con coreografía ligera.",
+      "ambiente": "emocion",
+      "colores": [
+        "#D32F2F",
+        "#212121",
+        "#D7B58A"
+      ]
+    },
+    {
+      "inicio": 81,
+      "fin": 96.5,
+      "escena": "Preestribillo con Jin y Jungkook guiando transiciones fluidas mientras crece el ritmo.",
+      "ambiente": "tension",
+      "colores": [
+        "#FFFFFF",
+        "#D32F2F",
+        "#D7B58A"
+      ]
+    },
+    {
+      "inicio": 96.5,
+      "fin": 121,
+      "escena": "Estribillo principal con potente drop de vientos y pasos de pies extremadamente rápidos.",
+      "ambiente": "climax",
+      "colores": [
+        "#FFFFFF",
+        "#1976D2",
+        "#D32F2F"
+      ]
+    },
+    {
+      "inicio": 121,
+      "fin": 146,
+      "escena": "Sección de rap de RM dominando el centro con gestos firmes mientras los demás se agachan.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#212121",
+        "#FFFFFF",
+        "#D7B58A"
+      ]
+    },
+    {
+      "inicio": 146,
+      "fin": 155,
+      "escena": "V retoma el centro con líneas vocales y pasos rítmicos marcados en el suelo de madera.",
+      "ambiente": "alegria",
+      "colores": [
+        "#D32F2F",
+        "#212121",
+        "#D7B58A"
+      ]
+    },
+    {
+      "inicio": 155,
+      "fin": 169,
+      "escena": "Segunda sección de preparación con Jin y el grupo alternando posiciones cruzadas.",
+      "ambiente": "tension",
+      "colores": [
+        "#FFFFFF",
+        "#212121",
+        "#D7B58A"
+      ]
+    },
+    {
+      "inicio": 169,
+      "fin": 196,
+      "escena": "Segundo estribillo explosivo con saltos sincronizados y energía desbordante.",
+      "ambiente": "climax",
+      "colores": [
+        "#D32F2F",
+        "#1976D2",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 196,
+      "fin": 218,
+      "escena": "Puente melódico suave donde J-Hope y Jungkook ejecutan movimientos elegantes y controlados.",
+      "ambiente": "emocion",
+      "colores": [
+        "#FFFFFF",
+        "#757575",
+        "#D7B58A"
+      ]
+    },
+    {
+      "inicio": 218,
+      "fin": 235,
+      "escena": "Gran clímax final con toda la intensidad de la coreografía al compás del drop más acelerado.",
+      "ambiente": "climax",
+      "colores": [
+        "#D32F2F",
+        "#FFFFFF",
+        "#212121"
+      ]
+    },
+    {
+      "inicio": 235,
+      "fin": 242,
+      "escena": "Los siete miembros se dan la vuelta y sostienen la pose final de espaldas a la cámara.",
+      "ambiente": "calma",
+      "colores": [
+        "#FFFFFF",
+        "#212121",
+        "#D7B58A"
+      ]
+    }
+  ]
+}
