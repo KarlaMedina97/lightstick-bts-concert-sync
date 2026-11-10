@@ -1,0 +1,102 @@
+{
+  "song": "i-need-u-practice-record",
+  "yt": "1uVwfEl63xo",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-10",
+  "ajustes": [
+    "1 tramo(s) sin duración quitados",
+    "tiempos escalados ×0.78 (terminaba en 148.5 s, el video dura 116 s)"
+  ],
+  "duracion": 116,
+  "aura": "emotiva coreografía de hip-hop y danza contemporánea con pasión, precisión y melancolía",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 9.4,
+      "escena": "Sala de ensayo con piso de madera, miembros esperando a los lados mientras Jungkook se prepara en el centro",
+      "ambiente": "calma",
+      "colores": [
+        "#C5A069",
+        "#FFFFFF",
+        "#252525"
+      ]
+    },
+    {
+      "inicio": 9.4,
+      "fin": 28.5,
+      "escena": "Solo de danza contemporánea de Jungkook con giros en el suelo y movimientos acrobáticos expresivos",
+      "ambiente": "emocion",
+      "colores": [
+        "#B88E5B",
+        "#1A1A1A",
+        "#F0EDE6"
+      ]
+    },
+    {
+      "inicio": 28.5,
+      "fin": 35.9,
+      "escena": "El resto de los miembros entran al centro de la sala y se colocan en formación inicial",
+      "ambiente": "tension",
+      "colores": [
+        "#C5A069",
+        "#FFFFFF",
+        "#1E1E1E"
+      ]
+    },
+    {
+      "inicio": 35.9,
+      "fin": 46.1,
+      "escena": "Suga al frente rapeando mientras los demás acompañan con pasos sincronizados marcados",
+      "ambiente": "fuerza",
+      "colores": [
+        "#CC3333",
+        "#C5A069",
+        "#242424"
+      ]
+    },
+    {
+      "inicio": 46.1,
+      "fin": 86.7,
+      "escena": "J-Hope en el centro de pie mientras los demás miembros ejecutan pasos agachados en el suelo",
+      "ambiente": "drama",
+      "colores": [
+        "#BF9660",
+        "#F4F4F4",
+        "#202020"
+      ]
+    },
+    {
+      "inicio": 86.7,
+      "fin": 95.3,
+      "escena": "Transición rítmica y apertura hacia el estribillo con pasos fluidos y desplazamientos",
+      "ambiente": "emocion",
+      "colores": [
+        "#BFA075",
+        "#2C2C2C",
+        "#EAEAEA"
+      ]
+    },
+    {
+      "inicio": 95.3,
+      "fin": 110.9,
+      "escena": "Estribillo principal con coreografía grupal enérgica y sincronización total en el centro de la sala",
+      "ambiente": "climax",
+      "colores": [
+        "#C5A069",
+        "#111111",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 110.9,
+      "fin": 116,
+      "escena": "Cierre coreográfico con varios integrantes desplomándose en el suelo en pose final",
+      "ambiente": "drama",
+      "colores": [
+        "#BF9359",
+        "#1E1E1E",
+        "#EDEDED"
+      ]
+    }
+  ]
+}

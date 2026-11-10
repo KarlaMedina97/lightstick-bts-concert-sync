@@ -10,8 +10,9 @@ export const ANALYTICS = { posthog: { key: "phc_BnzssvsNqGp8teidinuKgg8A9YvEgtfA
 
 // Enlaces de donación. Deja vacío "url" para ocultar una opción.
 export const DONATIONS = [
+  // El primero es el destino de los enlaces «Apoyar» del reproductor.
+  { label: "Ko-fi", url: "https://ko-fi.com/lumiparty", note: "Invítame un café." },
   { label: "GitHub Sponsors", url: "https://github.com/sponsors/KarlaMedina97", note: "Apoya el desarrollo del proyecto." },
-  { label: "Ko-fi", url: "", note: "Invítame un café." },
 ];
 
 // Canción destacada de la landing: la más escuchada del grupo en este momento.

@@ -1,0 +1,185 @@
+{
+  "song": "dope",
+  "yt": "BVwAVbKYYeM",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-10",
+  "duracion": 257,
+  "aura": "energía imparable y coreografía electrizante al ritmo de saxofón y hip hop",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 8,
+      "escena": "Cabecera y logo de Big Hit sobre fondo blanco puro",
+      "ambiente": "calma",
+      "colores": [
+        "#ffffff",
+        "#dcdcdc"
+      ]
+    },
+    {
+      "inicio": 8,
+      "fin": 21,
+      "escena": "RM con uniforme militar en un pasillo oscuro de ladrillo da la bienvenida",
+      "ambiente": "tension",
+      "colores": [
+        "#161616",
+        "#b7944b",
+        "#4a3321"
+      ]
+    },
+    {
+      "inicio": 21,
+      "fin": 34,
+      "escena": "Jungkook caracterizado de policía bailando dinámicamente en el ascensor",
+      "ambiente": "fuerza",
+      "colores": [
+        "#181b22",
+        "#7d5032",
+        "#c99557"
+      ]
+    },
+    {
+      "inicio": 34,
+      "fin": 44,
+      "escena": "Jimin de oficinista con pelo rojo lanzando pilas de documentos en su despacho",
+      "ambiente": "tension",
+      "colores": [
+        "#b22222",
+        "#f5f5f5",
+        "#5a3a22"
+      ]
+    },
+    {
+      "inicio": 44,
+      "fin": 59,
+      "escena": "Baile grupal coordinado de todos vestidos de oficina con camisa y corbata",
+      "ambiente": "fuerza",
+      "colores": [
+        "#ffffff",
+        "#1e222b",
+        "#60728c"
+      ]
+    },
+    {
+      "inicio": 59,
+      "fin": 71,
+      "escena": "J-Hope en traje de piloto de carreras en un taller mecánico con banderas a cuadros",
+      "ambiente": "alegria",
+      "colores": [
+        "#e02424",
+        "#ffffff",
+        "#1b1b1b"
+      ]
+    },
+    {
+      "inicio": 71,
+      "fin": 84,
+      "escena": "Suga con uniforme naval de gala rapeando rodeado de drones con luces de neón",
+      "ambiente": "fuerza",
+      "colores": [
+        "#121626",
+        "#00e5ff",
+        "#ff2a6d"
+      ]
+    },
+    {
+      "inicio": 84,
+      "fin": 96,
+      "escena": "V caracterizado de detective privado con lupa y grabadora de cinta",
+      "ambiente": "fiesta",
+      "colores": [
+        "#8e8d8a",
+        "#8c1d24",
+        "#e8a87c"
+      ]
+    },
+    {
+      "inicio": 96,
+      "fin": 106,
+      "escena": "Jin como médico en bata blanca bajo lámpara de quirófano y transición a Jungkook",
+      "ambiente": "emocion",
+      "colores": [
+        "#ffffff",
+        "#f6e4b8",
+        "#1c2230"
+      ]
+    },
+    {
+      "inicio": 106,
+      "fin": 134,
+      "escena": "Estribillo principal con coreografía explosiva grupal en suelo de madera bajo focos",
+      "ambiente": "climax",
+      "colores": [
+        "#ffd166",
+        "#d90429",
+        "#11141a"
+      ]
+    },
+    {
+      "inicio": 134,
+      "fin": 159,
+      "escena": "RM lidera el rap central en un entorno industrial con bidones y plantas",
+      "ambiente": "fuerza",
+      "colores": [
+        "#b58434",
+        "#202124",
+        "#4e5a38"
+      ]
+    },
+    {
+      "inicio": 159,
+      "fin": 183,
+      "escena": "V y Jin lideran el puente vocal con iluminación azulada sobre pared de ladrillo",
+      "ambiente": "fiesta",
+      "colores": [
+        "#274060",
+        "#ffffff",
+        "#8c1d24"
+      ]
+    },
+    {
+      "inicio": 183,
+      "fin": 209,
+      "escena": "Segundo estribillo con pasos sincrónicos de alta velocidad y juego de cámaras",
+      "ambiente": "climax",
+      "colores": [
+        "#1d5bbf",
+        "#ffffff",
+        "#111317"
+      ]
+    },
+    {
+      "inicio": 209,
+      "fin": 232,
+      "escena": "Jimin y Jungkook en el puente con tubos fluorescentes de neón azul de fondo",
+      "ambiente": "fuerza",
+      "colores": [
+        "#0055ff",
+        "#f4f4f4",
+        "#151821"
+      ]
+    },
+    {
+      "inicio": 232,
+      "fin": 247,
+      "escena": "Coreografía final en un hangar enorme lleno de humo entre dos torres de vigilancia",
+      "ambiente": "climax",
+      "colores": [
+        "#e5d5be",
+        "#ffffff",
+        "#1e1e24"
+      ]
+    },
+    {
+      "inicio": 247,
+      "fin": 257,
+      "escena": "Los siete miembros saludan y caminan hacia la luz seguidos del logo final de BTS",
+      "ambiente": "calma",
+      "colores": [
+        "#0a0a0a",
+        "#e2d7c5",
+        "#ffffff"
+      ]
+    }
+  ]
+}
