@@ -1,0 +1,108 @@
+{
+  "song": "look-like-christmas-cover",
+  "yt": "QH4mCEanwKI",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-09",
+  "duracion": 172,
+  "aura": "calidez navideña y nostalgia acogedora, jazz clásico íntimo con voz barítono",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 28,
+      "escena": "Pantalla en negro con texto del título y suave introducción instrumental de jazz navideño",
+      "ambiente": "calma",
+      "colores": [
+        "#000000",
+        "#48977F"
+      ]
+    },
+    {
+      "inicio": 28,
+      "fin": 49,
+      "escena": "V en sudadera celeste cantando al micrófono de pie en una habitación de tonos neutros",
+      "ambiente": "calma",
+      "colores": [
+        "#9EC7E1",
+        "#282E3C",
+        "#ECEFF4"
+      ]
+    },
+    {
+      "inicio": 49,
+      "fin": 70,
+      "escena": "V interpretando la balada navideña con tono cálido y expresión sosegada frente al micrófono",
+      "ambiente": "emocion",
+      "colores": [
+        "#96C3DE",
+        "#232936",
+        "#E3E9F0"
+      ]
+    },
+    {
+      "inicio": 70,
+      "fin": 86,
+      "escena": "V gesticulando con las manos al compás del swing mientras canta con soltura",
+      "ambiente": "alegria",
+      "colores": [
+        "#8EBEDC",
+        "#202632",
+        "#DFE6EC"
+      ]
+    },
+    {
+      "inicio": 86,
+      "fin": 106,
+      "escena": "V entonando la melodía con voz profunda y relajada en el ambiente doméstico del estudio",
+      "ambiente": "calma",
+      "colores": [
+        "#95C2DD",
+        "#272D3A",
+        "#E6ECF2"
+      ]
+    },
+    {
+      "inicio": 106,
+      "fin": 127,
+      "escena": "V se sube la capucha de la sudadera y canta con entusiasmo y expresividad rítmica",
+      "ambiente": "alegria",
+      "colores": [
+        "#85B5D6",
+        "#1B202A",
+        "#DCE4EC"
+      ]
+    },
+    {
+      "inicio": 127,
+      "fin": 143,
+      "escena": "V se aparta brevemente para cargar a su perro Yeontan y lo acerca cariñosamente al micrófono",
+      "ambiente": "alegria",
+      "colores": [
+        "#91BFDD",
+        "#2B3240",
+        "#54463A"
+      ]
+    },
+    {
+      "inicio": 143,
+      "fin": 157,
+      "escena": "V balancea suavemente a Yeontan en sus brazos durante el solo instrumental festivo",
+      "ambiente": "calma",
+      "colores": [
+        "#8EBBD9",
+        "#242A35",
+        "#6B5848"
+      ]
+    },
+    {
+      "inicio": 157,
+      "fin": 172,
+      "escena": "V abraza y besa tiernamente a su perro Yeontan mientras la música se desvanece a negro",
+      "ambiente": "emocion",
+      "colores": [
+        "#8CB9D8",
+        "#222731",
+        "#5C4D41"
+      ]
+    }
+  ]
+}
