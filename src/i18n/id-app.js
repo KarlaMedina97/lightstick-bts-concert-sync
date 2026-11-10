@@ -360,6 +360,8 @@ const dict = {
   "Al terminar, se detiene.": "Setelah selesai, pemutaran berhenti.",
   "Apoya el desarrollo del proyecto.": "Dukung pengembangan proyek ini.",
   "Invítame un café.": "Traktir aku kopi.",
+  "Invítame un café: donación única o mensual.": "Traktir aku kopi: donasi sekali atau bulanan.",
+  "Si usas GitHub: apoyo único o mensual.": "Kalau kamu pakai GitHub: dukungan sekali atau bulanan.",
 
   // Reto de ritmo y ranking
   "¡Toca al ritmo!": "Ketuk sesuai irama!",

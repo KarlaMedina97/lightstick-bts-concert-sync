@@ -532,6 +532,11 @@ export default {
   // ── src/config.js ──
   "Apoya el desarrollo del proyecto.": "Support the project's development.",
   "Invítame un café.": "Buy me a coffee.",
+  "Elige Ko-fi o GitHub Sponsors": "Choose Ko-fi or GitHub Sponsors",
+  "Es gratis y hecho por ARMY. Apóyalo con Ko-fi o GitHub Sponsors.": "It's free and made by ARMY. Support it with Ko-fi or GitHub Sponsors.",
+  "LumiParty es gratis y lo hace ARMY. Si te gusta, elige cómo apoyarlo:": "LumiParty is free and made by ARMY. If you like it, choose how to support it:",
+  "Invítame un café: donación única o mensual.": "Buy me a coffee: one-time or monthly donation.",
+  "Si usas GitHub: apoyo único o mensual.": "If you use GitHub: one-time or monthly support.",
   "La canción de BTS más escuchada de 2026 en Spotify (oct. 2026)": "BTS's most-streamed song of 2026 on Spotify (Oct. 2026)",
 };
 

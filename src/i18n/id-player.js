@@ -532,6 +532,11 @@ export default {
   // ── src/config.js ──
   "Apoya el desarrollo del proyecto.": "Dukung pengembangan proyek ini.",
   "Invítame un café.": "Traktir aku kopi.",
+  "Elige Ko-fi o GitHub Sponsors": "Pilih Ko-fi atau GitHub Sponsors",
+  "Es gratis y hecho por ARMY. Apóyalo con Ko-fi o GitHub Sponsors.": "Gratis dan dibuat oleh ARMY. Dukung lewat Ko-fi atau GitHub Sponsors.",
+  "LumiParty es gratis y lo hace ARMY. Si te gusta, elige cómo apoyarlo:": "LumiParty gratis dan dibuat oleh ARMY. Kalau kamu suka, pilih cara mendukungnya:",
+  "Invítame un café: donación única o mensual.": "Traktir aku kopi: donasi sekali atau bulanan.",
+  "Si usas GitHub: apoyo único o mensual.": "Kalau kamu pakai GitHub: dukungan sekali atau bulanan.",
   "La canción de BTS más escuchada de 2026 en Spotify (oct. 2026)": "Lagu BTS yang paling banyak diputar di Spotify tahun 2026 (Okt. 2026)",
 };
 

@@ -532,6 +532,11 @@ export default {
   // ── src/config.js ──
   "Apoya el desarrollo del proyecto.": "프로젝트 개발을 후원해 주세요.",
   "Invítame un café.": "커피 한 잔 사 주세요.",
+  "Elige Ko-fi o GitHub Sponsors": "Ko-fi 또는 GitHub Sponsors 선택",
+  "Es gratis y hecho por ARMY. Apóyalo con Ko-fi o GitHub Sponsors.": "ARMY가 만든 무료 앱이에요. Ko-fi나 GitHub Sponsors로 후원해 주세요.",
+  "LumiParty es gratis y lo hace ARMY. Si te gusta, elige cómo apoyarlo:": "LumiParty는 ARMY가 만든 무료 앱이에요. 마음에 든다면 후원 방법을 골라 주세요:",
+  "Invítame un café: donación única o mensual.": "커피 한 잔 사 주세요: 일회성 또는 월간 후원.",
+  "Si usas GitHub: apoyo único o mensual.": "GitHub을 쓴다면: 일회성 또는 월간 후원.",
   "La canción de BTS más escuchada de 2026 en Spotify (oct. 2026)": "2026년 Spotify에서 가장 많이 들은 BTS 곡 (2026년 10월 기준)",
 };
 
