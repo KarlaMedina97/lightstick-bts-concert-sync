@@ -1,0 +1,165 @@
+{
+  "song": "i-need-u",
+  "yt": "jjskoRh8GTE",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-10",
+  "ajustes": [
+    "tiempos escalados ×0.62 (terminaba en 533.3 s, el video dura 333 s)"
+  ],
+  "duracion": 333.3,
+  "aura": "Angustia juvenil, melancolía trágica y hermandad nostálgica",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 5,
+      "escena": "Logotipo de presentación sobre fondo blanco minimalista",
+      "ambiente": "calma",
+      "colores": [
+        "#ffffff",
+        "#cccccc"
+      ]
+    },
+    {
+      "inicio": 5,
+      "fin": 33.7,
+      "escena": "Integrantes aislados en habitaciones frías, bañera, gasolinera y pasillos",
+      "ambiente": "melancolia",
+      "colores": [
+        "#7d858c",
+        "#2c333a",
+        "#e5e5e5"
+      ]
+    },
+    {
+      "inicio": 33.7,
+      "fin": 38.1,
+      "escena": "Título del álbum en letras rojas con pétalos cayendo en la oscuridad",
+      "ambiente": "drama",
+      "colores": [
+        "#c71d2b",
+        "#000000"
+      ]
+    },
+    {
+      "inicio": 38.1,
+      "fin": 68.1,
+      "escena": "Habitación de motel con neón, bañera fría y pastillas en el baño",
+      "ambiente": "melancolia",
+      "colores": [
+        "#d83965",
+        "#3a4a58",
+        "#1c222b"
+      ]
+    },
+    {
+      "inicio": 68.1,
+      "fin": 93,
+      "escena": "Paseo solitario por la vía del tren y habitación con pétalos en el suelo",
+      "ambiente": "drama",
+      "colores": [
+        "#4a545e",
+        "#8b949c",
+        "#181a1f"
+      ]
+    },
+    {
+      "inicio": 93,
+      "fin": 133.6,
+      "escena": "Caminata sobre vagones de tren y callejón nocturno sombrío",
+      "ambiente": "fuerza",
+      "colores": [
+        "#2e3d52",
+        "#7d8792",
+        "#111419"
+      ]
+    },
+    {
+      "inicio": 133.6,
+      "fin": 144.9,
+      "escena": "Carrera por un túnel subterráneo y juegos risueños en un restaurante de comida rápida",
+      "ambiente": "alegria",
+      "colores": [
+        "#4f6377",
+        "#a6b7c6",
+        "#252e37"
+      ]
+    },
+    {
+      "inicio": 144.9,
+      "fin": 159.8,
+      "escena": "Gasolinera solitaria de noche con luces fluorescentes y miembros tumbados en el asfalto",
+      "ambiente": "tension",
+      "colores": [
+        "#1e2a38",
+        "#d1c47a",
+        "#0f1318"
+      ]
+    },
+    {
+      "inicio": 159.8,
+      "fin": 192.3,
+      "escena": "Caminata melancólica sobre un gran puente vehicular bajo cielo nublado",
+      "ambiente": "melancolia",
+      "colores": [
+        "#7b8794",
+        "#b45f43",
+        "#3d454f"
+      ]
+    },
+    {
+      "inicio": 192.3,
+      "fin": 207.3,
+      "escena": "Golpiza violenta en un callejón frente a cortinas metálicas",
+      "ambiente": "tension",
+      "colores": [
+        "#274347",
+        "#1a2530",
+        "#8f3e46"
+      ]
+    },
+    {
+      "inicio": 207.3,
+      "fin": 252.9,
+      "escena": "Desborde de agua en la bañera, flor proyectada en el pecho y forcejeo familiar violento",
+      "ambiente": "drama",
+      "colores": [
+        "#1c2936",
+        "#87323b",
+        "#a9c1d1"
+      ]
+    },
+    {
+      "inicio": 252.9,
+      "fin": 268.5,
+      "escena": "Inmersión en la tina, fogata nocturna entre amigos y angustia extrema",
+      "ambiente": "tension",
+      "colores": [
+        "#11161d",
+        "#d16834",
+        "#4a5a6a"
+      ]
+    },
+    {
+      "inicio": 268.5,
+      "fin": 316,
+      "escena": "Fuegos artificiales nocturnos mientras la habitación se incendia y el coche avanza en la noche",
+      "ambiente": "climax",
+      "colores": [
+        "#ff7733",
+        "#ffffff",
+        "#121b28"
+      ]
+    },
+    {
+      "inicio": 316,
+      "fin": 333,
+      "escena": "Carrera conjunta por el muelle frente al mar, despidiéndose hacia el horizonte nublado",
+      "ambiente": "emocion",
+      "colores": [
+        "#8e9ba6",
+        "#424b54",
+        "#2c333a"
+      ]
+    }
+  ]
+}
