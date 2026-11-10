@@ -362,6 +362,8 @@ const dict = {
   "Al terminar, se detiene.": "When it ends, playback stops.",
   "Apoya el desarrollo del proyecto.": "Support the project's development.",
   "Invítame un café.": "Buy me a coffee.",
+  "Invítame un café: donación única o mensual.": "Buy me a coffee: one-time or monthly donation.",
+  "Si usas GitHub: apoyo único o mensual.": "If you use GitHub: one-time or monthly support.",
 
   // Reto de ritmo y ranking
   "¡Toca al ritmo!": "Tap to the beat!",

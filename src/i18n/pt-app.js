@@ -360,6 +360,8 @@ const dict = {
   "Al terminar, se detiene.": "Ao terminar, para.",
   "Apoya el desarrollo del proyecto.": "Apoie o desenvolvimento do projeto.",
   "Invítame un café.": "Me pague um café.",
+  "Invítame un café: donación única o mensual.": "Me pague um café: doação única ou mensal.",
+  "Si usas GitHub: apoyo único o mensual.": "Se você usa o GitHub: apoio único ou mensal.",
 
   // Reto de ritmo y ranking
   "¡Toca al ritmo!": "Toque no ritmo!",

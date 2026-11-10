@@ -360,6 +360,8 @@ const dict = {
   "Al terminar, se detiene.": "끝나면 재생을 멈춰요.",
   "Apoya el desarrollo del proyecto.": "프로젝트 개발을 후원해 주세요.",
   "Invítame un café.": "커피 한 잔 사 주세요.",
+  "Invítame un café: donación única o mensual.": "커피 한 잔 사 주세요: 일회성 또는 월간 후원.",
+  "Si usas GitHub: apoyo único o mensual.": "GitHub을 쓴다면: 일회성 또는 월간 후원.",
 
   // Reto de ritmo y ranking
   "¡Toca al ritmo!": "박자에 맞춰 탭!",

@@ -2161,8 +2161,9 @@ function bindLibrary() {
   $("side-rail").onclick = () => { const on = !app.classList.contains("rail"); store.set(RAIL_KEY, on); applyRail(on); };
   addEventListener("resize", () => { if (typeof store.get(RAIL_KEY, null) !== "boolean") applyRail(true); });
   $("btn-feedback-2").onclick = (e) => showPanel("panel-feedback", e.currentTarget);
-  const sponsor = DONATIONS.find((d) => d.url)?.url ?? PROJECT.repo;
-  ["lib-support", "ex-support", "nudge-link"].forEach((id) => { const a = $(id); if (a) a.href = sponsor; });
+  ["lib-support", "ex-support"].forEach((id) => { $(id).onclick = (e) => showPanel("panel-support", e.currentTarget); });
+  const nudge = $("nudge-link"); // el aviso de apoyo se retiró: puede no existir
+  if (nudge) nudge.href = DONATIONS.find((d) => d.url)?.url ?? PROJECT.repo;
   const nudgeClose = $("nudge-close"); // el aviso de apoyo se retiró: puede no existir
   if (nudgeClose) nudgeClose.onclick = () => fadeOut($("support-nudge"));
 }
@@ -3258,6 +3259,31 @@ function renderDonations() {
       a.rel = "noopener noreferrer";
       a.textContent = d.label;
       a.title = d.note;
+      return a;
+    }),
+  );
+  // Panel «Apoya a LumiParty»: una tarjeta por opción.
+  $("support-options").replaceChildren(
+    ...DONATIONS.filter((d) => d.url).map((d) => {
+      const a = document.createElement("a");
+      a.className = "support-card";
+      a.href = d.url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      const stick = document.createElement("span");
+      stick.className = "sp-stick";
+      stick.setAttribute("aria-hidden", "true");
+      const txt = document.createElement("span");
+      const name = document.createElement("strong");
+      name.textContent = d.label;
+      const arrow = document.createElement("span");
+      arrow.className = "sp-out";
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "↗";
+      const note = document.createElement("small");
+      note.textContent = d.note;
+      txt.append(name, note);
+      a.append(stick, txt, arrow);
       return a;
     }),
   );

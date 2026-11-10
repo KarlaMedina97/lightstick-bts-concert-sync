@@ -1921,6 +1921,11 @@ button.np[aria-expanded="true"] { background: var(--accent-soft); }
 .support-card { display: flex; align-items: center; gap: var(--s-4); padding: var(--s-4) var(--s-5); border-radius: var(--r-lg); text-decoration: none; color: var(--text); background: linear-gradient(100deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%), var(--surface-field); border: 1px solid var(--border); }
 .support-card strong { display: block; font-size: var(--fs-14); }
 .support-card small { display: block; color: var(--text-2); font-size: var(--fs-12); margin-top: 2px; }
+button.support-pill, button.support-card { width: 100%; font: inherit; text-align: start; cursor: pointer; }
+button.support-pill { font-size: var(--fs-14); font-weight: 700; }
+.support-options { display: grid; gap: var(--s-3); }
+.support-options .support-card > span:nth-child(2) { flex: 1; }
+.support-options .sp-out { color: var(--text-2); font-size: var(--fs-14); }
 .support-card:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
 .support-nudge {
   position: absolute; z-index: var(--z-toast); left: 50%; bottom: calc(var(--pad) + var(--dock-h) + var(--s-3) + var(--safe-b)); transform: translateX(-50%);
