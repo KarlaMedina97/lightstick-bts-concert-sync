@@ -213,7 +213,7 @@
         </section>
       </div>
       <div class="lib-foot">
-        <button id="lib-support" class="support-pill" type="button" aria-haspopup="dialog" aria-controls="panel-support" data-tip="Elige Ko-fi o GitHub Sponsors"><span class="sp-stick" aria-hidden="true"></span><span class="lib-label">Apoya a LumiParty</span></button>
+        <button id="lib-support" class="support-pill" type="button" aria-haspopup="dialog" aria-controls="dlg-support" data-tip="Elige Ko-fi o GitHub Sponsors"><span class="sp-stick" aria-hidden="true"></span><span class="lib-label">Apoya a LumiParty</span></button>
         <button id="btn-feedback" class="lib-item" type="button" aria-haspopup="dialog" aria-controls="panel-feedback" data-tip="Dar mi opinión"><svg aria-hidden="true"><use href="#i-chat"/></svg><span class="lib-label">Dar mi opinión</span></button>
       </div>
     </aside>
@@ -313,7 +313,7 @@
           <button class="btn secondary" type="button" data-go="concerts"><svg aria-hidden="true"><use href="#i-live"/></svg>Conciertos</button>
         </div>
 
-        <button id="ex-support" class="support-card" type="button" aria-haspopup="dialog" aria-controls="panel-support"><span class="sp-stick" aria-hidden="true"></span><span><strong>¿Te gusta LumiParty?</strong><small>Es gratis y hecho por ARMY. Apóyalo con Ko-fi o GitHub Sponsors.</small></span></button>
+        <button id="ex-support" class="support-card" type="button" aria-haspopup="dialog" aria-controls="dlg-support"><span class="sp-stick" aria-hidden="true"></span><span><strong>¿Te gusta LumiParty?</strong><small>Es gratis y hecho por ARMY. Apóyalo con Ko-fi o GitHub Sponsors.</small></span></button>
         <!-- Me gusta: canciones y álbumes en un solo lugar -->
         <!-- Por qué faltan algunos videos oficiales (bloqueos de inserción por derechos) -->
         <details class="info-note subtle">
@@ -742,16 +742,6 @@
 
     <!-- Panel: opinión -->
     <!-- Apoyo: la persona elige entre las opciones de DONATIONS (src/config.js) -->
-    <section id="panel-support" class="panel" role="dialog" aria-labelledby="psu-title" hidden>
-      <div class="panel-head">
-        <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-heart"/></svg></span><h2 id="psu-title">Apoya a LumiParty</h2></div>
-        <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
-      </div>
-      <div class="panel-body">
-        <p class="hint">LumiParty es gratis y lo hace ARMY. Si te gusta, elige cómo apoyarlo:</p>
-        <div id="support-options" class="support-options"></div>
-      </div>
-    </section>
     <section id="panel-feedback" class="panel" role="dialog" aria-labelledby="pf-title" hidden>
       <div class="panel-head">
         <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-chat"/></svg></span><h2 id="pf-title">Tu opinión</h2></div>
@@ -884,6 +874,16 @@
       <button id="dlg-safe-off" class="btn danger" type="button">Desactivar</button>
       <button id="dlg-safe-keep" class="btn primary" type="button" autofocus>Mantener modo seguro</button>
     </div>
+  </dialog>
+
+  <!-- «Apoya a LumiParty»: modal centrado con fondo oscuro; las opciones las llena renderDonations() -->
+  <dialog id="dlg-support" class="dlg dlg-support" aria-labelledby="psu-title">
+    <div class="dlg-head">
+      <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-heart"/></svg></span><h2 id="psu-title">Apoya a LumiParty</h2></div>
+      <button id="dlg-support-close" class="ibtn sm" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <p class="hint">LumiParty es gratis y lo hace ARMY. Si te gusta, elige cómo apoyarlo:</p>
+    <div id="support-options" class="support-options"></div>
   </dialog>
 
   <script type="module" src="../src/i18n.js"></script>
