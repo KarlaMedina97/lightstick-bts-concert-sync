@@ -2161,7 +2161,14 @@ function bindLibrary() {
   $("side-rail").onclick = () => { const on = !app.classList.contains("rail"); store.set(RAIL_KEY, on); applyRail(on); };
   addEventListener("resize", () => { if (typeof store.get(RAIL_KEY, null) !== "boolean") applyRail(true); });
   $("btn-feedback-2").onclick = (e) => showPanel("panel-feedback", e.currentTarget);
-  ["lib-support", "ex-support"].forEach((id) => { $(id).onclick = (e) => showPanel("panel-support", e.currentTarget); });
+  // Modal centrado con fondo oscuro (no un panel lateral): se ve igual abra desde donde abra.
+  const sup = $("dlg-support");
+  let supTrigger = null;
+  ["lib-support", "ex-support"].forEach((id) => { $(id).onclick = (e) => { supTrigger = e.currentTarget; closePanel(false); closeMenus(); sup.showModal(); }; });
+  sup.addEventListener("close", () => supTrigger?.focus?.());
+  $("dlg-support-close").onclick = () => sup.close();
+  // Tocar el fondo oscuro (fuera de la tarjeta) cierra.
+  sup.addEventListener("click", (e) => { if (e.target === sup) sup.close(); });
   const nudge = $("nudge-link"); // el aviso de apoyo se retiró: puede no existir
   if (nudge) nudge.href = DONATIONS.find((d) => d.url)?.url ?? PROJECT.repo;
   const nudgeClose = $("nudge-close"); // el aviso de apoyo se retiró: puede no existir
