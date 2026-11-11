@@ -19,7 +19,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v3
+      - uses: github/codeql-action/init@v4
         with:
           languages: javascript
           # vendor/ son librerías de terceros sin modificar (three.js, GSAP); se analiza solo código propio.
@@ -27,4 +27,4 @@ jobs:
             paths-ignore:
               - vendor
               - fonts
-      - uses: github/codeql-action/analyze@v3
+      - uses: github/codeql-action/analyze@v4
