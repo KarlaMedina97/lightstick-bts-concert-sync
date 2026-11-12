@@ -323,7 +323,7 @@ for (const [vp, w, h] of VIEWPORTS) {
   await evaluate(`localStorage.removeItem("pws.queue.v1")`);
 
   // ---------- Páginas de texto ----------
-  for (const path of ["/privacy/", "/terms/", "/ai/", "/404.html"]) {
+  for (const path of ["/privacy/", "/terms/", "/ai/", "/guide/", "/404.html"]) {
     await open(path, w, h, 1500);
     if (!(await evaluate(noOverflow))) fail(`${path} (${vp})`, "hay scroll horizontal");
     // Todos los enlaces visibles se pueden tocar (no hay nada encima que se lleve el clic).

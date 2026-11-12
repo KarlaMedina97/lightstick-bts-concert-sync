@@ -539,6 +539,7 @@ export default {
   "Invítame un café: donación única o mensual.": "Buy me a coffee: one-time or monthly donation.",
   "Si usas GitHub: apoyo único o mensual.": "If you use GitHub: one-time or monthly support.",
   "La canción de BTS más escuchada de 2026 en Spotify (oct. 2026)": "BTS's most-streamed song of 2026 on Spotify (Oct. 2026)",
+  "¿No conecta? Guía y solución de problemas": "Won't connect? Guide and troubleshooting",
 };
 
 export const patterns = [

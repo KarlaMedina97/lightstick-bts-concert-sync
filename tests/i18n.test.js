@@ -20,7 +20,7 @@ function pageStrings(file) {
 // Iguales en ambos idiomas (marcas, nombres, palabras compartidas).
 const SAME = /^(LumiParty( Sync)?|ARMY Bomb,?|Fan|&nbsp;|https?:\/\/\S+|[a-z0-9-]+\.(com|net|org|io|co)|BTS|Video|YouTube|GitHub|Genius|Bluefy|Fanchant|Nickname|Combo|Normal|Color|Intro|llms.txt|Collar|Aqua|SE|Special Edition( \(SE\))?|Ver\. \d|SWIM · BTS|Bluetooth:?|Web Bluetooth|Borahae.*|.*[ㄱ-힝].*|[A-Z0-9 .,:'’!?&/~·+-]+)$/;
 
-for (const file of ["index.html", "player/index.html", "privacy/index.html", "terms/index.html", "ai/index.html", "404.html"]) {
+for (const file of ["index.html", "player/index.html", "privacy/index.html", "terms/index.html", "ai/index.html", "guide/index.html", "404.html"]) {
   test(`${file}: todo texto visible tiene traducción al inglés`, () => {
     const missing = pageStrings(file).filter((s) => !SAME.test(s) && translate(s) === s);
     assert.deepEqual(missing, [], `Faltan en src/i18n/en-*.js:\n${missing.join("\n")}`);

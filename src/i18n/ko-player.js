@@ -539,6 +539,7 @@ export default {
   "Invítame un café: donación única o mensual.": "커피 한 잔 사 주세요: 일회성 또는 월간 후원.",
   "Si usas GitHub: apoyo único o mensual.": "GitHub을 쓴다면: 일회성 또는 월간 후원.",
   "La canción de BTS más escuchada de 2026 en Spotify (oct. 2026)": "2026년 Spotify에서 가장 많이 들은 BTS 곡 (2026년 10월 기준)",
+  "¿No conecta? Guía y solución de problemas": "연결이 안 되나요? 가이드와 문제 해결",
 };
 
 export const patterns = [

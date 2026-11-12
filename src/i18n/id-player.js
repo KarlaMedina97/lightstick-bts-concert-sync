@@ -539,6 +539,7 @@ export default {
   "Invítame un café: donación única o mensual.": "Traktir aku kopi: donasi sekali atau bulanan.",
   "Si usas GitHub: apoyo único o mensual.": "Kalau kamu pakai GitHub: dukungan sekali atau bulanan.",
   "La canción de BTS más escuchada de 2026 en Spotify (oct. 2026)": "Lagu BTS yang paling banyak diputar di Spotify tahun 2026 (Okt. 2026)",
+  "¿No conecta? Guía y solución de problemas": "Tidak terhubung? Panduan dan pemecahan masalah",
 };
 
 export const patterns = [
