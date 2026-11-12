@@ -1617,13 +1617,24 @@ async function buildScene() {
   // ---------- CTA principal: imán, pulso al ritmo, onda al pulsar y "entrada" al reproductor ----------
   const orbs = [...document.querySelectorAll(".orb-cta")]; // los dos botones del hero (Empezar y Conectar)
   // Imán: un solo listener para todos los botones (no uno por botón).
+  // Solo se mueve el botón más cercano y como mucho 6 px a los lados: antes se movían los dos hacia el puntero y, con
+  // el mouse entre ellos (están a .75rem), se montaban uno sobre otro (más con los textos largos en inglés).
+  // La posición se mide sin el desplazamiento que ya tiene, para que el imán no se amplifique solo.
+  const MAX_X = 6, MAX_Y = 8;
+  const clamp = (v, m) => Math.max(-m, Math.min(m, v));
   if (orbs.length && !reduceMotion) addEventListener("pointermove", (e) => {
+    let best = null;
     for (const orb of orbs) {
       const r = orb.getBoundingClientRect();
-      const cx = r.left + r.width / 2, cy = r.top + r.height / 2, dx = e.clientX - cx, dy = e.clientY - cy;
-      const near = Math.hypot(dx / (r.width / 2 + 60), dy / (r.height / 2 + 60)) < 1;
-      orb.style.setProperty("--mx", near ? `${(dx * 0.18).toFixed(1)}px` : "0px");
-      orb.style.setProperty("--my", near ? `${(dy * 0.3).toFixed(1)}px` : "0px");
+      const ox = parseFloat(orb.style.getPropertyValue("--mx")) || 0, oy = parseFloat(orb.style.getPropertyValue("--my")) || 0;
+      const cx = r.left - ox + r.width / 2, cy = r.top - oy + r.height / 2, dx = e.clientX - cx, dy = e.clientY - cy;
+      const d = Math.hypot(dx / (r.width / 2 + 60), dy / (r.height / 2 + 60));
+      if (d < 1 && (!best || d < best.d)) best = { orb, d, dx, dy };
+    }
+    for (const orb of orbs) {
+      const on = best?.orb === orb;
+      orb.style.setProperty("--mx", on ? `${clamp(best.dx * 0.18, MAX_X).toFixed(1)}px` : "0px");
+      orb.style.setProperty("--my", on ? `${clamp(best.dy * 0.3, MAX_Y).toFixed(1)}px` : "0px");
     }
   });
   for (const orb of orbs) {
