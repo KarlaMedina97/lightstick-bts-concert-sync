@@ -808,5 +808,14 @@ export function generateConcertPattern(duration, opts) {
       const s = b.p.sectionAt(t - b.start);
       return { ...s, label: `bloque ${b.n} · ${s.label}` };
     },
+    // El reproductor los pide en cada cuadro (etiqueta «Luces: …» y energía); sin ellos, los conciertos fallaban.
+    styleAt(t, n = 1) {
+      const b = blockAt(t);
+      return b.p.styleAt(t - b.start, n);
+    },
+    energyAt(t) {
+      const b = blockAt(t);
+      return b.p.energyAt(t - b.start);
+    },
   };
 }
