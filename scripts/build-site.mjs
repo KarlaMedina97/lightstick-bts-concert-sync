@@ -132,7 +132,8 @@ for (const [path, file] of Object.entries(LOCALIZED)) {
   const base = readFileSync(join(OUT, "sitemap.xml"), "utf8");
   const extra = [
     ...localized.map((path) => `  <url><loc>https://lumiparty.com${path}</loc></url>`),
-    ...routes.filter((r) => !r[3] && !r[4]).map(([slug]) => `  <url><loc>https://lumiparty.com/player/${slug}</loc></url>`),
+    // Sin repetidas: /player/lights es la vista Luces y también la canción «Lights».
+    ...[...new Set(routes.filter((r) => !r[3] && !r[4]).map(([slug]) => slug))].map((slug) => `  <url><loc>https://lumiparty.com/player/${slug}</loc></url>`),
   ];
   writeFileSync(join(OUT, "sitemap.xml"), base.replace("</urlset>", [...extra, "</urlset>"].join("\n")));
 }
