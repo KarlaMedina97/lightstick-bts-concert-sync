@@ -257,8 +257,8 @@ export default {
   "Color sincronizado por Bluetooth con estas versiones.": "이 버전들은 Bluetooth로 색이 동기화돼요.",
   "Familia V4": "V4 계열",
   "Familia SE/V3": "SE/V3 계열",
-  "Ilustraciones inspiradas; emblemas originales. Aún sin pruebas con cada hardware.":
-    "실물에서 영감을 받은 일러스트이며 엠블럼은 자체 디자인이에요. 아직 모든 하드웨어에서 테스트하지는 않았어요.",
+  "Ilustraciones inspiradas; emblemas originales. Probado con un ARMY Bomb real en iPhone (con Bluefy) y Android; aún no con cada modelo.":
+    "영감을 받은 일러스트, 오리지널 엠블럼. 실제 ARMY Bomb으로 iPhone(Bluefy)과 Android에서 테스트했어요. 아직 모든 모델은 아니에요.",
   "Conectar mi ARMY Bomb": "내 ARMY Bomb 연결하기",
 
   // ---------- 06 Océano ----------
@@ -379,7 +379,7 @@ export default {
   "Ver. 4 (la más nueva)": "Ver. 4 (최신)",
   "Ver. 1 y Ver. 2 no tienen Bluetooth: con ellas, tu pantalla brilla con los colores de cada canción.": "Ver. 1과 Ver. 2는 Bluetooth가 없어요. 대신 화면이 곡마다 색으로 빛나요.",
   "En la lista del navegador aparece con nombres como BTS LIGHTSTICK3, BTS LIGHTSTICK_SE, BTS_V4 LS o BBOMB-…": "브라우저 목록에는 BTS LIGHTSTICK3, BTS LIGHTSTICK_SE, BTS_V4 LS, BBOMB-… 같은 이름으로 보여요.",
-  "Aún no se ha probado con cada modelo. Si el tuyo no conecta, cuéntalo en Dar mi opinión, dentro de la app.": "아직 모든 모델로 테스트하지는 못했어요. 연결되지 않으면 앱 안의 의견 보내기로 알려 주세요.",
+  "Ya se probó con un ARMY Bomb real en iPhone (con Bluefy) y en Android, pero aún no con cada modelo. Si el tuyo no conecta, cuéntalo en Dar mi opinión, dentro de la app.": "실제 ARMY Bomb으로 iPhone(Bluefy)과 Android에서 테스트했지만, 아직 모든 모델은 아니에요. 연결되지 않으면 앱 안의 의견 보내기로 알려 주세요.",
   "Android y computadora: Chrome o Edge.": "Android·컴퓨터: Chrome 또는 Edge.",
   "iPhone y iPad: Safari no permite conectar por Bluetooth. Usa la app gratuita Bluefy y abre lumiparty.com desde ahí.": "iPhone·iPad: Safari는 Bluetooth 연결을 지원하지 않아요. 무료 앱 Bluefy에서 lumiparty.com을 열어 주세요.",
   "Brave: trae el Bluetooth web desactivado. Para activarlo, pega esta dirección en la barra de Brave:": "Brave: 웹 Bluetooth가 꺼져 있어요. 켜려면 Brave 주소창에 이 주소를 붙여 넣으세요:",
