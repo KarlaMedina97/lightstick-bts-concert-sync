@@ -1,0 +1,120 @@
+{
+  "song": "awakening",
+  "yt": "JKBM9y3EuDQ",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-11",
+  "duracion": 160,
+  "aura": "catarsis introspectiva y poderosa entre rap furioso, fuego abrasador y renacimiento personal",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 23,
+      "escena": "Fondo oscuro con humo denso, chispas de fuego en vendas y primeros planos de RM",
+      "ambiente": "tension",
+      "colores": [
+        "#0d0e12",
+        "#e65100",
+        "#454b54"
+      ]
+    },
+    {
+      "inicio": 23,
+      "fin": 44,
+      "escena": "RM vestido de negro y gorra rapeando con fuerza en un fondo oscuro",
+      "ambiente": "fuerza",
+      "colores": [
+        "#070709",
+        "#2b2e36",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 44,
+      "fin": 54,
+      "escena": "Busto cubierto de vendas con brasas incandescentes y humo aumentando",
+      "ambiente": "tension",
+      "colores": [
+        "#0f1115",
+        "#ff3d00",
+        "#5c6370"
+      ]
+    },
+    {
+      "inicio": 54,
+      "fin": 76,
+      "escena": "Llamarada intensa envolviendo la cabeza vendada en llamas amarillas y rojas",
+      "ambiente": "climax",
+      "colores": [
+        "#ff9100",
+        "#ffea00",
+        "#1c0a02"
+      ]
+    },
+    {
+      "inicio": 76,
+      "fin": 87,
+      "escena": "Rap rápido y gestual en la oscuridad con destellos de fuego ardiente",
+      "ambiente": "fuerza",
+      "colores": [
+        "#0a0b0d",
+        "#ff6d00",
+        "#373b43"
+      ]
+    },
+    {
+      "inicio": 87,
+      "fin": 103,
+      "escena": "Estribillo con una columna de fuego ardiente en el centro y RM cantando en penumbra",
+      "ambiente": "drama",
+      "colores": [
+        "#ffab00",
+        "#08080a",
+        "#e0e0e0"
+      ]
+    },
+    {
+      "inicio": 103,
+      "fin": 124,
+      "escena": "Fuego abrasador consumiendo las vendas mientras RM gesticula con angustia",
+      "ambiente": "emocion",
+      "colores": [
+        "#ff6d00",
+        "#fff176",
+        "#0b0c10"
+      ]
+    },
+    {
+      "inicio": 124,
+      "fin": 129,
+      "escena": "Extinción del fuego y silueta de RM cabizbajo en completa oscuridad",
+      "ambiente": "calma",
+      "colores": [
+        "#050507",
+        "#1c1d22",
+        "#484d56"
+      ]
+    },
+    {
+      "inicio": 129,
+      "fin": 149,
+      "escena": "RM desenrolla pausadamente las vendas blancas de su rostro revelando su identidad",
+      "ambiente": "melancolia",
+      "colores": [
+        "#07080a",
+        "#f0ece1",
+        "#c7a783"
+      ]
+    },
+    {
+      "inicio": 149,
+      "fin": 160,
+      "escena": "RM con la gorra baja en la oscuridad, desvaneciéndose en el logotipo final",
+      "ambiente": "calma",
+      "colores": [
+        "#000000",
+        "#181a1d",
+        "#8c9096"
+      ]
+    }
+  ]
+}

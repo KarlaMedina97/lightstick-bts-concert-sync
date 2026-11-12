@@ -7,7 +7,7 @@
   "primerTiempo": 0.53,
   "verificacion": {
     "audio": "Escuchado completo desde el reproductor oficial (graves, agudos y golpes medidos cada ~23 ms, sin grabar audio); tempo por autocorrelación; fronteras por cambios de energía; acentos en golpes de bajo reales.",
-    "imagen": "Colores del análisis cuadro a cuadro del MV en cada momento, con preferencia por blanco, amarillo, naranja, rojo y morado.",
+    "imagen": "Colores por momento según Gemini (gemini-3.8-flash); aura: rap oscuro e incisivo, tensión psicológica y agresión lírica vertiginosa",
     "confianza": "media",
     "dudas": [
       "Los nombres de sección se deducen del sonido (no de la letra)."
@@ -17,52 +17,32 @@
     {
       "nombre": "#ff7a00",
       "hex": "#ff7a00",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "de": "colores del MV según Gemini, por momento"
     },
     {
       "nombre": "#ffd000",
       "hex": "#ffd000",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
-      "nombre": "#ff1f51",
-      "hex": "#ff1f51",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
-      "nombre": "#ffffff",
-      "hex": "#ffffff",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
-      "nombre": "#c8102e",
-      "hex": "#c8102e",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
-      "nombre": "#ffc840",
-      "hex": "#ffc840",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "de": "colores del MV según Gemini, por momento"
     },
     {
       "nombre": "#8a2be2",
       "hex": "#8a2be2",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "de": "colores del MV según Gemini, por momento"
     },
     {
-      "nombre": "#36ccff",
-      "hex": "#36ccff",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "nombre": "#ffffff",
+      "hex": "#ffffff",
+      "de": "colores del MV según Gemini, por momento"
     },
     {
-      "nombre": "#b388ff",
-      "hex": "#b388ff",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "nombre": "#ffc840",
+      "hex": "#ffc840",
+      "de": "colores del MV según Gemini, por momento"
     },
     {
-      "nombre": "#38d2ff",
-      "hex": "#38d2ff",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "nombre": "#6e0c0e",
+      "hex": "#6e0c0e",
+      "de": "colores del MV según Gemini, por momento"
     }
   ],
   "tramos": [
@@ -106,9 +86,9 @@
       "inicio": 17.6,
       "fin": 27.4,
       "seccion": "verso",
-      "evidencia": "graves ×22.6, agudos ×2.2, energía ×2.5 y 2.4 golpes por segundo (pesado)",
+      "evidencia": "graves ×22.6, agudos ×2.2, energía ×2.5 y 2.4 golpes por segundo (pesado) · escena: Guardia patrullando el pasillo frío, manos buscando escapar y mirilla enrejada",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ff1f51",
+      "color": "#8a2be2",
       "color2": "#ffffff",
       "brillo": 0.86,
       "brilloFin": 0.95,
@@ -137,10 +117,10 @@
       "inicio": 27.4,
       "fin": 71.3,
       "seccion": "verso",
-      "evidencia": "graves ×2.8, agudos ×1.4, energía ×1 y 1.9 golpes por segundo (pesado)",
+      "evidencia": "graves ×2.8, agudos ×1.4, energía ×1 y 1.9 golpes por segundo (pesado) · escena: RM rapeando con agresividad inmovilizado en camisa de fuerza por el pasillo",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#c8102e",
-      "color2": "#ffc840",
+      "color": "#ffffff",
+      "color2": "#8a2be2",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -210,10 +190,10 @@
       "inicio": 71.3,
       "fin": 81,
       "seccion": "verso",
-      "evidencia": "graves ×2.6, agudos ×1.2, energía ×0.9 y 1.9 golpes por segundo (pesado)",
+      "evidencia": "graves ×2.6, agudos ×1.2, energía ×0.9 y 1.9 golpes por segundo (pesado) · escena: Primer plano de jeringas preparándose y RM en bata de hospital bajo luz clínica",
       "sigue": "golpes de bombo y retumbones de bajo",
       "color": "#8a2be2",
-      "color2": "#ffd000",
+      "color2": "#ffffff",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -241,10 +221,10 @@
       "inicio": 81,
       "fin": 90.8,
       "seccion": "verso",
-      "evidencia": "graves ×2.4, agudos ×2, energía ×1.3 y 1.6 golpes por segundo (pesado)",
+      "evidencia": "graves ×2.4, agudos ×2, energía ×1.3 y 1.6 golpes por segundo (pesado) · escena: Secuencia rápida alternando a RM de paciente desquiciado y de guardia de seguridad",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ffc840",
-      "color2": "#ff1f51",
+      "color": "#ffffff",
+      "color2": "#8a2be2",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -271,10 +251,10 @@
       "inicio": 90.8,
       "fin": 120.1,
       "seccion": "verso",
-      "evidencia": "graves ×2.7, agudos ×1.7, energía ×1.2 y 1.7 golpes por segundo (pesado)",
+      "evidencia": "graves ×2.7, agudos ×1.7, energía ×1.2 y 1.7 golpes por segundo (pesado) · escena: Secuencia rápida alternando a RM de paciente desquiciado y de guardia de seguridad",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#c8102e",
-      "color2": "#ffc840",
+      "color": "#8a2be2",
+      "color2": "#ffffff",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -321,10 +301,10 @@
       "inicio": 120.1,
       "fin": 146.9,
       "seccion": "verso",
-      "evidencia": "graves ×2.6, agudos ×1.3, energía ×1 y 1.9 golpes por segundo (pesado)",
+      "evidencia": "graves ×2.6, agudos ×1.3, energía ×1 y 1.9 golpes por segundo (pesado) · escena: Habitación lúgubre, RM acorralado en la cama y bandeja con jeringas de sedante",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#8a2be2",
-      "color2": "#ffd000",
+      "color": "#ffffff",
+      "color2": "#8a2be2",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -391,9 +371,9 @@
       "inicio": 164,
       "fin": 176.2,
       "seccion": "coro final",
-      "evidencia": "graves ×2.5, agudos ×3.1, energía ×1.8 y 1.6 golpes por segundo (brillo)",
+      "evidencia": "graves ×2.5, agudos ×3.1, energía ×1.8 y 1.6 golpes por segundo (brillo) · escena: RM atado a la silla eléctrica desatando un rap implacable y desenfrenado",
       "sigue": "el pulso del compás",
-      "color": "#ffd000",
+      "color": "#ffc840",
       "color2": "#ffffff",
       "brillo": 1,
       "brilloFin": 1,
@@ -419,10 +399,10 @@
       "inicio": 176.2,
       "fin": 190.8,
       "seccion": "verso",
-      "evidencia": "graves ×1.6, agudos ×0.9, energía ×0.6 y 1.6 golpes por segundo (suave)",
+      "evidencia": "graves ×1.6, agudos ×0.9, energía ×0.6 y 1.6 golpes por segundo (suave) · escena: El guardia se marcha cerrando puertas pesadas, RM en silencio y fundido a negro final",
       "sigue": "el pulso del compás",
-      "color": "#8a2be2",
-      "color2": "#36ccff",
+      "color": "#6e0c0e",
+      "color2": "#8a2be2",
       "brillo": 0.35,
       "brilloFin": 0.5,
       "transicion": "fundido",
@@ -437,10 +417,10 @@
       "inicio": 190.8,
       "fin": 195,
       "seccion": "verso",
-      "evidencia": "graves ×0.5, agudos ×0.3, energía ×0.2 y 0.2 golpes por segundo (suave)",
+      "evidencia": "graves ×0.5, agudos ×0.3, energía ×0.2 y 0.2 golpes por segundo (suave) · escena: El guardia se marcha cerrando puertas pesadas, RM en silencio y fundido a negro final",
       "sigue": "el pulso del compás",
-      "color": "#b388ff",
-      "color2": "#38d2ff",
+      "color": "#ffffff",
+      "color2": "#6e0c0e",
       "brillo": 0.35,
       "brilloFin": 0.5,
       "transicion": "fundido",
@@ -473,9 +453,9 @@
       "inicio": 196.6,
       "fin": 199.3,
       "seccion": "final",
-      "evidencia": "graves ×0.1, agudos ×0, energía ×0 y 0 golpes por segundo (final)",
+      "evidencia": "graves ×0.1, agudos ×0, energía ×0 y 0 golpes por segundo (final) · escena: El guardia se marcha cerrando puertas pesadas, RM en silencio y fundido a negro final",
       "sigue": "el pulso del compás",
-      "color": "#38d2ff",
+      "color": "#6e0c0e",
       "color2": null,
       "brillo": 0.6,
       "brilloFin": 0,

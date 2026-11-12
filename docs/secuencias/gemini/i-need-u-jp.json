@@ -1,0 +1,142 @@
+{
+  "song": "i-need-u-jp",
+  "yt": "LYAcYSmaLoc",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-11",
+  "duracion": 219,
+  "aura": "melancolía juvenil desgarradora y explosión emocional con estética floral decadente",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 24.5,
+      "escena": "Integrantes tumbados en círculo en una sala de concreto en ruinas cubierta de vegetación y un gran mural de flores",
+      "ambiente": "melancolia",
+      "colores": [
+        "#E8ECEF",
+        "#5A6D57",
+        "#B5446E"
+      ]
+    },
+    {
+      "inicio": 24.5,
+      "fin": 36.5,
+      "escena": "J-Hope interpreta su verso con camisa blanca y corbatín negro frente al mural de flores",
+      "ambiente": "tension",
+      "colores": [
+        "#F5F5F5",
+        "#3C5A3E",
+        "#C83259"
+      ]
+    },
+    {
+      "inicio": 36.5,
+      "fin": 48,
+      "escena": "Primer plano de V con sombrero negro y escenas oscuras en un baño deteriorado con pastillas",
+      "ambiente": "drama",
+      "colores": [
+        "#2C3539",
+        "#B8A882",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 48,
+      "fin": 73,
+      "escena": "Coreografía sincronizada en el salón floral, alternando con planos individuales emocionales",
+      "ambiente": "emocion",
+      "colores": [
+        "#E6E9F0",
+        "#D14569",
+        "#4B6354"
+      ]
+    },
+    {
+      "inicio": 73,
+      "fin": 85,
+      "escena": "Quiebre instrumental con baile enérgico en grupo e iluminación fría",
+      "ambiente": "fuerza",
+      "colores": [
+        "#5D7A88",
+        "#D84A58",
+        "#EFEFEF"
+      ]
+    },
+    {
+      "inicio": 85,
+      "fin": 109.5,
+      "escena": "RM rapea frente a un muro texturizado de pintura roja y azul con cuadro oscuro y líquido negro en la mano",
+      "ambiente": "tension",
+      "colores": [
+        "#B23B3B",
+        "#536878",
+        "#22252A"
+      ]
+    },
+    {
+      "inicio": 109.5,
+      "fin": 121,
+      "escena": "Jin cantando con sombrero negro frente al grupo y V sentado en un nido circular de flores",
+      "ambiente": "melancolia",
+      "colores": [
+        "#3A4E48",
+        "#D05370",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 121,
+      "fin": 146,
+      "escena": "Segundo estribillo con baile potente, bañera llena de flores y pastillas dispersas en el suelo",
+      "ambiente": "fuerza",
+      "colores": [
+        "#D84C6F",
+        "#E9ECF1",
+        "#3F524A"
+      ]
+    },
+    {
+      "inicio": 146,
+      "fin": 171,
+      "escena": "Puente conmovedor con Jin sentado en una cama rodeado de lirios blancos en la oscuridad y Jungkook entre flores",
+      "ambiente": "drama",
+      "colores": [
+        "#0C1017",
+        "#EAEAEA",
+        "#385E5A"
+      ]
+    },
+    {
+      "inicio": 171,
+      "fin": 196,
+      "escena": "Estribillo culminante con saltos y giros de baile intensos frente al mural floral",
+      "ambiente": "climax",
+      "colores": [
+        "#E2496E",
+        "#F2F2F2",
+        "#2B3A42"
+      ]
+    },
+    {
+      "inicio": 196,
+      "fin": 211.5,
+      "escena": "Remate coreográfico a contraluz y el grupo caminando de espaldas hacia el fondo de flores",
+      "ambiente": "fuerza",
+      "colores": [
+        "#323E48",
+        "#E34D74",
+        "#A8B2B7"
+      ]
+    },
+    {
+      "inicio": 211.5,
+      "fin": 219,
+      "escena": "Jin solo bajo un haz de luz vertical en la cama entre lirios blancos en penumbra total",
+      "ambiente": "calma",
+      "colores": [
+        "#05070A",
+        "#FFFFFF",
+        "#283344"
+      ]
+    }
+  ]
+}

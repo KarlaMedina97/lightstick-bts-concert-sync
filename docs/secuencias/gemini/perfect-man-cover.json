@@ -1,0 +1,109 @@
+{
+  "song": "perfect-man-cover",
+  "yt": "AMMx1hOwH-4",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-11",
+  "duracion": 141,
+  "aura": "energía desbordante, nostalgia pop y carisma juvenil con coreografía impecable",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 17,
+      "escena": "Apertura en el escenario con pantalla de tablero ajedrezado 'PERFECT MAN', trajes oscuros e introducción vocal",
+      "ambiente": "fuerza",
+      "colores": [
+        "#ff6b00",
+        "#ffffff",
+        "#1a1a1a"
+      ]
+    },
+    {
+      "inicio": 17,
+      "fin": 35.5,
+      "escena": "Comienza la coreografía con Jimin al frente bajo reflectores ámbar y luces cruzadas dinámicas",
+      "ambiente": "fiesta",
+      "colores": [
+        "#ff9900",
+        "#ffffff",
+        "#000000"
+      ]
+    },
+    {
+      "inicio": 35.5,
+      "fin": 54,
+      "escena": "Jungkook y el grupo ejecutan pasos de baile sincronizados mientras rayos de luz dorada barren el escenario",
+      "ambiente": "tension",
+      "colores": [
+        "#ffaa00",
+        "#e67e22",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 54,
+      "fin": 72,
+      "escena": "Primer estribillo potente con haces dorados radiantes e insertos del público animando",
+      "ambiente": "alegria",
+      "colores": [
+        "#ff8800",
+        "#e74c3c",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 72,
+      "fin": 81.5,
+      "escena": "Sección de rap con toma cenital sobre el piso ajedrezado circular y luces naranja cálidas",
+      "ambiente": "fuerza",
+      "colores": [
+        "#d35400",
+        "#f39c12",
+        "#111111"
+      ]
+    },
+    {
+      "inicio": 81.5,
+      "fin": 99,
+      "escena": "Jimin lidera el verso melódico y se quita la chaqueta con intensidad frente a la pantalla gigante",
+      "ambiente": "emocion",
+      "colores": [
+        "#e67e22",
+        "#ffb347",
+        "#000000"
+      ]
+    },
+    {
+      "inicio": 99,
+      "fin": 119,
+      "escena": "Puente de la canción con coreografía dinámica y reflectores blancos y dorados en abanico",
+      "ambiente": "fuerza",
+      "colores": [
+        "#ffffff",
+        "#f39c12",
+        "#2c3e50"
+      ]
+    },
+    {
+      "inicio": 119,
+      "fin": 136,
+      "escena": "Coro final de alta intensidad vocal y bailable con luces estroboscópicas y saltos coordinados",
+      "ambiente": "climax",
+      "colores": [
+        "#ff9900",
+        "#ffffff",
+        "#e74c3c"
+      ]
+    },
+    {
+      "inicio": 136,
+      "fin": 141,
+      "escena": "Remate con pose final en el suelo bajo un potente contraluz blanco cegador",
+      "ambiente": "climax",
+      "colores": [
+        "#ffffff",
+        "#ff7700",
+        "#000000"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "song": "boy-in-luv-jp",
+  "yt": "ocqCmfw145A",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-11",
+  "ajustes": [
+    "1 tramo(s) sin duración quitados",
+    "tiempos escalados ×0.68 (terminaba en 349.2 s, el video dura 236 s)"
+  ],
+  "duracion": 236,
+  "aura": "energía juvenil rebelde, coreografía contundente de hip-hop y estética escolar grunge",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 9.8,
+      "escena": "Introducción y título en el aula vacía con suelo de madera e iluminación fluorescente fría",
+      "ambiente": "fuerza",
+      "colores": [
+        "#1B2129",
+        "#7A8996",
+        "#DDE3EA"
+      ]
+    },
+    {
+      "inicio": 9.8,
+      "fin": 17.9,
+      "escena": "Coreografía inicial agresiva con saltos y gestos desafiantes en formación grupal",
+      "ambiente": "fuerza",
+      "colores": [
+        "#11141A",
+        "#5D7286",
+        "#CCD8E2"
+      ]
+    },
+    {
+      "inicio": 17.9,
+      "fin": 25.3,
+      "escena": "Primer verso con Jungkook y el grupo ejecutando pasos ágiles frente a las pizarras",
+      "ambiente": "tension",
+      "colores": [
+        "#232B35",
+        "#6E7C8B",
+        "#C2CED6"
+      ]
+    },
+    {
+      "inicio": 25.3,
+      "fin": 33.3,
+      "escena": "Rap Monster rapeando sentado junto a la mesa con platos de DJ en el aula",
+      "ambiente": "fuerza",
+      "colores": [
+        "#3A444E",
+        "#8C99A4",
+        "#ECEFF2"
+      ]
+    },
+    {
+      "inicio": 33.3,
+      "fin": 68.6,
+      "escena": "Verso de J-Hope bailando con estilo callejero y teatral junto a las taquillas escolares",
+      "ambiente": "alegria",
+      "colores": [
+        "#262D35",
+        "#5A6978",
+        "#BAC9D4"
+      ]
+    },
+    {
+      "inicio": 68.6,
+      "fin": 75.6,
+      "escena": "Pre-estribillo vocal con V y Jungkook aumentando la intensidad corporal",
+      "ambiente": "tension",
+      "colores": [
+        "#222933",
+        "#6F8091",
+        "#D8E1E8"
+      ]
+    },
+    {
+      "inicio": 75.6,
+      "fin": 91.6,
+      "escena": "Estribillo principal con baile explosivo y sincronizado en el centro del aula con neblina",
+      "ambiente": "climax",
+      "colores": [
+        "#1A222B",
+        "#53677A",
+        "#E5ECF2"
+      ]
+    },
+    {
+      "inicio": 91.6,
+      "fin": 99.2,
+      "escena": "Remate del estribillo con pasos rítmicos marcados y primeros planos de actitud",
+      "ambiente": "fuerza",
+      "colores": [
+        "#242E3B",
+        "#6A7F93",
+        "#D4DEE5"
+      ]
+    },
+    {
+      "inicio": 99.2,
+      "fin": 142.3,
+      "escena": "Segundo verso rapeado por Suga y Jimin entre pupitres y taquillas oscuras",
+      "ambiente": "fuerza",
+      "colores": [
+        "#202730",
+        "#617384",
+        "#CFD9E1"
+      ]
+    },
+    {
+      "inicio": 142.3,
+      "fin": 150.2,
+      "escena": "Intervención de Rap Monster liderando la formación con gestos de mando",
+      "ambiente": "fuerza",
+      "colores": [
+        "#27313D",
+        "#768798",
+        "#E2EAEE"
+      ]
+    },
+    {
+      "inicio": 150.2,
+      "fin": 156.8,
+      "escena": "Segundo pre-estribillo con Jin avanzando al frente y tensión ascendente",
+      "ambiente": "tension",
+      "colores": [
+        "#212933",
+        "#6D7F91",
+        "#D3DEE6"
+      ]
+    },
+    {
+      "inicio": 156.8,
+      "fin": 173.1,
+      "escena": "Segundo estribillo con gran impacto coreográfico y movimientos dinámicos de cámara",
+      "ambiente": "climax",
+      "colores": [
+        "#19212A",
+        "#576A7D",
+        "#E0E7EC"
+      ]
+    },
+    {
+      "inicio": 173.1,
+      "fin": 218.2,
+      "escena": "Puente melódico y emotivo a contraluz frente al gran ventanal soleado",
+      "ambiente": "emocion",
+      "colores": [
+        "#1C232A",
+        "#8292A1",
+        "#F0F4F7"
+      ]
+    },
+    {
+      "inicio": 218.2,
+      "fin": 236,
+      "escena": "Estribillo final con potencia máxima, coreografía culminante y energía desbordante",
+      "ambiente": "climax",
+      "colores": [
+        "#182029",
+        "#54687B",
+        "#E3EAEF"
+      ]
+    }
+  ]
+}

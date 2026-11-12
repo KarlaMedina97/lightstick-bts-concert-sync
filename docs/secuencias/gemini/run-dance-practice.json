@@ -1,0 +1,153 @@
+{
+  "song": "run-dance-practice",
+  "yt": "9S3ZhJGv8JM",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-11",
+  "duracion": 237,
+  "aura": "energía juvenil desbordante, determinación apasionada y sincronización electrizante",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 14,
+      "escena": "Sala de ensayo con espejos e iluminación cálida; miembros esperando en el suelo con ropa en blanco y negro.",
+      "ambiente": "calma",
+      "colores": [
+        "#6e7075",
+        "#ffffff",
+        "#212124"
+      ]
+    },
+    {
+      "inicio": 14,
+      "fin": 28.5,
+      "escena": "Inicio del rap y primeros movimientos sincronizados que rompen la quietud del estudio.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#ffffff",
+        "#1f1f23",
+        "#828388"
+      ]
+    },
+    {
+      "inicio": 28.5,
+      "fin": 43,
+      "escena": "Coreografía rítmica con formaciones dinámicas y transiciones rápidas de rap.",
+      "ambiente": "tension",
+      "colores": [
+        "#ffffff",
+        "#222222",
+        "#4a3b32"
+      ]
+    },
+    {
+      "inicio": 43,
+      "fin": 57.5,
+      "escena": "Pre-estribillo con movimientos vocales fluidos y pasos graduales de anticipación.",
+      "ambiente": "emocion",
+      "colores": [
+        "#e0e0e0",
+        "#303030",
+        "#8e9196"
+      ]
+    },
+    {
+      "inicio": 57.5,
+      "fin": 86.5,
+      "escena": "Estribillo enérgico simulando una carrera intensa con saltos y brazos sincronizados.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#ffffff",
+        "#111111",
+        "#d47a3e"
+      ]
+    },
+    {
+      "inicio": 86.5,
+      "fin": 101,
+      "escena": "Sección post-estribillo con rebotes rítmicos y desplazamiento colectivo en el centro de la sala.",
+      "ambiente": "tension",
+      "colores": [
+        "#202022",
+        "#ffffff",
+        "#7c7f85"
+      ]
+    },
+    {
+      "inicio": 101,
+      "fin": 115.5,
+      "escena": "Segundo verso con rimas ágiles y pasos de hip hop definidos.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#ffffff",
+        "#252528",
+        "#5b4c3e"
+      ]
+    },
+    {
+      "inicio": 115.5,
+      "fin": 129.5,
+      "escena": "Construcción vocal melódica hacia el segundo coro con formaciones compactas.",
+      "ambiente": "emocion",
+      "colores": [
+        "#ededed",
+        "#383a3f",
+        "#18181a"
+      ]
+    },
+    {
+      "inicio": 129.5,
+      "fin": 159,
+      "escena": "Segundo estribillo explosivo con chaquetas abiertas y movimientos enérgicos.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#ffffff",
+        "#121214",
+        "#cf6d30"
+      ]
+    },
+    {
+      "inicio": 159,
+      "fin": 173,
+      "escena": "Puente dramático donde los bailarines caen de rodillas interpretando vulnerabilidad.",
+      "ambiente": "drama",
+      "colores": [
+        "#5a5d63",
+        "#2c2d30",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 173,
+      "fin": 189,
+      "escena": "Crecendo vocal y corporal con brazos extendidos hacia arriba en súplica emotiva.",
+      "ambiente": "emocion",
+      "colores": [
+        "#f0f0f0",
+        "#3b342e",
+        "#1b1b1d"
+      ]
+    },
+    {
+      "inicio": 189,
+      "fin": 218.5,
+      "escena": "Estribillo final a máxima potencia, saltos vigorosos y coreografía al unísono.",
+      "ambiente": "climax",
+      "colores": [
+        "#ffffff",
+        "#0d0e10",
+        "#d47a3e"
+      ]
+    },
+    {
+      "inicio": 218.5,
+      "fin": 237,
+      "escena": "Cierre rítmico con formación piramidal culminando en la pose final inmóvil.",
+      "ambiente": "drama",
+      "colores": [
+        "#ffffff",
+        "#1a1b1d",
+        "#75787e"
+      ]
+    }
+  ]
+}

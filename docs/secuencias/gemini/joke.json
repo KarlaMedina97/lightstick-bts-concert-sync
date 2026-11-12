@@ -1,0 +1,120 @@
+{
+  "song": "joke",
+  "yt": "TfenCTabhDY",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-11",
+  "duracion": 199,
+  "aura": "rap oscuro e incisivo, tensión psicológica y agresión lírica vertiginosa",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 18,
+      "escena": "Pasillo oscuro de manicomio, paciente con camisa de fuerza y título en rojo sombrío",
+      "ambiente": "tension",
+      "colores": [
+        "#05111a",
+        "#1b333e",
+        "#7b1113"
+      ]
+    },
+    {
+      "inicio": 18,
+      "fin": 32.5,
+      "escena": "Guardia patrullando el pasillo frío, manos buscando escapar y mirilla enrejada",
+      "ambiente": "tension",
+      "colores": [
+        "#0b1d28",
+        "#244b58",
+        "#9eb8c0"
+      ]
+    },
+    {
+      "inicio": 32.5,
+      "fin": 57.5,
+      "escena": "RM rapeando con agresividad inmovilizado en camisa de fuerza por el pasillo",
+      "ambiente": "fuerza",
+      "colores": [
+        "#162a34",
+        "#48717d",
+        "#dfe9ec"
+      ]
+    },
+    {
+      "inicio": 57.5,
+      "fin": 75.5,
+      "escena": "Quirófano siniestro, instrumental médico metálico y RM tumbado en la camilla",
+      "ambiente": "drama",
+      "colores": [
+        "#0a1820",
+        "#305a67",
+        "#8bb2bc"
+      ]
+    },
+    {
+      "inicio": 75.5,
+      "fin": 84,
+      "escena": "Primer plano de jeringas preparándose y RM en bata de hospital bajo luz clínica",
+      "ambiente": "tension",
+      "colores": [
+        "#10222a",
+        "#548290",
+        "#e6f0f2"
+      ]
+    },
+    {
+      "inicio": 84,
+      "fin": 109,
+      "escena": "Secuencia rápida alternando a RM de paciente desquiciado y de guardia de seguridad",
+      "ambiente": "fuerza",
+      "colores": [
+        "#0e1e27",
+        "#3b6574",
+        "#bcccd0"
+      ]
+    },
+    {
+      "inicio": 109,
+      "fin": 134.5,
+      "escena": "Habitación lúgubre, RM acorralado en la cama y bandeja con jeringas de sedante",
+      "ambiente": "tension",
+      "colores": [
+        "#132832",
+        "#416d7a",
+        "#c7dadf"
+      ]
+    },
+    {
+      "inicio": 134.5,
+      "fin": 154,
+      "escena": "RM caminando libremente por el pasillo, pastillas repartidas y cirujano con máscara",
+      "ambiente": "fuerza",
+      "colores": [
+        "#1b323d",
+        "#5b8c9d",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 154,
+      "fin": 180,
+      "escena": "RM atado a la silla eléctrica desatando un rap implacable y desenfrenado",
+      "ambiente": "climax",
+      "colores": [
+        "#0a1921",
+        "#375f6e",
+        "#e8edf0"
+      ]
+    },
+    {
+      "inicio": 180,
+      "fin": 199,
+      "escena": "El guardia se marcha cerrando puertas pesadas, RM en silencio y fundido a negro final",
+      "ambiente": "calma",
+      "colores": [
+        "#050d12",
+        "#182c35",
+        "#6e0c0e"
+      ]
+    }
+  ]
+}
