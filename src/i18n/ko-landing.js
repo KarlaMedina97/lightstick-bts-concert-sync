@@ -352,6 +352,7 @@ export default {
   "Cómo pedir que retiremos contenido": "콘텐츠 삭제를 요청하는 방법",
   "Sin IA con tus datos": "내 데이터에 AI를 쓰지 않아요",
   "Documentos": "문서",
+  "Idiomas": "언어",
   // Guía de conexión (guide/)
   "Cómo conectar tu ARMY Bomb por Bluetooth · LumiParty": "ARMY Bomb Bluetooth 연결 방법 · LumiParty",
   "Guía paso a paso para conectar tu ARMY Bomb por Bluetooth desde el navegador: versiones compatibles, iPhone con Bluefy y qué hacer si no conecta.": "브라우저에서 ARMY Bomb을 Bluetooth로 연결하는 단계별 가이드: 호환 버전, iPhone은 Bluefy, 연결되지 않을 때 해결 방법.",

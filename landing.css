@@ -363,6 +363,11 @@ main { position: relative; z-index: 2; overflow-x: clip; }
 .foot { position: relative; z-index: 2; padding: 32px var(--gutter) calc(32px + env(safe-area-inset-bottom)); color: var(--muted); font-size: .82rem; border-top: 1px solid var(--line); background: #060818f2; }
 .foot p { margin: 0 0 .5rem; max-width: 60rem; }
 .foot-links a { color: var(--text); }
+/* Enlaces a cada idioma (reales, para personas y buscadores; el menú de idioma lo arma el JS). */
+.foot-langs p { margin: 0 0 .5rem; }
+.foot-langs a { display: inline-block; padding: .35rem 0; color: inherit; }
+.foot-langs a[aria-current] { color: var(--text); font-weight: 700; text-decoration: none; }
+.doc-foot .foot-langs { margin: 0 0 .75rem; color: var(--d-soft); font-size: .85rem; }
 
 /* ---------- Tablet y escritorio: rejilla de 12 columnas ---------- */
 @media (min-width: 720px) {

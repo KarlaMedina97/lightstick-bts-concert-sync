@@ -352,6 +352,7 @@ export default {
   "Cómo pedir que retiremos contenido": "Como pedir que removamos conteúdo",
   "Sin IA con tus datos": "Sem IA com seus dados",
   "Documentos": "Documentos",
+  "Idiomas": "Idiomas",
   // Guía de conexión (guide/)
   "Cómo conectar tu ARMY Bomb por Bluetooth · LumiParty": "Como conectar seu ARMY Bomb por Bluetooth · LumiParty",
   "Guía paso a paso para conectar tu ARMY Bomb por Bluetooth desde el navegador: versiones compatibles, iPhone con Bluefy y qué hacer si no conecta.": "Guia passo a passo para conectar seu ARMY Bomb por Bluetooth pelo navegador: versões compatíveis, iPhone com Bluefy e o que fazer se não conectar.",
