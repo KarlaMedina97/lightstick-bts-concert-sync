@@ -66,6 +66,10 @@ Si agregas una sección o flujo importante, súmale su comprobación en `scripts
 
 URLs amigables en inglés y sin `.html`: `/` (landing), `/player/` (`?guide=1` abre la guía, `?song=<id>` abre una canción), `/privacy/`.
 Las páginas dentro de carpetas usan rutas relativas con `../`. No uses `<base>` (rompe los íconos `<use href="#…">`).
+**Páginas por idioma:** `/en/`, `/pt/`, `/ko/`, `/id/` (portada) y `/<idioma>/guide/` (guía) no están en el repo: las genera
+`scripts/localize-pages.mjs` ya traducidas con los diccionarios de `src/i18n/` (el build las escribe en `_site/` y
+`npm run dev` las sirve al vuelo), con hreflang en todas las versiones. Ahí la app toma el idioma de la dirección y el
+menú de idioma navega a la otra versión. Por eso el importmap de `index.html` usa rutas absolutas (`/vendor/…`).
 
 ## Reglas obligatorias
 

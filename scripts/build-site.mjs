@@ -4,7 +4,8 @@
 // Uso: npm run build  (CI lo ejecuta antes de desplegar)
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { LOCALES, LOCALIZED, localizePage, withAlternates } from "./localize-pages.mjs";
 
 export const PUBLIC = [
   "index.html", "app.html", "privacidad.html", "player", "privacy",
@@ -109,11 +110,30 @@ for (const [slug, title, desc, canon, noindex, data] of routes) {
   writeFileSync(file, html);
 }
 
+// Páginas por idioma: la portada y la guía ya traducidas en /en/, /pt/, /ko/ y /id/, con hreflang en todas (también
+// en las de español). Los textos sin traducción se avisan aquí: complétalos en src/i18n/.
+const localized = [];
+for (const [path, file] of Object.entries(LOCALIZED)) {
+  const src = readFileSync(join(OUT, file), "utf8");
+  writeFileSync(join(OUT, file), withAlternates(src, path));
+  for (const code of Object.keys(LOCALES)) {
+    const { html, leftovers } = await localizePage(src, path, code);
+    const dest = join(OUT, code, file);
+    mkdirSync(dirname(dest), { recursive: true });
+    writeFileSync(dest, html);
+    localized.push(`/${code}${path}`);
+    if (leftovers.length) console.warn(`  /${code}${path}: ${leftovers.length} texto(s) sin traducir: ${leftovers.slice(0, 5).join(" | ")}`);
+  }
+}
+
 // Mapa del sitio: las páginas fijas (sitemap.xml del repo) más cada álbum y canción del reproductor (sin las viejas
 // ni las vistas personales). Sin lastmod: la fecha del build no dice cuándo cambió cada página y Google la descarta.
 {
   const base = readFileSync(join(OUT, "sitemap.xml"), "utf8");
-  const extra = routes.filter((r) => !r[3] && !r[4]).map(([slug]) => `  <url><loc>https://lumiparty.com/player/${slug}</loc></url>`);
+  const extra = [
+    ...localized.map((path) => `  <url><loc>https://lumiparty.com${path}</loc></url>`),
+    ...routes.filter((r) => !r[3] && !r[4]).map(([slug]) => `  <url><loc>https://lumiparty.com/player/${slug}</loc></url>`),
+  ];
   writeFileSync(join(OUT, "sitemap.xml"), base.replace("</urlset>", [...extra, "</urlset>"].join("\n")));
 }
 
@@ -125,4 +145,4 @@ if (leaked.length) throw new Error(`No debería publicarse: ${leaked.join(", ")}
 const shell = [...readFileSync("sw.js", "utf8").matchAll(/^\s*"([^"]+)",?$/gm)].map((m) => m[1]).filter((f) => f !== "./" && !f.endsWith("/"));
 const missing = shell.filter((f) => !files.includes(f));
 if (missing.length) throw new Error(`El service worker pide archivos que no se publican: ${missing.join(", ")}`);
-console.log(`_site/: ${files.length} archivos publicados (${songPages} direcciones del reproductor).`);
+console.log(`_site/: ${files.length} archivos publicados (${songPages} direcciones del reproductor, ${localized.length} páginas por idioma).`);

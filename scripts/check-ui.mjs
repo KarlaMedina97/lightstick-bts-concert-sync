@@ -326,8 +326,14 @@ for (const [vp, w, h] of VIEWPORTS) {
   await send("Page.removeScriptToEvaluateOnNewDocument", { identifier: stub.result.identifier });
   await evaluate(`localStorage.removeItem("pws.queue.v1")`);
 
+  // ---------- Portada en otro idioma (la genera scripts/localize-pages.mjs) ----------
+  await open("/ko/", w, h, 4500);
+  if (!(await evaluate(noOverflow))) fail(`/ko/ (${vp})`, "hay scroll horizontal");
+  if (!(await evaluate(`document.documentElement.lang === "ko" && !!document.querySelector("canvas")`))) fail(`/ko/ (${vp})`, "no quedó en coreano o no cargó la escena 3D");
+  if (exceptions.length) fail(`/ko/ (${vp})`, `excepciones: ${[...new Set(exceptions)].join(" | ")}`);
+
   // ---------- Páginas de texto ----------
-  for (const path of ["/privacy/", "/terms/", "/ai/", "/guide/", "/404.html"]) {
+  for (const path of ["/privacy/", "/terms/", "/ai/", "/guide/", "/en/guide/", "/404.html"]) {
     await open(path, w, h, 1500);
     if (!(await evaluate(noOverflow))) fail(`${path} (${vp})`, "hay scroll horizontal");
     // Todos los enlaces visibles se pueden tocar (no hay nada encima que se lleve el clic).

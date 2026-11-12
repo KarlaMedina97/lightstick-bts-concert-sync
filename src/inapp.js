@@ -29,7 +29,7 @@ export function redirectConnectButtons(els) {
   if (!inAppBrowser()) return;
   for (const el of els) {
     if (isAndroid()) {
-      const go = () => { location.href = chromeIntent(location.href.replace(/[?#].*$/, "") + (location.pathname.includes("/player") ? "?guide=1" : "player/?guide=1")); };
+      const go = () => { location.href = chromeIntent((location.pathname.includes("/player") ? location.href.replace(/[?#].*$/, "") + "?guide=1" : `${location.origin}/player/?guide=1`)); };
       if (el.tagName === "A") el.setAttribute("href", chromeIntent(new URL(el.getAttribute("href"), location.href).href));
       else el.onclick = go;
     } else {
