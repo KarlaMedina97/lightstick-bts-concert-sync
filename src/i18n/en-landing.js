@@ -257,8 +257,8 @@ export default {
   "Color sincronizado por Bluetooth con estas versiones.": "Color synced over Bluetooth with these versions.",
   "Familia V4": "V4 family",
   "Familia SE/V3": "SE/V3 family",
-  "Ilustraciones inspiradas; emblemas originales. Aún sin pruebas con cada hardware.":
-    "Inspired illustrations; original emblems. Not yet tested on every hardware version.",
+  "Ilustraciones inspiradas; emblemas originales. Probado con un ARMY Bomb real en iPhone (con Bluefy) y Android; aún no con cada modelo.":
+    "Inspired illustrations; original emblems. Tested with a real ARMY Bomb on iPhone (with Bluefy) and Android; not yet with every model.",
   "Conectar mi ARMY Bomb": "Connect my ARMY Bomb",
 
   // ---------- 06 Océano ----------
@@ -379,7 +379,7 @@ export default {
   "Ver. 4 (la más nueva)": "Ver. 4 (the newest)",
   "Ver. 1 y Ver. 2 no tienen Bluetooth: con ellas, tu pantalla brilla con los colores de cada canción.": "Ver. 1 and Ver. 2 have no Bluetooth: with them, your screen glows with each song's colors.",
   "En la lista del navegador aparece con nombres como BTS LIGHTSTICK3, BTS LIGHTSTICK_SE, BTS_V4 LS o BBOMB-…": "In the browser's list it shows up with names like BTS LIGHTSTICK3, BTS LIGHTSTICK_SE, BTS_V4 LS or BBOMB-…",
-  "Aún no se ha probado con cada modelo. Si el tuyo no conecta, cuéntalo en Dar mi opinión, dentro de la app.": "It hasn't been tested with every model yet. If yours won't connect, tell us in Give feedback, inside the app.",
+  "Ya se probó con un ARMY Bomb real en iPhone (con Bluefy) y en Android, pero aún no con cada modelo. Si el tuyo no conecta, cuéntalo en Dar mi opinión, dentro de la app.": "It has been tested with a real ARMY Bomb on iPhone (with Bluefy) and Android, but not yet with every model. If yours won't connect, tell us in Give feedback, inside the app.",
   "Android y computadora: Chrome o Edge.": "Android and computer: Chrome or Edge.",
   "iPhone y iPad: Safari no permite conectar por Bluetooth. Usa la app gratuita Bluefy y abre lumiparty.com desde ahí.": "iPhone and iPad: Safari can't connect over Bluetooth. Use the free Bluefy app and open lumiparty.com from there.",
   "Brave: trae el Bluetooth web desactivado. Para activarlo, pega esta dirección en la barra de Brave:": "Brave: web Bluetooth comes turned off. To turn it on, paste this address into Brave's bar:",
