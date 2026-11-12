@@ -2097,7 +2097,8 @@ addEventListener("resize", () => requestAnimationFrame(layoutGradients));
 for (const tr of document.querySelectorAll(".mq-track")) tr.innerHTML += tr.innerHTML;
 
 if (gsap && !reduceMotion && !SHOT) {
-  // Portada: letras con desenfoque, inclinación y subida escalonada.
+  // Portada: letras con inclinación y subida escalonada. Sin desenfoque: el título se lee claro desde el primer
+  // instante (una captura al cargar, como la vista previa de un enlace, lo mostraba borroso).
   // Con red lenta este código llega cuando la portada ya lleva rato a la vista (el CSS crítico va en el HTML):
   // esconderla para animar su entrada parecería un fallo, así que se queda quieta.
   // Sin desvanecer desde opacidad 0: el texto de la portada es lo más grande de la primera pantalla (su LCP) y debe
@@ -2105,7 +2106,7 @@ if (gsap && !reduceMotion && !SHOT) {
   const fcp = performance.getEntriesByName("first-contentful-paint")[0]?.startTime;
   if (!(fcp >= 0 && performance.now() - fcp > 1200)) {
     const heroChars = document.querySelectorAll("#hero-title .c");
-    gsap.from(heroChars, { yPercent: 70, skewX: 14, filter: "blur(10px)", duration: 1.1, stagger: 0.022, ease: "expo.out", delay: 0.1, clearProps: "filter" });
+    gsap.from(heroChars, { yPercent: 70, skewX: 14, duration: 1.1, stagger: 0.022, ease: "expo.out", delay: 0.1 });
     gsap.from(".reveal", { y: 26, duration: 1, stagger: 0.08, ease: "expo.out", delay: 0.45 });
   }
   // Respiración del espaciado en las etiquetas.
