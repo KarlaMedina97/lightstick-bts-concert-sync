@@ -7,6 +7,9 @@ const list = document.getElementById("nav-links");
 
 if (btn && list) {
   const isOpen = () => btn.getAttribute("aria-expanded") === "true";
+  // La lista de idiomas (src/i18n.js) se dibuja aparte, en <body>: cuenta como parte del menú. Si no, al abrirla el
+  // foco salía del menú, este se cerraba y la lista quedaba flotando donde estaba el botón de idioma.
+  const inMenu = (el) => !!el && (list.contains(el) || !!el.closest?.(".lang-pop"));
   const set = (open, { focus = false } = {}) => {
     btn.setAttribute("aria-expanded", String(open));
     list.classList.toggle("open", open);
@@ -15,17 +18,18 @@ if (btn && list) {
   };
   btn.addEventListener("click", () => set(!isOpen()));
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && isOpen()) { e.preventDefault(); set(false, { focus: true }); }
+    // Con la lista de idiomas abierta, Esc cierra solo esa lista (la maneja src/i18n.js) y el menú sigue abierto.
+    if (e.key === "Escape" && isOpen() && !e.defaultPrevented) { e.preventDefault(); set(false, { focus: true }); }
   });
   document.addEventListener("pointerdown", (e) => {
-    if (isOpen() && !list.contains(e.target) && !btn.contains(e.target)) set(false);
+    if (isOpen() && !inMenu(e.target) && !btn.contains(e.target)) set(false);
   });
   list.addEventListener("click", (e) => {
     // Enlaces internos y externos cierran el menú; el botón de idioma lo deja abierto para ver el cambio.
     if (e.target.closest("a")) set(false);
   });
   list.addEventListener("focusout", (e) => {
-    if (isOpen() && !list.contains(e.relatedTarget) && e.relatedTarget !== btn && e.relatedTarget) set(false);
+    if (isOpen() && !inMenu(e.relatedTarget) && e.relatedTarget !== btn && e.relatedTarget) set(false);
   });
   // Al pasar a escritorio el menú deja de ser desplegable.
   matchMedia("(min-width: 1100px)").addEventListener("change", (m) => m.matches && set(false));
