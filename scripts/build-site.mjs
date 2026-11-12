@@ -27,6 +27,7 @@ for (const p of PUBLIC) {
 // carpeta sigue siendo /player/, el reproductor funciona igual (rutas relativas intactas). Cada página lleva el
 // título, la descripción y la dirección canónica de su canción (mejor para compartir y para buscadores).
 const { ALBUMS } = await import(pathToFileURL(join(process.cwd(), "src/catalog.js")).href);
+const { SEQUENCES } = await import(pathToFileURL(join(process.cwd(), "src/sequences.js")).href);
 const playerHtml = readFileSync(join(OUT, "player/index.html"), "utf8");
 const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 let songPages = 0;
@@ -40,15 +41,46 @@ const routes = [
 ];
 for (const album of ALBUMS) {
   const who = album.artist && album.artist !== "BTS" ? album.artist : "BTS";
-  routes.push([`album-${album.id}`, `${album.title} · ${who} · LumiParty`, `${album.title} (${who}${album.year ? `, ${album.year}` : ""}): canciones con luces para tu ARMY Bomb. Página de fans, no oficial.`]);
-  for (const song of album.songs ?? []) routes.push([song.id, `${song.title} · ${who} · LumiParty`, `Tu ARMY Bomb al ritmo de ${song.title} (${who}) con el video oficial. Página de fans, no oficial.`]);
+  routes.push([`album-${album.id}`, `${album.title} · ${who} · LumiParty`, `${album.title} (${who}${album.year ? `, ${album.year}` : ""}): canciones con luces para tu ARMY Bomb. Página de fans, no oficial.`, undefined, false, { album }]);
+  for (const song of album.songs ?? []) routes.push([song.id, `${song.title} · ${who} · LumiParty`, `Tu ARMY Bomb al ritmo de ${song.title} (${who}) con el video oficial. Página de fans, no oficial.`, undefined, false, { album, song }]);
 }
 // Direcciones viejas en español: la misma página (el reproductor las pasa a la nueva sin recargar).
 for (const [old, now] of [["albumes", "albums"], ["me-gusta", "likes"], ["mis-videos", "my-videos"], ["luces", "lights"]]) {
   const r = routes.find((x) => x[0] === now);
-  if (r) routes.push([old, r[1], r[2], now, r[4]]); // canónica: la nueva
+  if (r) routes.push([old, r[1], r[2], now, r[4], r[5]]); // canónica: la nueva
 }
-for (const [slug, title, desc, canon, noindex] of routes) {
+/**
+ * Contenido propio y visible de cada página de canción o álbum (antes eran copias del reproductor con otro título):
+ * encabezado, álbum y año, si tiene secuencia de luces propia, más canciones del álbum y la guía de conexión.
+ * Solo datos del catálogo: nada de letras ni imágenes con derechos. La app la oculta si suena otra canción.
+ */
+function about({ album, song }) {
+  const who = album.artist && album.artist !== "BTS" ? album.artist : "BTS";
+  const li = (s) => `<li><a href="${esc(s.id)}">${esc(s.title)}</a></li>`;
+  const guide = `<p class="sa-guide"><a href="../guide/">¿Primera vez? Así conectas tu ARMY Bomb</a></p>`;
+  if (!song) {
+    const songs = album.songs ?? [];
+    const line = `Álbum de ${who}${album.year ? ` (${album.year})` : ""} con ${songs.length} ${songs.length === 1 ? "video" : "videos"} con luces.`;
+    return `<section id="song-about" class="song-about" aria-labelledby="sa-title">
+          <h2 id="sa-title">${esc(album.title)}: luces para tu ARMY Bomb</h2>
+          <p>${esc(line)}</p>
+          <ul class="sa-list">${songs.map(li).join("")}</ul>
+          ${guide}
+        </section>`;
+  }
+  const own = SEQUENCES[song.id] && SEQUENCES[song.id].yt === song.yt;
+  const more = (album.songs ?? []).filter((s) => s.id !== song.id).slice(0, 8);
+  return `<section id="song-about" class="song-about" data-song="${esc(song.id)}" aria-labelledby="sa-title">
+          <h2 id="sa-title">${esc(song.title)}: luces para tu ARMY Bomb</h2>
+          <p><span>Del álbum</span> <a href="album-${esc(album.id)}">${esc(album.title)}</a> <span translate="no">(${esc(who + (album.year ? `, ${album.year}` : ""))}).</span></p>
+          <p>Dale play al video oficial y tu ARMY Bomb (o tu pantalla) cambia de color con la canción, sección por sección.</p>
+          ${own ? "<p>Tiene una secuencia de luces propia, diseñada para esta canción.</p>" : ""}
+          ${more.length ? `<h3>Más del álbum</h3><ul class="sa-list">${more.map(li).join("")}</ul>` : ""}
+          ${guide}
+        </section>`;
+}
+
+for (const [slug, title, desc, canon, noindex, data] of routes) {
   if (!/^[a-z0-9-]{1,90}$/.test(slug) || existsSync(join(OUT, "player", `${slug}.html`))) continue;
   const url = `https://lumiparty.com/player/${canon ?? slug}`;
   const html = playerHtml
@@ -60,8 +92,9 @@ for (const [slug, title, desc, canon, noindex] of routes) {
     .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(desc)}$2`)
     .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
     .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(desc)}$2`)
-    .replace(/(<link rel="canonical"[^>]*>)/, noindex ? `$1
-  <meta name="robots" content="noindex, follow">` : "$1");
+    .replace(/(<link rel="canonical"[^>]*>)/, noindex ? `$1\n  <meta name="robots" content="noindex, follow">` : "$1")
+    .replace(/<h1 class="sr">[^<]*<\/h1>/, (h) => (data ? `<h1 class="sr">${esc((data.song ?? data.album).title)}: luces para tu ARMY Bomb</h1>` : h))
+    .replace("<!-- seo:about (scripts/build-site.mjs pone aquí la tarjeta de cada canción o álbum) -->", data ? about(data) : "");
   writeFileSync(join(OUT, "player", `${slug}.html`), html);
   songPages++;
 }

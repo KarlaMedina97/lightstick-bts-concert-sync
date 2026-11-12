@@ -1071,6 +1071,9 @@ function loadIndex(i, { autoplay = true } = {}) {
   rememberPlayed(song.id);
   upnextDismissed = false;
   $("now-album").textContent = album.id === "mine" ? song.channel ?? "Mis videos" : `${album.title} · ${album.year}`;
+  // La tarjeta de la página (/player/<canción>) habla de esa canción: si suena otra, se oculta.
+  const about = $("song-about");
+  if (about?.dataset.song) about.hidden = about.dataset.song !== song.id;
   $("num-bpm").value = settings.bpm[song.id] ?? song.bpm;
   const art = $("np-art");
   album.palette.forEach((c, k) => art.style.setProperty(`--a${k + 1}`, c));

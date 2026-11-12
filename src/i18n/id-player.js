@@ -540,9 +540,18 @@ export default {
   "Si usas GitHub: apoyo único o mensual.": "Kalau kamu pakai GitHub: dukungan sekali atau bulanan.",
   "La canción de BTS más escuchada de 2026 en Spotify (oct. 2026)": "Lagu BTS yang paling banyak diputar di Spotify tahun 2026 (Okt. 2026)",
   "¿No conecta? Guía y solución de problemas": "Tidak terhubung? Panduan dan pemecahan masalah",
+  // Tarjeta de cada página de canción o álbum (build-site.mjs)
+  "Del álbum": "Dari album",
+  "Dale play al video oficial y tu ARMY Bomb (o tu pantalla) cambia de color con la canción, sección por sección.": "Putar video resminya dan ARMY Bomb kamu (atau layarmu) berubah warna mengikuti lagu, bagian demi bagian.",
+  "Tiene una secuencia de luces propia, diseñada para esta canción.": "Punya urutan lampu sendiri, dirancang khusus untuk lagu ini.",
+  "Más del álbum": "Lainnya dari album",
+  "¿Primera vez? Así conectas tu ARMY Bomb": "Pertama kali? Begini cara menghubungkan ARMY Bomb",
 };
 
 export const patterns = [
+  [/^(.+): luces para tu ARMY Bomb$/, "$1: lampu untuk ARMY Bomb kamu"],
+  [/^Álbum de (.+?)( \((\d{4})\))? con 1 video con luces\.$/, "Album $1$2 dengan 1 video berlampu."],
+  [/^Álbum de (.+?)( \((\d{4})\))? con (\d+) videos? con luces\.$/, "Album $1$2 dengan $4 video berlampu."],
   // src/guide.js
   [/^Paso (\d+) de (\d+)$/, "Langkah $1 dari $2"],
   [/^Seguir conectando · paso (\d+) de (\d+)$/, "Lanjut menghubungkan · langkah $1 dari $2"],
