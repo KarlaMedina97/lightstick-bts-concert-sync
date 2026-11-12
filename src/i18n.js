@@ -20,7 +20,7 @@ export const VOICE = { es: "es-ES", en: "en-US", pt: "pt-BR", ko: "ko-KR", id: "
 
 const KEY = "pws.lang";
 const ATTRS = ["aria-label", "title", "placeholder", "data-tip", "alt", "aria-description", "aria-roledescription", "data-label", "aria-valuetext"];
-const SKIP = "script, style, svg, textarea, [translate=no], [lang=ko]:not(html), [contenteditable], .lang-pop"; // de los input solo se tocan atributos
+const SKIP = "script, style, svg, textarea, [translate=no], [lang=ko]:not(html), [contenteditable], .lang-pop, .lang-offer"; // de los input solo se tocan atributos
 
 function norm(s) { return s.replace(/\s+/g, " ").trim(); }
 function table(dicts, patterns) {
@@ -94,7 +94,10 @@ function prefers() {
   }
   return "en";
 }
-export let lang = CODES.includes(stored()) ? stored() : prefers();
+// Sin idioma elegido, la página se muestra en español (su idioma fuente y el que lee el buscador) y, si el
+// dispositivo está en otro de los nuestros, se ofrece el cambio con un aviso (offerLang). Antes se cambiaba solo,
+// y el renderizador de Google (en inglés) indexaba la página traducida bajo un título en español.
+export let lang = CODES.includes(stored()) ? stored() : "es";
 
 /** t("texto en español") → texto en el idioma actual (para el JS que necesita el valor, p. ej. narración). */
 export const t = (es) => (lang === "es" ? es : translate(es, lang));
@@ -249,6 +252,48 @@ function openMenu(btn) {
   });
 }
 
+// Aviso para cambiar de idioma, escrito en el idioma que se ofrece (no pasa por los diccionarios).
+const OFFER = {
+  en: ["View LumiParty in English?", "English"],
+  pt: ["Ver o LumiParty em português?", "Português"],
+  ko: ["LumiParty를 한국어로 볼까요?", "한국어"],
+  id: ["Lihat LumiParty dalam Bahasa Indonesia?", "Bahasa Indonesia"],
+};
+function offerLang() {
+  if (stored() || lang !== "es") return;
+  const code = prefers();
+  if (!OFFER[code]) return;
+  const [q, yes] = OFFER[code];
+  const box = document.createElement("div");
+  box.className = "lang-offer";
+  box.setAttribute("role", "region");
+  box.setAttribute("aria-label", q);
+  box.setAttribute("lang", BCP47[code]);
+  box.setAttribute("translate", "no");
+  box.style.cssText = "position:fixed;z-index:1001;top:max(12px,env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);"
+    + "width:min(480px,calc(100vw - 32px));display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 12px 10px 16px;"
+    + "border-radius:16px;background:rgba(22,12,38,.96);color:#f3ecff;border:1px solid rgba(179,136,255,.35);"
+    + "box-shadow:0 12px 40px rgba(0,0,0,.45);font:inherit;font-size:.9rem;line-height:1.4";
+  const p = document.createElement("span");
+  p.textContent = q;
+  p.style.cssText = "flex:1 1 180px";
+  const btn = (text, primary) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = text;
+    b.style.cssText = "min-height:44px;padding:0 16px;border-radius:999px;font:inherit;font-weight:700;cursor:pointer;"
+      + (primary ? "border:0;background:#a855f7;color:#fff" : "border:1px solid rgba(179,136,255,.45);background:transparent;color:#f3ecff");
+    return b;
+  };
+  const ok = btn(yes, true);
+  const keep = btn("Seguir en español", false);
+  keep.setAttribute("lang", "es");
+  ok.onclick = () => { box.remove(); setLang(code); };
+  keep.onclick = () => { box.remove(); try { localStorage.setItem(KEY, "es"); } catch {} };
+  box.append(p, ok, keep);
+  document.body.append(box);
+}
+
 async function init() {
   // Los botones de idioma llevan translate=no: su texto lo maneja applyMeta.
   for (const b of document.querySelectorAll("[data-lang-toggle]")) {
@@ -264,6 +309,7 @@ async function init() {
   }
   applyMeta();
   observe();
+  offerLang();
   if (lang !== "es" && lang !== "en") dispatchEvent(new CustomEvent("pws:lang", { detail: lang }));
 }
 if (typeof document !== "undefined") {
