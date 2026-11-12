@@ -105,3 +105,11 @@ test("métricas (PostHog): sin datos personales ni parámetros, sin cookies", as
   assert.ok(!JSON.stringify(ev).includes("?"), "sin parámetros de ninguna dirección");
   assert.ok(!("$ip" in ev.properties) && !("$set" in ev.properties) && !("email" in ev.properties));
 });
+
+import { generateConcertPattern } from "../src/patterns.js";
+test("concierto: el patrón tiene las mismas funciones que el de una canción", () => {
+  const song = generatePattern({ bpm: 120, energy: "high" }, { palette: ["#a855f7", "#ffffff"] }, 200, {});
+  const concert = generateConcertPattern(900, { bpm: 120, palettes: [["#a855f7", "#ffffff"], ["#ff4d8d", "#ffd166"]] });
+  for (const [k, v] of Object.entries(song)) if (typeof v === "function") assert.equal(typeof concert[k], "function", `falta ${k}`);
+  assert.ok(typeof concert.styleAt(500, 2) === "string");
+});
