@@ -186,7 +186,11 @@ for (const [vp, w, h] of VIEWPORTS) {
       if (!a || !st) return "no está la sección de anatomía";
       const top = a.getBoundingClientRect().top + scrollY, run = a.offsetHeight - innerHeight;
       const tops = [];
+      // Sin el «imán» de secciones (src/landing.js): con saltos por código podía regresar la página al borde de la
+      // anatomía antes de medir. Aquí se prueba solo lo pegajoso; la clase dragging lo pausa igual que al arrastrar.
+      document.documentElement.classList.add("dragging");
       for (const f of [0.2, 0.6]) { scrollTo(0, top + run * f); await new Promise((r) => setTimeout(r, 700)); tops.push(Math.round(st.getBoundingClientRect().top)); }
+      document.documentElement.classList.remove("dragging");
       return tops.every((t) => Math.abs(t) <= 2) ? "" : "el escenario se movió (" + tops.join(", ") + " px): lo pegajoso no funciona";
     })()`);
     if (sticky) fail(at, `anatomía: ${sticky}`);
