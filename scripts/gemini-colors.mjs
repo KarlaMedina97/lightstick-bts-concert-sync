@@ -35,7 +35,13 @@ const headers = { "content-type": "application/json", "x-goog-api-key": KEY };
 
 async function pickModel() {
   if (opt("--modelo")) return opt("--modelo");
-  const r = await fetch(`${API}/models?pageSize=200`, { headers });
+  // Recién encendido el PC la red a veces no está lista: hasta 5 intentos, esperando 30 s entre cada uno.
+  let r;
+  for (let i = 0; i < 5; i++) {
+    try { r = await fetch(`${API}/models?pageSize=200`, { headers }); if (r.status < 500) break; } catch (e) { if (i === 4) throw e; }
+    console.log(`  (sin conexión con Gemini; reintento en 30 s)`);
+    await new Promise((ok) => setTimeout(ok, 30_000));
+  }
   if (!r.ok) throw new Error(`no pude listar modelos (${r.status})`);
   const list = (await r.json()).models.filter((m) => m.supportedGenerationMethods?.includes("generateContent") && /flash/i.test(m.name) && !/lite|image|tts|live|audio|exp/i.test(m.name));
   const ver = (n) => (n.match(/(\d+(?:\.\d+)?)/)?.[1] ?? "0") * 1;
