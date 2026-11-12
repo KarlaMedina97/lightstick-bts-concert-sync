@@ -116,9 +116,9 @@ export default {
   "no oficial": "tidak resmi",
   "gratis": "gratis",
   // ---------- <head> ----------
-  "LumiParty · Tu ARMY Bomb al ritmo de BTS": "LumiParty · ARMY Bomb kamu mengikuti irama BTS",
-  "Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos de los canales oficiales de YouTube, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.":
-    "Hubungkan ARMY Bomb kamu lewat Bluetooth dan buat bersinar mengikuti video dari kanal YouTube resmi, lagu demi lagu. Proyek fans tidak resmi, gratis, dan tanpa akun.",
+  "Conecta tu ARMY Bomb por Bluetooth · LumiParty": "Hubungkan ARMY Bomb kamu lewat Bluetooth · LumiParty",
+  "Conecta tu ARMY Bomb por Bluetooth desde Chrome, Edge o Bluefy y haz que brille con videos oficiales de BTS. Gratis, sin cuentas. Proyecto fan no oficial.":
+    "Hubungkan ARMY Bomb kamu lewat Bluetooth dari Chrome, Edge, atau Bluefy dan buat bersinar mengikuti video resmi BTS. Gratis, tanpa akun. Proyek fans tidak resmi.",
 
   // ---------- Navegación ----------
   "Saltar al contenido": "Langsung ke konten",

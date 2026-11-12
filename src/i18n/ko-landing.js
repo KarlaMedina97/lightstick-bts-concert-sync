@@ -116,9 +116,9 @@ export default {
   "no oficial": "비공식",
   "gratis": "무료",
   // ---------- <head> ----------
-  "LumiParty · Tu ARMY Bomb al ritmo de BTS": "LumiParty · BTS의 리듬에 맞춰 빛나는 ARMY Bomb",
-  "Conecta tu ARMY Bomb por Bluetooth y haz que brille con los videos de los canales oficiales de YouTube, canción por canción. Proyecto de fans no oficial, gratis y sin cuentas.":
-    "ARMY Bomb을 Bluetooth로 연결하고 YouTube 공식 채널 영상에 맞춰 곡마다 빛나게 해 보세요. 무료·계정 없는 비공식 팬 프로젝트예요.",
+  "Conecta tu ARMY Bomb por Bluetooth · LumiParty": "ARMY Bomb을 Bluetooth로 연결하기 · LumiParty",
+  "Conecta tu ARMY Bomb por Bluetooth desde Chrome, Edge o Bluefy y haz que brille con videos oficiales de BTS. Gratis, sin cuentas. Proyecto fan no oficial.":
+    "Chrome, Edge 또는 Bluefy에서 ARMY Bomb을 Bluetooth로 연결하고 BTS 공식 영상에 맞춰 빛나게 해 보세요. 무료·계정 없는 비공식 팬 프로젝트예요.",
 
   // ---------- Navegación ----------
   "Saltar al contenido": "본문으로 건너뛰기",
