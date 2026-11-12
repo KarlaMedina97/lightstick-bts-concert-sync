@@ -10,7 +10,7 @@ export const PUBLIC = [
   "index.html", "app.html", "privacidad.html", "player", "privacy",
   "src", "vendor", "fonts", "icons", "assets",
   "styles.css", "tour.css", "landing.css", "sw.js", "manifest.webmanifest", "_headers", "LICENSE",
-  "robots.txt", "sitemap.xml", "llms.txt", "404.html", "terms", "ai", "guide", ".well-known", ".nojekyll",
+  "robots.txt", "sitemap.xml", "favicon.ico", "llms.txt", "404.html", "terms", "ai", "guide", ".well-known", ".nojekyll",
 ];
 // Nunca, aunque aparezcan dentro de una carpeta pública.
 const BLOCK = /(^|\/)(\.env|\.git|.*\.(md|map|log|pem|key)|node_modules|test|tests)(\/|$)/i;
@@ -97,6 +97,16 @@ for (const [slug, title, desc, canon, noindex, data] of routes) {
     .replace("<!-- seo:about (scripts/build-site.mjs pone aquí la tarjeta de cada canción o álbum) -->", data ? about(data) : "");
   writeFileSync(join(OUT, "player", `${slug}.html`), html);
   songPages++;
+}
+
+// Portada: las cifras del catálogo escritas en el HTML (antes salían como «—» hasta que corría el JS).
+{
+  const { CONCERT_FILMS } = await import(pathToFileURL(join(process.cwd(), "src/catalog.js")).href);
+  const stats = { albums: ALBUMS.length, songs: ALBUMS.reduce((n, a) => n + a.songs.length, 0), concerts: CONCERT_FILMS.length };
+  const file = join(OUT, "index.html");
+  let html = readFileSync(file, "utf8");
+  for (const [k, v] of Object.entries(stats)) html = html.replace(`<dd data-stat="${k}">—</dd>`, `<dd data-stat="${k}">${v}</dd>`);
+  writeFileSync(file, html);
 }
 
 // Mapa del sitio: las páginas fijas (sitemap.xml del repo) más cada álbum y canción del reproductor (sin las viejas
