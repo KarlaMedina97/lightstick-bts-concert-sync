@@ -187,8 +187,9 @@ export default {
   "Cada ARMY Bomb toma un color y la asignación rota, como las zonas del estadio.": "Each ARMY Bomb takes a color and the assignment rotates, like stadium zones.",
   "Base tenue con chispas breves, como estrellas (máximo 2 por segundo en modo seguro).": "Dim base with short sparkles like stars (2 per second max in safe mode).",
   // ── player/index.html: cabecera, navegación y biblioteca ──
-  "Página web no oficial para sincronizar tu lightstick con videos de canciones y conciertos de BTS, álbum por álbum.":
-    "Unofficial web app to sync your lightstick with BTS song and concert videos, album by album.",
+  "Reproductor: ARMY Bomb con videos de BTS · LumiParty": "Player: ARMY Bomb with BTS videos · LumiParty",
+  "Elige una canción o un concierto de BTS y tu ARMY Bomb (o tu pantalla) cambia de color con el video, sección por sección. Gratis y no oficial.":
+    "Pick a BTS song or concert and your ARMY Bomb (or your screen) changes color with the video, section by section. Free and unofficial.",
   "Saltar a los controles": "Skip to controls",
   "LumiParty: página de inicio": "LumiParty: home page",
   "Página de inicio": "Home page",

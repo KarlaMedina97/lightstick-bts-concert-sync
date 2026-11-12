@@ -32,8 +32,10 @@ const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&l
 let songPages = 0;
 const routes = [
   ["albums", "Álbumes · LumiParty", "Todos los álbumes de BTS e integrantes, con luces para tu ARMY Bomb. Página de fans, no oficial."],
-  ["likes", "Me gusta · LumiParty", "Tus canciones y álbumes guardados en LumiParty."],
-  ["my-videos", "Mis videos · LumiParty", "Agrega videos de canales oficiales de YouTube y sincroniza tu ARMY Bomb."],
+  // Vistas personales (guardadas en el navegador): noindex y fuera del mapa del sitio.
+  ["likes", "Me gusta · LumiParty", "Tus canciones y álbumes guardados en LumiParty.", undefined, true],
+  ["my-videos", "Mis videos · LumiParty", "Agrega videos de canales oficiales de YouTube y sincroniza tu ARMY Bomb.", undefined, true],
+  // Sin noindex: /player/lights es también la canción «Lights», que tiene el mismo id.
   ["lights", "Luces · LumiParty", "Tu ARMY Bomb (o tu pantalla) con el color de cada canción."],
 ];
 for (const album of ALBUMS) {
@@ -44,9 +46,9 @@ for (const album of ALBUMS) {
 // Direcciones viejas en español: la misma página (el reproductor las pasa a la nueva sin recargar).
 for (const [old, now] of [["albumes", "albums"], ["me-gusta", "likes"], ["mis-videos", "my-videos"], ["luces", "lights"]]) {
   const r = routes.find((x) => x[0] === now);
-  if (r) routes.push([old, r[1], r[2], now]); // canónica: la nueva
+  if (r) routes.push([old, r[1], r[2], now, r[4]]); // canónica: la nueva
 }
-for (const [slug, title, desc, canon] of routes) {
+for (const [slug, title, desc, canon, noindex] of routes) {
   if (!/^[a-z0-9-]{1,90}$/.test(slug) || existsSync(join(OUT, "player", `${slug}.html`))) continue;
   const url = `https://lumiparty.com/player/${canon ?? slug}`;
   const html = playerHtml
@@ -55,16 +57,20 @@ for (const [slug, title, desc, canon] of routes) {
     .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${url}$2`)
     .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
     .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
-    .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(desc)}$2`);
+    .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(desc)}$2`)
+    .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
+    .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(desc)}$2`)
+    .replace(/(<link rel="canonical"[^>]*>)/, noindex ? `$1
+  <meta name="robots" content="noindex, follow">` : "$1");
   writeFileSync(join(OUT, "player", `${slug}.html`), html);
   songPages++;
 }
 
-// Mapa del sitio: las páginas fijas (sitemap.xml del repo) más cada álbum y canción del reproductor (sin las viejas).
+// Mapa del sitio: las páginas fijas (sitemap.xml del repo) más cada álbum y canción del reproductor (sin las viejas
+// ni las vistas personales). Sin lastmod: la fecha del build no dice cuándo cambió cada página y Google la descarta.
 {
   const base = readFileSync(join(OUT, "sitemap.xml"), "utf8");
-  const day = new Date().toISOString().slice(0, 10);
-  const extra = routes.filter((r) => !r[3]).map(([slug]) => `  <url><loc>https://lumiparty.com/player/${slug}</loc><lastmod>${day}</lastmod></url>`);
+  const extra = routes.filter((r) => !r[3] && !r[4]).map(([slug]) => `  <url><loc>https://lumiparty.com/player/${slug}</loc></url>`);
   writeFileSync(join(OUT, "sitemap.xml"), base.replace("</urlset>", [...extra, "</urlset>"].join("\n")));
 }
 
