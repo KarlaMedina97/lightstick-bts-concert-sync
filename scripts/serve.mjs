@@ -3,6 +3,7 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { LOCALIZED, localizePage, withAlternates } from "./localize-pages.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const port = Number(process.env.PORT) || 5173;
@@ -34,8 +35,21 @@ createServer(async (req, res) => {
   if (file !== root && !file.startsWith(root + sep)) return res.writeHead(403).end();
   // Nunca archivos ocultos (.git, .env, .claude…): importa sobre todo en modo --lan.
   if (/[\\/]\./.test(file.slice(root.length))) return res.writeHead(403).end();
+  // Páginas por idioma (/en/, /pt/guide/…): las arma el build; aquí se generan al vuelo con el mismo código.
+  const loc = path.match(/^\/(en|pt|ko|id)(\/.*)$/);
+  if (loc && LOCALIZED[loc[2]]) {
+    try {
+      const { html } = await localizePage(await readFile(join(root, LOCALIZED[loc[2]]), "utf8"), loc[2], loc[1]);
+      res.writeHead(200, { "content-type": types[".html"], "cache-control": "no-store" });
+      return res.end(lan ? html.replace(/;\s*upgrade-insecure-requests/g, "") : html);
+    } catch (e) {
+      return res.writeHead(500).end(String(e));
+    }
+  }
   try {
     let body = await readFile(file);
+    const page = Object.entries(LOCALIZED).find(([, f]) => join(root, f) === file)?.[0];
+    if (page) body = Buffer.from(withAlternates(body.toString("utf8"), page));
     // En la red local no hay HTTPS: la CSP del sitio pide «upgrade-insecure-requests» (correcto en lumiparty.com) y
     // el navegador pasaba cada recurso a https://… y fallaba. Solo en --lan y solo al servir, el archivo no cambia.
     if (lan && extname(file) === ".html") body = Buffer.from(body.toString("utf8").replace(/;\s*upgrade-insecure-requests/g, ""));

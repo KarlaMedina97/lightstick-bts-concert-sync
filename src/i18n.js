@@ -31,6 +31,8 @@ function table(dicts, patterns) {
 }
 const TABLES = { en: table([landing, player, app], [pApp, pPlayer, pLanding]) };
 const loading = {};
+/** Carga (una vez) los diccionarios de un idioma (también lo usa el build para las páginas por idioma). */
+export const loadLang = (code) => load(code);
 /** Carga (una vez) los diccionarios de un idioma. */
 function load(code) {
   if (code === "es" || TABLES[code]) return Promise.resolve();
@@ -97,7 +99,17 @@ function prefers() {
 // Sin idioma elegido, la página se muestra en español (su idioma fuente y el que lee el buscador) y, si el
 // dispositivo está en otro de los nuestros, se ofrece el cambio con un aviso (offerLang). Antes se cambiaba solo,
 // y el renderizador de Google (en inglés) indexaba la página traducida bajo un título en español.
-export let lang = CODES.includes(stored()) ? stored() : "es";
+// En las páginas por idioma (/en/, /pt/, /ko/, /id/: las genera el build ya traducidas) manda la dirección, y se
+// guarda como preferencia para el resto del sitio.
+const PATH_LANG = typeof location === "undefined" ? null : location.pathname.match(/^\/(en|pt|ko|id)(?=\/|$)/)?.[1] ?? null;
+export let lang = PATH_LANG ?? (CODES.includes(stored()) ? stored() : "es");
+if (PATH_LANG) try { localStorage.setItem(KEY, PATH_LANG); } catch {}
+
+/** ¿Tiene `es` traducción en `code` (aunque se escriba igual, como «Principal» en portugués)? Lo usa el build. */
+export function known(es, code) {
+  const T = TABLES[code], key = norm(es);
+  return !!T && (T.exact.has(key) || T.patterns.some(([re]) => re.test(key)));
+}
 
 /** t("texto en español") → texto en el idioma actual (para el JS que necesita el valor, p. ej. narración). */
 export const t = (es) => (lang === "es" ? es : translate(es, lang));
@@ -199,8 +211,23 @@ export function localize(root) {
   return root;
 }
 
+/** Dirección de esta misma página en otro idioma, si existe (los <link rel="alternate" hreflang> del build). */
+function alternateFor(code) {
+  const href = document.querySelector(`link[rel="alternate"][hreflang="${BCP47[code]}"]`)?.getAttribute("href");
+  if (!href) return null;
+  const u = new URL(href, location.href);
+  return u.pathname === location.pathname ? null : u.pathname + location.search + location.hash;
+}
+
 export async function setLang(next) {
   if (next === lang || !CODES.includes(next)) return;
+  // Con versión propia en ese idioma (portada, guía), se va a su dirección: es la que indexan los buscadores.
+  const alt = typeof document === "undefined" ? null : alternateFor(next);
+  if (alt) {
+    try { localStorage.setItem(KEY, next); } catch {}
+    location.assign(alt);
+    return;
+  }
   await load(next);
   if (lang !== "es") walk(document.documentElement, toEs); // primero vuelve al original
   lang = next;
