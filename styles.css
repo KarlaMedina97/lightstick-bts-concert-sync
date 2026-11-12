@@ -418,6 +418,16 @@ kbd {
 .app.rail .side:not(.peek) .lib-li { grid-template-columns: minmax(0, 1fr); }
 
 /* Nota "¿Por qué no están todos los videos?" en el inicio */
+/* Tarjeta de cada página de canción o álbum (la genera scripts/build-site.mjs) */
+.song-about { margin: var(--s-6) 0 var(--s-4); padding: var(--s-4) var(--s-5); border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface-1); display: grid; gap: var(--s-2); }
+.song-about[hidden] { display: none; }
+.song-about h2 { font-size: var(--fs-20); margin: 0; }
+.song-about h3 { font-size: var(--fs-14); margin: var(--s-2) 0 0; color: var(--text-2); }
+.song-about p { margin: 0; color: var(--text-2); line-height: var(--lh-body); max-width: 70ch; }
+.sa-list { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: 0; padding: 0; list-style: none; }
+.sa-list a { display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 var(--s-3); border-radius: 999px; border: 1px solid var(--border); color: var(--text); text-decoration: none; font-size: var(--fs-14); }
+.sa-list a:hover { border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+.sa-guide a { display: inline-flex; align-items: center; min-height: var(--tap); font-weight: 700; }
 .info-note { margin: 0 0 var(--s-4); padding: var(--s-2) var(--s-4); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); font-size: var(--fs-14); }
 .info-note summary { min-height: var(--tap); display: flex; align-items: center; gap: var(--s-2); cursor: pointer; font-weight: 700; color: var(--text); list-style: none; }
 .info-note summary::-webkit-details-marker { display: none; }

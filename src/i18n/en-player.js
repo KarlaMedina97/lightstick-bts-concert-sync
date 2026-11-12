@@ -540,9 +540,18 @@ export default {
   "Si usas GitHub: apoyo único o mensual.": "If you use GitHub: one-time or monthly support.",
   "La canción de BTS más escuchada de 2026 en Spotify (oct. 2026)": "BTS's most-streamed song of 2026 on Spotify (Oct. 2026)",
   "¿No conecta? Guía y solución de problemas": "Won't connect? Guide and troubleshooting",
+  // Tarjeta de cada página de canción o álbum (build-site.mjs)
+  "Del álbum": "From the album",
+  "Dale play al video oficial y tu ARMY Bomb (o tu pantalla) cambia de color con la canción, sección por sección.": "Play the official video and your ARMY Bomb (or your screen) changes color with the song, section by section.",
+  "Tiene una secuencia de luces propia, diseñada para esta canción.": "It has its own light sequence, designed for this song.",
+  "Más del álbum": "More from the album",
+  "¿Primera vez? Así conectas tu ARMY Bomb": "First time? Here's how to connect your ARMY Bomb",
 };
 
 export const patterns = [
+  [/^(.+): luces para tu ARMY Bomb$/, "$1: lights for your ARMY Bomb"],
+  [/^Álbum de (.+?)( \((\d{4})\))? con 1 video con luces\.$/, "Album by $1$2 with 1 video with lights."],
+  [/^Álbum de (.+?)( \((\d{4})\))? con (\d+) videos? con luces\.$/, "Album by $1$2 with $4 videos with lights."],
   // src/guide.js
   [/^Paso (\d+) de (\d+)$/, "Step $1 of $2"],
   [/^Seguir conectando · paso (\d+) de (\d+)$/, "Continue connecting · step $1 of $2"],

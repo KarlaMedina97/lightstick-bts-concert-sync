@@ -540,9 +540,18 @@ export default {
   "Si usas GitHub: apoyo único o mensual.": "GitHub을 쓴다면: 일회성 또는 월간 후원.",
   "La canción de BTS más escuchada de 2026 en Spotify (oct. 2026)": "2026년 Spotify에서 가장 많이 들은 BTS 곡 (2026년 10월 기준)",
   "¿No conecta? Guía y solución de problemas": "연결이 안 되나요? 가이드와 문제 해결",
+  // Tarjeta de cada página de canción o álbum (build-site.mjs)
+  "Del álbum": "앨범",
+  "Dale play al video oficial y tu ARMY Bomb (o tu pantalla) cambia de color con la canción, sección por sección.": "공식 영상을 재생하면 ARMY Bomb(또는 화면)이 곡에 맞춰 구간마다 색이 바뀌어요.",
+  "Tiene una secuencia de luces propia, diseñada para esta canción.": "이 곡을 위해 만든 전용 조명 시퀀스가 있어요.",
+  "Más del álbum": "앨범의 다른 곡",
+  "¿Primera vez? Así conectas tu ARMY Bomb": "처음인가요? ARMY Bomb 연결 방법",
 };
 
 export const patterns = [
+  [/^(.+): luces para tu ARMY Bomb$/, "$1: ARMY Bomb 조명"],
+  [/^Álbum de (.+?)( \((\d{4})\))? con 1 video con luces\.$/, "$1$2의 앨범, 조명이 있는 영상 1개."],
+  [/^Álbum de (.+?)( \((\d{4})\))? con (\d+) videos? con luces\.$/, "$1$2의 앨범, 조명이 있는 영상 $4개."],
   // src/guide.js
   [/^Paso (\d+) de (\d+)$/, "$2단계 중 $1단계"],
   [/^Seguir conectando · paso (\d+) de (\d+)$/, "이어서 연결하기 · $2단계 중 $1단계"],
