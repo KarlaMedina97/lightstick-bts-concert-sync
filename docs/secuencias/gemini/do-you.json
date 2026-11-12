@@ -1,0 +1,130 @@
+{
+  "song": "do-you",
+  "yt": "0XAxf8aFtL4",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-11",
+  "duracion": 188,
+  "aura": "Rap crudo y rebelde en blanco y negro con estética minimalista y contundente",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 14.5,
+      "escena": "Metrónomos oscilando y primeros planos de engranajes mecánicos sobre fondo blanco puro",
+      "ambiente": "tension",
+      "colores": [
+        "#ffffff",
+        "#000000",
+        "#7a7a7a"
+      ]
+    },
+    {
+      "inicio": 14.5,
+      "fin": 37.8,
+      "escena": "RM rapeando rodeado de una maraña de micrófonos vintage intercalado con tomas de píldoras y cuchillos",
+      "ambiente": "fuerza",
+      "colores": [
+        "#ffffff",
+        "#000000",
+        "#5c5c5c"
+      ]
+    },
+    {
+      "inicio": 37.8,
+      "fin": 45.4,
+      "escena": "Planos macro de gotas de agua salpicando y RM mirando desafiante a cámara",
+      "ambiente": "tension",
+      "colores": [
+        "#000000",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 45.4,
+      "fin": 60.1,
+      "escena": "Estribillo con siluetas fantasmales superpuestas, figura en blanco y luces cálidas desenfocadas",
+      "ambiente": "climax",
+      "colores": [
+        "#ffffff",
+        "#000000",
+        "#999999"
+      ]
+    },
+    {
+      "inicio": 60.1,
+      "fin": 82.8,
+      "escena": "RM gesticulando entre guirnaldas de bombillas y caminando en un pasillo de patrones ópticos",
+      "ambiente": "fuerza",
+      "colores": [
+        "#000000",
+        "#ffffff",
+        "#6e6e6e"
+      ]
+    },
+    {
+      "inicio": 82.8,
+      "fin": 97.9,
+      "escena": "Instrumentos médicos rodeando un rostro femenino, cuernos de ciervo y rimas veloces",
+      "ambiente": "tension",
+      "colores": [
+        "#ffffff",
+        "#000000",
+        "#8c8c8c"
+      ]
+    },
+    {
+      "inicio": 97.9,
+      "fin": 112.5,
+      "escena": "Segundo estribillo con pastillas trituradas, ramo de rosas negras y cortes rítmicos rápidos",
+      "ambiente": "climax",
+      "colores": [
+        "#000000",
+        "#ffffff",
+        "#4a4a4a"
+      ]
+    },
+    {
+      "inicio": 112.5,
+      "fin": 135.5,
+      "escena": "RM cantando ante un micrófono clásico y gesticulando en el estrecho corredor rayado",
+      "ambiente": "fuerza",
+      "colores": [
+        "#000000",
+        "#ffffff",
+        "#777777"
+      ]
+    },
+    {
+      "inicio": 135.5,
+      "fin": 164.8,
+      "escena": "Secuencia coreográfica enérgica en el set blanco con reflectores de estudio y en el túnel",
+      "ambiente": "climax",
+      "colores": [
+        "#ffffff",
+        "#000000",
+        "#666666"
+      ]
+    },
+    {
+      "inicio": 164.8,
+      "fin": 179.5,
+      "escena": "Fila de metrónomos oscilando al ritmo mientras RM remata el estribillo con el micrófono",
+      "ambiente": "fuerza",
+      "colores": [
+        "#ffffff",
+        "#000000",
+        "#888888"
+      ]
+    },
+    {
+      "inicio": 179.5,
+      "fin": 188,
+      "escena": "RM deja caer el cable, se aleja sobre fondo blanco y aparece el título sobre la pantalla",
+      "ambiente": "calma",
+      "colores": [
+        "#ffffff",
+        "#000000",
+        "#999999"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "song": "as-i-told-you-cover",
+  "yt": "inNYQUC6dFs",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-11",
+  "duracion": 161.4,
+  "aura": "energía hip hop retro, homenaje noventero vibrante y fuerza coreográfica",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 8,
+      "escena": "Presentación en escenario futurista con pantallas gráficas azules mientras el grupo toma posiciones",
+      "ambiente": "emocion",
+      "colores": [
+        "#00a8e8",
+        "#ffffff",
+        "#121b28"
+      ]
+    },
+    {
+      "inicio": 8,
+      "fin": 23.5,
+      "escena": "Intro bailable intensa con Jungkook al frente vistiendo indumentaria y guantes de hockey",
+      "ambiente": "fuerza",
+      "colores": [
+        "#0088cc",
+        "#f26522",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 23.5,
+      "fin": 39,
+      "escena": "Primer verso interpretado por Jungkook con coreografía grupal sincronizada y visuales digitales",
+      "ambiente": "fiesta",
+      "colores": [
+        "#1b75bb",
+        "#ffffff",
+        "#0d1b2a"
+      ]
+    },
+    {
+      "inicio": 39,
+      "fin": 56.5,
+      "escena": "Verso a cargo de V con planos cercanos carismáticos bajo reflectores azules y blancos",
+      "ambiente": "alegria",
+      "colores": [
+        "#0099ff",
+        "#ffffff",
+        "#ffcc00"
+      ]
+    },
+    {
+      "inicio": 56.5,
+      "fin": 72,
+      "escena": "Jimin lidera el centro con saltos acrobáticos y pasos rítmicos marcados",
+      "ambiente": "fuerza",
+      "colores": [
+        "#ff7700",
+        "#0088ff",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 72,
+      "fin": 88,
+      "escena": "Transición vocal de Jungkook con cambios rápidos de formación y luces parpadeantes",
+      "ambiente": "emocion",
+      "colores": [
+        "#0055ff",
+        "#ffffff",
+        "#222222"
+      ]
+    },
+    {
+      "inicio": 88,
+      "fin": 104,
+      "escena": "Estribillo colectivo con coreografía icónica de hip hop noventero en sincronía total",
+      "ambiente": "fiesta",
+      "colores": [
+        "#00aaff",
+        "#ffffff",
+        "#ff6600"
+      ]
+    },
+    {
+      "inicio": 104,
+      "fin": 120,
+      "escena": "Sección interactiva de cánticos guiada por Jimin animando al público del recinto",
+      "ambiente": "alegria",
+      "colores": [
+        "#33ccff",
+        "#ffffff",
+        "#111111"
+      ]
+    },
+    {
+      "inicio": 120,
+      "fin": 134.5,
+      "escena": "Interludio de baile dinámico con movimientos en el suelo y gran despliegue atlético",
+      "ambiente": "fuerza",
+      "colores": [
+        "#0077ee",
+        "#ff5500",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 134.5,
+      "fin": 152,
+      "escena": "Clímax del tema con el estribillo final a máxima potencia vocal y baile en grupo",
+      "ambiente": "climax",
+      "colores": [
+        "#00a2ff",
+        "#ffffff",
+        "#ff8800"
+      ]
+    },
+    {
+      "inicio": 152,
+      "fin": 156.5,
+      "escena": "Pose final estática del grupo simulando jugadores de hockey mientras ovaciona la audiencia",
+      "ambiente": "fuerza",
+      "colores": [
+        "#0088dd",
+        "#ffffff",
+        "#1a1a1a"
+      ]
+    },
+    {
+      "inicio": 156.5,
+      "fin": 161.4,
+      "escena": "Pantalla de cierre animada con el logotipo del canal MBC",
+      "ambiente": "calma",
+      "colores": [
+        "#7fe0db",
+        "#ffffff",
+        "#333333"
+      ]
+    }
+  ]
+}

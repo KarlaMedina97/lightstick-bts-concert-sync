@@ -1,0 +1,175 @@
+{
+  "song": "danger-dance-practice",
+  "yt": "vJwHIpEogEY",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-11",
+  "duracion": 243,
+  "aura": "Coreografía hip-hop implacable, precisión milimétrica y actitud rebelde de alta energía",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 12,
+      "escena": "Sala de prácticas iluminada con piso de madera; el grupo se coloca en posición inicial al ritmo de la intro.",
+      "ambiente": "tension",
+      "colores": [
+        "#D4B996",
+        "#202020",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 12,
+      "fin": 25.5,
+      "escena": "Comienzo de la coreografía con golpe de bajo pesado y movimientos cortantes y sincronizados.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#D4B996",
+        "#E83A3A",
+        "#1C1C1C"
+      ]
+    },
+    {
+      "inicio": 25.5,
+      "fin": 43,
+      "escena": "Verso de rap liderado al centro por RM con rebote rítmico y cambios de nivel del grupo.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#FFFFFF",
+        "#D4B996",
+        "#222222"
+      ]
+    },
+    {
+      "inicio": 43,
+      "fin": 59.5,
+      "escena": "Jungkook pasa al frente con pasos ágiles y saltos mientras el resto acompaña con brazos sincronizados.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#FFFFFF",
+        "#1E1E1E",
+        "#D4B996"
+      ]
+    },
+    {
+      "inicio": 59.5,
+      "fin": 77,
+      "escena": "Precoro melódico con Jin y V guiando formaciones lineales y gestos teatrales.",
+      "ambiente": "drama",
+      "colores": [
+        "#D4B996",
+        "#2B2B2B",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 77,
+      "fin": 95,
+      "escena": "Estribillo explosivo con saltos en el aire y Jimin al centro liderando el potente gancho.",
+      "ambiente": "climax",
+      "colores": [
+        "#E83A3A",
+        "#181818",
+        "#D4B996"
+      ]
+    },
+    {
+      "inicio": 95,
+      "fin": 113,
+      "escena": "Segunda mitad del estribillo con Jin al frente, saltos al unísono y el gesto característico de cuello.",
+      "ambiente": "climax",
+      "colores": [
+        "#1C1C1C",
+        "#E83A3A",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 113,
+      "fin": 131,
+      "escena": "Post-estribillo con barrido en el suelo de Jungkook y cambios rápidos de formación.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#FFFFFF",
+        "#111111",
+        "#D4B996"
+      ]
+    },
+    {
+      "inicio": 131,
+      "fin": 150,
+      "escena": "Segundo verso encabezado por el rap enérgico y fluido de J-Hope con pasos veloces de pies.",
+      "ambiente": "fiesta",
+      "colores": [
+        "#E83A3A",
+        "#D4B996",
+        "#222222"
+      ]
+    },
+    {
+      "inicio": 150,
+      "fin": 166,
+      "escena": "Rap agresivo y tajante de Suga con la formación compacta respaldándolo en los tiempos fuertes.",
+      "ambiente": "tension",
+      "colores": [
+        "#1B1B1B",
+        "#D4B996",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 166,
+      "fin": 184,
+      "escena": "Construcción vocal del segundo precoro con movimientos estilizados y cadenciosos.",
+      "ambiente": "drama",
+      "colores": [
+        "#252525",
+        "#FFFFFF",
+        "#D4B996"
+      ]
+    },
+    {
+      "inicio": 184,
+      "fin": 202,
+      "escena": "Segundo estribillo con máxima sincronía y saltos altos grupales de alto impacto visual.",
+      "ambiente": "climax",
+      "colores": [
+        "#E83A3A",
+        "#1A1A1A",
+        "#D4B996"
+      ]
+    },
+    {
+      "inicio": 202,
+      "fin": 220,
+      "escena": "Tramo coral con juego de brazos sincronizado apuntando hacia los laterales y saltos frontales.",
+      "ambiente": "climax",
+      "colores": [
+        "#111111",
+        "#E83A3A",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "inicio": 220,
+      "fin": 236,
+      "escena": "Clímax de baile final con juego de piernas acelerado y despliegue físico intenso.",
+      "ambiente": "fuerza",
+      "colores": [
+        "#D4B996",
+        "#FFFFFF",
+        "#1C1C1C"
+      ]
+    },
+    {
+      "inicio": 236,
+      "fin": 243,
+      "escena": "Corte de música y congelamiento en la pose final con integrantes de rodillas y de pie mirando a cámara.",
+      "ambiente": "tension",
+      "colores": [
+        "#D4B996",
+        "#1E1E1E",
+        "#E83A3A"
+      ]
+    }
+  ]
+}

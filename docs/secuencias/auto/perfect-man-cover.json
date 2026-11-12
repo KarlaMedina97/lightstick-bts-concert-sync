@@ -7,7 +7,7 @@
   "primerTiempo": 0.35,
   "verificacion": {
     "audio": "Escuchado completo desde el reproductor oficial (graves, agudos y golpes medidos cada ~23 ms, sin grabar audio); tempo por autocorrelación; fronteras por cambios de energía; acentos en golpes de bajo reales.",
-    "imagen": "Colores del análisis cuadro a cuadro del MV en cada momento, con preferencia por blanco, amarillo, naranja, rojo y morado.",
+    "imagen": "Colores por momento según Gemini (gemini-3.8-flash); aura: energía desbordante, nostalgia pop y carisma juvenil con coreografía impecable",
     "confianza": "media",
     "dudas": [
       "Los nombres de sección se deducen del sonido (no de la letra)."
@@ -15,74 +15,59 @@
   },
   "paleta": [
     {
-      "nombre": "#4b1a8a",
-      "hex": "#4b1a8a",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
-      "nombre": "#ff5825",
-      "hex": "#ff5825",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
-      "nombre": "#ff1f51",
-      "hex": "#ff1f51",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
-      "nombre": "#ff6c2d",
-      "hex": "#ff6c2d",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
       "nombre": "#ffffff",
       "hex": "#ffffff",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#ff6b00",
+      "hex": "#ff6b00",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#ff9900",
+      "hex": "#ff9900",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#ffaa00",
+      "hex": "#ffaa00",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#e74c3c",
+      "hex": "#e74c3c",
+      "de": "colores del MV según Gemini, por momento"
+    },
+    {
+      "nombre": "#ff8800",
+      "hex": "#ff8800",
+      "de": "colores del MV según Gemini, por momento"
     },
     {
       "nombre": "#ffc840",
       "hex": "#ffc840",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "de": "colores del MV según Gemini, por momento"
     },
     {
-      "nombre": "#ff7737",
-      "hex": "#ff7737",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "nombre": "#d35400",
+      "hex": "#d35400",
+      "de": "colores del MV según Gemini, por momento"
     },
     {
-      "nombre": "#ffd000",
-      "hex": "#ffd000",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
-      "nombre": "#ff7237",
-      "hex": "#ff7237",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
-      "nombre": "#ff6127",
-      "hex": "#ff6127",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
-      "nombre": "#ff6013",
-      "hex": "#ff6013",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "nombre": "#e67e22",
+      "hex": "#e67e22",
+      "de": "colores del MV según Gemini, por momento"
     },
     {
       "nombre": "#8a2be2",
       "hex": "#8a2be2",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "de": "colores del MV según Gemini, por momento"
     },
     {
-      "nombre": "#ff7a40",
-      "hex": "#ff7a40",
-      "de": "paleta del MV y preferencia de la usuaria"
-    },
-    {
-      "nombre": "#4771ff",
-      "hex": "#4771ff",
-      "de": "paleta del MV y preferencia de la usuaria"
+      "nombre": "#f39c12",
+      "hex": "#f39c12",
+      "de": "colores del MV según Gemini, por momento"
     }
   ],
   "tramos": [
@@ -90,10 +75,10 @@
       "inicio": 0,
       "fin": 4.8,
       "seccion": "intro",
-      "evidencia": "graves ×0.5, agudos ×1.1, energía ×1 y 0.2 golpes por segundo (intro)",
+      "evidencia": "graves ×0.5, agudos ×1.1, energía ×1 y 0.2 golpes por segundo (intro) · escena: Apertura en el escenario con pantalla de tablero ajedrezado 'PERFECT MAN', trajes oscuros e introducción vocal",
       "sigue": "el pulso del compás",
-      "color": "#4b1a8a",
-      "color2": "#ff5825",
+      "color": "#ffffff",
+      "color2": "#ff6b00",
       "brillo": 0.25,
       "brilloFin": 0.45,
       "transicion": "fundido",
@@ -108,10 +93,10 @@
       "inicio": 4.8,
       "fin": 15.8,
       "seccion": "verso",
-      "evidencia": "graves ×0.5, agudos ×1.2, energía ×1 y 0.2 golpes por segundo (medio)",
+      "evidencia": "graves ×0.5, agudos ×1.2, energía ×1 y 0.2 golpes por segundo (medio) · escena: Apertura en el escenario con pantalla de tablero ajedrezado 'PERFECT MAN', trajes oscuros e introducción vocal",
       "sigue": "el pulso del compás",
-      "color": "#ff5825",
-      "color2": "#ff1f51",
+      "color": "#ff6b00",
+      "color2": "#ffffff",
       "brillo": 0.72,
       "brilloFin": 0.8,
       "transicion": "corte",
@@ -126,10 +111,10 @@
       "inicio": 15.8,
       "fin": 26.9,
       "seccion": "verso",
-      "evidencia": "graves ×4.4, agudos ×1.3, energía ×1.1 y 1.7 golpes por segundo (pesado)",
+      "evidencia": "graves ×4.4, agudos ×1.3, energía ×1.1 y 1.7 golpes por segundo (pesado) · escena: Comienza la coreografía con Jimin al frente bajo reflectores ámbar y luces cruzadas dinámicas",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ff6c2d",
-      "color2": "#ffffff",
+      "color": "#ffffff",
+      "color2": "#ff9900",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -156,10 +141,10 @@
       "inicio": 26.9,
       "fin": 33.5,
       "seccion": "verso",
-      "evidencia": "graves ×6.1, agudos ×1.2, energía ×1.1 y 2.1 golpes por segundo (pesado)",
+      "evidencia": "graves ×6.1, agudos ×1.2, energía ×1.1 y 2.1 golpes por segundo (pesado) · escena: Comienza la coreografía con Jimin al frente bajo reflectores ámbar y luces cruzadas dinámicas",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ff6c2d",
-      "color2": "#ffc840",
+      "color": "#ff9900",
+      "color2": "#ffffff",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -182,10 +167,10 @@
       "inicio": 33.5,
       "fin": 40.2,
       "seccion": "verso",
-      "evidencia": "graves ×5.7, agudos ×1.6, energía ×1.3 y 1.9 golpes por segundo (pesado)",
+      "evidencia": "graves ×5.7, agudos ×1.6, energía ×1.3 y 1.9 golpes por segundo (pesado) · escena: Jungkook y el grupo ejecutan pasos de baile sincronizados mientras rayos de luz dorada barren el escenario",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ff7737",
-      "color2": "#ffd000",
+      "color": "#ffffff",
+      "color2": "#ffaa00",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -207,10 +192,10 @@
       "inicio": 40.2,
       "fin": 53.4,
       "seccion": "verso",
-      "evidencia": "graves ×4, agudos ×1.4, energía ×1.2 y 1.8 golpes por segundo (pesado)",
+      "evidencia": "graves ×4, agudos ×1.4, energía ×1.2 y 1.8 golpes por segundo (pesado) · escena: Jungkook y el grupo ejecutan pasos de baile sincronizados mientras rayos de luz dorada barren el escenario",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ffc840",
-      "color2": "#ff1f51",
+      "color": "#ffaa00",
+      "color2": "#ffffff",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -239,10 +224,10 @@
       "inicio": 53.4,
       "fin": 60.1,
       "seccion": "verso",
-      "evidencia": "graves ×2.9, agudos ×1.3, energía ×1 y 1.6 golpes por segundo (pesado)",
+      "evidencia": "graves ×2.9, agudos ×1.3, energía ×1 y 1.6 golpes por segundo (pesado) · escena: Primer estribillo potente con haces dorados radiantes e insertos del público animando",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ff7237",
-      "color2": "#ffc840",
+      "color": "#e74c3c",
+      "color2": "#ff8800",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -263,10 +248,10 @@
       "inicio": 60.1,
       "fin": 68.9,
       "seccion": "verso",
-      "evidencia": "graves ×4.1, agudos ×1.1, energía ×1 y 2 golpes por segundo (pesado)",
+      "evidencia": "graves ×4.1, agudos ×1.1, energía ×1 y 2 golpes por segundo (pesado) · escena: Primer estribillo potente con haces dorados radiantes e insertos del público animando",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ff6127",
-      "color2": "#ffd000",
+      "color": "#ff8800",
+      "color2": "#e74c3c",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -291,10 +276,10 @@
       "inicio": 68.9,
       "fin": 82.2,
       "seccion": "verso",
-      "evidencia": "graves ×2.6, agudos ×1.3, energía ×1 y 1.4 golpes por segundo (pesado)",
+      "evidencia": "graves ×2.6, agudos ×1.3, energía ×1 y 1.4 golpes por segundo (pesado) · escena: Sección de rap con toma cenital sobre el piso ajedrezado circular y luces naranja cálidas",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ff6127",
-      "color2": "#ffffff",
+      "color": "#ffc840",
+      "color2": "#d35400",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -321,9 +306,9 @@
       "inicio": 82.2,
       "fin": 93.3,
       "seccion": "verso",
-      "evidencia": "graves ×0.6, agudos ×1.1, energía ×0.9 y 0.1 golpes por segundo (medio)",
+      "evidencia": "graves ×0.6, agudos ×1.1, energía ×0.9 y 0.1 golpes por segundo (medio) · escena: Jimin lidera el verso melódico y se quita la chaqueta con intensidad frente a la pantalla gigante",
       "sigue": "el pulso del compás",
-      "color": "#ff6013",
+      "color": "#e67e22",
       "color2": "#8a2be2",
       "brillo": 0.72,
       "brilloFin": 0.8,
@@ -339,10 +324,10 @@
       "inicio": 93.3,
       "fin": 104.3,
       "seccion": "verso",
-      "evidencia": "graves ×2.4, agudos ×1.2, energía ×1 y 1.8 golpes por segundo (pesado)",
+      "evidencia": "graves ×2.4, agudos ×1.2, energía ×1 y 1.8 golpes por segundo (pesado) · escena: Jimin lidera el verso melódico y se quita la chaqueta con intensidad frente a la pantalla gigante",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ffc840",
-      "color2": "#ff1f51",
+      "color": "#ffffff",
+      "color2": "#e67e22",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -369,10 +354,10 @@
       "inicio": 104.3,
       "fin": 130.9,
       "seccion": "verso",
-      "evidencia": "graves ×3.8, agudos ×1.2, energía ×1 y 2 golpes por segundo (pesado)",
+      "evidencia": "graves ×3.8, agudos ×1.2, energía ×1 y 2 golpes por segundo (pesado) · escena: Puente de la canción con coreografía dinámica y reflectores blancos y dorados en abanico",
       "sigue": "golpes de bombo y retumbones de bajo",
-      "color": "#ff7a40",
-      "color2": "#ffd000",
+      "color": "#f39c12",
+      "color2": "#8a2be2",
       "brillo": 0.86,
       "brilloFin": 0.95,
       "transicion": "corte",
@@ -416,9 +401,9 @@
       "inicio": 130.9,
       "fin": 141,
       "seccion": "final",
-      "evidencia": "graves ×3.1, agudos ×1.1, energía ×0.9 y 1.7 golpes por segundo (final)",
+      "evidencia": "graves ×3.1, agudos ×1.1, energía ×0.9 y 1.7 golpes por segundo (final) · escena: Coro final de alta intensidad vocal y bailable con luces estroboscópicas y saltos coordinados",
       "sigue": "el pulso del compás",
-      "color": "#4771ff",
+      "color": "#ffffff",
       "color2": null,
       "brillo": 0.6,
       "brilloFin": 0,

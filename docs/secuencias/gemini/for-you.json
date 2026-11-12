@@ -1,0 +1,142 @@
+{
+  "song": "for-you",
+  "yt": "TTG6nxwdhyA",
+  "modelo": "gemini-3.8-flash",
+  "fecha": "2026-11-11",
+  "duracion": 307,
+  "aura": "balada pop emotiva y juvenil sobre amor a distancia, sacrificio y amistad incondicional",
+  "tramos": [
+    {
+      "inicio": 0,
+      "fin": 19.5,
+      "escena": "Jungkook con disfraz completo de oso repartiendo folletos junto a un arco de globos al aire libre",
+      "ambiente": "calma",
+      "colores": [
+        "#e07a38",
+        "#60a5fa",
+        "#e2e8f0"
+      ]
+    },
+    {
+      "inicio": 19.5,
+      "fin": 38.5,
+      "escena": "Jungkook se quita la cabeza del disfraz, agotado, y sonríe al leer mensajes afectuosos en su móvil",
+      "ambiente": "emocion",
+      "colores": [
+        "#ea580c",
+        "#93c5fd",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 38.5,
+      "fin": 65.5,
+      "escena": "Planos individuales de los miembros cantando en interior blanco y Jungkook recordando con una carta en la azotea",
+      "ambiente": "melancolia",
+      "colores": [
+        "#cbd5e1",
+        "#64748b",
+        "#334155"
+      ]
+    },
+    {
+      "inicio": 65.5,
+      "fin": 88.5,
+      "escena": "Coreografía grupal en una nave luminosa con grandes ventanales y vestuario estampado monocromático",
+      "ambiente": "alegria",
+      "colores": [
+        "#ffffff",
+        "#1e293b",
+        "#94a3b8"
+      ]
+    },
+    {
+      "inicio": 88.5,
+      "fin": 105,
+      "escena": "Jungkook descansa junto a la cabeza de oso frente al malecón costero bajo cielo despejado",
+      "ambiente": "calma",
+      "colores": [
+        "#f97316",
+        "#38bdf8",
+        "#f1f5f9"
+      ]
+    },
+    {
+      "inicio": 105,
+      "fin": 136.5,
+      "escena": "El grupo baila con energía y comparte bromas distendidas sentados en sofás de una sala vintage",
+      "ambiente": "fiesta",
+      "colores": [
+        "#f8fafc",
+        "#334155",
+        "#475569"
+      ]
+    },
+    {
+      "inicio": 136.5,
+      "fin": 172,
+      "escena": "Montaje de trabajos duros: Jin lavando coches de noche, RM en la gasolinera y Suga repartiendo comida en moto",
+      "ambiente": "melancolia",
+      "colores": [
+        "#0f172a",
+        "#dc2626",
+        "#e2e8f0"
+      ]
+    },
+    {
+      "inicio": 172,
+      "fin": 202,
+      "escena": "V atendiendo en la tienda de conveniencia, J-Hope sirviendo mesas y Jimin fregando vajilla en la cocina",
+      "ambiente": "drama",
+      "colores": [
+        "#0284c7",
+        "#facc15",
+        "#ffffff"
+      ]
+    },
+    {
+      "inicio": 202,
+      "fin": 222,
+      "escena": "Jungkook habla por teléfono alegre en la azotea mientras Jin y RM comparten risas cómplices",
+      "ambiente": "alegria",
+      "colores": [
+        "#38bdf8",
+        "#94a3b8",
+        "#1e293b"
+      ]
+    },
+    {
+      "inicio": 222,
+      "fin": 245,
+      "escena": "Baile coral intenso en el estudio blanco intercalado con los chicos terminando sus jornadas laborales",
+      "ambiente": "fiesta",
+      "colores": [
+        "#ffffff",
+        "#0f172a",
+        "#cbd5e1"
+      ]
+    },
+    {
+      "inicio": 245,
+      "fin": 276,
+      "escena": "Los miembros irrumpen para entregar a Jungkook un billete de avión comprado entre todos con sus ahorros",
+      "ambiente": "climax",
+      "colores": [
+        "#3b82f6",
+        "#fef08a",
+        "#f1f5f9"
+      ]
+    },
+    {
+      "inicio": 276,
+      "fin": 307,
+      "escena": "Jungkook llega a la calle japonesa con un mapa y sonríe al reencontrarse con la chica que llega en bicicleta",
+      "ambiente": "emocion",
+      "colores": [
+        "#2563eb",
+        "#fbcfe8",
+        "#ffffff"
+      ]
+    }
+  ]
+}
