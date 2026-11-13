@@ -10,6 +10,7 @@ const SHELL = [
   "privacy/",
   "privacy/index.html",
   "privacidad.html",
+  "src/lite.js",
   "src/redirect.js",
   "src/favorites.js",
   "src/tour.js",

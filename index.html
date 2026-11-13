@@ -53,19 +53,8 @@
   <link rel="modulepreload" href="src/landing.js">
   <link rel="modulepreload" href="src/i18n.js">
   <link rel="modulepreload" href="src/nav-menu.js">
-  <!-- three.js y el modelo 3D: los importa src/landing.js después de la primera pintura; se piden ya, con prioridad baja,
-       para que estén listos sin quitarle red a lo que pinta la portada. -->
-  <link rel="modulepreload" href="vendor/three/build/three.module.min.js" fetchpriority="low">
-  <link rel="modulepreload" href="src/models/shared.js" fetchpriority="low">
-  <link rel="modulepreload" href="src/models/armybomb-v4.js" fetchpriority="low">
-  <link rel="modulepreload" href="src/fanchant.js" fetchpriority="low">
-  <link rel="modulepreload" href="src/mic.js" fetchpriority="low">
-  <link rel="modulepreload" href="vendor/three/examples/jsm/postprocessing/EffectComposer.js" fetchpriority="low">
-  <link rel="modulepreload" href="vendor/three/examples/jsm/postprocessing/RenderPass.js" fetchpriority="low">
-  <link rel="modulepreload" href="vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js" fetchpriority="low">
-  <link rel="modulepreload" href="vendor/three/examples/jsm/postprocessing/Pass.js" fetchpriority="low">
-  <link rel="modulepreload" href="vendor/three/examples/jsm/utils/BufferGeometryUtils.js" fetchpriority="low">
-  <link rel="modulepreload" href="vendor/three/examples/jsm/environments/RoomEnvironment.js" fetchpriority="low">
+  <!-- three.js y el modelo 3D no se precargan aquí: src/landing.js los pide (con prioridad baja) solo si no toca la
+       versión ligera (red lenta, ahorro de datos o equipo justo; ver src/lite.js). Así no se bajan ~0,8 MB de más. -->
   <script src="vendor/gsap/gsap.min.js" defer></script>
   <script src="vendor/gsap/ScrollTrigger.min.js" defer></script>
   <style id="critico">

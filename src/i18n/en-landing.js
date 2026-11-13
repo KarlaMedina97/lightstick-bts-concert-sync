@@ -450,6 +450,13 @@ export default {
   "No. LumiParty (lumiparty.com) es una app web de fans para el ARMY Bomb de BTS: gratis y sin productos a la venta. No tiene relación con tiendas de nombre parecido, como lumiparty.net.": "No. LumiParty (lumiparty.com) is a fan-made web app for the BTS ARMY Bomb: free, with nothing for sale. It has no connection to stores with similar names, such as lumiparty.net.",
   "LumiParty (lumiparty.com) es una app web de fans para el ARMY Bomb de BTS. No es una tienda ni tiene relación con lumiparty.net.": "LumiParty (lumiparty.com) is a fan-made web app for the BTS ARMY Bomb. It isn't a store and has no connection to lumiparty.net.",
   // fin guía
+  // Versión ligera de la portada (src/lite.js)
+  "Versión ligera: tienes activado el ahorro de datos.": "Light version: you have data saver turned on.",
+  "Versión ligera para tu conexión.": "Light version for your connection.",
+  "Versión ligera para tu equipo.": "Light version for your device.",
+  "Versión ligera: las animaciones iban lentas en tu equipo.": "Light version: animations were running slowly on your device.",
+  "Ver en 3D (descarga 0,8 MB)": "View in 3D (0.8 MB download)",
+  "Ver en 3D": "View in 3D",
 };
 
 // Colores y momentos de la demo (landing.js arma "Color en el momento: …").

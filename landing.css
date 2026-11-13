@@ -882,3 +882,23 @@ section[id], #contenido { scroll-margin-top: 76px; }
 .consent-no { background: transparent; color: #f3ecff; border: 1px solid rgba(243, 236, 255, 0.45); }
 .consent button:focus-visible, .consent a:focus-visible { outline: 3px solid #d4bbff; outline-offset: 2px; }
 @media (min-width: 720px) { .consent { right: auto; left: max(24px, env(safe-area-inset-left, 0px)); margin: 0; } }
+
+/* ---------- Versión ligera (src/lite.js): red lenta, ahorro de datos o equipo justo ----------
+   Sin lienzo 3D (queda la silueta luminosa de la portada, quieta) ni efectos que repintan en cada cuadro:
+   desenfoques de fondo, sombras animadas y el desenfoque de entrada de los títulos. El aspecto se mantiene. */
+.lite #scene { visibility: hidden; }
+.lite .hero .slot::before { animation: none; }
+.lite .landing .nav.scrolled, .lite .mini, .lite .grab-hint, .lite .consent { backdrop-filter: none; -webkit-backdrop-filter: none; }
+.lite .landing .nav.scrolled { background: rgba(6, 8, 24, .94); }
+.lite .grab-hint.in, .lite .gh-dot { animation: none; }
+.lite .kt .c { filter: none !important; }
+.lite-note {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .8rem; margin: 1rem 0 0; max-width: 34rem;
+  padding: .55rem .6rem .55rem 1rem; border-radius: 999px; border: 1px solid var(--line); background: var(--glass);
+  color: var(--muted); font-size: .88rem;
+}
+.lite-3d {
+  font: inherit; font-weight: 700; color: var(--text); background: rgba(255, 255, 255, .08); cursor: pointer;
+  min-height: 44px; padding: 0 1rem; border-radius: 999px; border: 1px solid var(--line);
+}
+.lite-3d:hover { background: rgba(255, 255, 255, .16); }

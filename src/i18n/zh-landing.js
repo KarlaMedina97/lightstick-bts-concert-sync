@@ -451,6 +451,13 @@ export default {
   "LumiParty (lumiparty.com) es una app web de fans para el ARMY Bomb de BTS. No es una tienda ni tiene relación con lumiparty.net.": "LumiParty（lumiparty.com）是粉丝为 BTS 的 ARMY Bomb 制作的网页应用。它不是商店，与 lumiparty.net 没有任何关系。",
   // fin guía
   // Versión ligera de la portada (src/lite.js)
+  "Versión ligera: tienes activado el ahorro de datos.": "轻量版：你已开启省流量模式。",
+  "Versión ligera para tu conexión.": "为你的网络准备的轻量版。",
+  "Versión ligera para tu equipo.": "为你的设备准备的轻量版。",
+  "Versión ligera: las animaciones iban lentas en tu equipo.": "轻量版：动画在你的设备上运行较慢。",
+  "Ver en 3D (descarga 0,8 MB)": "查看 3D（下载 0.8 MB）",
+  "Ver en 3D": "查看 3D",
+  // Versión ligera de la portada (src/lite.js)
   "Versión ligera: tienes activado el ahorro de datos.": "轻量版：你开启了省流量模式。",
   "Versión ligera para tu conexión.": "已根据你的网络切换到轻量版。",
   "Versión ligera para tu equipo.": "已根据你的设备切换到轻量版。",

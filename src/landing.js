@@ -10,6 +10,7 @@ import { carousel } from "./carousel.js";
 import { fireworks } from "./fireworks.js";
 import { pageview } from "./analytics.js";
 import { showConsent } from "./consent.js";
+import { liteReason, slowFrames, measureFrames, LITE_TEXT } from "./lite.js";
 pageview();
 // Aviso de privacidad cuando la portada ya se pintó (no compite con la primera carga).
 addEventListener("load", () => setTimeout(showConsent, 1200), { once: true });
@@ -17,7 +18,8 @@ addEventListener("load", () => setTimeout(showConsent, 1200), { once: true });
 // HTML, el CSS y las fuentes. index.html los pide desde el principio con prioridad baja (modulepreload).
 let THREE, EffectComposer, RenderPass, UnrealBloomPass, mergeGeometries, RoomEnvironment;
 let createMaterials, glowTexture, contactShadow, createArmyBombV4, MEMBERS, chantStepMs, MicSync; // fanchant y micrófono: solo los usa la escena
-const loadScene = () => Promise.all([
+let sceneMods = null; // una sola descarga aunque se pida dos veces (medición de cuadros y escena)
+const loadScene = () => (sceneMods ??= Promise.all([
   import("three"),
   import("three/addons/postprocessing/EffectComposer.js"),
   import("three/addons/postprocessing/RenderPass.js"),
@@ -33,7 +35,7 @@ const loadScene = () => Promise.all([
   ({ EffectComposer } = ec); ({ RenderPass } = rp); ({ UnrealBloomPass } = ub); ({ mergeGeometries } = bgu); ({ RoomEnvironment } = re);
   ({ createMaterials, glowTexture, contactShadow } = shared); ({ createArmyBombV4 } = v4m);
   ({ MEMBERS, chantStepMs } = fc); ({ MicSync } = mic);
-});
+}));
 
 const gsap = window.gsap;
 const ScrollTrigger = window.ScrollTrigger;
@@ -56,6 +58,24 @@ const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const params = new URLSearchParams(location.search);
 // Solo para pruebas con capturas: ?shot=<px> salta a esa posición sin suavizado ni animaciones de entrada.
 const SHOT = params.get("shot");
+// Versión ligera (src/lite.js): red lenta, ahorro de datos o equipo justo → sin 3D hasta que la persona lo pida.
+// ?mode=lite la fuerza y ?mode=full la evita (pruebas, o para elegir a mano).
+const MODE = params.get("mode");
+let liteWhy = SHOT !== null || MODE === "full" ? "" : MODE === "lite" ? "red" : liteReason();
+let forceFull = MODE === "full"; // la persona pidió el 3D: ya no se vuelve a la versión ligera sola
+let spacingTween = null; // respiración del espaciado de las etiquetas (se apaga en la versión ligera)
+let resume3d = null; // lo define buildScene: vuelve a dibujar la escena pausada por cuadros lentos
+// three.js y el modelo se precargan solo si se van a usar (antes iban fijos en index.html: ~0,8 MB aun con red lenta).
+if (!liteWhy) {
+  for (const href of ["/vendor/three/build/three.module.min.js", "/src/models/shared.js", "/src/models/armybomb-v4.js", "/src/fanchant.js", "/src/mic.js",
+    ...["postprocessing/EffectComposer.js", "postprocessing/RenderPass.js", "postprocessing/UnrealBloomPass.js", "postprocessing/Pass.js", "utils/BufferGeometryUtils.js", "environments/RoomEnvironment.js"].map((f) => `/vendor/three/examples/jsm/${f}`)]) {
+    const l = document.createElement("link");
+    l.rel = "modulepreload";
+    l.href = href;
+    l.fetchPriority = "low";
+    document.head.append(l);
+  }
+}
 const canvas = document.getElementById("scene");
 const mobileQ = () => innerWidth < 720;
 const LOW_END = innerWidth < 720 || (navigator.hardwareConcurrency || 8) <= 4 || (SHOT !== null && params.has("lite"));
@@ -72,7 +92,8 @@ carousel(document.querySelector(".steps"), { label: "Paso" });
   const fx = fireworks({ z: 1 });
   const zones = [["inicio", 0.3, ["#b388ff", "#ff6fb5", "#ffd23f", "#4fd1ff", "#ffffff"]], ["oceano", 0.9, ["#8a2be2", "#b388ff", "#c084fc", "#ff6fb5", "#ffd23f", "#ffffff"]]];
   const seen = new Map();
-  const pickRate = () => { const on = zones.find(([id]) => seen.get(id)); fx.auto(on ? on[1] : 0, { colors: on?.[2] }); };
+  // En la versión ligera no hay fuegos automáticos (un lienzo más que se redibuja en cada cuadro).
+  const pickRate = () => { const on = zones.find(([id]) => seen.get(id)); fx.auto(on && !document.documentElement.classList.contains("lite") ? on[1] : 0, { colors: on?.[2] }); };
   if ("IntersectionObserver" in window) {
     const io = new IntersectionObserver((ents) => { for (const e of ents) seen.set(e.target.id, e.isIntersecting); pickRate(); }, { threshold: 0.35 });
     for (const [id] of zones) { const el = document.getElementById(id); if (el) io.observe(el); }
@@ -271,8 +292,45 @@ function whenUserActs(fn) {
   const go = () => { for (const t of evs) removeEventListener(t, go, true); fn(); };
   for (const t of evs) addEventListener(t, go, { capture: true, passive: true, once: true });
 }
+/**
+ * Versión ligera: la portada queda con la silueta luminosa (sin lienzo 3D, sin fuegos automáticos ni animaciones
+ * que repintan en cada cuadro) y un aviso con «Ver en 3D» para cargarla cuando la persona quiera.
+ */
+function goLite(why) {
+  liteWhy = why;
+  const root = document.documentElement;
+  root.classList.add("lite");
+  root.classList.remove("gl-ready"); // vuelve la silueta (si la escena estaba dibujada y se pausó)
+  spacingTween?.kill();
+  document.querySelector(".lite-note")?.remove();
+  const note = document.createElement("p");
+  note.className = "lite-note";
+  const text = document.createElement("span");
+  text.textContent = LITE_TEXT[why] ?? LITE_TEXT.equipo;
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "lite-3d";
+  btn.textContent = why === "datos" || why === "red" ? "Ver en 3D (descarga 0,8 MB)" : "Ver en 3D";
+  btn.addEventListener("click", () => {
+    forceFull = true;
+    liteWhy = "";
+    root.classList.remove("lite");
+    note.remove();
+    if (resume3d) resume3d();
+    else buildScene();
+  });
+  note.append(text, " ", btn);
+  (document.querySelector("#inicio .hero-ctas") ?? document.querySelector("#inicio .copy"))?.after(note);
+}
 if (SHOT !== null) setTimeout(buildScene, 0);
-else whenPaintedAndIdle(() => (softwareGL() ? whenUserActs(() => whenPaintedAndIdle(buildScene)) : buildScene()));
+else if (liteWhy) goLite(liteWhy);
+else whenPaintedAndIdle(() => (softwareGL() ? whenUserActs(() => whenPaintedAndIdle(startScene)) : startScene()));
+// Mientras three.js se descarga, se miden los cuadros de la página: si ya van lentos sin 3D, con 3D se trabaría.
+async function startScene() {
+  loadScene().catch(() => {});
+  if (!forceFull && slowFrames(await measureFrames(800))) return goLite("lento");
+  buildScene();
+}
 
 async function buildScene() {
   try { await loadScene(); } catch { canvas.remove(); document.documentElement.classList.add("gl-ready"); return; } // sin red no hay 3D: fuera la silueta
@@ -1670,9 +1728,11 @@ async function buildScene() {
   let crowdPainted = "", lastSide = "", lastPal = "", climaxDone = false, liveT = 0, beatPulse = 0;
   const root = document.documentElement;
   let lastDraw = 0;
+  let paused3d = false; // cuadros lentos aun en el escalón más liviano: se deja de dibujar (versión ligera)
+  resume3d = () => { paused3d = false; settled = true; slowFor = 0; clock.getDelta(); document.documentElement.classList.add("gl-ready"); };
   function loop(now = 0) {
     requestAnimationFrame(loop);
-    if (document.hidden) return;
+    if (document.hidden || paused3d) return;
     // Por software, a lo sumo ~30 cuadros por segundo: cada cuadro ocupa al procesador (que también mueve la página).
     if (SOFT_GL && now - lastDraw < 30) return;
     lastDraw = now;
@@ -1933,6 +1993,8 @@ async function buildScene() {
       fastFor = 0;
       if (DEBUG) console.info("[pws] calidad ↓", qTier);
     }
+    // Ya en el escalón más liviano y sigue lento 3 s: se pausa el 3D y queda la versión ligera (con «Ver en 3D»).
+    if (qTier === 3 && slowFor > 3 && !SHOT && !forceFull && !paused3d) { paused3d = true; goLite("lento"); if (DEBUG) console.info("[pws] 3D en pausa"); return; }
     fastFor = dt < 0.022 ? fastFor + dt : Math.max(0, fastFor - dt * 2); // el mismo umbral que para bajar; un cuadro lento suelto no lo anula
     if (fastFor > 1.5 && !settled && qTier > BEST_TIER) {
       fastFor = 0; slowFor = 0;
@@ -2110,7 +2172,8 @@ if (gsap && !reduceMotion && !SHOT) {
     gsap.from(".reveal", { y: 26, duration: 1, stagger: 0.08, ease: "expo.out", delay: 0.45 });
   }
   // Respiración del espaciado en las etiquetas.
-  if (innerWidth >= 720) gsap.to(".kicker, .eyebrow", { letterSpacing: "0.22em", duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1 });
+  // Cambia el ancho del texto (recalcula el diseño en cada cuadro): no va en la versión ligera.
+  if (innerWidth >= 720 && !liteWhy) spacingTween = gsap.to(".kicker, .eyebrow", { letterSpacing: "0.22em", duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1 });
   // Las animaciones con el scroll (todo lo que está debajo de la portada) se preparan después de la primera pintura:
   // crear cada ScrollTrigger mide la página, y hacerlo de entrada retrasaba que la portada respondiera.
   if (ScrollTrigger) whenPaintedAndIdle(() => {

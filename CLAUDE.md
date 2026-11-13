@@ -117,6 +117,11 @@ menú de idioma navega a la otra versión. Por eso el importmap de `index.html` 
   y `fonts/fonts.css` que pintan la portada, y `landing.css` se enlaza después de la portada; `player/index.html` pinta una
   pantalla de carga (`.boot`) que `styles.css` oculta, y estantes esqueleto que reemplaza el JS. Si cambias una regla
   copiada, actualiza la copia: lo exige `tests/critical-css.test.js`. Nada de contenido oculto hasta que corra el JS.
+- **Versión ligera de la portada** (`src/lite.js`, clase `html.lite`): con ahorro de datos, red 3G o peor, ≤ 2 GB de
+  memoria o ≤ 2 núcleos no se descarga three.js (~0,8 MB; `src/landing.js` lo precarga solo si hace falta) y la
+  portada queda con la silueta luminosa, sin fuegos automáticos ni efectos que repintan en cada cuadro. Si no hay datos
+  del navegador, se miden 0,8 s de cuadros antes de armar la escena; y si con la escena ya en su escalón más liviano
+  sigue lenta 3 s, se pausa. Siempre con «Ver en 3D» para cargarla. `?mode=lite` y `?mode=full` la fuerzan.
 
 ### Git
 - **Conventional Commits** en todos los commits: `tipo(alcance): descripción` en español
