@@ -548,6 +548,7 @@ export default {
   "Tu biblioteca": "Sua biblioteca",
   "Preferencias": "Preferências",
   "Mis Me gusta": "Minhas curtidas",
+  "Tu dispositivo pide reducir el movimiento: el modo seguro se vuelve a activar cada vez que abres LumiParty.": "Seu dispositivo pede para reduzir o movimento: o modo seguro volta a ser ativado sempre que você abre o LumiParty.",
 };
 
 export const patterns = [

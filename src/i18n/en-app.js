@@ -385,6 +385,8 @@ const dict = {
   "Reproducir": "Play",
   "Listo, datos borrados. La página se recargará.": "Done, data cleared. The page will reload.",
   "YouTube no deja ver este video aquí. Pasamos al siguiente.": "YouTube won't play this video here. Skipping to the next one.",
+  "Modo seguro activado otra vez: tu dispositivo pide reducir el movimiento.": "Safe mode is on again: your device asks to reduce motion.",
+  "Modo seguro desactivado hasta que cierres LumiParty: tu dispositivo pide reducir el movimiento.": "Safe mode is off until you close LumiParty: your device asks to reduce motion.",
 };
 export default dict;
 

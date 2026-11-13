@@ -548,6 +548,7 @@ export default {
   "Tu biblioteca": "Pustakamu",
   "Preferencias": "Preferensi",
   "Mis Me gusta": "Suka saya",
+  "Tu dispositivo pide reducir el movimiento: el modo seguro se vuelve a activar cada vez que abres LumiParty.": "Perangkatmu meminta gerakan dikurangi: mode aman aktif lagi setiap kali kamu membuka LumiParty.",
 };
 
 export const patterns = [

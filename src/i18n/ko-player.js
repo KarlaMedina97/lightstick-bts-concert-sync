@@ -548,6 +548,7 @@ export default {
   "Tu biblioteca": "내 보관함",
   "Preferencias": "환경설정",
   "Mis Me gusta": "내 좋아요",
+  "Tu dispositivo pide reducir el movimiento: el modo seguro se vuelve a activar cada vez que abres LumiParty.": "기기에서 동작 줄이기가 켜져 있어요. LumiParty를 열 때마다 안전 모드가 다시 켜져요.",
 };
 
 export const patterns = [
