@@ -1213,7 +1213,13 @@ function describeLights() {
   const conn = n ? CONN[lang] ?? `${n} ARMY Bomb conectado${n > 1 ? "s" : ""}` : t("Sin ARMY Bomb conectado");
   return `${parts.join(", ")}. ${conn}.`;
 }
-function announceLights() { lastDescribed = performance.now(); say(describeLights(), { delay: 0 }); }
+/** Describe las luces. Pedido (botón o tecla L): aviso visible que también lee el lector de pantalla; automático
+ *  (Ajustes → Describir luces): solo para el lector de pantalla, sin tapar la vista cada 8 s. */
+function announceLights({ visible = false } = {}) {
+  lastDescribed = performance.now();
+  if (visible) toast(describeLights(), 6000);
+  else say(describeLights(), { delay: 0 });
+}
 
 // ---------- Modo micrófono ----------
 // ---------- "Estoy en un concierto" ----------
@@ -3514,7 +3520,7 @@ async function init() {
       crowd?.flash();
     },
   });
-  $("btn-describe").onclick = () => { closeMenus(); announceLights(); };
+  $("btn-describe").onclick = () => { closeMenus(); announceLights({ visible: true }); };
   $("btn-play").onclick = togglePlay;
   $("btn-mic").onclick = () => (mic?.hybrid ? toggleMicSync().then(toggleMic) : toggleMic());
   $("btn-mic-sync").onclick = () => { closeMenus(); toggleMicSync(); };
@@ -3539,7 +3545,7 @@ async function init() {
     else if (k === "p") { e.preventDefault(); prev(); }
     else if (k === "b") onTap();
     else if (k === "f") toggleFullscreen();
-    else if (k === "l") { e.preventDefault(); announceLights(); }
+    else if (k === "l") { e.preventDefault(); announceLights({ visible: true }); }
   });
 
   const guide = (guideRef = new Guide({
