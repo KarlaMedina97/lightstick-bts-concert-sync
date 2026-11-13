@@ -545,6 +545,9 @@ export default {
   "Tiene una secuencia de luces propia, diseñada para esta canción.": "Punya urutan lampu sendiri, dirancang khusus untuk lagu ini.",
   "Más del álbum": "Lainnya dari album",
   "¿Primera vez? Así conectas tu ARMY Bomb": "Pertama kali? Begini cara menghubungkan ARMY Bomb",
+  "Tu biblioteca": "Pustakamu",
+  "Preferencias": "Preferensi",
+  "Mis Me gusta": "Suka saya",
 };
 
 export const patterns = [

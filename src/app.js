@@ -1059,7 +1059,7 @@ function markCurrent() {
 
 // ---------- Reproducción ----------
 /** Carga una canción (sin tocar la cola). */
-function loadIndex(i, { autoplay = true } = {}) {
+function loadIndex(i, { autoplay = true, stay = false } = {}) {
   if (i < 0 || i >= queue.length) return;
   current = i;
   const { album, song } = queue[i];
@@ -1096,7 +1096,8 @@ function loadIndex(i, { autoplay = true } = {}) {
   syncDockLike();
   if (firstSongPending) {
     firstSongPending = false;
-    if (view === "explore") { selectViewTab("view-video"); view = "video"; }
+    // La primera canción que la persona elige abre el video; la que se restaura al volver se queda en Explorar.
+    if (view === "explore" && !stay) { selectViewTab("view-video"); view = "video"; }
   }
   $("np-open").dataset.tip = `Ahora suena: ${song.title}`;
   maybeNudgeSupport();
@@ -2745,7 +2746,7 @@ function bindModes() {
   };
 }
 
-/** Restaura la cola guardada: la canción queda lista, en pausa, en el mismo punto. */
+/** Restaura la cola guardada: la canción queda lista, en pausa, en el mismo punto, en el mini reproductor de Explorar. */
 function restoreQueue() {
   const saved = store.get(QUEUE_KEY, null);
   pq = PlayQueue.from(saved, { onContextEnd: contextEnd, valid: (id) => idxOf(id) >= 0 });
@@ -2753,7 +2754,7 @@ function restoreQueue() {
   const i = idxOf(pq.nowPlaying);
   if (i < 0) return false;
   resumeAt = Math.max(0, Number(saved?.pos) || 0);
-  loadIndex(i, { autoplay: false });
+  loadIndex(i, { autoplay: false, stay: true });
   renderUpNext();
   toast("Tu cola sigue aquí. Dale play para seguir.", 3500);
   return true;
@@ -3637,9 +3638,14 @@ async function init() {
   // Compartido desde YouTube (botón Compartir → LumiParty).
   if (params.has("text") || params.has("url")) setTimeout(() => handleShared(params), 600);
   // La dirección de entrada arma la pantalla (/player/luces, /player/album-wings, /player/dynamite…).
-  const startSlug = legacy && /^[a-z0-9-]{1,90}$/.test(legacy) ? legacy : slugFromPath();
+  let startSlug = legacy && /^[a-z0-9-]{1,90}$/.test(legacy) ? legacy : slugFromPath();
+  // Volver a la app: si la dirección es la de la última canción que sonó (o Luces) y hay una cola guardada, se abre
+  // Explorar con esa canción en el mini reproductor, en pausa (restoreQueue). Un enlace a otra canción sí la abre.
+  const savedNow = store.get(QUEUE_KEY, null)?.nowPlaying;
+  const returning = !legacy && !!savedNow && (startSlug === savedNow || startSlug === "lights");
+  if (returning) startSlug = "";
   if (startSlug && isSongSlug(startSlug)) setTimeout(() => { routeReady = true; applyRoute(startSlug); }, 800); // espera al reproductor
-  else { if (startSlug) applyRoute(startSlug); routeReady = true; if (location.search || location.hash) try { history.replaceState({ r: currentSlug() }, "", playerBase() + currentSlug()); } catch {} }
+  else { if (startSlug) applyRoute(startSlug); routeReady = true; if (returning || location.search || location.hash) try { history.replaceState({ r: currentSlug() }, "", playerBase() + currentSlug()); } catch {} }
 
   player = new Player($("yt"), {
     onState: onPlayerState,

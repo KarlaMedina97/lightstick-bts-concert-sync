@@ -545,6 +545,9 @@ export default {
   "Tiene una secuencia de luces propia, diseñada para esta canción.": "Tem uma sequência de luzes própria, criada para esta música.",
   "Más del álbum": "Mais do álbum",
   "¿Primera vez? Así conectas tu ARMY Bomb": "Primeira vez? Veja como conectar seu ARMY Bomb",
+  "Tu biblioteca": "Sua biblioteca",
+  "Preferencias": "Preferências",
+  "Mis Me gusta": "Minhas curtidas",
 };
 
 export const patterns = [

@@ -545,6 +545,9 @@ export default {
   "Tiene una secuencia de luces propia, diseñada para esta canción.": "It has its own light sequence, designed for this song.",
   "Más del álbum": "More from the album",
   "¿Primera vez? Así conectas tu ARMY Bomb": "First time? Here's how to connect your ARMY Bomb",
+  "Tu biblioteca": "Your library",
+  "Preferencias": "Preferences",
+  "Mis Me gusta": "My likes",
 };
 
 export const patterns = [
