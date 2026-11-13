@@ -2952,7 +2952,7 @@ function bindCola() {
   });
 }
 
-// ---------- Menú ⋯ de cada canción (también clic derecho, pulsación larga y tecla de menú) ----------
+// ---------- Menú ⋯ de cada canción (también clic derecho y tecla de menú; en táctil, solo ⋯) ----------
 let songMenuIndex = -1;
 let songMenuTrigger = null;
 function openSongMenu(index, trigger, point) {
@@ -3019,25 +3019,17 @@ function bindSongMenu() {
     const i = Number(more.dataset.index);
     if ($("song-menu").hidden || songMenuIndex !== i) openSongMenu(i, more); else closeSongMenu(true);
   });
+  // Con mouse (clic derecho) o teclado (tecla de menú). En pantallas táctiles solo con ⋯: la pulsación larga
+  // abría el menú al deslizar por Explorar (el navegador se queda con el gesto y no avisa que el dedo se movió) y
+  // Android la convierte en contextmenu.
+  let lastPointer = "mouse";
+  document.addEventListener("pointerdown", (e) => { lastPointer = e.pointerType; }, true);
   document.addEventListener("contextmenu", (e) => {
     const b = e.target.closest(".song, .sg-play, .lib-row[data-index]");
-    if (!b) return;
+    if (!b || (e.pointerType || lastPointer) === "touch" || lastPointer === "pen") return;
     e.preventDefault();
     openSongMenu(Number(b.dataset.index), b, { x: e.clientX, y: e.clientY });
   });
-  // Pulsación larga en pantallas táctiles (iOS no dispara contextmenu).
-  let timer = 0, startX = 0, startY = 0, longPressed = false;
-  document.addEventListener("pointerdown", (e) => {
-    const b = e.target.closest(".song, .sg-play, .lib-row[data-index]");
-    if (!b || e.pointerType !== "touch") return;
-    longPressed = false;
-    startX = e.clientX; startY = e.clientY;
-    clearTimeout(timer);
-    timer = setTimeout(() => { longPressed = true; openSongMenu(Number(b.dataset.index), b); navigator.vibrate?.(10); }, 520);
-  });
-  document.addEventListener("pointermove", (e) => { if (Math.hypot(e.clientX - startX, e.clientY - startY) > 10) clearTimeout(timer); });
-  document.addEventListener("pointerup", () => clearTimeout(timer));
-  document.addEventListener("click", (e) => { if (longPressed && e.target.closest(".song, .sg-play")) { e.preventDefault(); e.stopPropagation(); longPressed = false; } }, true);
 }
 function moreButton(index, title) {
   const m = document.createElement("button");
