@@ -1478,16 +1478,18 @@ function onFsChange() {
 }
 
 /**
- * En el teléfono el reproductor va siempre en vertical; solo la pantalla completa (la del video de YouTube o la
- * nuestra) puede girar a horizontal, y al salir vuelve a vertical aunque el teléfono tenga la rotación activada.
- * Funciona en Android (Chrome, Samsung) y con la app instalada; Safari de iPhone/iPad no permite bloquear el giro.
+ * La pantalla completa cambia el tamaño, nunca la orientación: se queda como esté el teléfono (vertical u
+ * horizontal). En el navegador no se toca el giro. Con la app instalada el manifiesto la fija en vertical; en pantalla
+ * completa se suelta ("any") para que la persona pueda girarla si quiere, y al salir vuelve a lo del manifiesto.
  */
 const phoneLike = () => matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) < 600;
+const installed = () => matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches;
+let orientLocked = false;
 function syncOrientation(fullscreen) {
   const o = screen.orientation;
   if (!o?.lock || !phoneLike()) return;
-  if (fullscreen) o.lock("landscape").catch(() => {});
-  else o.lock("portrait").catch(() => {}); // fuera de pantalla completa solo funciona con la app instalada
+  if (fullscreen && installed()) o.lock("any").then(() => { orientLocked = true; }, () => {});
+  else if (!fullscreen && orientLocked) { orientLocked = false; try { o.unlock(); } catch {} }
 }
 
 let idleTimer;
