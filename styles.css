@@ -1800,6 +1800,8 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 .sg-item:hover > .more-btn, .sg-item:hover > .sg-like, .sg-item:focus-within > .more-btn, .sg-item:focus-within > .sg-like,
 .sg-item > .more-btn[aria-expanded="true"], .sg-item > .sg-like[aria-pressed="true"] { opacity: 1; }
 @media (hover: none) { .sg-item > .more-btn, .sg-item > .sg-like { opacity: 1; } }
+/* Pista de teclado: sin sentido en celulares y tabletas sin teclado. */
+@media (hover: none) and (pointer: coarse) { .key-hint { display: none; } }
 @media (max-width: 640px) {
   .hero-cta, .hero-sub { display: none; }
   .home-hero { padding: var(--s-3) var(--s-4); }
