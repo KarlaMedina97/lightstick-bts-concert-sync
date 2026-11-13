@@ -196,6 +196,7 @@ function showPanel(id, trigger) {
   if (pop) panelTrigger = $(pop.dataset.menuFor);
   closeMenus();
   if (phoneLayout()) setModal(p, true);
+  miniAvoidPanel(p);
   // Se enfoca el título: se oye el nombre del panel antes que "Cerrar".
   const h = p.querySelector("h2");
   if (h) { h.tabIndex = -1; h.focus(); } else p.querySelector(".close")?.focus();
@@ -206,6 +207,7 @@ function closePanel(restoreFocus = true) {
   const hadFocus = p.contains(document.activeElement);
   p.hidden = true;
   setModal(p, false);
+  miniRestore(p);
   openPanel = null;
   if (p.id === "np-side") syncSideState();
   if (restoreFocus || hadFocus) panelTrigger?.focus?.();
@@ -3053,7 +3055,36 @@ function moreButton(index, title) {
 }
 
 // ---------- Explorar con mini reproductor ----------
-const MINI = { corner: "br" };
+const MINI = { corner: "br", sheet: false, side: false, before: null };
+/**
+ * Un panel abierto nunca tapa el reproductor de YouTube (sus políticas no permiten nada encima). En el teléfono la
+ * hoja sube desde abajo: la ventana va arriba del todo y la hoja llega hasta justo debajo de ella. En horizontal y en
+ * escritorio el panel va a la derecha: si la taparía, la ventana pasa al otro lado. Al cerrar, vuelve a su esquina.
+ */
+function miniAvoidPanel(p) {
+  if (!app.classList.contains("mini-mode") || app.classList.contains("mini-off")) return;
+  const card = $("video-view");
+  MINI.before ??= MINI.corner;
+  if (phoneLayout()) {
+    MINI.sheet = true;
+    MINI.corner = `t${MINI.corner[1]}`;
+    placeMini(false);
+    p.style.maxHeight = `calc(100dvh - ${Math.ceil(card.getBoundingClientRect().bottom + 12)}px)`;
+    return;
+  }
+  const pr = p.getBoundingClientRect();
+  if (!overlaps(pr, card.getBoundingClientRect(), 0)) return;
+  MINI.side = true;
+  MINI.corner = `${MINI.corner[0]}${pr.left + pr.width / 2 > innerWidth / 2 ? "l" : "r"}`;
+  placeMini(true);
+}
+function miniRestore(p) {
+  p.style.removeProperty("max-height");
+  if (MINI.before == null) return;
+  MINI.corner = MINI.before;
+  MINI.before = null; MINI.sheet = MINI.side = false;
+  placeMini(true);
+}
 /** Oculta la miniatura y pausa: nunca suena un video que no se ve. */
 function hideMini() {
   player.pause();
@@ -3080,15 +3111,23 @@ function placeMini(animate) {
   const head = $("explore-head").getBoundingClientRect();
   const w = card.offsetWidth, h = card.offsetHeight, g = 12;
   // Si Explorar le reserva una columna (teléfono en horizontal), el mini va arriba de todo, junto al buscador.
-  const reserved = parseFloat(getComputedStyle($("home")).paddingRight) >= w;
-  const top = reserved ? g / 2 : Math.max(g, Math.min(head.bottom - stage.top + g, stage.height - h - g));
+  const reserved = !MINI.side && parseFloat(getComputedStyle($("home")).paddingRight) >= w;
+  // Escenario más bajo que la ventana (teléfono en horizontal con la barra del navegador): YouTube no deja bajar de
+  // 200 px, así que usa también el hueco hasta la barra de arriba y el pie de página, sin taparlos.
+  const tight = h + g * 2 > stage.height;
+  const hudB = document.querySelector(".hud-top")?.getBoundingClientRect().bottom ?? stage.top;
+  const dockT = $("dock")?.getBoundingClientRect().top ?? stage.bottom;
+  const lo = tight ? Math.min(g, hudB + 4 - stage.top) : g;
+  const bot = (tight ? Math.max(stage.height, dockT - 4 - stage.top) : stage.height - g) - h;
+  // Con una hoja abierta (teléfono), arriba del todo: el buscador queda inerte detrás de la hoja.
+  const top = reserved ? Math.min(g / 2, lo) : MINI.sheet ? lo : Math.max(lo, Math.min(head.bottom - stage.top + g, bot));
   const pos = {
     tl: [g, top], tr: [stage.width - w - g, top],
-    bl: [g, stage.height - h - g], br: [stage.width - w - g, stage.height - h - g],
-  }[MINI.corner];
+    bl: [g, bot], br: [stage.width - w - g, bot],
+  }[reserved ? `${MINI.corner[0]}r` : MINI.corner]; // con columna propia, siempre en ella (al girar el teléfono no tapa el buscador)
   card.classList.toggle("snapping", Boolean(animate));
   // Siempre dentro del escenario, aunque el mini sea más ancho que el hueco disponible.
-  const maxX = Math.max(0, stage.width - w - g), maxY = Math.max(top, stage.height - h - g);
+  const maxX = Math.max(0, stage.width - w - g), maxY = Math.max(top, bot);
   const x = Math.min(maxX, Math.max(0, pos[0])), y = Math.min(maxY, Math.max(top, pos[1]));
   card.style.setProperty("--mx", `${x}px`);
   card.style.setProperty("--my", `${y}px`);

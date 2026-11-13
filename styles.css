@@ -1190,7 +1190,7 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
   /* La guía entra en el flujo, entre el video y el reproductor: no tapa nada. */
   .stage { place-items: start center; }
   .video-card { margin-top: 36px; }
-  .lights-view { align-content: center; }
+  .lights-view { align-content: safe center; } /* «safe»: si no cabe, empieza arriba y no se mete bajo la barra */
   .coach, .coach-pill { position: relative; top: auto; right: auto; left: auto; grid-row: 3; grid-column: 1; z-index: 1; }
   .coach { width: 100%; grid-template-columns: 76px minmax(0, 1fr); gap: var(--s-3); padding: var(--s-3); transform-origin: 50% 100%; }
   .coach[hidden] { transform: translateY(8px) scale(0.98); }
@@ -2261,12 +2261,9 @@ button.support-pill { font-size: var(--fs-14); font-weight: 700; }
 .app.mini-mode .video-card.mini-sm { --mini-w: 200px; }
 .app.mini-mode .video-card.mini-sm .mini-title { display: none; }
 .app.mini-mode .video-card.mini-sm .mini-bar { justify-content: flex-end; }
-/* Teléfono en horizontal: mini de 200 px en su propia columna a la derecha (no tapa tarjetas ni el dock) */
+/* Teléfono en horizontal: el mini (244 px, ver «Celular» más abajo) en su propia columna a la derecha (no tapa tarjetas ni el dock) */
 @media (max-height: 500px) and (orientation: landscape) {
-  .app.mini-mode .video-card { --mini-w: 200px; }
-  .app.mini-mode .video-card .mini-title { display: none; }
-  .app.mini-mode .video-card .mini-bar { justify-content: flex-end; height: 44px; }
-  .app.exploring .home-view { padding-right: 212px; padding-bottom: var(--s-5); }
+  .app.exploring .home-view { padding-right: 256px; padding-bottom: var(--s-5); }
 }
 
 @media (max-width: 640px) {
@@ -2616,6 +2613,22 @@ html {
 @media (max-width: 640px) {
   #mini-size, #mini-back, #btn-mini { display: none !important; }
 }
+/* Celular (vertical u horizontal): ventana flotante compacta de 244 × 200 px. El video mide 200 × 200 (el mínimo que
+   permite YouTube; no se puede achicar más ni poner nada encima) y su barra va al costado, no debajo: así ocupa
+   44 px menos de alto, que en Luces y en horizontal es lo que falta. Se arrastra por la barra a otra esquina, un
+   toque abre el video y ✕ la cierra (pausa). Es el mismo reproductor al pasar por Explorar, Me gusta, Mis videos y
+   Luces: no se recarga ni se duplica. El título ya está en el reproductor de abajo. */
+@media (max-width: 640px), (max-height: 500px) and (orientation: landscape) {
+  .app.mini-mode .video-card, .app.mini-mode .video-card.mini-sm { --mini-w: 244px; display: flex; }
+  .app.mini-mode .video-box { flex: none; width: 200px; }
+  .app.mini-mode .video-card .mini-bar, .app.mini-mode .video-card.mini-sm .mini-bar {
+    flex: none; flex-direction: column; justify-content: flex-start; width: 44px; height: auto; padding: 0;
+  }
+  .app.mini-mode .video-card .mini-title { display: none; }
+  .app.mini-mode #mini-hide { order: -1; }
+  .app.mini-mode .mini-grip { margin: auto 0; width: 18px; height: 10px; background-size: 6px 5px; }
+  #mini-size { display: none; } /* ya es la más chica que permite YouTube */
+}
 
 /* Vista Luces 3D: el lienzo ocupa todo el ancho para agitarlo sin que se corte; la luz la da el propio ARMY Bomb */
 .lv-stage { width: 100%; }
@@ -2726,4 +2739,6 @@ html {
 .app.mini-mode .lights-view.model { gap: var(--s-2); }
 .app.mini-mode .lights-view.model .lv-stage { min-height: 96px; }
 @media (max-height: 820px) { .app.mini-mode .lights-view.model .lv-note { display: none; } }
+/* Celular bajo con la ventana del video: la aclaración «Sin ARMY Bomb…» cede su lugar a las luces. */
+@media (max-height: 700px) { .app.mini-mode .lights-view #lv-hint { display: none; } }
 @media (max-height: 500px) { .lights-view.model .lv-note { display: none; } .lights-view.model .lv-stage { min-height: 96px; } .lights-view.model { gap: var(--s-2); } }
