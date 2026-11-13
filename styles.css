@@ -504,17 +504,24 @@ kbd {
 @keyframes float { 50% { transform: translateY(-6px); } }
 .eyebrow { font-size: var(--fs-12); font-weight: 700; letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--accent); }
 
-.lights-view { display: grid; justify-items: center; align-content: center; gap: var(--s-5); text-align: center; width: 100%; height: 100%; animation: view-in var(--dur-4) var(--ease-out); }
+.lights-view { display: grid; justify-items: center; align-content: safe center; gap: var(--s-5); text-align: center; width: 100%; height: 100%; animation: view-in var(--dur-4) var(--ease-out); }
 .big-bulb {
   --c: #5b2bb5;
   width: min(56vw, 42dvh); width: min(60cqw, 52cqh); aspect-ratio: 1; border-radius: 50%;
   background: radial-gradient(circle at 38% 32%, #ffffffc0 0 9%, var(--c) 46%, color-mix(in srgb, var(--c) 55%, #000) 100%);
   box-shadow: 0 0 80px 20px var(--c), 0 0 180px 70px color-mix(in srgb, var(--c) 40%, transparent), inset 0 -20px 40px rgba(0, 0, 0, 0.35);
 }
-/* Vista Luces: bola o ARMY Bomb 3D (la bola queda detrás como halo) */
-.lv-mode, .lv-vers { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-pill); background: var(--surface-1); border: 1px solid var(--border); }
+/* Vista Luces: luces en pantalla (bola) o ARMY Bomb 3D (la bola queda detrás como halo). Un solo botón con flecha
+   dice a qué vista cambia. */
+.lv-switch { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; padding: 0 6px 0 var(--s-4);
+  border-radius: var(--r-pill); background: var(--surface-1); border: 1px solid var(--border); box-shadow: var(--e-1);
+  color: var(--text); font: inherit; font-size: var(--fs-14); font-weight: 700; cursor: pointer; }
+.lv-switch svg { flex: none; width: 30px; height: 30px; padding: 6px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); transition: translate var(--dur-2) var(--ease-out); }
+.lv-switch:hover svg, .lv-switch:focus-visible svg { translate: 3px 0; }
+@media (prefers-reduced-motion: reduce) { .lv-switch svg { transition: none; } }
+.lv-vers { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-pill); background: var(--surface-1); border: 1px solid var(--border); }
 .lv-vers { flex-wrap: wrap; justify-content: center; max-width: 100%; }
-.lv-mode .type-opt, .lv-vers .type-opt { min-height: 36px; padding: 0 var(--s-3); font-size: var(--fs-14); }
+.lv-vers .type-opt { min-height: 36px; padding: 0 var(--s-3); font-size: var(--fs-14); }
 .lv-stage { position: relative; display: grid; place-items: center; }
 .lv-stage > * { grid-area: 1 / 1; }
 .stick3d { position: relative; width: min(70cqw, 46cqh); aspect-ratio: 3 / 4; touch-action: none; cursor: grab; }
@@ -2625,7 +2632,7 @@ html {
 [role="tab"][aria-disabled="true"], [role="menuitemradio"][aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; }
 
 /* Luces 3D: la vista se reparte el alto (el ARMY Bomb toma lo que sobra) y nunca se monta sobre el dock (iPad) */
-.lights-view.model { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-3); padding-block: var(--s-2); overflow: hidden; }
+.lights-view.model { display: flex; flex-direction: column; align-items: center; justify-content: safe center; gap: var(--s-3); padding-block: var(--s-2); overflow: hidden; }
 .lights-view.model .lv-stage { flex: 1 1 0; min-height: 160px; width: 100%; }
 .lights-view.model .stick3d { height: 100%; max-height: none; }
 .lights-view.model > * { flex-shrink: 0; }
@@ -2637,7 +2644,7 @@ html {
 #btn-cola .cola-n { position: absolute; top: 2px; right: 2px; min-width: 18px; padding: 0 5px; border-radius: var(--r-pill); background: var(--accent); color: var(--accent-ink); font-size: 0.625rem; font-weight: 800; line-height: 16px; text-align: center; }
 #btn-cola .cola-n:empty, #btn-cola .cola-n.zero { display: none; }
 
-/* Aclaración bajo el selector Bola / ARMY Bomb 3D: discreta, una línea */
+/* Aclaración bajo las versiones del ARMY Bomb 3D: discreta, una línea */
 .lv-note { margin: calc(-1 * var(--s-2)) 0 0; max-width: 42ch; font-size: var(--fs-12); line-height: 1.35; color: var(--text-2); opacity: 0.85; text-align: center; }
 
 /* Biblioteca compacta por defecto; al pasar el mouse (o con el teclado) se amplía encima del contenido, sin
@@ -2694,3 +2701,11 @@ html {
 .consent-no { background: transparent; color: #f3ecff; border: 1px solid rgba(243, 236, 255, 0.45); }
 .consent button:focus-visible, .consent a:focus-visible { outline: 3px solid #d4bbff; outline-offset: 2px; }
 @media (min-width: 720px) { .consent { right: auto; left: max(24px, env(safe-area-inset-left, 0px)); margin: 0; } }
+
+/* Luces con el video en mini (celular, vertical u horizontal): queda poco alto. Lo primero que se ve es el botón para
+   cambiar de vista; el ARMY Bomb se achica y la aclaración se oculta si no cabe. «safe center» evita que, cuando no
+   cabe, lo de arriba se salga por arriba (antes el selector quedaba cortado bajo la barra). */
+.app.mini-mode .lights-view.model { gap: var(--s-2); }
+.app.mini-mode .lights-view.model .lv-stage { min-height: 96px; }
+@media (max-height: 820px) { .app.mini-mode .lights-view.model .lv-note { display: none; } }
+@media (max-height: 500px) { .lights-view.model .lv-note { display: none; } .lights-view.model .lv-stage { min-height: 96px; } .lights-view.model { gap: var(--s-2); } }
