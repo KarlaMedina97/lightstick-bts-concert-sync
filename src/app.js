@@ -2452,8 +2452,8 @@ function stickVersion() {
 async function setLightsModel(mode, { save = true } = {}) {
   const model = mode === "stick";
   if (save) { settings.lightsModel = model ? "stick" : "orb"; saveSettings(); }
-  $("lv-orb").setAttribute("aria-pressed", String(!model));
-  $("lv-stick").setAttribute("aria-pressed", String(model));
+  $("lv-switch").dataset.to = model ? "orb" : "stick";
+  $("lv-switch-txt").textContent = t(model ? "Cambiar a luces en pantalla" : "Cambiar a ARMY Bomb 3D");
   $("lights-view").classList.toggle("model", model);
   $("stick3d").hidden = !model;
   $("lv-vers").hidden = !model;
@@ -2476,8 +2476,7 @@ function syncVersionButtons() {
   for (const b of $("lv-vers").querySelectorAll("[data-ver]")) b.setAttribute("aria-pressed", String(b.dataset.ver === v));
 }
 function bindLightsView() {
-  $("lv-orb").onclick = () => setLightsModel("orb");
-  $("lv-stick").onclick = () => setLightsModel("stick");
+  $("lv-switch").onclick = (e) => setLightsModel(e.currentTarget.dataset.to === "orb" ? "orb" : "stick");
   $("lv-vers").addEventListener("click", (e) => {
     const b = e.target.closest("[data-ver]");
     if (!b) return;

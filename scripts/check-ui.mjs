@@ -290,7 +290,7 @@ for (const [vp, w, h] of VIEWPORTS) {
     document.getElementById("view-lights").click();
     window.__p = "luces";
     await wait(400);
-    document.getElementById("lv-stick").click();
+    document.getElementById("lv-switch").click(); // → ARMY Bomb 3D
     window.__p = "3d pedido";
     await wait(2500);
     window.__p = "3d listo";
@@ -305,7 +305,7 @@ for (const [vp, w, h] of VIEWPORTS) {
     for (let i = 0; i < 20; i++) ev("pointermove", x + Math.sin(i / 2) * 120);
     ev("pointerup", x);
     await wait(600);
-    document.getElementById("lv-orb").click();
+    document.getElementById("lv-switch").click(); // → luces en pantalla
     return "";
   })()`);
   if (lights) fail(ap, lights);

@@ -430,11 +430,11 @@
 
       <div id="lights-view" class="lights-view" role="tabpanel" aria-label="Luces" hidden>
         <!-- Vista Luces: la bola grande (minimalista) o el ARMY Bomb en 3D, con el mismo color en vivo -->
-        <div class="lv-mode" role="group" aria-label="Cómo ver las luces">
-          <button id="lv-orb" class="type-opt" type="button" aria-pressed="true">Bola</button>
-          <button id="lv-stick" class="type-opt" type="button" aria-pressed="false">ARMY Bomb 3D</button>
-        </div>
-        <p id="lv-note" class="lv-note" hidden>Ilustración 3D propia y no oficial: puede diferir del ARMY Bomb real.</p>
+        <!-- Un solo botón que dice a qué vista cambia (dos opciones apretadas no se veían en el celular) -->
+        <button id="lv-switch" class="lv-switch" type="button">
+          <span id="lv-switch-txt">Cambiar a ARMY Bomb 3D</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
         <div class="lv-stage">
           <div id="big-bulb" class="big-bulb" aria-hidden="true"></div>
           <div id="stick3d" class="stick3d" hidden></div>
@@ -446,6 +446,7 @@
           <button class="type-opt" type="button" data-ver="v2" aria-pressed="false">Ver. 2</button>
           <button class="type-opt" type="button" data-ver="v1" aria-pressed="false">Ver. 1</button>
         </div>
+        <p id="lv-note" class="lv-note" hidden>Ilustración 3D propia y no oficial: puede diferir del ARMY Bomb real.</p>
         <div id="sim" class="sim" aria-hidden="true"></div>
         <p id="now-section" class="section-label">—</p>
         <p id="lv-hint" class="hint">Sin ARMY Bomb, tu pantalla brilla. Sube el brillo.</p>
