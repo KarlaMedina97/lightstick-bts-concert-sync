@@ -2280,6 +2280,7 @@ button.support-pill { font-size: var(--fs-14); font-weight: 700; }
   .m-nav-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
   .m-nav-menu {
     position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: min(260px, calc(100vw - 24px)); display: grid; gap: 2px;
+    max-height: calc(100dvh - 76px); overflow-y: auto; overscroll-behavior: contain; /* celulares bajos: el menú se desplaza */
     padding: var(--s-2); border-radius: var(--r-lg); background: var(--surface-solid); border: 1px solid var(--border-strong); /* opaco: sin desenfoque en teléfono */
     box-shadow: var(--e-3, 0 12px 40px rgba(0, 0, 0, 0.35)); transform-origin: 100% 0; animation: m-nav-in var(--dur-2) var(--ease-out);
   }
@@ -2296,9 +2297,24 @@ button.support-pill { font-size: var(--fs-14); font-weight: 700; }
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z'/%3E%3C/svg%3E") center / contain no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z'/%3E%3C/svg%3E") center / contain no-repeat;
   }
-  .m-nav-menu [aria-checked="true"] { color: var(--brand, var(--text)); font-weight: 800; background: var(--brand-soft, var(--surface-hover)); }
+  /* Vista elegida: fondo de marca, barra a la izquierda y ✓ a la derecha (se nota de un vistazo) */
+  .m-nav-menu [aria-checked="true"] { position: relative; color: var(--brand, var(--text)); font-weight: 800; background: var(--brand-soft, var(--surface-hover)); }
   .m-nav-menu [aria-checked="true"] svg { color: currentColor; }
-  .m-nav-h { margin: var(--s-1) var(--s-3) 2px; font-size: var(--fs-12); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .m-nav-menu [aria-checked="true"]::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 3px; background: currentColor; }
+  .m-nav-menu [aria-checked="true"]::after {
+    content: ""; margin-left: auto; width: 16px; height: 16px; flex: none; background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  /* Acciones secundarias (opinión, página de inicio): más chicas y apagadas, después de todo lo demás */
+  .m-nav-sec { display: grid; gap: 0; }
+  .m-nav-sec > button, .m-nav-sec > a {
+    display: flex; align-items: center; gap: var(--s-3); min-height: var(--tap); padding: 0 var(--s-3); border: 0; border-radius: var(--r-md);
+    background: transparent; color: var(--text-2); font: 600 var(--fs-12)/1.2 inherit; text-align: left; text-decoration: none; cursor: pointer;
+  }
+  .m-nav-sec > button:hover, .m-nav-sec > a:hover, .m-nav-sec > :focus-visible { background: var(--surface-hover); color: var(--text); }
+  .m-nav-sec svg { width: 16px; height: 16px; }
+  .m-nav-h { margin: var(--s-2) var(--s-3) 2px; font-size: var(--fs-12); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
   .m-nav-menu hr { border: 0; border-top: 1px solid var(--border); margin: var(--s-1) var(--s-2); }
   /* Explorar en teléfono: solo las miniaturas de las canciones */
   .ll-btn > span:not(.lights-glyph) { display: none; } /* teléfono: solo el ícono */

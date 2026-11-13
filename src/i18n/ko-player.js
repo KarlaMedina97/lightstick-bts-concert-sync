@@ -545,6 +545,9 @@ export default {
   "Tiene una secuencia de luces propia, diseñada para esta canción.": "이 곡을 위해 만든 전용 조명 시퀀스가 있어요.",
   "Más del álbum": "앨범의 다른 곡",
   "¿Primera vez? Así conectas tu ARMY Bomb": "처음인가요? ARMY Bomb 연결 방법",
+  "Tu biblioteca": "내 보관함",
+  "Preferencias": "환경설정",
+  "Mis Me gusta": "내 좋아요",
 };
 
 export const patterns = [

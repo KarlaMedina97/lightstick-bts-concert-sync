@@ -172,20 +172,27 @@
       <div class="m-nav">
         <button id="m-nav-btn" class="m-nav-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="m-nav-menu"><span id="m-nav-label">Explorar</span><svg aria-hidden="true"><use href="#i-min"/></svg></button>
         <div id="m-nav-menu" class="m-nav-menu" role="menu" aria-label="Menú principal" hidden>
-          <p class="m-nav-h" id="m-nav-h" role="presentation">Ver</p>
+          <!-- Tres grupos: la vista (con la elegida marcada), tu biblioteca y preferencias; abajo, en pequeño, lo
+               secundario. Sin repetir lo que ya está en la barra de abajo (Cola, Me gusta de la canción, Conectar). -->
+          <p class="m-nav-h" role="presentation">Ver</p>
           <button role="menuitemradio" type="button" data-proxy="view-explore" aria-checked="true"><svg aria-hidden="true"><use href="#i-explore"/></svg>Explorar</button>
           <button role="menuitemradio" type="button" data-proxy="view-video" aria-checked="false"><svg aria-hidden="true"><use href="#i-tv"/></svg>Video</button>
           <button role="menuitemradio" type="button" data-proxy="view-lights" aria-checked="false"><svg aria-hidden="true"><use href="#i-stick"/></svg>Luces</button>
           <hr>
-          <button role="menuitem" type="button" data-go="cola" aria-controls="np-side"><svg aria-hidden="true"><use href="#i-queue"/></svg>Cola</button>
+          <p class="m-nav-h" role="presentation">Tu biblioteca</p>
+          <button role="menuitem" type="button" data-go="likes"><svg aria-hidden="true"><use href="#i-heart"/></svg>Mis Me gusta</button>
           <button role="menuitem" type="button" data-go="mine"><svg aria-hidden="true"><use href="#i-plus"/></svg>Mis videos</button>
-          <button role="menuitem" type="button" data-go="concerts"><svg aria-hidden="true"><use href="#i-live"/></svg>Conciertos</button>
+          <button role="menuitem" type="button" data-go="concerts"><svg aria-hidden="true"><use href="#i-album"/></svg>Conciertos completos</button>
           <hr>
+          <p class="m-nav-h" role="presentation">Preferencias</p>
           <button role="menuitem" type="button" data-proxy="btn-theme"><svg aria-hidden="true"><use href="#i-moon"/></svg><span id="m-theme-label">Tema claro u oscuro</span></button>
           <button role="menuitem" type="button" data-lang-toggle="long">English</button>
           <button role="menuitem" type="button" data-proxy="btn-settings"><svg aria-hidden="true"><use href="#i-gear"/></svg>Ajustes</button>
-          <button role="menuitem" type="button" data-proxy="btn-feedback"><svg aria-hidden="true"><use href="#i-chat"/></svg>Dar mi opinión</button>
-          <a role="menuitem" href="../"><svg aria-hidden="true"><use href="#i-home"/></svg>Página de inicio</a>
+          <hr>
+          <div class="m-nav-sec" role="none">
+            <button role="menuitem" type="button" data-proxy="btn-feedback"><svg aria-hidden="true"><use href="#i-chat"/></svg>Dar mi opinión</button>
+            <a role="menuitem" href="../"><svg aria-hidden="true"><use href="#i-home"/></svg>Página de inicio</a>
+          </div>
         </div>
       </div>
     </header>
@@ -311,7 +318,7 @@
 
         <div class="ex-links" role="group" aria-label="Más en mi biblioteca">
           <button class="btn secondary" type="button" data-go="mine"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar un video</button>
-          <button class="btn secondary" type="button" data-go="concerts"><svg aria-hidden="true"><use href="#i-live"/></svg>Conciertos</button>
+          <button class="btn secondary" type="button" data-go="concerts"><svg aria-hidden="true"><use href="#i-album"/></svg>Conciertos</button>
         </div>
 
         <!-- seo:about (scripts/build-site.mjs pone aquí la tarjeta de cada canción o álbum) -->
