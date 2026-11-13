@@ -383,6 +383,8 @@ const dict = {
   "Reproducir": "재생",
   "Listo, datos borrados. La página se recargará.": "데이터를 삭제했어요. 페이지를 새로고침할게요.",
   "YouTube no deja ver este video aquí. Pasamos al siguiente.": "YouTube에서 이 영상을 여기서 재생할 수 없게 막았어요. 다음 영상으로 넘어갈게요.",
+  "Modo seguro activado otra vez: tu dispositivo pide reducir el movimiento.": "안전 모드가 다시 켜졌어요. 기기에서 동작 줄이기가 켜져 있어요.",
+  "Modo seguro desactivado hasta que cierres LumiParty: tu dispositivo pide reducir el movimiento.": "LumiParty를 닫을 때까지 안전 모드가 꺼져 있어요. 기기에서 동작 줄이기가 켜져 있어요.",
 };
 export default dict;
 

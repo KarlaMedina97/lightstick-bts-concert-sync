@@ -383,6 +383,8 @@ const dict = {
   "Reproducir": "Putar",
   "Listo, datos borrados. La página se recargará.": "Beres, data dihapus. Halaman akan dimuat ulang.",
   "YouTube no deja ver este video aquí. Pasamos al siguiente.": "YouTube tidak mengizinkan video ini diputar di sini. Lanjut ke berikutnya.",
+  "Modo seguro activado otra vez: tu dispositivo pide reducir el movimiento.": "Mode aman aktif lagi: perangkatmu meminta gerakan dikurangi.",
+  "Modo seguro desactivado hasta que cierres LumiParty: tu dispositivo pide reducir el movimiento.": "Mode aman nonaktif sampai kamu menutup LumiParty: perangkatmu meminta gerakan dikurangi.",
 };
 export default dict;
 

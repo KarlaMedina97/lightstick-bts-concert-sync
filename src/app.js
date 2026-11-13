@@ -55,7 +55,11 @@ const settings = { ...defaults, ...store.get(SETTINGS_KEY, {}) };
 if (!store.get("pws.migr.describeOff", false)) { settings.describe = false; store.set("pws.migr.describeOff", true); store.set(SETTINGS_KEY, settings); }
 // Igual con "Con voz y aplausos" del fanchant: apagado para todos (el fanchant sigue, en silencio).
 if (!store.get("pws.migr.chantVoiceOff", false)) { settings.chantVoice = false; store.set("pws.migr.chantVoiceOff", true); store.set(SETTINGS_KEY, settings); }
-if (matchMedia("(prefers-reduced-motion: reduce)").matches) settings.safeMode = true;
+// Con «reducir movimiento» en el sistema, el modo seguro vuelve a encenderse cada vez que se abre la app (aunque se
+// haya apagado antes). Se avisa en Ajustes y, si estaba apagado, al abrir: si no, parece que el interruptor no se guarda.
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const safeForcedOn = reduceMotion && settings.safeMode === false;
+if (reduceMotion) settings.safeMode = true;
 const saveSettings = () => store.set(SETTINGS_KEY, settings);
 
 // ---------- Cola: álbumes oficiales + "Mis videos" ----------
@@ -3211,6 +3215,8 @@ function bindSettings() {
   lat.value = settings.latencyMs;
   style.value = settings.style;
   $("chk-safe").checked = settings.safeMode;
+  $("safe-sys").hidden = !reduceMotion;
+  if (safeForcedOn) setTimeout(() => toast("Modo seguro activado otra vez: tu dispositivo pide reducir el movimiento.", 6000), 4000);
   $("chk-wake").checked = settings.wake;
   $("chk-chant").checked = settings.chant;
   $("chk-chant-voice").checked = settings.chantVoice;
@@ -3237,7 +3243,7 @@ function bindSettings() {
     $("dlg-safe").close();
     $("chk-safe").checked = false;
     settings.safeMode = false; saveSettings(); pattern = null;
-    toast("Modo seguro desactivado.");
+    toast(reduceMotion ? "Modo seguro desactivado hasta que cierres LumiParty: tu dispositivo pide reducir el movimiento." : "Modo seguro desactivado.", reduceMotion ? 6000 : 4500);
   };
   $("chk-wake").onchange = (e) => { settings.wake = e.target.checked; saveSettings(); if (!settings.wake) wakeLock?.release(); };
   // Métricas de uso (PostHog, src/analytics.js): se pueden apagar; queda guardado en este dispositivo.
