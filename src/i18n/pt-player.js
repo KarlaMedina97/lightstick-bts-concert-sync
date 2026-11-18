@@ -36,6 +36,7 @@ export default {
   "Video arriba, ARMY Bomb abajo.": "Vídeo em cima, ARMY Bomb embaixo.",
   "Video abajo, ARMY Bomb arriba.": "Vídeo embaixo, ARMY Bomb em cima.",
   "Ilustración no oficial": "Ilustração não oficial",
+  "Mostrar controles": "Mostrar controles",
   "Versión del ARMY Bomb": "Versão do ARMY Bomb",
   "Arrastra para girarlo · doble toque lo endereza": "Arraste para girar · toque duas vezes para endireitar",
   "No se pudo mostrar el ARMY Bomb 3D en este dispositivo.": "Não foi possível mostrar o ARMY Bomb 3D neste dispositivo.",
