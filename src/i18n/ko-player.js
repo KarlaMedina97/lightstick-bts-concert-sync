@@ -556,6 +556,7 @@ export const patterns = [
   [/^Álbum de (.+?)( \((\d{4})\))? con 1 video con luces\.$/, "$1$2의 앨범, 조명이 있는 영상 1개."],
   [/^Álbum de (.+?)( \((\d{4})\))? con (\d+) videos? con luces\.$/, "$1$2의 앨범, 조명이 있는 영상 $4개."],
   // src/guide.js
+  [/^Versión del ARMY Bomb: (.+)$/, "아미밤 버전: $1"],
   [/^Paso (\d+) de (\d+)$/, "$2단계 중 $1단계"],
   [/^Seguir conectando · paso (\d+) de (\d+)$/, "이어서 연결하기 · $2단계 중 $1단계"],
   [/^(\d+) ARMY Bomb conectados$/, "ARMY Bomb $1개 연결됨"],

@@ -556,6 +556,7 @@ export const patterns = [
   [/^Álbum de (.+?)( \((\d{4})\))? con 1 video con luces\.$/, "Album by $1$2 with 1 video with lights."],
   [/^Álbum de (.+?)( \((\d{4})\))? con (\d+) videos? con luces\.$/, "Album by $1$2 with $4 videos with lights."],
   // src/guide.js
+  [/^Versión del ARMY Bomb: (.+)$/, "ARMY Bomb version: $1"],
   [/^Paso (\d+) de (\d+)$/, "Step $1 of $2"],
   [/^Seguir conectando · paso (\d+) de (\d+)$/, "Continue connecting · step $1 of $2"],
   [/^(\d+) ARMY Bomb conectados$/, "$1 ARMY Bombs connected"],

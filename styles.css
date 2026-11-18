@@ -520,9 +520,37 @@ kbd {
 .lv-switch svg { flex: none; width: 30px; height: 30px; padding: 6px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); transition: translate var(--dur-2) var(--ease-out); }
 .lv-switch:hover svg, .lv-switch:focus-visible svg { translate: 3px 0; }
 @media (prefers-reduced-motion: reduce) { .lv-switch svg { transition: none; } }
-.lv-vers { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-pill); background: var(--surface-1); border: 1px solid var(--border); }
-.lv-vers { flex-wrap: wrap; justify-content: center; max-width: 100%; }
-.lv-vers .type-opt { min-height: 36px; padding: 0 var(--s-3); font-size: var(--fs-14); }
+/* Versión del ARMY Bomb: botón tipo píldora (mismo lenguaje que .lv-switch) y lista que se abre hacia arriba */
+.lv-vers { display: flex; justify-content: center; max-width: 100%; }
+.lv-ver-btn {
+  display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; padding: 0 var(--s-3) 0 var(--s-4);
+  border-radius: var(--r-pill); background: var(--surface-1); border: 1px solid var(--border); box-shadow: var(--e-1);
+  color: var(--text); font: inherit; font-size: var(--fs-14); font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+.lv-ver-btn svg { flex: none; color: var(--accent); transition: transform var(--dur-2) var(--ease-out); }
+.lv-ver-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+.lv-ver-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .lv-ver-btn svg { transition: none; } }
+.lv-ver-list {
+  position: fixed; inset: auto; margin: 0; z-index: 40; display: grid; gap: 2px; list-style: none;
+  max-width: calc(100vw - 24px); max-height: 228px; overflow-y: auto; overscroll-behavior: contain; padding: 4px;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--e-2);
+  color: var(--text-2);
+}
+.lv-ver-list:not(:popover-open)[popover] { display: none; }
+.lv-ver-list[hidden] { display: none; }
+.lv-ver-list:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.lv-ver-list [role="option"] {
+  position: relative; display: flex; align-items: center; min-height: 44px; padding: 0 var(--s-6, 32px) 0 var(--s-4);
+  border-radius: var(--r-pill); font-size: var(--fs-14); font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+.lv-ver-list [role="option"].active { background: var(--surface-hover); color: var(--text); }
+.lv-ver-list [role="option"][aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+.lv-ver-list [role="option"][aria-selected="true"]::after { /* marca de elegida (borde, no carácter: sin fuentes raras en iPhone) */
+  content: ""; position: absolute; right: var(--s-3); top: 50%; width: 6px; height: 11px; margin-top: -7px;
+  border: solid currentColor; border-width: 0 2.2px 2.2px 0; transform: rotate(45deg);
+}
+@media (forced-colors: active) { .lv-ver-list [role="option"][aria-selected="true"] { outline: 2px solid Highlight; } }
 .lv-stage { position: relative; display: grid; place-items: center; }
 .lv-stage > * { grid-area: 1 / 1; }
 .stick3d { position: relative; width: min(70cqw, 46cqh); aspect-ratio: 3 / 4; touch-action: none; cursor: grab; }
@@ -1330,6 +1358,38 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 @keyframes chant-pop { from { transform: scale(1.3); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes chant-fill { from { background-size: 100% 0%; } to { background-size: 100% 100%; } }
 .chant-roman { font-size: clamp(var(--fs-16), 3.4cqw, var(--fs-28)); font-weight: 600; letter-spacing: 0.02em; color: #fff; }
+
+/* Fanchant legible (revisión UX 2026-11-18): panel opaco que no deja ver lo de abajo (en el teléfono no hay
+   desenfoque) y colores fijos con contraste medido. Luces de noche: panel violeta oscuro; Luces de día: lavanda
+   claro (un panel oscuro sobre la interfaz clara parecía un hueco). Romanización ≥ 12:1, nombre ≥ 4,4:1. */
+.chant {
+  --chant-bg: #120a2e; --chant-sub: #e9ddff; --chant-fill-a: #c9a8ff; --chant-fill-b: #f6f0ff;
+  --chant-stroke: #e9ddff; --chant-glow: rgba(150, 100, 255, 0.55);
+  background: radial-gradient(120% 90% at 50% 40%, color-mix(in srgb, var(--chant-bg) 88%, #5b2bb5), var(--chant-bg) 75%);
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 18px 40px -16px rgba(0, 0, 0, 0.6);
+}
+:root[data-theme="light"] .chant {
+  --chant-bg: #fbf9ff; --chant-sub: #2a2140; --chant-fill-a: #4a1fa0; --chant-fill-b: #7a4fe0;
+  --chant-stroke: #3b2a6b; --chant-glow: rgba(122, 79, 224, 0.3);
+  background: radial-gradient(120% 90% at 50% 40%, #efe7ff, var(--chant-bg) 75%);
+  box-shadow: inset 0 0 0 1px rgba(30, 15, 60, 0.12), 0 18px 40px -16px rgba(30, 15, 60, 0.35);
+}
+.chant .chant-name {
+  font-size: clamp(2.5rem, min(19cqw, 30cqh), 10rem);
+  -webkit-text-stroke: 1.5px var(--chant-stroke);
+  background-image: linear-gradient(to top, var(--chant-fill-a), var(--chant-fill-b));
+  filter: drop-shadow(0 0 18px var(--chant-glow));
+}
+.chant .chant-roman { color: var(--chant-sub); font-size: clamp(1.125rem, 3.6cqw, 1.75rem); font-weight: 700; letter-spacing: 0.02em; }
+.chant .chant-label { color: var(--chant-sub); border-color: color-mix(in srgb, var(--chant-sub) 40%, transparent); }
+@media (pointer: coarse) { #chant-skip { min-height: 44px; } }
+@media (prefers-reduced-motion: reduce) { .chant .chant-name { filter: none; } }
+.app.calm .chant .chant-name { filter: none; }
+@media (orientation: landscape) and (max-height: 500px) {
+  .chant .chant-label { display: none; }
+  .chant .btn { margin-top: var(--s-1); }
+}
 
 /* =====================================================================
    Inicio: sugerencias (solo mientras no suena nada)
