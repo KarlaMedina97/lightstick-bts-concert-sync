@@ -2709,6 +2709,19 @@ html {
 .app.lights-short .lights-view #lv-hint, .app.lights-short .lights-view #lv-note { display: none; }
 .app.lights-short .lights-view { gap: var(--s-1); }
 .app.mini-mode.lights-short .lights-view.model .lv-stage { min-height: 0; } /* el ARMY Bomb toma el alto que queda */
+/* Fanchant en el hueco bajo (172 px): sin la etiqueta, y «Saltar» más cerca, para no pasar bajo la cabecera ni el video */
+.app.lights-short .chant .chant-label { display: none; }
+.app.lights-short .chant .btn { margin-top: var(--s-1); }
+/* Aviso «no oficial» corto sobre el pie del 3D cuando #lv-note no cabe (celular): nunca sobre el video */
+.lv-tag {
+  display: none; align-self: end; justify-self: center; z-index: 1; margin: 0 0 2px; padding: 2px var(--s-2);
+  border-radius: var(--r-pill); background: var(--surface-1); color: var(--text-2); font-size: 11px; line-height: 1.3;
+  pointer-events: none; white-space: nowrap;
+}
+.lv-tag[hidden] { display: none !important; }
+@media (max-height: 820px) { .app.mini-mode .lights-view.model .lv-tag { display: block; } }
+@media (max-height: 500px) { .lights-view.model .lv-tag { display: block; } }
+.app.lights-short .lights-view.model .lv-tag { display: block; }
 
 /* Vista Luces 3D: el lienzo ocupa todo el ancho para agitarlo sin que se corte; la luz la da el propio ARMY Bomb */
 .lv-stage { width: 100%; }

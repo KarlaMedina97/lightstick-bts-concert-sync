@@ -35,6 +35,7 @@ export default {
   "Poner el video arriba": "영상을 위로",
   "Video arriba, ARMY Bomb abajo.": "영상은 위, 아미밤은 아래.",
   "Video abajo, ARMY Bomb arriba.": "영상은 아래, 아미밤은 위.",
+  "Ilustración no oficial": "비공식 일러스트",
   "Versión del ARMY Bomb": "아미밤 버전",
   "Arrastra para girarlo · doble toque lo endereza": "드래그해서 돌리기 · 두 번 탭하면 원위치",
   "No se pudo mostrar el ARMY Bomb 3D en este dispositivo.": "이 기기에서는 3D 아미밤을 표시할 수 없어요.",
