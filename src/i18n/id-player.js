@@ -36,6 +36,7 @@ export default {
   "Video arriba, ARMY Bomb abajo.": "Video di atas, ARMY Bomb di bawah.",
   "Video abajo, ARMY Bomb arriba.": "Video di bawah, ARMY Bomb di atas.",
   "Ilustración no oficial": "Ilustrasi tidak resmi",
+  "Mostrar controles": "Tampilkan kontrol",
   "Versión del ARMY Bomb": "Versi ARMY Bomb",
   "Arrastra para girarlo · doble toque lo endereza": "Geser untuk memutar · ketuk dua kali untuk meluruskan",
   "No se pudo mostrar el ARMY Bomb 3D en este dispositivo.": "ARMY Bomb 3D tidak bisa ditampilkan di perangkat ini.",

@@ -1186,7 +1186,22 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 .app.idle .hud-top { transform: translateY(-8px); }
 .app.idle .dock { transform: translateY(8px); }
 .app.idle { cursor: none; }
-.app.idle .dock:focus-within, .app.idle .hud-top:focus-within { opacity: 1; transform: none; }
+/* Ocultos de verdad: sin toques ni Tab sobre botones invisibles (antes, tocar el hueco los activaba). Se esconden
+   al terminar el desvanecido; para volver: deslizar hacia arriba, la pestaña de abajo, el ratón o una tecla. */
+.app.idle .hud-top, .app.idle .dock { pointer-events: none; visibility: hidden; transition: opacity var(--dur-2), transform var(--dur-2), visibility 0s var(--dur-2); }
+/* Solo el foco del teclado los mantiene a la vista: tras tocar un botón del pie, el foco se queda ahí y con
+   :focus-within el pie nunca se ocultaba en el teléfono. */
+.app.idle .dock:has(:focus-visible), .app.idle .hud-top:has(:focus-visible) { opacity: 1; transform: none; visibility: visible; pointer-events: auto; }
+.dock-handle { display: none; }
+.app.idle .dock-handle {
+  display: grid; place-items: center; position: fixed; left: 50%; bottom: max(6px, env(safe-area-inset-bottom)); z-index: 40;
+  width: 120px; height: 44px; translate: -50% 0; padding: 0; border: 0; background: none; cursor: pointer;
+  animation: handle-nudge 0.7s var(--ease-out) 0.3s 2;
+}
+.dock-handle::before { content: ""; width: 36px; height: 4px; border-radius: var(--r-pill); background: color-mix(in srgb, var(--text-2) 40%, transparent); }
+.dock-handle:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--r-pill); }
+@keyframes handle-nudge { 50% { transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .app.idle .dock-handle { animation: none; } }
 .app.fs .video-card { width: min(100cqw, calc((100cqh - 24px) * 16 / 9)); }
 .app.fs .style-chip { display: none; } /* a pantalla completa no queda hueco sobre el video */
 
@@ -1220,6 +1235,12 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
   /* La guía entra en el flujo, entre el video y el reproductor: no tapa nada. */
   .stage { place-items: start center; }
   .video-card { margin-top: 36px; }
+  .app:not(.mini-mode) .video-card { transition: margin-top var(--dur-3) var(--ease-out); } /* el mini no: lo ubica placeMini */
+  /* Pantalla completa sin «A continuación», guía ni fanchant: el video centrado en el hueco entre la cabecera y el
+     pie (un poco más arriba, para que no parezca que cae). Si aparece un recuadro, sube a su lugar. */
+  body:not(.chanting) .app.fs:not(.mini-mode) .stage:not(:has(#upnext:not([hidden]), .coach:not([hidden]), .coach-pill:not([hidden]))) .video-card {
+    margin-top: max(0px, calc((100cqh - max(200px, min(100cqw, (100cqh - 24px) * 16 / 9) * 9 / 16)) / 2 - 3cqh));
+  }
   .lights-view { align-content: safe center; } /* «safe»: si no cabe, empieza arriba y no se mete bajo la barra */
   .coach, .coach-pill { position: relative; top: auto; right: auto; left: auto; grid-row: 3; grid-column: 1; z-index: 1; }
   .coach { width: 100%; grid-template-columns: 76px minmax(0, 1fr); gap: var(--s-3); padding: var(--s-3); transform-origin: 50% 100%; }
@@ -1752,7 +1773,9 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 
 .mini-bar { display: none; }
 /* Miniatura oculta (el video queda en pausa; ver hideMini en src/app.js) */
-.app.mini-mode.mini-off .video-card { visibility: hidden; pointer-events: none; }
+/* Fuera del dibujo (display: none), no solo invisible: Samsung Internet pone sus botones de video sobre cualquier
+   video que siga en la página. También en modo micrófono o cámara (.listen-only), donde el video queda en pausa. */
+.app.mini-mode.mini-off .video-card, .app.mini-mode.listen-only .video-card { display: none; }
 .app.mini-mode .video-card {
   --mini-w: min(356px, calc(100cqw - 24px));
   position: absolute; left: 0; top: 0; z-index: 7; width: var(--mini-w); aspect-ratio: auto;

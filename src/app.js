@@ -106,7 +106,7 @@ function toast(msg, ms = 4500, { assertive = false } = {}) {
 /** Rectángulo del reproductor de YouTube a la vista, o null. Sus políticas: nada encima del video ni de sus controles. */
 function videoRect() {
   const card = $("video-view");
-  if (current < 0 || card.hidden || app.classList.contains("home") || (app.classList.contains("mini-mode") && app.classList.contains("mini-off"))) return null;
+  if (current < 0 || card.hidden || app.classList.contains("home") || (app.classList.contains("mini-mode") && miniOff())) return null;
   const r = card.querySelector(".video-box").getBoundingClientRect();
   return r.width > 0 && r.height > 0 ? r : null;
 }
@@ -1156,7 +1156,21 @@ function videoFor(song) {
 function togglePlay() {
   // Sin canción elegida, Reproducir empieza con la primera sugerencia de inicio.
   if (current < 0) return playIndex(shelves(queue).find((x) => x.id === "start")?.items[0] ?? 0);
+  // En modo micrófono o cámara la miniatura no está: vuelve ANTES de reproducir (nunca suena un video oculto).
+  if (player.state !== "playing" && app.classList.contains("listen-only")) { app.classList.remove("listen-only"); placeMini(false); }
   player.toggle();
+}
+/** La miniatura no se ve: oculta a mano (✕), o en modo micrófono o cámara con el video en pausa. */
+const miniOff = () => app.classList.contains("mini-off") || app.classList.contains("listen-only");
+/**
+ * Modo micrófono o cámara: las luces no salen del video, que queda en pausa. La miniatura se saca del todo
+ * (display: none): si solo se vuelve invisible, Samsung Internet igual pone encima sus botones de video.
+ */
+function syncListenOnly() {
+  const on = Boolean(cam || (mic && !mic.hybrid)) && player?.state !== "playing";
+  if (on === app.classList.contains("listen-only")) return;
+  app.classList.toggle("listen-only", on);
+  placeMini(false);
 }
 
 function bindTimeline() {
@@ -1279,7 +1293,11 @@ async function toggleMic() {
     return;
   }
   try {
-    const palette = [PURPLE, ...(queue[current]?.album.palette ?? ["#ff80ab", "#4fc3f7", "#ffd600"])].map(hexToRgb);
+    // Colores que se distinguen entre sí: con un álbum de puros violetas el cambio de color no se notaba.
+    const palette = [];
+    for (const c of [PURPLE, ...(queue[current]?.album.palette ?? []), "#ff80ab", "#4fc3f7", "#ffd600"].map(hexToRgb)) {
+      if (palette.length < 4 && palette.every((p) => Math.hypot(p[0] - c[0], p[1] - c[1], p[2] - c[2]) > 110)) palette.push(c);
+    }
     mic = new MicSync({ palette, maxChangesPerSec: settings.safeMode ? 3 : 8 });
     await mic.start();
     if (player.state === "playing") player.pause();
@@ -2527,7 +2545,7 @@ function bindVersionMenu() {
     const card = $("video-view");
     const vTop = $("main").getBoundingClientRect().top + (parseFloat(card.style.getPropertyValue("--my")) || 0);
     const vBottom = vTop + card.offsetHeight;
-    const videoAbove = app.classList.contains("mini-mode") && !app.classList.contains("mini-off") && card.offsetHeight && vBottom <= r.top;
+    const videoAbove = app.classList.contains("mini-mode") && !miniOff() && card.offsetHeight && vBottom <= r.top;
     list.style.maxHeight = "none";
     const full = list.scrollHeight + list.offsetHeight - list.clientHeight; // todas las opciones + borde: sin scroll si cabe
     const up = Math.min(full, r.top - 8, videoAbove ? r.top - vBottom - 12 : Infinity);
@@ -2687,6 +2705,7 @@ function syncLiveButton() {
   const lbl = $("btn-live").querySelector(".lv-label");
   lbl.querySelector(".lv-long").textContent = cam ? "En el estadio" : mic ? "Con micrófono" : "Modo concierto";
   lbl.querySelector(".lv-short").textContent = cam ? "Estadio" : mic ? "Micrófono" : "Concierto";
+  syncListenOnly();
 }
 
 // ---------- Cola tipo Spotify (modelo en src/queue.js) ----------
@@ -3150,7 +3169,7 @@ const MINI = { corner: "br", sheet: false, side: false, before: null };
  * escritorio el panel va a la derecha: si la taparía, la ventana pasa al otro lado. Al cerrar, vuelve a su esquina.
  */
 function miniAvoidPanel(p) {
-  if (!app.classList.contains("mini-mode") || app.classList.contains("mini-off")) return;
+  if (!app.classList.contains("mini-mode") || miniOff()) return;
   const card = $("video-view");
   MINI.before ??= MINI.corner;
   if (phoneLayout()) {
@@ -3174,7 +3193,7 @@ function miniAvoidPanel(p) {
 function menuAvoidVideo(menu, from) {
   const card = $("video-view");
   const mini = app.classList.contains("mini-mode");
-  if (mini && app.classList.contains("mini-off")) return;
+  if (mini && miniOff()) return;
   let c = card.getBoundingClientRect();
   if (!c.width || !c.height || getComputedStyle(card).visibility === "hidden") return;
   if (!phoneLayout()) {
@@ -3258,7 +3277,7 @@ function placeBand(animate) {
   card.classList.toggle("snapping", Boolean(animate));
   card.style.setProperty("--mx", "0px");
   card.style.setProperty("--my", `${atTop ? 0 : Math.max(0, stage.height - h)}px`);
-  const off = app.classList.contains("mini-off");
+  const off = miniOff();
   const res = { t: !off && atTop ? h + g : 0, r: 0, b: !off && !atTop ? h + g : 0, l: 0 };
   for (const k of "trbl") main.style.setProperty(`--mini-res-${k}`, `${Math.round(res[k])}px`);
   const swap = $("mini-swap"), label = atTop ? "Poner el video abajo" : "Poner el video arriba";
@@ -3313,7 +3332,7 @@ function placeMini(animate) {
   // Lo que comparte el escenario con el mini (vista Luces, fanchant) le deja su franja: a un lado si sobra ancho,
   // si no, arriba o abajo. Así nada tapa el video ni el video tapa los controles de Luces.
   const res = { t: 0, r: 0, b: 0, l: 0 };
-  if (!app.classList.contains("mini-off")) {
+  if (!miniOff()) {
     if (stage.width - w - g * 2 >= 480) { if (x + w / 2 > stage.width / 2) res.r = stage.width - x + g; else res.l = x + w + g; }
     else if (y + h / 2 > stage.height / 2) res.b = stage.height - y + g;
     else res.t = y + h + g;
@@ -3321,7 +3340,7 @@ function placeMini(animate) {
   for (const k of "trbl") main.style.setProperty(`--mini-res-${k}`, `${Math.round(res[k])}px`);
   dispatchEvent(new Event("pws:layout"));
   // Explorar deja al final solo el espacio que tapa la miniatura (si está abajo y a la vista), no 280 px fijos.
-  const bottomCorner = MINI.corner.startsWith("b") && !app.classList.contains("mini-off");
+  const bottomCorner = MINI.corner.startsWith("b") && !miniOff();
   $("home").style.setProperty("--mini-pad", `${bottomCorner ? h + g * 2 : 24}px`);
 }
 function bindMini() {
@@ -3681,6 +3700,7 @@ function onPlayerState(state) {
   $("btn-play").setAttribute("aria-label", playing ? "Pausar" : "Reproducir");
   // Miniatura oculta: el video no suena. Si se reanuda desde el pie de página, la miniatura vuelve.
   if (playing && app.classList.contains("mini-off")) showMini();
+  syncListenOnly();
   markCurrent();
   if (playing && resumeAt > 3) { player.seek(resumeAt); resumeAt = 0; }
   // El recorrido corto llega después de que suena la primera canción (no antes).
@@ -3764,7 +3784,26 @@ async function init() {
   $("form-add").onsubmit = onAddVideo;
   document.addEventListener("fullscreenchange", onFsChange);
   document.addEventListener("webkitfullscreenchange", onFsChange);
-  ["pointermove", "pointerdown", "keydown"].forEach((ev) => document.addEventListener(ev, poke, { passive: true }));
+  // Con los controles ocultos (pantalla completa): el ratón o una tecla los muestran; en pantallas táctiles un toque en
+  // el hueco NO hace nada (antes activaba los botones invisibles) y se muestran deslizando hacia arriba o con la
+  // pestaña de abajo (alternativa de un toque al gesto, WCAG 2.5.1).
+  const idle = () => app.classList.contains("idle");
+  document.addEventListener("pointermove", (e) => { if (e.pointerType === "mouse") poke(); }, { passive: true });
+  document.addEventListener("pointerdown", (e) => { mic?.wake(); if (e.pointerType === "mouse" || !idle()) poke(); }, { passive: true });
+  document.addEventListener("keydown", poke, { passive: true });
+  let swipe = null;
+  document.addEventListener("touchstart", (e) => {
+    const p = e.touches[0];
+    swipe = idle() && e.touches.length === 1 ? { x: p.clientX, y: p.clientY, t: performance.now() } : null;
+  }, { passive: true });
+  document.addEventListener("touchend", (e) => {
+    const p = e.changedTouches[0];
+    if (!swipe || !p) return;
+    const dx = p.clientX - swipe.x, dy = p.clientY - swipe.y;
+    if (dy <= -40 && Math.abs(dy) > 1.5 * Math.abs(dx) && performance.now() - swipe.t < 600) poke();
+    swipe = null;
+  }, { passive: true });
+  $("dock-handle").onclick = () => { poke(); $("btn-play").focus({ preventScroll: true }); };
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !$("song-menu").hidden) return closeSongMenu(true);
