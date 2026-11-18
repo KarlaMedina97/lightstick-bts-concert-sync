@@ -1309,6 +1309,7 @@ async function toggleMic() {
   } catch {
     mic = null;
     syncMicButtons();
+    setMicChip("blocked", "Micrófono bloqueado");
     toast("No pudimos usar el micrófono. Revisa el permiso en tu navegador.");
   }
 }
@@ -1330,10 +1331,34 @@ async function toggleMicSync() {
   } catch {
     mic = null;
     syncMicButtons();
+    setMicChip("blocked", "Micrófono bloqueado");
     toast("No pudimos usar el micrófono. Revisa el permiso en tu navegador.");
   }
 }
+/**
+ * Indicador del micrófono en Luces: «Escuchando» con un medidor del volumen que llega; tras 5 s casi sin sonido,
+ * «No te escucho…»; si se niega el permiso, «Micrófono bloqueado». Sin él no se sabía si fallaba o si no llegaba sonido.
+ */
+let micLoudAt = 0, micBlockedTimer = 0;
+function setMicChip(state, text) {
+  const chip = $("mic-chip");
+  clearTimeout(micBlockedTimer);
+  chip.hidden = !state;
+  if (!state) { delete chip.dataset.state; return; }
+  if (chip.dataset.state !== state) { chip.dataset.state = state; $("mic-chip-txt").textContent = text; }
+  if (state === "blocked") micBlockedTimer = setTimeout(() => { if (!mic) setMicChip(null); }, 8000);
+}
+function updateMicChip(now) {
+  if (!mic) return;
+  const lvl = mic.level ?? 0;
+  if (lvl > 0.015) micLoudAt = now;
+  const quiet = now - micLoudAt > 5000;
+  setMicChip(quiet ? "quiet" : "on", quiet ? "No te escucho: sube el volumen o acerca el teléfono" : "Escuchando");
+  $("mic-chip").dataset.l = String(Math.min(5, Math.round(lvl * 12)));
+}
 function syncMicButtons() {
+  if (mic) { micLoudAt = performance.now(); setMicChip("on", "Escuchando"); }
+  else if ($("mic-chip").dataset.state !== "blocked") setMicChip(null);
   $("btn-mic").setAttribute("aria-pressed", Boolean(mic && !mic.hybrid));
   $("btn-mic-sync").setAttribute("aria-pressed", Boolean(mic?.hybrid));
   syncLiveButton();
@@ -1442,6 +1467,7 @@ function step(now) {
   for (let i = 0; i < SIM_COUNT; i++) simEls[i].style.setProperty("--c", hex(colors[i]));
   $("big-bulb").style.setProperty("--c", hex(colors[0]));
   stick3d?.setColor(colors[0].map((v) => v * k));
+  updateMicChip(now);
   // --glow tiñe fondos enormes (haces, neblina, sombras): cambiarlo 20 veces/s obliga a repintar toda la pantalla.
   // Se actualiza como mucho 5 veces/s y solo si el color cambió de verdad (los cambios son de una paleta, no saltos bruscos).
   const glow = rgbToHex(colors[0].map((v) => Math.round(Math.max(30, v * 0.8) / 8) * 8));

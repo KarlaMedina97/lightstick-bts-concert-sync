@@ -449,6 +449,12 @@
           <div id="stick3d" class="stick3d" hidden></div>
           <!-- Aviso corto cuando no cabe #lv-note (celular): el 3D siempre dice que es no oficial -->
           <p id="lv-tag" class="lv-tag" hidden>Ilustración no oficial</p>
+          <!-- Modo micrófono: dice que está escuchando y cuánto sonido llega (o por qué no) -->
+          <p id="mic-chip" class="mic-chip" role="status" hidden>
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+            <span id="mic-chip-txt">Escuchando</span>
+            <span class="mic-meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          </p>
         </div>
         <!-- Versión: botón con lista desplegable que se abre hacia arriba (abajo está el mini video, que nada tapa) -->
         <div id="lv-vers" class="lv-vers" hidden>
