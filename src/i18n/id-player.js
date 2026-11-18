@@ -37,6 +37,7 @@ export default {
   "Video abajo, ARMY Bomb arriba.": "Video di bawah, ARMY Bomb di atas.",
   "Ilustración no oficial": "Ilustrasi tidak resmi",
   "Mostrar controles": "Tampilkan kontrol",
+  "No te escucho: sube el volumen": "Tidak terdengar: besarkan volume",
   "Escuchando": "Mendengarkan",
   "No te escucho: sube el volumen o acerca el teléfono": "Tidak terdengar: besarkan volume atau dekatkan ponsel",
   "Micrófono bloqueado": "Mikrofon diblokir",

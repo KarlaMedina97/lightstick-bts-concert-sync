@@ -1284,7 +1284,9 @@ async function toggleConcert() {
   }
 }
 
+let micStarting = false; // mientras el navegador pide el permiso, otro toque no arma un segundo micrófono
 async function toggleMic() {
+  if (micStarting) return;
   if (mic) {
     mic.stop();
     mic = null;
@@ -1299,7 +1301,8 @@ async function toggleMic() {
       if (palette.length < 4 && palette.every((p) => Math.hypot(p[0] - c[0], p[1] - c[1], p[2] - c[2]) > 110)) palette.push(c);
     }
     mic = new MicSync({ palette, maxChangesPerSec: settings.safeMode ? 3 : 8 });
-    await mic.start();
+    micStarting = true;
+    try { await mic.start(); } finally { micStarting = false; }
     if (player.state === "playing") player.pause();
     syncMicButtons();
     setView("lights");
@@ -1345,7 +1348,8 @@ function setMicChip(state, text) {
   clearTimeout(micBlockedTimer);
   chip.hidden = !state;
   if (!state) { delete chip.dataset.state; return; }
-  if (chip.dataset.state !== state) { chip.dataset.state = state; $("mic-chip-txt").textContent = text; }
+  // Solo se reescribe cuando cambia (el lector de pantalla lo anuncia una vez; el texto visible puede estar traducido).
+  if (chip.dataset.state !== state || chip.dataset.key !== text) { chip.dataset.state = state; chip.dataset.key = text; $("mic-chip-txt").textContent = text; }
   if (state === "blocked") micBlockedTimer = setTimeout(() => { if (!mic) setMicChip(null); }, 8000);
 }
 function updateMicChip(now) {
@@ -1353,7 +1357,9 @@ function updateMicChip(now) {
   const lvl = mic.level ?? 0;
   if (lvl > 0.015) micLoudAt = now;
   const quiet = now - micLoudAt > 5000;
-  setMicChip(quiet ? "quiet" : "on", quiet ? "No te escucho: sube el volumen o acerca el teléfono" : "Escuchando");
+  // En celulares bajos el ARMY Bomb mide ~68 px: el aviso va en una sola línea.
+  const short = app.classList.contains("lights-short");
+  setMicChip(quiet ? "quiet" : "on", quiet ? (short ? "No te escucho: sube el volumen" : "No te escucho: sube el volumen o acerca el teléfono") : "Escuchando");
   $("mic-chip").dataset.l = String(Math.min(5, Math.round(lvl * 12)));
 }
 function syncMicButtons() {
