@@ -19,6 +19,7 @@ function open() {
   sync();
   menu.hidden = false;
   btn.setAttribute("aria-expanded", "true");
+  dispatchEvent(new CustomEvent("pws:menu", { detail: { menu, open: true } })); // el reproductor lo aparta del video
   (menu.querySelector("[aria-checked=true]") ?? items()[0]).focus();
   setTimeout(() => document.addEventListener("pointerdown", outside), 0);
 }
@@ -26,6 +27,7 @@ function close(focus = true) {
   if (menu.hidden) return;
   menu.hidden = true;
   btn.setAttribute("aria-expanded", "false");
+  dispatchEvent(new CustomEvent("pws:menu", { detail: { menu, open: false } }));
   document.removeEventListener("pointerdown", outside);
   if (focus) btn.focus();
 }

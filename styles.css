@@ -473,6 +473,7 @@ kbd {
   width: min(100%, calc((100dvh - 250px) * 16 / 9));
   width: min(100cqw, calc((100cqh - 80px) * 16 / 9));
   aspect-ratio: 16 / 9;
+  min-height: 200px; /* YouTube pide ≥ 200 × 200 px: en 360–380 px de ancho el 16:9 quedaría en 186–197 px */
   border-radius: var(--r-xl); overflow: hidden; background: #000;
   box-shadow: 0 0 0 1px var(--border-strong), 0 40px 120px -40px var(--glow), var(--e-3);
   animation: view-in var(--dur-4) var(--ease-out);
@@ -1538,6 +1539,7 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 /* Menús compactos */
 .menu-pop {
   position: absolute; z-index: calc(var(--z-panel) + 1); width: min(320px, calc(100vw - 24px));
+  overflow-y: auto; overscroll-behavior: contain; /* acortado para no tapar el video (menuAvoidVideo), se desplaza */
   display: grid; gap: 2px; padding: var(--s-2); border-radius: var(--r-xl);
   background: var(--surface-2); border: 1px solid var(--border-strong); box-shadow: var(--hairline-top), var(--e-3);
   backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
