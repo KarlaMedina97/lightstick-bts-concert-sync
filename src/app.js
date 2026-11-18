@@ -2473,6 +2473,7 @@ async function setLightsModel(mode, { save = true } = {}) {
   $("stick3d").hidden = !model;
   $("lv-vers").hidden = !model;
   $("lv-note").hidden = !model;
+  $("lv-tag").hidden = !model;
   $("lv-hint").textContent = t(model ? "Sostenlo y agítalo · también con el teléfono" : "Sin ARMY Bomb, tu pantalla brilla. Sube el brillo.");
   if (model && !stick3d) {
     try {
@@ -2527,10 +2528,12 @@ function bindVersionMenu() {
     const vTop = $("main").getBoundingClientRect().top + (parseFloat(card.style.getPropertyValue("--my")) || 0);
     const vBottom = vTop + card.offsetHeight;
     const videoAbove = app.classList.contains("mini-mode") && !app.classList.contains("mini-off") && card.offsetHeight && vBottom <= r.top;
-    const up = Math.min(228, r.top - 8, videoAbove ? r.top - vBottom - 12 : Infinity);
+    list.style.maxHeight = "none";
+    const full = list.scrollHeight + list.offsetHeight - list.clientHeight; // todas las opciones + borde: sin scroll si cabe
+    const up = Math.min(full, r.top - 8, videoAbove ? r.top - vBottom - 12 : Infinity);
     const dockT = $("dock")?.getBoundingClientRect().top ?? innerHeight;
     const down = up < 96;
-    list.style.maxHeight = `${Math.round(down ? Math.min(228, dockT - r.bottom - 12) : up)}px`;
+    list.style.maxHeight = `${Math.round(down ? Math.min(full, dockT - r.bottom - 12) : up)}px`;
     const w = list.offsetWidth, h = list.offsetHeight;
     list.style.left = `${Math.round(Math.min(innerWidth - w - 12, Math.max(12, r.left + r.width / 2 - w / 2)))}px`;
     list.style.top = `${Math.round(down ? r.bottom + 6 : Math.max(8, r.top - 6 - h))}px`;
@@ -3240,6 +3243,11 @@ function bandMode() {
   return app.classList.contains("mini-mode") && !app.classList.contains("exploring") && phoneLayout()
     && matchMedia("(orientation: portrait)").matches && $("main").getBoundingClientRect().height >= 500;
 }
+/** Luces en celular vertical sin alto para la franja: el mini de siempre, arriba o abajo según la preferencia. */
+function lightsPhoneMini() {
+  return app.classList.contains("mini-mode") && !app.classList.contains("exploring") && phoneLayout()
+    && matchMedia("(orientation: portrait)").matches && !app.classList.contains("mini-band");
+}
 function placeBand(animate) {
   const card = $("video-view"), main = $("main");
   const stage = main.getBoundingClientRect();
@@ -3267,7 +3275,11 @@ function placeMini(animate) {
   // Celular con escenario bajo en Luces (p. ej. 360×640): el ARMY Bomb y el selector caben sin la sugerencia.
   app.classList.toggle("lights-short", app.classList.contains("mini-mode") && phoneLayout() && main.getBoundingClientRect().height < 460);
   if (band) { placeBand(animate); return; }
-  $("mini-swap").hidden = true;
+  // Luces en un celular vertical bajo: sigue el mini, pero también arriba o abajo según la preferencia de Luces.
+  const lightsPhone = lightsPhoneMini();
+  const swap = $("mini-swap");
+  swap.hidden = !lightsPhone;
+  if (lightsPhone) { const l = lightsVideoTop() ? "Poner el video abajo" : "Poner el video arriba"; swap.setAttribute("aria-label", l); swap.dataset.tip = l; }
   card.classList.remove("band-bottom");
   if (!app.classList.contains("mini-mode")) {
     card.style.removeProperty("--mx"); card.style.removeProperty("--my");
@@ -3291,7 +3303,7 @@ function placeMini(animate) {
   const pos = {
     tl: [g, top], tr: [stage.width - w - g, top],
     bl: [g, bot], br: [stage.width - w - g, bot],
-  }[reserved ? `${MINI.corner[0]}r` : MINI.corner]; // con columna propia, siempre en ella (al girar el teléfono no tapa el buscador)
+  }[reserved ? `${MINI.corner[0]}r` : lightsPhone && MINI.before == null ? `${lightsVideoTop() ? "t" : "b"}${MINI.corner[1]}` : MINI.corner]; // con columna propia, siempre en ella (al girar el teléfono no tapa el buscador)
   card.classList.toggle("snapping", Boolean(animate));
   // Siempre dentro del escenario, aunque el mini sea más ancho que el hueco disponible.
   const maxX = Math.max(0, stage.width - w - g), maxY = Math.max(top, bot);
@@ -3342,7 +3354,10 @@ function bindMini() {
         // Luces a todo el ancho: se queda en la mitad donde se soltó y se recuerda.
         store.set(LIGHTS_VIDEO_KEY, cy < stage.height / 2 ? "top" : "bottom");
         if (MINI.before != null) MINI.corner = `${cy < stage.height / 2 ? "t" : "b"}${MINI.corner[1]}`;
-      } else MINI.corner = `${cy < stage.height / 2 ? "t" : "b"}${cx < stage.width / 2 ? "l" : "r"}`;
+      } else {
+        if (lightsPhoneMini()) store.set(LIGHTS_VIDEO_KEY, cy < stage.height / 2 ? "top" : "bottom"); // Luces recuerda arriba/abajo
+        MINI.corner = `${cy < stage.height / 2 ? "t" : "b"}${cx < stage.width / 2 ? "l" : "r"}`;
+      }
       placeMini(true);
     };
     bar.addEventListener("pointermove", move);
