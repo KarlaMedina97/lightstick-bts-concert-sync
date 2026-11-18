@@ -37,6 +37,7 @@ export default {
   "Video abajo, ARMY Bomb arriba.": "영상은 아래, 아미밤은 위.",
   "Ilustración no oficial": "비공식 일러스트",
   "Mostrar controles": "컨트롤 보기",
+  "No te escucho: sube el volumen": "들리지 않아요: 볼륨을 높이세요",
   "Escuchando": "듣는 중",
   "No te escucho: sube el volumen o acerca el teléfono": "들리지 않아요: 볼륨을 높이거나 휴대폰을 가까이 대세요",
   "Micrófono bloqueado": "마이크 차단됨",

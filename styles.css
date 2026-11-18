@@ -2750,6 +2750,12 @@ html {
   pointer-events: none; max-width: calc(100% - 16px);
 }
 .mic-chip[hidden] { display: none; }
+/* Celular bajo (ARMY Bomb de ~68 px): a la izquierda y, mientras escucha, solo ícono y barras (el texto sigue para
+   el lector de pantalla) */
+.app.lights-short .mic-chip { justify-self: start; margin-left: var(--s-2); padding: 3px var(--s-2); }
+.app.lights-short .mic-chip[data-state="on"] #mic-chip-txt {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
 .mic-chip svg { flex: none; color: var(--accent); }
 .mic-chip[data-state="quiet"] svg, .mic-chip[data-state="blocked"] svg { color: var(--text-2); }
 .mic-chip[data-state="blocked"] .mic-meter { display: none; }

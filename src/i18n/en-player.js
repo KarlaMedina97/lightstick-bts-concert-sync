@@ -37,6 +37,7 @@ export default {
   "Video abajo, ARMY Bomb arriba.": "Video below, ARMY Bomb on top.",
   "Ilustración no oficial": "Unofficial illustration",
   "Mostrar controles": "Show controls",
+  "No te escucho: sube el volumen": "I can't hear you: turn up the volume",
   "Escuchando": "Listening",
   "No te escucho: sube el volumen o acerca el teléfono": "I can't hear you: turn up the volume or bring the phone closer",
   "Micrófono bloqueado": "Microphone blocked",
