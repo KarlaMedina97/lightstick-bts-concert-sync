@@ -2519,10 +2519,21 @@ function bindVersionMenu() {
   const place = () => {
     const r = btn.getBoundingClientRect();
     list.style.minWidth = `${r.width}px`;
-    list.style.maxHeight = `${Math.max(120, Math.min(228, r.top - 8))}px`;
+    // Hacia arriba, sin llegar al video si está encima (Luces a todo el ancho con el video arriba); si no cabe ni
+    // para dos opciones, se abre hacia abajo hasta el pie.
+    // Posición del mini según su lugar asignado (--my), no la de pantalla: mientras dura su animación de entrada
+    // getBoundingClientRect lo da corrido.
+    const card = $("video-view");
+    const vTop = $("main").getBoundingClientRect().top + (parseFloat(card.style.getPropertyValue("--my")) || 0);
+    const vBottom = vTop + card.offsetHeight;
+    const videoAbove = app.classList.contains("mini-mode") && !app.classList.contains("mini-off") && card.offsetHeight && vBottom <= r.top;
+    const up = Math.min(228, r.top - 8, videoAbove ? r.top - vBottom - 12 : Infinity);
+    const dockT = $("dock")?.getBoundingClientRect().top ?? innerHeight;
+    const down = up < 96;
+    list.style.maxHeight = `${Math.round(down ? Math.min(228, dockT - r.bottom - 12) : up)}px`;
     const w = list.offsetWidth, h = list.offsetHeight;
     list.style.left = `${Math.round(Math.min(innerWidth - w - 12, Math.max(12, r.left + r.width / 2 - w / 2)))}px`;
-    list.style.top = `${Math.round(Math.max(8, r.top - 6 - h))}px`;
+    list.style.top = `${Math.round(down ? r.bottom + 6 : Math.max(8, r.top - 6 - h))}px`;
   };
   const open = () => {
     if (isOpen()) return;
@@ -3173,7 +3184,8 @@ function menuAvoidVideo(menu, from) {
   }
   if (mini) {
     const want = from === "bottom" ? "t" : "b";
-    if (MINI.corner[0] !== want) {
+    const atTop = c.top + c.height / 2 < innerHeight / 2; // posición real (a todo el ancho no sigue a MINI.corner)
+    if ((want === "t") !== atTop) {
       MINI.before ??= MINI.corner;
       MINI.sheet = from === "bottom";
       MINI.corner = `${want}${MINI.corner[1]}`;
@@ -3216,9 +3228,47 @@ function showMini() {
   requestAnimationFrame(() => placeMini(false));
 }
 let minimizeVideo = () => {};
+/**
+ * Luces en un celular vertical con alto de sobra (escenario ≥ 500 px): el video va a todo el ancho, en 16:9 (≥ 200 px
+ * de alto), en la mitad de arriba o la de abajo, y el ARMY Bomb en la otra. La persona elige con el arrastre o el
+ * botón de intercambiar, y se recuerda (aparte de la esquina de Explorar). Celulares bajos, horizontal y Explorar
+ * siguen con la ventana compacta. Revisión UX 2026-11-18.
+ */
+const LIGHTS_VIDEO_KEY = "pws.lightsVideo";
+const lightsVideoTop = () => store.get(LIGHTS_VIDEO_KEY, "top") !== "bottom";
+function bandMode() {
+  return app.classList.contains("mini-mode") && !app.classList.contains("exploring") && phoneLayout()
+    && matchMedia("(orientation: portrait)").matches && $("main").getBoundingClientRect().height >= 500;
+}
+function placeBand(animate) {
+  const card = $("video-view"), main = $("main");
+  const stage = main.getBoundingClientRect();
+  const h = card.offsetHeight, g = 12;
+  // Con una hoja o un menú abierto manda su posición temporal (MINI.corner); si no, la elegida.
+  const atTop = MINI.before != null ? MINI.corner[0] === "t" : lightsVideoTop();
+  card.classList.toggle("band-bottom", !atTop);
+  card.classList.toggle("snapping", Boolean(animate));
+  card.style.setProperty("--mx", "0px");
+  card.style.setProperty("--my", `${atTop ? 0 : Math.max(0, stage.height - h)}px`);
+  const off = app.classList.contains("mini-off");
+  const res = { t: !off && atTop ? h + g : 0, r: 0, b: !off && !atTop ? h + g : 0, l: 0 };
+  for (const k of "trbl") main.style.setProperty(`--mini-res-${k}`, `${Math.round(res[k])}px`);
+  const swap = $("mini-swap"), label = atTop ? "Poner el video abajo" : "Poner el video arriba";
+  swap.hidden = false;
+  swap.setAttribute("aria-label", label);
+  swap.dataset.tip = label;
+  dispatchEvent(new Event("pws:layout"));
+}
 function placeMini(animate) {
   const card = $("video-view");
   const main = $("main");
+  const band = bandMode();
+  app.classList.toggle("mini-band", band);
+  // Celular con escenario bajo en Luces (p. ej. 360×640): el ARMY Bomb y el selector caben sin la sugerencia.
+  app.classList.toggle("lights-short", app.classList.contains("mini-mode") && phoneLayout() && main.getBoundingClientRect().height < 460);
+  if (band) { placeBand(animate); return; }
+  $("mini-swap").hidden = true;
+  card.classList.remove("band-bottom");
   if (!app.classList.contains("mini-mode")) {
     card.style.removeProperty("--mx"); card.style.removeProperty("--my");
     for (const k of "trbl") main.style.removeProperty(`--mini-res-${k}`);
@@ -3275,8 +3325,9 @@ function bindMini() {
     const y0 = parseFloat(card.style.getPropertyValue("--my")) || 0;
     card.classList.remove("snapping");
     card.classList.add("dragging");
+    const band = app.classList.contains("mini-band");
     const move = (ev) => {
-      card.style.setProperty("--mx", `${x0 + ev.clientX - sx}px`);
+      if (!band) card.style.setProperty("--mx", `${x0 + ev.clientX - sx}px`); // a todo el ancho solo sube o baja
       card.style.setProperty("--my", `${y0 + ev.clientY - sy}px`);
     };
     const up = (ev) => {
@@ -3287,13 +3338,24 @@ function bindMini() {
       if (Math.hypot(ev.clientX - sx, ev.clientY - sy) < 8) { placeMini(false); $("view-video").click(); return; }
       const cx = x0 + ev.clientX - sx + card.offsetWidth / 2;
       const cy = y0 + ev.clientY - sy + card.offsetHeight / 2;
-      MINI.corner = `${cy < stage.height / 2 ? "t" : "b"}${cx < stage.width / 2 ? "l" : "r"}`;
+      if (band) {
+        // Luces a todo el ancho: se queda en la mitad donde se soltó y se recuerda.
+        store.set(LIGHTS_VIDEO_KEY, cy < stage.height / 2 ? "top" : "bottom");
+        if (MINI.before != null) MINI.corner = `${cy < stage.height / 2 ? "t" : "b"}${MINI.corner[1]}`;
+      } else MINI.corner = `${cy < stage.height / 2 ? "t" : "b"}${cx < stage.width / 2 ? "l" : "r"}`;
       placeMini(true);
     };
     bar.addEventListener("pointermove", move);
     bar.addEventListener("pointerup", up);
   });
   $("mini-hide").onclick = () => hideMini();
+  $("mini-swap").onclick = () => {
+    const toTop = !lightsVideoTop();
+    store.set(LIGHTS_VIDEO_KEY, toTop ? "top" : "bottom");
+    if (MINI.before != null) MINI.corner = `${toTop ? "t" : "b"}${MINI.corner[1]}`;
+    placeMini(true);
+    say(toTop ? "Video arriba, ARMY Bomb abajo." : "Video abajo, ARMY Bomb arriba.");
+  };
   $("mini-back").onclick = () => $("view-video").click();
   $("btn-mini").onclick = () => (view === "video" ? minimizeVideo() : $("view-video").click());
   const setSmall = (on) => {

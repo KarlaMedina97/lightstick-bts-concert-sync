@@ -2693,6 +2693,22 @@ html {
   .app.mini-mode .mini-grip { margin: auto 0; width: 18px; height: 10px; background-size: 6px 5px; }
   #mini-size { display: none; } /* ya es la más chica que permite YouTube */
 }
+/* Luces en celular vertical con alto de sobra (clase .mini-band, la pone placeMini): el video a todo el ancho en
+   16:9 (≥ 200 px de alto) en la mitad de arriba o la de abajo, y su barra de 44 px del lado del ARMY Bomb, nunca
+   encima del video. ✕ a la izquierda, agarre al centro, intercambiar a la derecha. */
+.app.mini-band .video-card, .app.mini-band .video-card.mini-sm { --mini-w: 100cqw; flex-direction: column; }
+.app.mini-band .video-card.band-bottom { flex-direction: column-reverse; }
+.app.mini-band .video-box { width: 100%; height: auto; aspect-ratio: 16 / 9; min-height: 200px; }
+.app.mini-band .video-card .mini-bar, .app.mini-band .video-card.mini-sm .mini-bar {
+  flex-direction: row; justify-content: space-between; width: auto; height: 44px; padding: 0 var(--s-1);
+}
+.app.mini-band .mini-grip { margin: 0 auto; width: 28px; height: 10px; }
+.app.mini-band .lights-view #lv-hint { display: none; }
+/* Celular con escenario bajo (p. ej. 360×640): sin la sugerencia ni la nota, el selector de versión ya no queda bajo
+   el pie y el ARMY Bomb gana alto. */
+.app.lights-short .lights-view #lv-hint, .app.lights-short .lights-view #lv-note { display: none; }
+.app.lights-short .lights-view { gap: var(--s-1); }
+.app.mini-mode.lights-short .lights-view.model .lv-stage { min-height: 0; } /* el ARMY Bomb toma el alto que queda */
 
 /* Vista Luces 3D: el lienzo ocupa todo el ancho para agitarlo sin que se corte; la luz la da el propio ARMY Bomb */
 .lv-stage { width: 100%; }
