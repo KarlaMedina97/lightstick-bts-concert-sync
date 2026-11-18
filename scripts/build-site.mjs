@@ -5,7 +5,7 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
-import { LOCALES, LOCALIZED, localizePage, withAlternates } from "./localize-pages.mjs";
+import { LOCALES, LOCALIZED, jsonLd, localizePage, withAlternates } from "./localize-pages.mjs";
 
 export const PUBLIC = [
   "index.html", "app.html", "privacidad.html", "player", "privacy",
@@ -81,6 +81,41 @@ function about({ album, song }) {
         </section>`;
 }
 
+/**
+ * Datos estructurados de cada canción o álbum: la página (WebPage) con su migas de pan (Inicio › Reproductor › Álbum ›
+ * Canción), qué grabación o álbum describe (solo datos del catálogo) y la app con la que se usa (WebApplication, el
+ * mismo @id que en la portada). Es un bloque de datos: no se ejecuta, así que la CSP del reproductor no cambia.
+ */
+const SITE = "https://lumiparty.com";
+const APP = {
+  "@type": "WebApplication", "@id": `${SITE}/#app`, name: "LumiParty", alternateName: ["LumiParty ARMY Bomb", "LumiParty BTS"],
+  url: `${SITE}/`, applicationCategory: "MultimediaApplication",
+  operatingSystem: "Android, Windows, macOS, ChromeOS, iOS (con Bluefy)",
+  browserRequirements: "Web Bluetooth: Chrome o Edge; en iPhone y iPad, la app Bluefy. Sin Bluetooth, la pantalla funciona como lightstick.",
+  isAccessibleForFree: true, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+};
+function structured({ album, song }, url, title, desc) {
+  const who = album.artist && album.artist !== "BTS" ? album.artist : "BTS";
+  const artist = { "@type": who === "BTS" ? "MusicGroup" : "Person", name: who };
+  const albumUrl = `${SITE}/player/album-${album.id}`;
+  const musicAlbum = { "@type": "MusicAlbum", name: album.title, byArtist: artist, ...(album.year ? { datePublished: String(album.year) } : {}) };
+  // Los conciertos no son una grabación de la canción: ahí la página solo describe la app.
+  const about = !song ? musicAlbum : song.kind === "concert" ? undefined : { "@type": "MusicRecording", name: song.title, byArtist: artist, inAlbum: musicAlbum };
+  const crumbs = [["LumiParty", `${SITE}/`], ["Reproductor", `${SITE}/player/`], [album.title, albumUrl], ...(song ? [[song.title, url]] : [])];
+  return jsonLd({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage", "@id": url, url, name: title, description: desc, inLanguage: "es",
+        isPartOf: { "@id": `${SITE}/#website` }, breadcrumb: { "@id": `${url}#breadcrumb` }, mainEntity: { "@id": APP["@id"] },
+        ...(about ? { about } : {}),
+      },
+      { "@type": "BreadcrumbList", "@id": `${url}#breadcrumb`, itemListElement: crumbs.map(([name, item], i) => ({ "@type": "ListItem", position: i + 1, name, item })) },
+      APP,
+    ],
+  });
+}
+
 for (const [slug, title, desc, canon, noindex, data] of routes) {
   if (!/^[a-z0-9-]{1,90}$/.test(slug) || existsSync(join(OUT, "player", `${slug}.html`))) continue;
   const url = `https://lumiparty.com/player/${canon ?? slug}`;
@@ -95,7 +130,8 @@ for (const [slug, title, desc, canon, noindex, data] of routes) {
     .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(desc)}$2`)
     .replace(/(<link rel="canonical"[^>]*>)/, noindex ? `$1\n  <meta name="robots" content="noindex, follow">` : "$1")
     .replace(/<h1 class="sr">[^<]*<\/h1>/, (h) => (data ? `<h1 class="sr">${esc((data.song ?? data.album).title)}: luces para tu ARMY Bomb</h1>` : h))
-    .replace("<!-- seo:about (scripts/build-site.mjs pone aquí la tarjeta de cada canción o álbum) -->", data ? about(data) : "");
+    .replace("<!-- seo:about (scripts/build-site.mjs pone aquí la tarjeta de cada canción o álbum) -->", data ? about(data) : "")
+    .replace("</head>", () => (data && !noindex ? `  ${structured(data, url, title, desc)}\n</head>` : "</head>"));
   writeFileSync(join(OUT, "player", `${slug}.html`), html);
   songPages++;
 }
