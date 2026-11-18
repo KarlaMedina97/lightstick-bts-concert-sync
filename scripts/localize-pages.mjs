@@ -26,10 +26,48 @@ export function alternates(path) {
   const rows = [["es", `${ORIGIN}${path}`], ...Object.entries(LOCALES).map(([c, l]) => [l.bcp, `${ORIGIN}/${c}${path}`]), ["x-default", `${ORIGIN}/en${path}`]];
   return rows.map(([h, u]) => `<link rel="alternate" hreflang="${h}" href="${u}">`).join("\n  ");
 }
-/** Agrega los hreflang justo después de la canónica (la versión en español los lleva igual que las traducidas). */
+/**
+ * Agrega los hreflang justo después de la canónica (la versión en español los lleva igual que las traducidas) y, en
+ * la guía, sus datos estructurados.
+ */
 export function withAlternates(html, path) {
   if (html.includes('hreflang="x-default"')) return html;
-  return html.replace(/(<link rel="canonical"[^>]*>)/, `$1\n  ${alternates(path)}`);
+  return withGuideData(html.replace(/(<link rel="canonical"[^>]*>)/, `$1\n  ${alternates(path)}`), path);
+}
+
+/** JSON dentro de <script>: sin «<» literal, para que ningún texto pueda cerrar la etiqueta. */
+export const jsonLd = (data) => `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`;
+const plain = (s) => decode(s.replace(/<[^>]+>/g, "")).replace(/\s+/g, " ").trim();
+
+/**
+ * Datos estructurados de la guía, sacados del HTML ya traducido (así cada idioma describe exactamente lo que se ve):
+ * FAQPage con cada pregunta (h3) y su respuesta (el p siguiente) de #preguntas, y BreadcrumbList Inicio › Guía.
+ * Es un bloque de datos: no se ejecuta, así que la CSP de la guía no necesita su hash.
+ */
+export function withGuideData(html, path) {
+  if (path !== "/guide/" || html.includes('"FAQPage"')) return html;
+  const canon = html.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
+  const lang = html.match(/<html\b[^>]*\slang="([^"]+)"/)?.[1] ?? "es";
+  const faq = html.match(/<section id="preguntas">([\s\S]*?)<\/section>/)?.[1] ?? "";
+  const qa = [...faq.matchAll(/<h3>([\s\S]*?)<\/h3>\s*<p>([\s\S]*?)<\/p>/g)].map(([, q, a]) => [plain(q), plain(a)]);
+  if (!canon || !qa.length) throw new Error(`Guía sin canónica o sin preguntas frecuentes (${lang})`);
+  const home = canon.replace(/guide\/$/, "");
+  const title = plain(html.match(/<h1>([\s\S]*?)<\/h1>/)?.[1] ?? "");
+  const data = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "FAQPage", "@id": `${canon}#preguntas`, url: canon, inLanguage: lang,
+        isPartOf: { "@id": `${ORIGIN}/#website` },
+        mainEntity: qa.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+      },
+      {
+        "@type": "BreadcrumbList", "@id": `${canon}#breadcrumb`,
+        itemListElement: [["LumiParty", home], [title, canon]].map(([name, item], i) => ({ "@type": "ListItem", position: i + 1, name, item })),
+      },
+    ],
+  };
+  return html.replace("</head>", () => `  ${jsonLd(data)}\n</head>`);
 }
 
 /**
@@ -98,5 +136,6 @@ export async function localizePage(html, path, code) {
   out = out.replace(/>([^<>]+)</g, (m, txt) => `>${txt.split(/(\u0000\d+\u0000)/).map((part, k) => (k % 2 ? part : trText(part))).join("")}<`);
 
   out = out.replace(/\u0000(\d+)\u0000/g, (_, i) => kept[Number(i)]);
+  // withAlternates también agrega los datos estructurados de la guía, ya con el texto en este idioma.
   return { html: withAlternates(out, path), leftovers: [...leftovers] };
 }
