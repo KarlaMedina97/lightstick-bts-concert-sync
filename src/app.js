@@ -2488,18 +2488,86 @@ async function setLightsModel(mode, { save = true } = {}) {
 }
 function syncVersionButtons() {
   const v = stickVersion();
-  for (const b of $("lv-vers").querySelectorAll("[data-ver]")) b.setAttribute("aria-pressed", String(b.dataset.ver === v));
+  let name = "Ver. 4";
+  for (const o of $("lv-ver-list").querySelectorAll("[data-ver]")) {
+    o.setAttribute("aria-selected", String(o.dataset.ver === v));
+    if (o.dataset.ver === v) name = o.dataset.name ?? o.textContent.trim();
+  }
+  $("lv-ver-txt").textContent = `ARMY Bomb ${name}`;
+  $("lv-ver-btn").setAttribute("aria-label", `Versión del ARMY Bomb: ${name}`);
+}
+/**
+ * Menú de versión (botón + lista, patrón «listbox» del APG). La lista se abre hacia arriba, sobre el lightstick:
+ * hacia abajo taparía el mini video o el pie. Va en la capa superior (popover) para que el escenario no la recorte.
+ */
+function bindVersionMenu() {
+  const btn = $("lv-ver-btn"), list = $("lv-ver-list");
+  const opts = () => [...list.querySelectorAll("[role=option]")];
+  // Nombre fijo en español por opción (el texto visible puede estar traducido; ver regla de i18n en CLAUDE.md).
+  for (const o of opts()) o.dataset.name = o.textContent.trim();
+  const popover = typeof list.showPopover === "function";
+  if (!popover) { list.removeAttribute("popover"); list.hidden = true; }
+  const isOpen = () => btn.getAttribute("aria-expanded") === "true";
+  let active = 0;
+  const setActive = (i) => {
+    const all = opts();
+    active = (i + all.length) % all.length;
+    all.forEach((o, k) => o.classList.toggle("active", k === active));
+    list.setAttribute("aria-activedescendant", all[active].id);
+    all[active].scrollIntoView({ block: "nearest" });
+  };
+  const place = () => {
+    const r = btn.getBoundingClientRect();
+    list.style.minWidth = `${r.width}px`;
+    list.style.maxHeight = `${Math.max(120, Math.min(228, r.top - 8))}px`;
+    const w = list.offsetWidth, h = list.offsetHeight;
+    list.style.left = `${Math.round(Math.min(innerWidth - w - 12, Math.max(12, r.left + r.width / 2 - w / 2)))}px`;
+    list.style.top = `${Math.round(Math.max(8, r.top - 6 - h))}px`;
+  };
+  const open = () => {
+    if (isOpen()) return;
+    btn.setAttribute("aria-expanded", "true");
+    if (popover) list.showPopover(); else list.hidden = false;
+    place();
+    setActive(Math.max(0, opts().findIndex((o) => o.getAttribute("aria-selected") === "true")));
+    list.focus({ preventScroll: true });
+    setTimeout(() => document.addEventListener("pointerdown", outside, true), 0);
+  };
+  const close = (focus = true) => {
+    if (!isOpen()) return;
+    btn.setAttribute("aria-expanded", "false");
+    if (popover) list.hidePopover(); else list.hidden = true;
+    list.removeAttribute("aria-activedescendant");
+    document.removeEventListener("pointerdown", outside, true);
+    if (focus) btn.focus({ preventScroll: true });
+  };
+  const outside = (e) => { if (!list.contains(e.target) && !btn.contains(e.target)) close(false); };
+  const choose = (o) => {
+    if (!o) return;
+    settings.stickVer = o.dataset.ver;
+    saveSettings();
+    syncVersionButtons();
+    stick3d?.setVersion(o.dataset.ver);
+    close();
+  };
+  btn.addEventListener("click", () => (isOpen() ? close() : open()));
+  btn.addEventListener("keydown", (e) => { if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); open(); } });
+  list.addEventListener("click", (e) => choose(e.target.closest("[role=option]")));
+  list.addEventListener("pointermove", (e) => { const i = opts().indexOf(e.target.closest("[role=option]")); if (i >= 0 && i !== active) setActive(i); });
+  list.addEventListener("keydown", (e) => {
+    const k = e.key;
+    if (k === "ArrowDown" || k === "ArrowUp") { e.preventDefault(); setActive(active + (k === "ArrowDown" ? 1 : -1)); }
+    else if (k === "Home" || k === "End") { e.preventDefault(); setActive(k === "Home" ? 0 : opts().length - 1); }
+    else if (k === "Enter" || k === " ") { e.preventDefault(); choose(opts()[active]); }
+    else if (k === "Escape") { e.preventDefault(); e.stopPropagation(); close(); }
+    else if (k === "Tab") close(false);
+  });
+  addEventListener("resize", () => close(false));
+  addEventListener("scroll", () => isOpen() && place(), true);
 }
 function bindLightsView() {
   $("lv-switch").onclick = (e) => setLightsModel(e.currentTarget.dataset.to === "orb" ? "orb" : "stick");
-  $("lv-vers").addEventListener("click", (e) => {
-    const b = e.target.closest("[data-ver]");
-    if (!b) return;
-    settings.stickVer = b.dataset.ver;
-    saveSettings();
-    syncVersionButtons();
-    stick3d?.setVersion(b.dataset.ver);
-  });
+  bindVersionMenu();
   if (settings.lightsModel === "stick") setLightsModel("stick", { save: false });
 }
 

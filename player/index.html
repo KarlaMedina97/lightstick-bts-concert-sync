@@ -446,12 +446,19 @@
           <div id="big-bulb" class="big-bulb" aria-hidden="true"></div>
           <div id="stick3d" class="stick3d" hidden></div>
         </div>
-        <div id="lv-vers" class="lv-vers" role="group" aria-label="Versión del ARMY Bomb" hidden>
-          <button class="type-opt" type="button" data-ver="v4" aria-pressed="true">Ver. 4</button>
-          <button class="type-opt" type="button" data-ver="se" aria-pressed="false">SE</button>
-          <button class="type-opt" type="button" data-ver="v3" aria-pressed="false">Ver. 3</button>
-          <button class="type-opt" type="button" data-ver="v2" aria-pressed="false">Ver. 2</button>
-          <button class="type-opt" type="button" data-ver="v1" aria-pressed="false">Ver. 1</button>
+        <!-- Versión: botón con lista desplegable que se abre hacia arriba (abajo está el mini video, que nada tapa) -->
+        <div id="lv-vers" class="lv-vers" hidden>
+          <button id="lv-ver-btn" class="lv-ver-btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="lv-ver-list" aria-label="Versión del ARMY Bomb: Ver. 4">
+            <span id="lv-ver-txt">ARMY Bomb Ver. 4</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg>
+          </button>
+          <ul id="lv-ver-list" class="lv-ver-list" role="listbox" aria-label="Versión del ARMY Bomb" tabindex="-1" popover="manual">
+            <li id="lv-ver-v4" role="option" data-ver="v4" aria-selected="true">Ver. 4</li>
+            <li id="lv-ver-se" role="option" data-ver="se" aria-selected="false">SE</li>
+            <li id="lv-ver-v3" role="option" data-ver="v3" aria-selected="false">Ver. 3</li>
+            <li id="lv-ver-v2" role="option" data-ver="v2" aria-selected="false">Ver. 2</li>
+            <li id="lv-ver-v1" role="option" data-ver="v1" aria-selected="false">Ver. 1</li>
+          </ul>
         </div>
         <p id="lv-note" class="lv-note" hidden>Ilustración 3D propia y no oficial: puede diferir del ARMY Bomb real.</p>
         <div id="sim" class="sim" aria-hidden="true"></div>
