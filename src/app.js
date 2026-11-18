@@ -2557,6 +2557,7 @@ function closeMenus(except) {
     if (m === except || m.hidden || !m.dataset.menuFor) return;
     m.hidden = true;
     $(m.dataset.menuFor).setAttribute("aria-expanded", "false");
+    menuRestore(m);
   });
 }
 function bindMenus() {
@@ -2568,13 +2569,14 @@ function bindMenus() {
       if (open) closePanel(false);
       menu.hidden = !open;
       btn.setAttribute("aria-expanded", String(open));
-      if (!open) return;
+      if (!open) { menuRestore(menu); return; }
       // Se alinea con su botón, sin salirse de la pantalla.
       const r = btn.getBoundingClientRect();
       const w = menu.offsetWidth;
       const left = Math.min(innerWidth - w - 12, Math.max(12, r.left + r.width / 2 - w / 2));
       menu.style.left = `${left}px`;
       menu.style.bottom = `${innerHeight - r.top + 10}px`;
+      menuAvoidVideo(menu, "bottom");
       menu.querySelector("button")?.focus();
     };
     menu.addEventListener("keydown", (e) => {
@@ -3082,6 +3084,49 @@ function miniAvoidPanel(p) {
   MINI.corner = `${MINI.corner[0]}${pr.left + pr.width / 2 > innerWidth / 2 ? "l" : "r"}`;
   placeMini(true);
 }
+/**
+ * Igual para los menús emergentes del teléfono (Concierto, que sube desde el pie, y el menú principal, que baja desde
+ * arriba): nunca tapan el video que suena. El mini va al extremo contrario y el menú se acorta (con desplazamiento) o,
+ * en la vista Video, se abre justo debajo del video.
+ */
+function menuAvoidVideo(menu, from) {
+  const card = $("video-view");
+  const mini = app.classList.contains("mini-mode");
+  if (mini && app.classList.contains("mini-off")) return;
+  let c = card.getBoundingClientRect();
+  if (!c.width || !c.height || getComputedStyle(card).visibility === "hidden") return;
+  if (!phoneLayout()) {
+    // Horizontal y escritorio: hay ancho de sobra, el menú se corre al lado del video.
+    const m = menu.getBoundingClientRect(), gap = 8;
+    if (!overlaps(m, c, 0)) return;
+    if (c.left - gap - m.width >= 12) menu.style.left = `${c.left - gap - m.width}px`;
+    else if (c.right + gap + m.width <= innerWidth - 12) menu.style.left = `${c.right + gap}px`;
+    return;
+  }
+  if (mini) {
+    const want = from === "bottom" ? "t" : "b";
+    if (MINI.corner[0] !== want) {
+      MINI.before ??= MINI.corner;
+      MINI.sheet = from === "bottom";
+      MINI.corner = `${want}${MINI.corner[1]}`;
+      placeMini(false);
+      c = card.getBoundingClientRect();
+    }
+  }
+  const m = menu.getBoundingClientRect(), gap = 8;
+  if (!overlaps(m, c, 0)) return;
+  if (from === "bottom") { menu.style.maxHeight = `${Math.max(120, m.bottom - c.bottom - gap)}px`; return; }
+  const above = c.top - gap - m.top;
+  if (above >= 160) { menu.style.maxHeight = `${above}px`; return; }
+  const dockT = $("dock")?.getBoundingClientRect().top ?? innerHeight;
+  menu.style.top = `${c.bottom + gap - menu.offsetParent.getBoundingClientRect().top}px`;
+  menu.style.maxHeight = `${Math.max(120, dockT - gap - c.bottom - gap)}px`;
+}
+function menuRestore(menu) {
+  menu.style.removeProperty("top");
+  miniRestore(menu);
+}
+addEventListener("pws:menu", (e) => (e.detail.open ? menuAvoidVideo(e.detail.menu, "top") : menuRestore(e.detail.menu)));
 function miniRestore(p) {
   p.style.removeProperty("max-height");
   if (MINI.before == null) return;
