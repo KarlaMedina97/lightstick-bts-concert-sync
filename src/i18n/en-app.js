@@ -88,6 +88,7 @@ const dict = {
   "Aún no hay álbumes en Me gusta. Toca ♡ en la portada de un álbum.": "No liked albums yet. Tap ♡ on an album cover.",
   "No encontramos álbumes con esa búsqueda.": "No albums match that search.",
   "El Bluetooth de tu dispositivo está apagado. Actívalo y vuelve a tocar Conectar.": "Your device's Bluetooth is off. Turn it on and tap Connect again.",
+  "Bluetooth encendido. Toca Conectar ARMY Bomb.": "Bluetooth is on. Tap Connect ARMY Bomb.",
   "El navegador no dio permiso para usar Bluetooth. Revisa los permisos del sitio y prueba otra vez.": "The browser didn't allow Bluetooth. Check the site permissions and try again.",
   "Brave tiene el Bluetooth web desactivado, por eso no se abre la lista de dispositivos.": "Brave has Web Bluetooth turned off, so the device list doesn't open.",
   "¿Usas Brave? Trae el Bluetooth web desactivado: si al tocar Conectar no pasa nada, actívalo así:": "Using Brave? It ships with Web Bluetooth off: if nothing happens when you tap Connect, turn it on like this:",

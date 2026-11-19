@@ -86,6 +86,7 @@ const dict = {
   "Aún no hay álbumes en Me gusta. Toca ♡ en la portada de un álbum.": "Belum ada album yang disukai. Ketuk ♡ di sampul album.",
   "No encontramos álbumes con esa búsqueda.": "Tidak ada album yang cocok dengan pencarian itu.",
   "El Bluetooth de tu dispositivo está apagado. Actívalo y vuelve a tocar Conectar.": "Bluetooth perangkatmu mati. Nyalakan lalu ketuk Hubungkan lagi.",
+  "Bluetooth encendido. Toca Conectar ARMY Bomb.": "Bluetooth sudah menyala. Ketuk Hubungkan ARMY Bomb.",
   "El navegador no dio permiso para usar Bluetooth. Revisa los permisos del sitio y prueba otra vez.": "Browser tidak mengizinkan Bluetooth. Cek izin situs lalu coba lagi.",
   "Brave tiene el Bluetooth web desactivado, por eso no se abre la lista de dispositivos.": "Web Bluetooth di Brave nonaktif, jadi daftar perangkat tidak muncul.",
   "¿Usas Brave? Trae el Bluetooth web desactivado: si al tocar Conectar no pasa nada, actívalo así:": "Pakai Brave? Web Bluetooth-nya nonaktif secara bawaan: kalau tidak terjadi apa-apa saat kamu ketuk Hubungkan, aktifkan begini:",
