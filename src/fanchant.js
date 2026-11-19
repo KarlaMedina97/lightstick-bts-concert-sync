@@ -21,8 +21,15 @@ const FINAL = { ko: "방탄소년단!", roman: "BTS!" };
 export const CHANT_PAUSE_MS = 250;
 /** Cuánto se ve (y se dice) cada nombre: 2,5 s fijos (decisión del proyecto), más la pausa de 0,25 s entre nombres. */
 export const CHANT_STEP_MS = 2500;
-export function chantStepMs(_bpm) {
-  return CHANT_STEP_MS;
+/** Velocidades que se pueden elegir en Ajustes (multiplican el ritmo: 2 = el doble de rápido). */
+export const CHANT_SPEEDS = [0.75, 1, 1.5, 2];
+/**
+ * Duración de cada nombre según la velocidad elegida. Nunca baja de 1,1 s: la voz del sistema tarda ≈ 1 s por
+ * nombre y a menos no alcanza a decirlos.
+ */
+export function chantStepMs(_bpm, speed = 1) {
+  const s = CHANT_SPEEDS.includes(speed) ? speed : 1;
+  return Math.max(1100, Math.round(CHANT_STEP_MS / s));
 }
 
 /** Ovación corta: ruido filtrado con una envolvente, sin archivos de audio. */
@@ -64,9 +71,9 @@ export class Fanchant {
   }
 
   /** Corre el fanchant completo. Resuelve al terminar o al saltarlo. */
-  run({ voice = true, bpm = 0 } = {}) {
+  run({ voice = true, bpm = 0, speed = 1 } = {}) {
     this.stop();
-    const STEP_MS = chantStepMs(bpm);
+    const STEP_MS = chantStepMs(bpm, speed);
     const items = [...MEMBERS, FINAL];
     let ctx = null;
     if (voice) {
@@ -118,7 +125,7 @@ export class Fanchant {
           speechSynthesis.cancel(); // sin cola: si quedó algo pendiente, no se acumula
           const u = new SpeechSynthesisUtterance(it.ko);
           u.lang = "ko-KR";
-          u.rate = 0.95; // tres sílabas por nombre, marcadas, como lo grita el público
+          u.rate = speed > 1 ? 1.15 : 0.95; // tres sílabas por nombre, marcadas; más ágil si se eligió rápido
           u.volume = 0.9;
           u.onend = next;
           u.onerror = next;

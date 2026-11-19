@@ -12,7 +12,7 @@ import { buildFeedback, sendFeedback } from "./feedback.js";
 import { MicSync } from "./mic.js";
 import { fetchTitle, parseYouTubeId, isOfficialChannel } from "./youtube.js";
 import { Guide } from "./guide.js";
-import { Fanchant, MEMBERS as CHANT_MEMBERS } from "./fanchant.js";
+import { Fanchant, MEMBERS as CHANT_MEMBERS, CHANT_SPEEDS } from "./fanchant.js";
 const MEMBER_CHANT_COUNT = CHANT_MEMBERS.length;
 import { favorites } from "./favorites.js";
 import { Tour } from "./tour.js";
@@ -49,7 +49,7 @@ const store = {
 };
 
 const SETTINGS_KEY = "pws.settings.v1";
-const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, chant: true, chantVoice: false, lightsModel: "orb", stickVer: "", sounds: true, describe: false, keys: true, calm: false, bpm: {}, phase: {} };
+const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, chant: true, chantVoice: false, chantSpeed: 1, lightsModel: "orb", stickVer: "", sounds: true, describe: false, keys: true, calm: false, bpm: {}, phase: {} };
 const settings = { ...defaults, ...store.get(SETTINGS_KEY, {}) };
 // 2026-11-05: la descripción de las luces queda apagada para todos (una sola vez; después cada quien la activa en Ajustes).
 if (!store.get("pws.migr.describeOff", false)) { settings.describe = false; store.set("pws.migr.describeOff", true); store.set(SETTINGS_KEY, settings); }
@@ -3477,7 +3477,11 @@ function bindSettings() {
   $("chk-wake").checked = settings.wake;
   $("chk-chant").checked = settings.chant;
   $("chk-chant-voice").checked = settings.chantVoice;
-  $("chk-chant").onchange = (e) => { settings.chant = e.target.checked; saveSettings(); };
+  const syncChantSpeed = () => { $("sel-chant-speed").disabled = !settings.chant; };
+  $("sel-chant-speed").value = String(CHANT_SPEEDS.includes(settings.chantSpeed) ? settings.chantSpeed : 1);
+  $("sel-chant-speed").onchange = (e) => { settings.chantSpeed = Number(e.target.value); saveSettings(); };
+  syncChantSpeed();
+  $("chk-chant").onchange = (e) => { settings.chant = e.target.checked; saveSettings(); syncChantSpeed(); };
   $("chk-chant-voice").onchange = (e) => { settings.chantVoice = e.target.checked; saveSettings(); };
   $("sel-album-end").value = settings.albumEnd;
   sync();
@@ -3992,7 +3996,7 @@ async function init() {
         const upItem = up ? queue[idxOf(up.id ?? up)] : null;
         const bpm = upItem ? Number(settings.bpm[upItem.song.id] ?? upItem.song.bpm) : 0;
         track("fanchant");
-        await fanchant.run({ voice: settings.chantVoice, bpm });
+        await fanchant.run({ voice: settings.chantVoice, bpm, speed: settings.chantSpeed });
         if (current !== endedAt) return; // la persona eligió otra canción durante el fanchant
       }
       next(true);
