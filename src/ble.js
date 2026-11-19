@@ -235,8 +235,41 @@ export async function requestStick({ showAll = false, watchdogMs = browserInfo()
   return connectStick(device);
 }
 
-export async function connectStick(device) {
-  const server = await connectGatt(device);
+/** Marca en qué paso falló la conexión ("connect" o "services"), para el diagnóstico y las métricas. */
+const tagPhase = (e, phase) => { try { if (e && typeof e === "object" && !e.phase) e.phase = phase; } catch {} return e; };
+
+/**
+ * Conecta y prepara el ARMY Bomb. Algunos se desconectan solos justo después de aceptar la conexión, mientras se
+ * leen sus servicios ("GATT Server is disconnected"): en ese caso se vuelve a conectar y se repite, hasta 3 veces.
+ */
+export async function connectStick(device, { tries = 3, wait = (ms) => new Promise((r) => setTimeout(r, ms)) } = {}) {
+  for (let i = 1; ; i++) {
+    let server;
+    try { server = await connectGatt(device); }
+    catch (e) { throw tagPhase(e, "connect"); }
+    try {
+      return await setupStick(device, server);
+    } catch (e) {
+      const dropped = classifyBtError(e) === "gatt" && !device.gatt?.connected;
+      if (!dropped || i >= tries) throw tagPhase(e, "services");
+      try { device.gatt.disconnect(); } catch {}
+      await wait(400 * i);
+    }
+  }
+}
+
+async function setupStick(device, server) {
+  try { return await readStick(device, server); }
+  catch (e) {
+    // tryService() se traga los errores: si se cayó la conexión a mitad de camino, no es "incompatible", es "gatt".
+    if (device.gatt && !device.gatt.connected && e?.name === "NotCompatible" && !e.closedByUs) {
+      throw Object.assign(new Error("GATT Server is disconnected"), { name: "NetworkError" });
+    }
+    throw e;
+  }
+}
+
+async function readStick(device, server) {
   let family = familyFromName(device.name);
   if (!family) {
     for (const uuid of V4_SERVICES) if (await tryService(server, uuid)) { family = "v4"; break; }
@@ -244,7 +277,7 @@ export async function connectStick(device) {
   }
   if (!family) {
     device.gatt.disconnect();
-    throw Object.assign(new Error(`${device.name ?? "El dispositivo"} no parece ser una lightstick compatible.`), { name: "NotCompatible" });
+    throw Object.assign(new Error(`${device.name ?? "El dispositivo"} no parece ser una lightstick compatible.`), { name: "NotCompatible", closedByUs: true });
   }
   const characteristic =
     family === "v4"

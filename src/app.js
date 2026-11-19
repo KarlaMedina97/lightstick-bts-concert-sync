@@ -544,6 +544,20 @@ function showBtWarning(reason) {
 }
 
 let lastBtError = null; // { kind, detail, at } del último intento fallido
+let btOnWatch = false;
+/** Tras "Bluetooth apagado": avisa apenas la persona lo enciende (Chrome lo informa con availabilitychanged). */
+function watchBtOn() {
+  const bt = navigator.bluetooth;
+  if (btOnWatch || !bt?.addEventListener) return;
+  btOnWatch = true;
+  const on = (ev) => {
+    if (!ev.value) return;
+    bt.removeEventListener("availabilitychanged", on);
+    btOnWatch = false;
+    if (!sticks.length) { toast("Bluetooth encendido. Toca Conectar ARMY Bomb."); earcon("ok"); }
+  };
+  bt.addEventListener("availabilitychanged", on);
+}
 async function onConnect() {
   lastBtError = null;
   track("conectar_intento"); // embudo: intentó conectar → conectó (conectar_army_bomb) o falló (conectar_fallo)
@@ -580,12 +594,14 @@ async function onConnect() {
     const kind = classifyBtError(e);
     // El motivo real queda a la vista (guía y diagnóstico) y en la consola: así se puede saber qué pasó.
     lastBtError = { kind, detail: `${e?.name ?? "Error"}: ${String(e?.message ?? e).slice(0, 160)}`, at: Date.now() };
-    track("conectar_fallo", { motivo: kind }); // solo el tipo de fallo (cancelled, gatt, denied…), nada más
+    // Solo el tipo de fallo (cancelled, gatt, denied…), el paso (connect: no aceptó la conexión; services: se cayó al
+    // prepararlo) y el navegador (Chrome, Edge, Samsung…): nada de la persona.
+    track("conectar_fallo", { motivo: kind, fase: e?.phase ?? "lista", navegador: browserInfo().name.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24) });
     console.warn("[LumiParty] Bluetooth:", lastBtError.detail);
     if (kind === "cancelled") say("Lista cerrada sin elegir un dispositivo.");
     else if (kind === "disabled") { showBtWarning(isBrave() ? "brave" : "disabled"); showPanel("panel-bt"); earcon("error"); }
     else if (kind === "no-chooser") { showBtWarning("no-chooser"); if (openPanel !== "panel-bt") showPanel("panel-bt"); earcon("error"); }
-    else if (kind === "adapter-off") { toast("El Bluetooth de tu dispositivo está apagado. Actívalo y vuelve a tocar Conectar.", 7000, { assertive: true }); earcon("error"); }
+    else if (kind === "adapter-off") { toast("El Bluetooth de tu dispositivo está apagado. Actívalo y vuelve a tocar Conectar.", 7000, { assertive: true }); earcon("error"); watchBtOn(); }
     else if (kind === "denied") { toast("El navegador no dio permiso para usar Bluetooth. Revisa los permisos del sitio y prueba otra vez.", 7000, { assertive: true }); earcon("error"); }
     else if (kind === "gatt") { toast("Tu ARMY Bomb no aceptó la conexión. Desconéctalo de otro celular o de la app oficial, ponlo en modo Bluetooth y prueba otra vez. Si sigue igual, apaga y enciende el Bluetooth del equipo y recarga la página.", 9000, { assertive: true }); earcon("error"); }
     else if (kind === "not-stick") { toast("Ese dispositivo no es un ARMY Bomb compatible. Elige el que empieza con BTS LIGHTSTICK o BBOMB.", 8000); earcon("error"); }

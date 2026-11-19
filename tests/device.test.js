@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { macFromBytes, versionLabel, LOW_BATTERY, classifyBtError } from "../src/ble.js";
+import { macFromBytes, versionLabel, LOW_BATTERY, classifyBtError, connectStick } from "../src/ble.js";
 
 test("MAC: 6 primeros bytes invertidos; nada inventado si no hay datos", () => {
   assert.equal(macFromBytes(new Uint8Array([0x11, 0x22, 0x33, 0x44, 0x55, 0xa4, 0x99])), "A4:55:44:33:22:11");
@@ -73,4 +73,34 @@ test("navegadores: Samsung Internet y otros de fabricantes se marcan como inesta
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36 OPR/110.0",
   ]) assert.equal(browserInfo(ua).flaky, false, ua);
   assert.equal(classifyBtError(Object.assign(new Error("x"), { name: "ChooserTimeout" })), "no-chooser");
+});
+
+// ARMY Bomb falso: acepta la conexión y se cae al leer los servicios las primeras `drops` veces.
+function fakeStick(drops) {
+  let connects = 0;
+  const device = { id: "x", name: "BBOMB-1", addEventListener() {}, gatt: { connected: false } };
+  const char = { uuid: "0001ff01-0000-1000-8000-00805f9b34fb", properties: { write: true }, addEventListener() {} };
+  const server = {
+    async getPrimaryService(uuid) {
+      if (drops > 0) { drops--; device.gatt.connected = false; throw Object.assign(new Error("GATT Server is disconnected. Cannot retrieve services."), { name: "NetworkError" }); }
+      if (uuid.startsWith("0001fe01")) return { async getCharacteristics() { return [char]; } };
+      throw new Error("no services matching");
+    },
+  };
+  device.gatt.connect = async () => { connects++; device.gatt.connected = true; return server; };
+  device.gatt.disconnect = () => { device.gatt.connected = false; };
+  return { device, connects: () => connects };
+}
+
+test("conexión: si el ARMY Bomb se cae al leer sus servicios, se reconecta y sigue", async () => {
+  const f = fakeStick(1);
+  const stick = await connectStick(f.device, { wait: async () => {} });
+  assert.equal(stick.family, "v4");
+  assert.equal(f.connects(), 2);
+});
+
+test("conexión: si se cae siempre, falla como gatt e indica el paso", async () => {
+  const f = fakeStick(99);
+  await assert.rejects(connectStick(f.device, { wait: async () => {} }), (e) => classifyBtError(e) === "gatt" && e.phase === "services");
+  assert.equal(f.connects(), 3);
 });

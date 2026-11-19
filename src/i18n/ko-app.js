@@ -86,6 +86,7 @@ const dict = {
   "Aún no hay álbumes en Me gusta. Toca ♡ en la portada de un álbum.": "아직 좋아요한 앨범이 없어요. 앨범 커버의 ♡를 눌러 보세요.",
   "No encontramos álbumes con esa búsqueda.": "검색과 일치하는 앨범이 없어요.",
   "El Bluetooth de tu dispositivo está apagado. Actívalo y vuelve a tocar Conectar.": "기기의 Bluetooth가 꺼져 있어요. 켜고 다시 연결을 누르세요.",
+  "Bluetooth encendido. Toca Conectar ARMY Bomb.": "Bluetooth가 켜졌어요. ARMY Bomb 연결을 누르세요.",
   "El navegador no dio permiso para usar Bluetooth. Revisa los permisos del sitio y prueba otra vez.": "브라우저가 Bluetooth 사용을 허용하지 않았어요. 사이트 권한을 확인하고 다시 시도하세요.",
   "Brave tiene el Bluetooth web desactivado, por eso no se abre la lista de dispositivos.": "Brave에서 Web Bluetooth가 꺼져 있어서 기기 목록이 열리지 않아요.",
   "¿Usas Brave? Trae el Bluetooth web desactivado: si al tocar Conectar no pasa nada, actívalo así:": "Brave를 쓰나요? Web Bluetooth가 기본으로 꺼져 있어요. 연결을 눌러도 반응이 없다면 이렇게 켜 주세요:",
