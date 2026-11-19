@@ -3477,7 +3477,7 @@ function bindSettings() {
   $("chk-wake").checked = settings.wake;
   $("chk-chant").checked = settings.chant;
   $("chk-chant-voice").checked = settings.chantVoice;
-  const syncChantSpeed = () => { $("sel-chant-speed").disabled = !settings.chant; };
+  const syncChantSpeed = () => { $("sel-chant-speed").disabled = !settings.chant; $("chant-speed-hint").hidden = settings.chant; };
   $("sel-chant-speed").value = String(CHANT_SPEEDS.includes(settings.chantSpeed) ? settings.chantSpeed : 1);
   $("sel-chant-speed").onchange = (e) => { settings.chantSpeed = Number(e.target.value); saveSettings(); };
   syncChantSpeed();
