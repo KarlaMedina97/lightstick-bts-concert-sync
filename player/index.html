@@ -702,12 +702,13 @@
           <label class="check switch"><input id="chk-chant-voice" type="checkbox"><span>Con voz y aplausos</span></label>
           <div class="field">
             <label for="sel-chant-speed">Velocidad del fanchant</label>
-            <select id="sel-chant-speed">
-              <option value="0.75">Lenta</option>
-              <option value="1">Normal</option>
-              <option value="1.5">Rápida</option>
-              <option value="2">Muy rápida</option>
+            <select id="sel-chant-speed" aria-describedby="chant-speed-hint">
+              <option value="0.75">Lenta · 3,3 s por nombre</option>
+              <option value="1">Normal · 2,5 s por nombre</option>
+              <option value="1.5">Rápida · 1,7 s por nombre</option>
+              <option value="2">Muy rápida · 1,3 s por nombre</option>
             </select>
+            <p id="chant-speed-hint" class="hint">Activa el fanchant para elegirla.</p>
           </div>
           <label class="check switch"><input id="chk-wake" type="checkbox" checked><span>Mantener la pantalla encendida</span></label>
         </section>
