@@ -49,7 +49,7 @@ const store = {
 };
 
 const SETTINGS_KEY = "pws.settings.v1";
-const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, chant: true, chantVoice: false, chantSpeed: 1, lightsModel: "orb", stickVer: "", sounds: true, describe: false, keys: true, calm: false, bpm: {}, phase: {} };
+const defaults = { brightness: 100, latencyMs: 60, style: "auto", safeMode: true, autoNext: true, albumEnd: "next", wake: true, chant: true, chantVoice: false, chantSpeed: 1, motion: true, lightsModel: "orb", stickVer: "", sounds: true, describe: false, keys: true, calm: false, bpm: {}, phase: {} };
 const settings = { ...defaults, ...store.get(SETTINGS_KEY, {}) };
 // 2026-11-05: la descripción de las luces queda apagada para todos (una sola vez; después cada quien la activa en Ajustes).
 if (!store.get("pws.migr.describeOff", false)) { settings.describe = false; store.set("pws.migr.describeOff", true); store.set(SETTINGS_KEY, settings); }
@@ -299,6 +299,7 @@ function setView(v) {
   const exploring = v === "explore";
   $("lights-view").hidden = v !== "lights";
   stick3d?.setActive(v === "lights" && settings.lightsModel === "stick");
+  if (v === "lights" && settings.lightsModel === "stick") motionTip();
   // En Explorar el video sigue sonando en un mini reproductor; sin canción, Video y Explorar muestran el inicio.
   // En Luces también, si hay canción: YouTube no permite que suene un video oculto (sin canción, .app.home lo deja invisible).
   $("video-view").hidden = v === "lights" && current < 0;
@@ -2562,7 +2563,7 @@ async function setLightsModel(mode, { save = true } = {}) {
   if (model && !stick3d) {
     try {
       const { createStick3D } = await import("./stick3d.js");
-      stick3d = createStick3D($("stick3d"), { reduceMotion: matchMedia("(prefers-reduced-motion: reduce)").matches });
+      stick3d = createStick3D($("stick3d"), { reduceMotion: matchMedia("(prefers-reduced-motion: reduce)").matches, motionOn: settings.motion });
     } catch {
       toast("No se pudo mostrar el ARMY Bomb 3D en este dispositivo.");
       return setLightsModel("orb");
@@ -2570,6 +2571,22 @@ async function setLightsModel(mode, { save = true } = {}) {
   }
   if (model) { stick3d.setVersion(stickVersion()); syncVersionButtons(); }
   stick3d?.setActive(model && view === "lights");
+  if (model && view === "lights") motionTip();
+}
+/**
+ * Tablet en Luces con el movimiento encendido: si la pantalla gira sola al moverla, el ARMY Bomb se tuerce. Una vez
+ * se sugiere bloquear la rotación. Donde el navegador lo permite (Android en pantalla completa) se fija la actual.
+ */
+const tabletLike = () => matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) >= 600;
+function motionTip() {
+  if (!settings.motion || !tabletLike()) return;
+  const o = screen.orientation;
+  if (o?.lock && document.fullscreenElement) o.lock(o.type).catch(() => {});
+  if (store.get("pws.tip.rotation", false)) return;
+  store.set("pws.tip.rotation", true);
+  toastAction("Para agitarlo sin que la pantalla gire, bloquea la rotación de tu tablet.", "Apagar movimiento", () => {
+    settings.motion = false; saveSettings(); $("chk-motion").checked = false; stick3d?.setMotion(false);
+  });
 }
 function syncVersionButtons() {
   const v = stickVersion();
@@ -3566,6 +3583,8 @@ function bindSettings() {
   lat.value = settings.latencyMs;
   style.value = settings.style;
   $("chk-safe").checked = settings.safeMode;
+  $("chk-motion").checked = settings.motion;
+  $("chk-motion").onchange = (e) => { settings.motion = e.target.checked; saveSettings(); stick3d?.setMotion(settings.motion); };
   $("safe-sys").hidden = !reduceMotion;
   if (safeForcedOn) setTimeout(() => toast("Modo seguro activado otra vez: tu dispositivo pide reducir el movimiento.", 6000), 4000);
   $("chk-wake").checked = settings.wake;

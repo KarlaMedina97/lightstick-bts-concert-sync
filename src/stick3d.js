@@ -20,7 +20,7 @@ const LOADERS = {
  * @param {HTMLElement} mount  contenedor (el canvas ocupa todo su tamaño)
  * @param {{ reduceMotion?: boolean }} [opts]
  */
-export function createStick3D(mount, { reduceMotion = false } = {}) {
+export function createStick3D(mount, { reduceMotion = false, motionOn = true } = {}) {
   const lowEnd = matchMedia("(pointer: coarse)").matches && (navigator.hardwareConcurrency ?? 8) <= 6;
   const canvas = document.createElement("canvas");
   canvas.className = "s3d-canvas";
@@ -108,19 +108,43 @@ export function createStick3D(mount, { reduceMotion = false } = {}) {
     if (mag > 14 && now - motion.lastShake > 350) { motion.lastShake = now; beat = 1; }
     wake();
   }
+  // Al girar la pantalla (tablet o celular con rotación automática) el giro del propio equipo no es una
+  // inclinación: durante el cambio se ignora y el ARMY Bomb vuelve a quedar derecho.
+  let rotatedAt = 0;
+  const onRotate = () => { rotatedAt = performance.now(); motion.tilt = 0; };
   function onOrient(e) {
     if (e.gamma == null) return;
-    const angle = (screen.orientation?.angle ?? 0) % 180 ? (e.beta ?? 0) : e.gamma; // de lado o derecho
+    if (performance.now() - rotatedAt < 900) { motion.tilt = 0; return; }
+    // Inclinación hacia los lados según cómo está la pantalla: cada orientación mira otro eje del equipo y con otro
+    // signo (antes, en horizontal de un lado, el ARMY Bomb se iba para el lado contrario y quedaba torcido).
+    const a = ((screen.orientation?.angle ?? Number(globalThis.orientation) ?? 0) % 360 + 360) % 360;
+    const angle = a === 90 ? (e.beta ?? 0) : a === 270 ? -(e.beta ?? 0) : a === 180 ? -e.gamma : e.gamma;
     motion.tilt = reduceMotion ? 0 : Math.max(-0.5, Math.min(0.5, (-angle / 90) * 0.7));
   }
   function startMotion() {
-    if (motion.on) return;
+    if (motion.on || !motionOn) return;
     motion.on = true;
+    screen.orientation?.addEventListener?.("change", onRotate);
+    addEventListener("orientationchange", onRotate);
     addEventListener("devicemotion", onMotion);
     addEventListener("deviceorientation", onOrient);
   }
+  function stopMotion() {
+    motion.on = false;
+    motion.tilt = motion.ax = 0;
+    removeEventListener("devicemotion", onMotion);
+    removeEventListener("deviceorientation", onOrient);
+    screen.orientation?.removeEventListener?.("change", onRotate);
+    removeEventListener("orientationchange", onRotate);
+  }
+  /** Ajustes › «Mover con el teléfono o la tablet»: apagado, el ARMY Bomb solo se mueve con el dedo. */
+  function setMotion(on) {
+    motionOn = on;
+    if (!on) return stopMotion();
+    if (typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission !== "function") startMotion();
+  }
   function tryMotion() {
-    if (motion.on || typeof DeviceMotionEvent === "undefined") return;
+    if (motion.on || !motionOn || typeof DeviceMotionEvent === "undefined") return;
     if (typeof DeviceMotionEvent.requestPermission === "function") {
       DeviceMotionEvent.requestPermission().then((r) => { if (r === "granted") startMotion(); }).catch(() => {});
     } else startMotion();
@@ -242,12 +266,11 @@ export function createStick3D(mount, { reduceMotion = false } = {}) {
   document.addEventListener("visibilitychange", apply);
 
   return {
-    setVersion, setColor, setActive,
+    setVersion, setColor, setActive, setMotion,
     get version() { return wanted; },
     dispose() {
       setActive(false);
-      removeEventListener("devicemotion", onMotion);
-      removeEventListener("deviceorientation", onOrient);
+      stopMotion();
       ro?.disconnect();
       renderer.dispose();
       canvas.remove();
