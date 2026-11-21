@@ -1183,7 +1183,7 @@ const miniOff = () => app.classList.contains("mini-off") || app.classList.contai
  * (display: none): si solo se vuelve invisible, Samsung Internet igual pone encima sus botones de video.
  */
 function syncListenOnly() {
-  const on = Boolean(cam || (mic && !mic.hybrid)) && player?.state !== "playing";
+  const on = Boolean(cam || micLeads()) && player?.state !== "playing";
   if (on === app.classList.contains("listen-only")) return;
   app.classList.toggle("listen-only", on);
   placeMini(false);
@@ -1236,7 +1236,7 @@ let lastDescribed = 0;
 function describeLights() {
   const c = lastColors?.[0];
   const parts = [];
-  if (mic && !mic.hybrid) parts.push(t("Las luces siguen el micrófono"));
+  if (micLeads()) parts.push(t("Las luces siguen el micrófono"));
   else if (cam) parts.push(t("Las luces copian el color de la cámara"));
   if (c && player?.state === "playing") parts.push(colorName(c.map((v) => v * (settings.brightness / 100)), lang));
   else parts.push(t(current >= 0 ? "En pausa" : "Luces listas"));
@@ -1301,6 +1301,20 @@ async function toggleConcert() {
 }
 
 let micStarting = false; // mientras el navegador pide el permiso, otro toque no arma un segundo micrófono
+/**
+ * El micrófono manda los colores: en modo TV siempre; «Con el sonido del video» solo mientras no suena un video en
+ * este equipo (la canción suena en otro, p. ej. la computadora, y el celular la escucha). Antes, en ese caso, decía
+ * «Escuchando» pero las luces no hacían nada.
+ */
+const micLeads = () => Boolean(mic) && (!mic.hybrid || player?.state !== "playing");
+/** Colores que se distinguen entre sí: con un álbum de puros violetas el cambio de color no se notaba. */
+function micPalette() {
+  const palette = [];
+  for (const c of [PURPLE, ...(queue[current]?.album.palette ?? []), "#ff80ab", "#4fc3f7", "#ffd600"].map(hexToRgb)) {
+    if (palette.length < 4 && palette.every((p) => Math.hypot(p[0] - c[0], p[1] - c[1], p[2] - c[2]) > 110)) palette.push(c);
+  }
+  return palette;
+}
 async function toggleMic() {
   if (micStarting) return;
   if (mic) {
@@ -1311,12 +1325,7 @@ async function toggleMic() {
     return;
   }
   try {
-    // Colores que se distinguen entre sí: con un álbum de puros violetas el cambio de color no se notaba.
-    const palette = [];
-    for (const c of [PURPLE, ...(queue[current]?.album.palette ?? []), "#ff80ab", "#4fc3f7", "#ffd600"].map(hexToRgb)) {
-      if (palette.length < 4 && palette.every((p) => Math.hypot(p[0] - c[0], p[1] - c[1], p[2] - c[2]) > 110)) palette.push(c);
-    }
-    mic = new MicSync({ palette, maxChangesPerSec: settings.safeMode ? 3 : 8 });
+    mic = new MicSync({ palette: micPalette(), maxChangesPerSec: settings.safeMode ? 3 : 8 });
     micStarting = true;
     try { await mic.start(); } finally { micStarting = false; }
     if (player.state === "playing") player.pause();
@@ -1340,13 +1349,22 @@ async function toggleMicSync() {
     syncMicButtons();
     return toast("Intensidad con el sonido real apagada.");
   }
+  if (micStarting) return;
   if (mic) { mic.stop(); mic = null; }
   try {
-    mic = new MicSync({ palette: [hexToRgb(PURPLE)], maxChangesPerSec: settings.safeMode ? 2.5 : 8 });
+    mic = new MicSync({ palette: micPalette(), maxChangesPerSec: settings.safeMode ? 3 : 8 });
     mic.hybrid = true;
-    await mic.start();
+    micStarting = true;
+    try { await mic.start(); } finally { micStarting = false; }
     syncMicButtons();
-    toast("Intensidad con el sonido real: el micrófono escucha tus parlantes. Nada se graba.");
+    syncListenOnly();
+    // Directo a Luces: ahí se ve que el ARMY Bomb sigue el sonido.
+    setView("lights");
+    selectViewTab("view-lights");
+    toast(player.state === "playing"
+      ? "Intensidad con el sonido real: el micrófono escucha tus parlantes. Nada se graba."
+      : "🎙 Tus luces siguen la música que suena cerca. Nada se graba.");
+    requestWakeLock();
   } catch {
     mic = null;
     syncMicButtons();
@@ -1451,7 +1469,7 @@ function step(now) {
     const camColor = cam.sample(now);
     const c = cam.strength > 0.25 || !mic ? camColor : mic.sample(now);
     colors = Array.from({ length: total }, () => c);
-  } else if (mic && !mic.hybrid) {
+  } else if (micLeads()) {
     const c = mic.sample(now);
     colors = Array.from({ length: total }, () => c);
   } else {
@@ -1525,7 +1543,7 @@ function step(now) {
   crowd?.setEnergy(energy);
 
   let label;
-  if (mic && !mic.hybrid) label = "🎙 Luces siguiendo el micrófono";
+  if (micLeads()) label = "🎙 Luces siguiendo el micrófono";
   else if (pattern && player.state === "playing") {
     const sec = pattern.sectionAt(t);
     label = `Luces: ${styleLabel(pattern.styleAt(t, sticks.length))} · ${sec.label}`;
