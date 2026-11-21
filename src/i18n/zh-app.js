@@ -477,102 +477,68 @@ const ctxLabel = (s) => {
 
 const SECTION_ZH = { intro: "前奏", verso: "主歌", "pre-coro": "预副歌", coro: "副歌", puente: "桥段", "coro final": "最后的副歌", final: "尾声" };
 export const patterns = [
-  [/^(.+) no abrió la lista de dispositivos Bluetooth\. Ábrela en Chrome para conectar tu ARMY Bomb\.$/, (_, b) => `${b} 没有打开蓝牙设备列表。请在 Chrome 中打开以连接你的 ARMY Bomb。`],
-  [/^En (.+) la conexión Bluetooth puede no funcionar\. Si al tocar Conectar no pasa nada, ábrela en Chrome\.$/, (_, b) => `在 ${b} 中蓝牙连接可能无法使用。如果点“连接”没有反应，请在 Chrome 中打开。`],
-  [/^Efecto: (.+)\. Cambiar$/, (_, e) => `效果：${e}。更换`],
-  [/^Filtros · (.+)$/, (_, f) => `筛选 · ${f}`],
-  [/^Editar luces de (.+)$/, (_, s) => `编辑灯光：${s}`],
-  [/^Nueva sección en (.+)$/, (_, t) => `在 ${t} 新建段落`],
-  [/^Ir a (\d+:\d+(?:\.\d)?)$/, (_, t) => `跳转到 ${t}`],
-  [/^(Intro|Verso|Pre-coro|Coro|Puente|Final), (\d+:[\d.]+): ir ahí$/, (_, p, t) => `${{ Intro: "前奏", Verso: "主歌", "Pre-coro": "预副歌", Coro: "副歌", Puente: "桥段", Final: "尾声" }[p]}，${t}：跳转到这里`],
-  [/^(\d+) (canción|canciones) · (\d+) (álbum|álbumes)$/, (_, a, s1, b, s2) => `${a} 首歌 · ${b} 张专辑`],
-  [/^Álbumes · (.+)$/, (_, who) => `专辑 · ${who}`],
+  [/^(.+) no abrió la lista de dispositivos Bluetooth\. Ábrela en Chrome para conectar tu ARMY Bomb\.$/, undefined],
+  [/^En (.+) la conexión Bluetooth puede no funcionar\. Si al tocar Conectar no pasa nada, ábrela en Chrome\.$/, undefined],
+  [/^Efecto: (.+)\. Cambiar$/, undefined],
+  [/^Filtros · (.+)$/, undefined],
+  [/^Editar luces de (.+)$/, undefined],
+  [/^Nueva sección en (.+)$/, undefined],
+  [/^Ir a (\d+:\d+(?:\.\d)?)$/, undefined],
+  [/^(Intro|Verso|Pre-coro|Coro|Puente|Final), (\d+:[\d.]+): ir ahí$/, undefined],
+  [/^(\d+) (canción|canciones) · (\d+) (álbum|álbumes)$/, undefined],
+  [/^Álbumes · (.+)$/, undefined],
   [/^Estás en el navegador de (.+?): aquí no se puede conectar el ARMY Bomb \(los videos y tu pantalla sí funcionan\)\.$/, "你正在使用 $1 的内置浏览器：这里无法连接 ARMY Bomb（视频和屏幕灯光可以正常使用）。"],
   [/^(\d+) BPM, luces alineadas al ritmo\.$/, "$1 BPM，灯光已对准节奏。"],
   [/^(\d+) BPM\. Para alinear las luces, marca el ritmo con la canción sonando\.$/, "$1 BPM。要对准灯光，请在歌曲播放时打拍子。"],
   [/^(\d+) BPM · alineado$/, "$1 BPM · 已对准"],
-  [/^(\d+:\d{2}(?::\d{2})?) de (\d+:\d{2}(?::\d{2})?)(?:, (.+))?$/, (m, a, b, sec) => `${a} / ${b}${sec ? `，${SECTION_ZH[sec] ?? sec}` : ""}`], // aria-valuetext de la línea de tiempo
-  // Nombre accesible de cada canción (songLabel), con "Reproducir" y etiqueta opcionales.
-  [
-    /^(Reproducir (?:(En tu cola|Después|Sigue|Te gusta|Sugerida): )?)?(.+), (video musical|cover|en vivo|coreografía|performance|film)(, con letra)?, luces (suaves|medias|altas|intensas)(, escuchada)?$/,
-    (_, play, tag, rest, type, lyr, lights, heard) =>
-      `${play ? "播放：" : ""}${tag ? `${TAGS[tag]}：` : ""}${rest}，${TYPES[type]}${lyr ? "，带歌词" : ""}，灯光${LIGHTS[lights]}${heard ? "，已听过" : ""}`,
-  ],
-
-  // ARMY Bomb conectados
+  [/^(\d+:\d{2}(?::\d{2})?) de (\d+:\d{2}(?::\d{2})?)(?:, (.+))?$/, undefined],
+  [/^(Reproducir (?:(En tu cola|Después|Sigue|Te gusta|Sugerida): )?)?(.+), (video musical|cover|en vivo|coreografía|performance|film)(, con letra)?, luces (suaves|medias|altas|intensas)(, escuchada)?$/, undefined],
   [/^(Ver\. 4|SE \/ Ver\. 3) · batería (\d+)%$/, "$1 · 电量 $2%"],
   [/^(\d+) conectados? 💜$/, "已连接 $1 支 💜"],
   [/^(\d+) conectados?\. Administrar ARMY Bomb$/, "已连接 $1 支。管理 ARMY Bomb"],
-  [/^¡(.+) conectado! Borahae 💜$/, keep("$1 已连接！Borahae 💜")],
-  [/^(.+) se desconectó\.$/, keep("$1 已断开连接。")],
-  [/^💜 ¡(.+) listo! Ahora elige una canción\.$/, keep("💜 $1 已就绪！现在选一首歌吧。")],
-
-  // Me gusta y álbumes guardados
-  [/^Quitar álbum (.+)$/, keep("取消保存专辑：$1")],
-  [/^Guardar álbum (.+)$/, keep("保存专辑：$1")],
-  [/^Quitar (.+) de Me gusta$/, keep("取消喜欢：$1")],
-  [/^Agregar (.+) a Me gusta$/, keep("添加到喜欢：$1")],
-  [/^💜 (.+) guardada en Me gusta$/, keep("💜 已保存到喜欢：$1")],
-  [/^(.+) ya no está en Me gusta$/, keep("已从喜欢中移除：$1")],
-  [/^(.+) ya no está en Mis álbumes$/, keep("已从我的专辑中移除：$1")],
-  [/^💜 (.+) guardado$/, keep("💜 已保存：$1")],
-
-  // Cola
-  [/^Quitar (.+) de la cola$/, keep("从播放队列中移除：$1")],
-  [/^Mover (.+)$/, keep("移动：$1")],
-  [/^A continuación de: (.+)$/, (_, l) => `接下来播放：${ctxLabel(l)}`],
+  [/^¡(.+) conectado! Borahae 💜$/, undefined],
+  [/^(.+) se desconectó\.$/, undefined],
+  [/^💜 ¡(.+) listo! Ahora elige una canción\.$/, undefined],
+  [/^Quitar álbum (.+)$/, undefined],
+  [/^Guardar álbum (.+)$/, undefined],
+  [/^Quitar (.+) de Me gusta$/, undefined],
+  [/^Agregar (.+) a Me gusta$/, undefined],
+  [/^💜 (.+) guardada en Me gusta$/, undefined],
+  [/^(.+) ya no está en Me gusta$/, undefined],
+  [/^(.+) ya no está en Mis álbumes$/, undefined],
+  [/^💜 (.+) guardado$/, undefined],
+  [/^Quitar (.+) de la cola$/, undefined],
+  [/^Mover (.+)$/, undefined],
+  [/^A continuación de: (.+)$/, undefined],
   [/^y (\d+) más$/, "还有 $1 首"],
-  [/^(.+) quitada de la cola$/, keep("已从播放队列中移除：$1")],
-  [/^Movida a la posición (\d+) de (tu cola|la lista)$/, (_, n, w) => `已移到${yourList(w)}第 ${n} 位`],
-  [/^(.+): posición (\d+) de (tu cola|la lista)$/, (_, t, n, w) => `${t}：${yourList(w)}第 ${n} 位`],
-  [/^Búsqueda "(.*)"$/, keep("搜索 “$1”")],
-
-  // Álbumes, películas y conteos de canciones ("2020 · 7 canciones", "Instagram · 3 canciones")
-  [/^Abrir (.+), (\d{4}), (\d+) canciones$/, (_, a, y, n) => `打开：${a}，${y}，${songs(n)}`],
-  [/^Abrir (.+) en (Disney\+|Prime Video|Weverse)$/, keep("在 $2 中打开 $1")],
-  [/^(?:(.+) · )?(\d+) canci(?:ón|ones)$/, (_, p, n) => `${p ? `${p} · ` : ""}${songs(n)}`],
-
-  // Búsqueda sin resultados (el texto buscado es dato)
-  [/^No encontramos "(.*)"\.$/, keep("没有找到 “$1”。")],
-
-  // Letra
+  [/^(.+) quitada de la cola$/, undefined],
+  [/^Movida a la posición (\d+) de (tu cola|la lista)$/, undefined],
+  [/^(.+): posición (\d+) de (tu cola|la lista)$/, undefined],
+  [/^Búsqueda "(.*)"$/, undefined],
+  [/^Abrir (.+), (\d{4}), (\d+) canciones$/, undefined],
+  [/^Abrir (.+) en (Disney\+|Prime Video|Weverse)$/, undefined],
+  [/^(?:(.+) · )?(\d+) canci(?:ón|ones)$/, undefined],
+  [/^No encontramos "(.*)"\.$/, undefined],
   [/^(Coreano \(hangul\)|Español|Inglés|Japonés|Portugués) · subtítulos oficiales del video$/, "$1 · 视频官方字幕"],
   [/^Letra en (coreano|español|inglés|japonés|portugués) activada\.$/, "$1歌词已开启。"],
   [/^Sin letra en (coreano|español|inglés|japonés|portugués)\. Prueba otro idioma en Ajustes\.$/, "没有$1歌词。在设置中换一种语言试试。"],
-
-  // Luces
-  [new RegExp(`^Luces: (.+?) · bloque (\\d+) · ${SEC_RE}$`), (_, s, n, sec) => `灯光：${dict[s] ?? s} · 第 ${n} 块 · ${SECTIONS[sec]}`],
-  [new RegExp(`^Luces: (.+?) · ${SEC_RE}$`), (_, s, sec) => `灯光：${dict[s] ?? s} · ${SECTIONS[sec]}`],
-  [/^Intensidad de luces: (suaves|medias|altas|intensas)$/, (_, l) => `灯光强度：${LIGHTS[l]}`],
-  [/^Luces (suaves|medias|altas|intensas)$/, (_, l) => `${LIGHTS_ADJ[l]}灯光`],
-
-  // Ahora suena
-  [/^Ahora suena: (.+)$/, keep("正在播放：$1")],
+  [/^Luces: (.+?) · bloque (\d+) · (intro|verso 2|verso|pre-coro|coro final|coro 2|coro|puente|final)$/, undefined],
+  [/^Luces: (.+?) · (intro|verso 2|verso|pre-coro|coro final|coro 2|coro|puente|final)$/, undefined],
+  [/^Intensidad de luces: (suaves|medias|altas|intensas)$/, undefined],
+  [/^Luces (suaves|medias|altas|intensas)$/, undefined],
+  [/^Ahora suena: (.+)$/, undefined],
   [/^Más de (BTS|RM|Jin|SUGA|j-hope|Jimin|V|Jung Kook)$/, "更多 $1 的作品"],
-  [/^Canal: (.+) ·$/, keep("频道：$1 ·")],
-  [/^Más opciones: (.+)$/, keep("更多选项：$1")],
-  [/^Video agregado: (.+)$/, keep("已添加视频：$1")],
-
-  // Ajustes
+  [/^Canal: (.+) ·$/, undefined],
+  [/^Más opciones: (.+)$/, undefined],
+  [/^Video agregado: (.+)$/, undefined],
   [/^Toca… (\d+)\/4$/, "点击… $1/4"],
-
-  // Reto de ritmo y ranking
-  [/^(¡Perfecto!|¡Genial!|Bien) \+(\d+)(?: · combo (\d+))?$/, (_, l, p, c) => `${dict[l]} +${p}${c ? ` · 连击 ${c}` : ""}`],
+  [/^(¡Perfecto!|¡Genial!|Bien) \+(\d+)(?: · combo (\d+))?$/, undefined],
   [/^Calibrando (\d+)\/(\d+)$/, "校准中 $1/$2"],
   [/^Faltaron toques: con (\d+) entras al ranking\.$/, "点击次数不够：达到 $1 次才能上排行榜。"],
   [/^🏆 ([\d.]+) puntos · (\d+)% · combo (\d+)$/, "🏆 $1 分 · $2% · 连击 $3"],
-  [/^Lo mejor en (.+)$/, keep("最高纪录：$1")],
-
-  // Genéricos al final (menos específicos)
-  [/^Desconectar (.+)$/, keep("断开连接：$1")],
-  [/^Quitar (.+)$/, keep("移除：$1")],
-  [/^Reproducir (.+)$/, keep("播放：$1")],
-  [/^Abrir (.+)$/, keep("打开：$1")],
-  // Parties
-  [/^Suena: (.+)$/, keep("正在播放：$1")],
-  [/^En pausa: (.+)$/, keep("已暂停：$1")],
-  [/^Lugar (\d+) de (\d+)$/, keep("第 $1 名，共 $2 名")],
-  [/^Código ([A-Z0-9]{3} [A-Z0-9]{3})$/, keep("代码 $1")],
-  [/^Sincronizado · ±(\d+) ms$/, keep("已同步 · ±$1 ms")],
-  [/^(\d+) invitados conectados$/, keep("$1 位来宾已连接")],
+  [/^Lo mejor en (.+)$/, undefined],
+  [/^Desconectar (.+)$/, undefined],
+  [/^Quitar (.+)$/, undefined],
+  [/^Reproducir (.+)$/, undefined],
+  [/^Abrir (.+)$/, undefined],
 ];
