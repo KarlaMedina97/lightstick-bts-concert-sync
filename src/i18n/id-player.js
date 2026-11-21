@@ -45,6 +45,7 @@ export default {
   "Ilustración no oficial": "Ilustrasi tidak resmi",
   "Mostrar controles": "Tampilkan kontrol",
   "No te escucho: sube el volumen": "Tidak terdengar: besarkan volume",
+  "Toca la pantalla para seguir escuchando": "Ketuk layar untuk terus mendengarkan",
   "Escuchando": "Mendengarkan",
   "No te escucho: sube el volumen o acerca el teléfono": "Tidak terdengar: besarkan volume atau dekatkan ponsel",
   "Micrófono bloqueado": "Mikrofon diblokir",

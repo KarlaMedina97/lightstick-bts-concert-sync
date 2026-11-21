@@ -1392,6 +1392,8 @@ function updateMicChip(now) {
   const lvl = mic.level ?? 0;
   if (lvl > 0.015) micLoudAt = now;
   const quiet = now - micLoudAt > 5000;
+  // El navegador pausó el audio (volvió de otra app o de la pantalla bloqueada) y espera un toque para retomarlo.
+  if (mic.ctx && mic.ctx.state !== "running") { setMicChip("quiet", "Toca la pantalla para seguir escuchando"); $("mic-chip").dataset.l = "0"; return; }
   // En celulares bajos el ARMY Bomb mide ~68 px: el aviso va en una sola línea.
   const short = app.classList.contains("lights-short");
   setMicChip(quiet ? "quiet" : "on", quiet ? (short ? "No te escucho: sube el volumen" : "No te escucho: sube el volumen o acerca el teléfono") : "Escuchando");
@@ -4063,9 +4065,16 @@ async function init() {
     toast("Listo, datos borrados. La página se recargará.");
     setTimeout(() => location.reload(), 1200);
   };
-  // El micrófono se apaga al salir de la página o al ocultarla.
-  addEventListener("pagehide", () => { mic?.stop(); cam?.stop(); });
-  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && mic) toggleMic(); });
+  // El micrófono se apaga al cerrar la página. Al ocultarla (pantalla bloqueada, otra app, Centro de control) NO:
+  // antes se apagaba solo y las luces dejaban de seguir la música sin que la persona lo pidiera. Al volver, retoma;
+  // si el navegador pide un toque para el audio, el aviso lo dice.
+  addEventListener("pagehide", (e) => { if (!e.persisted) { mic?.stop(); cam?.stop(); } });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "visible" || !mic) return;
+    const m = mic;
+    m.revive().then((ok) => { if (!ok && mic === m) setMicChip("quiet", "Toca la pantalla para seguir escuchando"); });
+    requestWakeLock();
+  });
   const params = new URLSearchParams(location.search);
   // Primera visita: Explorar con una tarjeta "¿Tienes un ARMY Bomb?" (la guía solo si la persona quiere).
   // Dentro de TikTok, Instagram… no hay Bluetooth: aviso con "Abrir en Chrome" o "Copiar enlace".

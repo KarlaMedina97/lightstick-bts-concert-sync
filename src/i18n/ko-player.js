@@ -45,6 +45,7 @@ export default {
   "Ilustración no oficial": "비공식 일러스트",
   "Mostrar controles": "컨트롤 보기",
   "No te escucho: sube el volumen": "들리지 않아요: 볼륨을 높이세요",
+  "Toca la pantalla para seguir escuchando": "계속 들으려면 화면을 누르세요",
   "Escuchando": "듣는 중",
   "No te escucho: sube el volumen o acerca el teléfono": "들리지 않아요: 볼륨을 높이거나 휴대폰을 가까이 대세요",
   "Micrófono bloqueado": "마이크 차단됨",

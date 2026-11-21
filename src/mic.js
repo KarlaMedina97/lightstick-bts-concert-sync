@@ -37,17 +37,43 @@ export class MicSync {
     }
     await resumed;
     if (this.ctx.state === "suspended") await this.ctx.resume().catch(() => {});
-    const src = this.ctx.createMediaStreamSource(this.stream);
+    this.src = this.ctx.createMediaStreamSource(this.stream);
     this.analyser = this.ctx.createAnalyser();
     this.analyser.fftSize = 1024;
     this.analyser.smoothingTimeConstant = 0.3; // poco suavizado: con 0,6 los golpes se aplanaban y no se detectaban
-    src.connect(this.analyser);
+    this.src.connect(this.analyser);
     this.bins = new Uint8Array(this.analyser.frequencyBinCount);
     this.active = true;
   }
 
-  /** Si el navegador suspendió el audio (llamada, otra app), lo retoma en el siguiente toque. */
-  wake() { if (this.ctx?.state === "suspended") this.ctx.resume().catch(() => {}); }
+  /** Si el navegador suspendió el audio (llamada, otra app, pantalla bloqueada), lo retoma en el siguiente toque. */
+  wake() { this.revive(); }
+
+  /**
+   * Sigue escuchando hasta que la persona lo apague: al volver a la página (pantalla bloqueada, otra app, el Centro
+   * de control) retoma el audio y, si el sistema cortó el micrófono, lo vuelve a abrir. Devuelve si quedó escuchando.
+   */
+  async revive() {
+    if (!this.active || this.reviving) return this.active && this.ctx?.state === "running";
+    this.reviving = true;
+    try {
+      const track = this.stream?.getAudioTracks?.()[0];
+      if (!track || track.readyState === "ended") {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } });
+        if (!this.active) { stream.getTracks().forEach((t) => t.stop()); return false; }
+        try { this.src?.disconnect(); } catch {}
+        this.stream = stream;
+        this.src = this.ctx.createMediaStreamSource(stream);
+        this.src.connect(this.analyser);
+      }
+      if (this.ctx.state !== "running") await this.ctx.resume().catch(() => {});
+      return this.ctx.state === "running";
+    } catch {
+      return false;
+    } finally {
+      this.reviving = false;
+    }
+  }
 
   stop() {
     this.active = false;

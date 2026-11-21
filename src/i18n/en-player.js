@@ -45,6 +45,7 @@ export default {
   "Ilustración no oficial": "Unofficial illustration",
   "Mostrar controles": "Show controls",
   "No te escucho: sube el volumen": "I can't hear you: turn up the volume",
+  "Toca la pantalla para seguir escuchando": "Tap the screen to keep listening",
   "Escuchando": "Listening",
   "No te escucho: sube el volumen o acerca el teléfono": "I can't hear you: turn up the volume or bring the phone closer",
   "Micrófono bloqueado": "Microphone blocked",

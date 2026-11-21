@@ -74,3 +74,26 @@ test("micrófono, modo seguro: el brillo no parpadea (≤ 3 subidas y bajadas fu
   }
   assert.ok(flips / 2 / 7 <= 3, `${(flips / 2 / 7).toFixed(1)} destellos por segundo`);
 });
+
+test("micrófono: al volver a la página retoma el audio y reabre el micrófono si el sistema lo cortó", async () => {
+  const mic = new MicSync({ palette: [[180, 60, 255]] });
+  let opened = 0, resumed = 0;
+  const track = { readyState: "ended" };
+  mic.active = true;
+  mic.stream = { getAudioTracks: () => [track], getTracks: () => [track] };
+  mic.analyser = {};
+  mic.src = { disconnect() {} };
+  mic.ctx = { state: "suspended", async resume() { resumed++; this.state = "running"; }, createMediaStreamSource: () => ({ connect() {} }) };
+  globalThis.navigator ??= {};
+  const prev = navigator.mediaDevices;
+  Object.defineProperty(navigator, "mediaDevices", { configurable: true, value: { async getUserMedia() { opened++; return { getAudioTracks: () => [{ readyState: "live" }], getTracks: () => [] }; } } });
+  try {
+    assert.equal(await mic.revive(), true);
+    assert.equal(opened, 1);
+    assert.equal(resumed, 1);
+    assert.equal(await mic.revive(), true); // ya escuchando: no vuelve a pedir el micrófono
+    assert.equal(opened, 1);
+  } finally {
+    Object.defineProperty(navigator, "mediaDevices", { configurable: true, value: prev });
+  }
+});
