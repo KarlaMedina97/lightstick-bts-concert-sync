@@ -2630,7 +2630,11 @@ function bindVersionMenu() {
     const vBottom = vTop + card.offsetHeight;
     const videoAbove = app.classList.contains("mini-mode") && !miniOff() && card.offsetHeight && vBottom <= r.top;
     list.style.maxHeight = "none";
-    const full = list.scrollHeight + list.offsetHeight - list.clientHeight; // todas las opciones + borde: sin scroll si cabe
+    // Todas las opciones + relleno + borde, sumadas una a una (no scrollHeight: en Safari del iPad venía inflado).
+    const cs = getComputedStyle(list);
+    const opts = [...list.children];
+    const full = opts.reduce((n, o) => n + o.offsetHeight, 0) + Math.max(0, opts.length - 1) * (parseFloat(cs.rowGap) || 0)
+      + (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0) + list.offsetHeight - list.clientHeight;
     const up = Math.min(full, r.top - 8, videoAbove ? r.top - vBottom - 12 : Infinity);
     const dockT = $("dock")?.getBoundingClientRect().top ?? innerHeight;
     const down = up < 96;

@@ -533,6 +533,8 @@ kbd {
 @media (prefers-reduced-motion: reduce) { .lv-ver-btn svg { transition: none; } }
 .lv-ver-list {
   position: fixed; inset: auto; margin: 0; z-index: 40; display: grid; gap: 2px; list-style: none;
+  /* Alto justo de sus opciones: en Safari del iPad la lista (popover) se estiraba y cada opción medía ~160 px */
+  height: max-content; width: max-content; align-content: start; grid-auto-rows: max-content;
   max-width: calc(100vw - 24px); max-height: 228px; overflow-y: auto; overscroll-behavior: contain; padding: 4px;
   background: #151228; border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--e-2); /* opaco (UX) */
   color: var(--text-2);
@@ -542,7 +544,7 @@ kbd {
 .lv-ver-list[hidden] { display: none; }
 .lv-ver-list:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .lv-ver-list [role="option"] {
-  position: relative; display: flex; align-items: center; min-height: 44px; padding: 0 var(--s-6, 32px) 0 var(--s-4);
+  position: relative; display: flex; align-items: center; min-height: 44px; height: 44px; padding: 0 var(--s-6, 32px) 0 var(--s-4);
   border-radius: var(--r-pill); font-size: var(--fs-14); font-weight: 700; cursor: pointer; white-space: nowrap;
 }
 .lv-ver-list [role="option"].active { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--text); outline: 2px solid var(--focus); outline-offset: -2px; }
