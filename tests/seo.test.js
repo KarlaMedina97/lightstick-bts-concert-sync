@@ -18,7 +18,7 @@ test("guía: FAQPage con cada pregunta visible, en español y en cada idioma", a
     assert.ok(faq, `${code}: falta FAQPage`);
     assert.equal(faq.mainEntity.length, questions(html), `${code}: preguntas`);
     for (const q of faq.mainEntity) {
-      assert.ok(q.name.endsWith("?"), `${code}: «${q.name}»`);
+      assert.ok(/[?？]$/.test(q.name), `${code}: «${q.name}»`); // en chino, signo de ancho completo
       assert.ok(q.acceptedAnswer.text.length > 20 && !/[<>]/.test(q.acceptedAnswer.text), `${code}: respuesta de «${q.name}»`);
     }
     if (code !== "es") assert.ok(!faq.mainEntity.some((q) => q.name.startsWith("¿")), `${code}: preguntas sin traducir`);

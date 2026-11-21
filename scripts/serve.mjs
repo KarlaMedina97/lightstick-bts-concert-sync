@@ -36,7 +36,7 @@ createServer(async (req, res) => {
   // Nunca archivos ocultos (.git, .env, .claude…): importa sobre todo en modo --lan.
   if (/[\\/]\./.test(file.slice(root.length))) return res.writeHead(403).end();
   // Páginas por idioma (/en/, /pt/guide/…): las arma el build; aquí se generan al vuelo con el mismo código.
-  const loc = path.match(/^\/(en|pt|ko|id)(\/.*)$/);
+  const loc = path.match(/^\/(en|pt|ko|id|zh)(\/.*)$/);
   if (loc && LOCALIZED[loc[2]]) {
     try {
       const { html } = await localizePage(await readFile(join(root, LOCALIZED[loc[2]]), "utf8"), loc[2], loc[1]);

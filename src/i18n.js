@@ -1,4 +1,4 @@
-// Idioma de la interfaz: español (fuente), inglés, portugués (Brasil), coreano e indonesio.
+// Idioma de la interfaz: español (fuente), inglés, portugués (Brasil), coreano, indonesio y chino simplificado.
 // El HTML y el JS se escriben en español; en otro idioma, una capa traduce los textos visibles y los atributos
 // accesibles (aria-label, title, placeholder…) con los diccionarios de src/i18n/<código>-*.js, también los que el
 // JS cambia después (MutationObserver). Volver a español restaura los originales sin recargar.
@@ -11,12 +11,12 @@ import app, { patterns as pApp } from "./i18n/en-app.js";
 /** Idiomas disponibles, con su nombre en su propio idioma. */
 // Un idioma nuevo entra al menú solo si su traducción pasa la prueba de tests/langs.test.js.
 export const LANGS = [
-  ["es", "Español"], ["en", "English"], ["pt", "Português (Brasil)"], ["ko", "한국어"], ["id", "Bahasa Indonesia"],
+  ["es", "Español"], ["en", "English"], ["pt", "Português (Brasil)"], ["ko", "한국어"], ["id", "Bahasa Indonesia"], ["zh", "简体中文"],
 ];
 const CODES = LANGS.map(([c]) => c);
-const BCP47 = { es: "es", en: "en", pt: "pt-BR", ko: "ko", id: "id" };
+const BCP47 = { es: "es", en: "en", pt: "pt-BR", ko: "ko", id: "id", zh: "zh-CN" };
 /** Código de voz para la síntesis de voz del sistema. */
-export const VOICE = { es: "es-ES", en: "en-US", pt: "pt-BR", ko: "ko-KR", id: "id-ID" };
+export const VOICE = { es: "es-ES", en: "en-US", pt: "pt-BR", ko: "ko-KR", id: "id-ID", zh: "zh-CN" };
 
 const KEY = "pws.lang";
 const ATTRS = ["aria-label", "title", "placeholder", "data-tip", "alt", "aria-description", "aria-roledescription", "data-label", "aria-valuetext"];
@@ -48,6 +48,7 @@ const NOTES = {
   pt: [[/\bJapón(?![\p{L}])/gu, "Japão"], [/\barreglo de\b/g, "arranjo de"], [/^con\b/g, "com"], [/, con\b/g, ", com"], [/\bCeremonia de apertura\b/g, "Cerimônia de abertura"], [/\bversión(?![\p{L}])/gu, "versão"], [/\ben vivo\b/g, "ao vivo"]],
   ko: [[/\bJapón(?![\p{L}])/gu, "일본"], [/\bcover de\b/g, "커버:"], [/\barreglo de\b/g, "편곡:"], [/^con\b/g, "with"], [/, con\b/g, ", with"], [/\bCeremonia de apertura\b/g, "개막식"], [/\bversión(?![\p{L}])/gu, "버전"], [/\ben vivo\b/g, "라이브"]],
   id: [[/\bJapón(?![\p{L}])/gu, "Jepang"], [/\bcover de\b/g, "cover dari"], [/\barreglo de\b/g, "aransemen"], [/^con\b/g, "bersama"], [/, con\b/g, ", bersama"], [/\bCeremonia de apertura\b/g, "Upacara Pembukaan"], [/\bversión(?![\p{L}])/gu, "versi"], [/\ben vivo\b/g, "live"]],
+  zh: [[/\bJapón(?![\p{L}])/gu, "日本"], [/\bcover de\b/g, "翻唱："], [/\barreglo de\b/g, "编曲："], [/^con\b/g, "with"], [/, con\b/g, ", with"], [/\bCeremonia de apertura\b/g, "开幕式"], [/\bversión(?![\p{L}])/gu, "版"], [/\ben vivo\b/g, "现场"]],
 };
 function annotations(s, code) {
   if (!s.includes("(") || !NOTES[code]) return null;
@@ -101,7 +102,7 @@ function prefers() {
 // y el renderizador de Google (en inglés) indexaba la página traducida bajo un título en español.
 // En las páginas por idioma (/en/, /pt/, /ko/, /id/: las genera el build ya traducidas) manda la dirección, y se
 // guarda como preferencia para el resto del sitio.
-const PATH_LANG = typeof location === "undefined" ? null : location.pathname.match(/^\/(en|pt|ko|id)(?=\/|$)/)?.[1] ?? null;
+const PATH_LANG = typeof location === "undefined" ? null : location.pathname.match(/^\/(en|pt|ko|id|zh)(?=\/|$)/)?.[1] ?? null;
 export let lang = PATH_LANG ?? (CODES.includes(stored()) ? stored() : "es");
 if (PATH_LANG) try { localStorage.setItem(KEY, PATH_LANG); } catch {}
 
@@ -285,6 +286,7 @@ const OFFER = {
   pt: ["Ver o LumiParty em português?", "Português"],
   ko: ["LumiParty를 한국어로 볼까요?", "한국어"],
   id: ["Lihat LumiParty dalam Bahasa Indonesia?", "Bahasa Indonesia"],
+  zh: ["用简体中文查看 LumiParty？", "简体中文"],
 };
 function offerLang() {
   if (stored() || lang !== "es") return;

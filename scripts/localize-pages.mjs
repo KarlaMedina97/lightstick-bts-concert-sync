@@ -10,6 +10,7 @@ export const LOCALES = {
   pt: { bcp: "pt-BR", og: "pt_BR" },
   ko: { bcp: "ko", og: "ko_KR" },
   id: { bcp: "id", og: "id_ID" },
+  zh: { bcp: "zh-CN", og: "zh_CN" },
 };
 /** Páginas que existen en cada idioma: dirección → archivo fuente (en español). */
 export const LOCALIZED = { "/": "index.html", "/guide/": "guide/index.html" };
