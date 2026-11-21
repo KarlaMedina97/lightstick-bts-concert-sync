@@ -2727,6 +2727,16 @@ html {
 }
 .app.mini-band .mini-grip { margin: 0 auto; width: 28px; height: 10px; }
 .app.mini-band .lights-view #lv-hint { display: none; }
+/* Pantallas grandes (iPad, escritorio) con el video acoplado: placeMini fija el ancho (--mini-w en línea). La banda
+   vertical y el acoplado lateral llevan el video en 16:9 y la barra debajo (o hacia el ARMY Bomb), nunca encima. */
+.app.mini-mode.mini-band:not(.exploring) .video-card.video-card,
+.app.mini-mode.mini-side:not(.exploring) .video-card.video-card { flex-direction: column; }
+.app.mini-mode.mini-band:not(.exploring) .video-card.band-bottom.band-bottom { flex-direction: column-reverse; }
+.app.mini-mode.mini-band:not(.exploring) .video-card.video-card .video-box,
+.app.mini-mode.mini-side:not(.exploring) .video-card.video-card .video-box { width: 100%; height: auto; aspect-ratio: 16 / 9; min-height: 200px; }
+.app.mini-band #mini-size, .app.mini-side #mini-size { display: none; } /* acoplado no se achica: para eso, flotante */
+#mini-dock svg { width: 20px; height: 20px; }
+#mini-dock[aria-pressed="true"] { color: var(--accent); background: var(--accent-soft); }
 /* Celular con escenario bajo (p. ej. 360×640): sin la sugerencia ni la nota, el selector de versión ya no queda bajo
    el pie y el ARMY Bomb gana alto. */
 .app.lights-short .lights-view #lv-hint, .app.lights-short .lights-view #lv-note { display: none; }
@@ -2782,11 +2792,11 @@ html {
 .home-view.searching .ex-links { margin-top: var(--s-2); }
 
 /* Modo concierto: botón con presencia (borde de luz que respira, ícono en un círculo de color); encendido, brilla */
-.live-btn { gap: var(--s-2); padding-inline: 6px var(--s-3); border-radius: var(--r-pill); font-weight: 700;
+.live-btn { gap: var(--s-2); padding-inline: 6px var(--s-3); border-radius: var(--r-pill); font-weight: 600;
   background: linear-gradient(var(--surface-1), var(--surface-1)) padding-box, linear-gradient(120deg, #8a2be2, #ff6fb5, #4fc3f7) border-box;
   border: 1.5px solid transparent; }
 .live-ico { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: #fff;
-  background: linear-gradient(135deg, #8a2be2, #ff6fb5); box-shadow: 0 0 14px -2px color-mix(in srgb, #ff6fb5 70%, transparent); }
+  background: linear-gradient(135deg, #8a2be2, #ff6fb5); box-shadow: 0 0 8px -2px color-mix(in srgb, #ff6fb5 50%, transparent); }
 .live-ico svg { width: 18px; height: 18px; }
 .live-btn:hover .live-ico { transform: scale(1.06); }
 .live-btn.on { color: #fff; background: linear-gradient(120deg, #8a2be2, #ff6fb5) padding-box, linear-gradient(120deg, #8a2be2, #ff6fb5, #4fc3f7) border-box; box-shadow: 0 0 24px -6px #ff6fb5; }
@@ -2798,6 +2808,17 @@ html {
   .dock .live-btn .lv-long { display: none; } }
 .live-btn .lv-short { display: none; }
 @media (max-width: 640px) { .dock .live-btn .lv-short { display: inline; } }
+/* Dock angosto (iPad vertical, celular): va en columna como Cola y Pantalla. Sin la píldora con borde de luz, que
+   en columna pisaba el texto, y con la palabra corta; el círculo de color basta para destacarlo. Revisión UX 2026-11-21. */
+@container dock (max-width: 799px) {
+  .dock .live-btn { background: none; border: 0; padding: var(--s-1); border-radius: var(--r-md); font-weight: 600; }
+  .dock .live-btn .live-ico { width: 26px; height: 26px; box-shadow: none; }
+  .dock .live-btn .live-ico svg { width: 16px; height: 16px; }
+  .dock .live-btn .lv-long { display: none; }
+  .dock .live-btn .lv-short { display: inline; }
+  .dock .live-btn.on { background: var(--accent-soft); box-shadow: none; color: var(--text); }
+}
+.live-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 /* Video sin nada sonando: deshabilitada a la vista (sigue siendo enfocable y avisa al tocarla) */
 [role="tab"][aria-disabled="true"], [role="menuitemradio"][aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; }

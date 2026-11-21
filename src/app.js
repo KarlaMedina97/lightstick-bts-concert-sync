@@ -3306,9 +3306,31 @@ let minimizeVideo = () => {};
  */
 const LIGHTS_VIDEO_KEY = "pws.lightsVideo";
 const lightsVideoTop = () => store.get(LIGHTS_VIDEO_KEY, "top") !== "bottom";
+/*
+ * Pantallas grandes (iPad, escritorio) en Luces: el video se puede acoplar a media pantalla en vez de flotar.
+ * Vertical (escenario >= 500 px de alto): franja arriba o abajo, como en el celular, sin pasar de la mitad del alto.
+ * Horizontal (escenario >= 900 x 420 px): el video en una mitad lateral y el ARMY Bomb en la otra.
+ * Por defecto acoplado en pantallas táctiles (iPad) y flotante con mouse (el mini grande ya aprobado); la elección
+ * se recuerda aparte para cada tipo de puntero. Revisión UX 2026-11-21.
+ */
+const LIGHTS_SIDE_KEY = "pws.lightsSide";
+const lightsVideoLeft = () => store.get(LIGHTS_SIDE_KEY, "right") === "left";
+const touchScreen = () => matchMedia("(pointer: coarse)").matches;
+const dockKey = () => `pws.lightsDock.${touchScreen() ? "touch" : "mouse"}`;
+const dockPref = () => store.get(dockKey(), touchScreen() ? "dock" : "float") === "dock";
+/** Se puede acoplar: pantalla grande en Luces con lugar para el video (>= 356 x 200) y el ARMY Bomb. */
+function dockable() {
+  if (!app.classList.contains("mini-mode") || app.classList.contains("exploring") || phoneLayout()) return false;
+  const st = $("main").getBoundingClientRect();
+  return matchMedia("(orientation: portrait)").matches ? st.height >= 500 : st.width >= 900 && st.height >= 420;
+}
 function bandMode() {
-  return app.classList.contains("mini-mode") && !app.classList.contains("exploring") && phoneLayout()
-    && matchMedia("(orientation: portrait)").matches && $("main").getBoundingClientRect().height >= 500;
+  if (!app.classList.contains("mini-mode") || app.classList.contains("exploring")) return false;
+  if (!matchMedia("(orientation: portrait)").matches || $("main").getBoundingClientRect().height < 500) return false;
+  return phoneLayout() || dockPref();
+}
+function sideMode() {
+  return dockable() && !matchMedia("(orientation: portrait)").matches && dockPref();
 }
 /** Luces en celular vertical sin alto para la franja: el mini de siempre, arriba o abajo según la preferencia. */
 function lightsPhoneMini() {
@@ -3318,12 +3340,15 @@ function lightsPhoneMini() {
 function placeBand(animate) {
   const card = $("video-view"), main = $("main");
   const stage = main.getBoundingClientRect();
+  // Pantalla grande: 16:9 a todo el ancho, salvo que pase de la mitad del alto (el ARMY Bomb conserva >= 50 %).
+  if (!phoneLayout()) card.style.setProperty("--mini-w", `${Math.round(Math.min(stage.width, Math.max(356, (stage.height / 2 - 44) * 16 / 9)))}px`);
+  else card.style.removeProperty("--mini-w");
   const h = card.offsetHeight, g = 12;
   // Con una hoja o un menú abierto manda su posición temporal (MINI.corner); si no, la elegida.
   const atTop = MINI.before != null ? MINI.corner[0] === "t" : lightsVideoTop();
   card.classList.toggle("band-bottom", !atTop);
   card.classList.toggle("snapping", Boolean(animate));
-  card.style.setProperty("--mx", "0px");
+  card.style.setProperty("--mx", `${Math.max(0, Math.round((stage.width - card.offsetWidth) / 2))}px`);
   card.style.setProperty("--my", `${atTop ? 0 : Math.max(0, stage.height - h)}px`);
   const off = miniOff();
   const res = { t: !off && atTop ? h + g : 0, r: 0, b: !off && !atTop ? h + g : 0, l: 0 };
@@ -3334,14 +3359,45 @@ function placeBand(animate) {
   swap.dataset.tip = label;
   dispatchEvent(new Event("pws:layout"));
 }
+/** Horizontal en pantalla grande: el video acoplado a la mitad izquierda o derecha, centrado en alto. */
+function placeSide(animate) {
+  const card = $("video-view"), main = $("main");
+  const stage = main.getBoundingClientRect(), g = 12, bar = 48;
+  const w = Math.round(Math.max(356, Math.min(stage.width / 2 - g * 1.5, (stage.height - bar - g * 2) * 16 / 9)));
+  card.style.setProperty("--mini-w", `${w}px`);
+  const h = card.offsetHeight;
+  const left = MINI.before != null ? MINI.corner[1] === "l" : lightsVideoLeft();
+  card.classList.toggle("snapping", Boolean(animate));
+  card.style.setProperty("--mx", `${Math.round(left ? g : stage.width - w - g)}px`);
+  card.style.setProperty("--my", `${Math.round(Math.max(g, (stage.height - h) / 2))}px`);
+  const off = miniOff();
+  const res = { t: 0, r: !off && !left ? w + g * 2 : 0, b: 0, l: !off && left ? w + g * 2 : 0 };
+  for (const k of "trbl") main.style.setProperty(`--mini-res-${k}`, `${Math.round(res[k])}px`);
+  const swap = $("mini-swap"), label = left ? "Poner el video a la derecha" : "Poner el video a la izquierda";
+  swap.hidden = false;
+  swap.setAttribute("aria-label", label);
+  swap.dataset.tip = label;
+  dispatchEvent(new Event("pws:layout"));
+}
+/** Botón «Acoplar video»: solo en pantallas grandes en Luces; aria-pressed dice si está acoplado. */
+function syncDockBtn() {
+  const b = $("mini-dock");
+  b.hidden = !dockable();
+  b.setAttribute("aria-pressed", String(dockPref()));
+}
 function placeMini(animate) {
   const card = $("video-view");
   const main = $("main");
   const band = bandMode();
+  const side = !band && sideMode();
   app.classList.toggle("mini-band", band);
+  app.classList.toggle("mini-side", side);
+  syncDockBtn();
   // Celular con escenario bajo en Luces (p. ej. 360×640): el ARMY Bomb y el selector caben sin la sugerencia.
   app.classList.toggle("lights-short", app.classList.contains("mini-mode") && phoneLayout() && main.getBoundingClientRect().height < 460);
   if (band) { placeBand(animate); return; }
+  if (side) { placeSide(animate); return; }
+  card.style.removeProperty("--mini-w");
   // Luces en un celular vertical bajo: sigue el mini, pero también arriba o abajo según la preferencia de Luces.
   const lightsPhone = lightsPhoneMini();
   const swap = $("mini-swap");
@@ -3405,9 +3461,10 @@ function bindMini() {
     card.classList.remove("snapping");
     card.classList.add("dragging");
     const band = app.classList.contains("mini-band");
+    const side = app.classList.contains("mini-side");
     const move = (ev) => {
       if (!band) card.style.setProperty("--mx", `${x0 + ev.clientX - sx}px`); // a todo el ancho solo sube o baja
-      card.style.setProperty("--my", `${y0 + ev.clientY - sy}px`);
+      if (!side) card.style.setProperty("--my", `${y0 + ev.clientY - sy}px`); // acoplado al costado solo cambia de lado
     };
     const up = (ev) => {
       bar.removeEventListener("pointermove", move);
@@ -3417,7 +3474,11 @@ function bindMini() {
       if (Math.hypot(ev.clientX - sx, ev.clientY - sy) < 8) { placeMini(false); $("view-video").click(); return; }
       const cx = x0 + ev.clientX - sx + card.offsetWidth / 2;
       const cy = y0 + ev.clientY - sy + card.offsetHeight / 2;
-      if (band) {
+      if (side) {
+        // Acoplado al costado: se queda en la mitad donde se soltó y se recuerda.
+        store.set(LIGHTS_SIDE_KEY, cx < stage.width / 2 ? "left" : "right");
+        if (MINI.before != null) MINI.corner = `${MINI.corner[0]}${cx < stage.width / 2 ? "l" : "r"}`;
+      } else if (band) {
         // Luces a todo el ancho: se queda en la mitad donde se soltó y se recuerda.
         store.set(LIGHTS_VIDEO_KEY, cy < stage.height / 2 ? "top" : "bottom");
         if (MINI.before != null) MINI.corner = `${cy < stage.height / 2 ? "t" : "b"}${MINI.corner[1]}`;
@@ -3432,6 +3493,14 @@ function bindMini() {
   });
   $("mini-hide").onclick = () => hideMini();
   $("mini-swap").onclick = () => {
+    if (app.classList.contains("mini-side")) {
+      const toLeft = !lightsVideoLeft();
+      store.set(LIGHTS_SIDE_KEY, toLeft ? "left" : "right");
+      if (MINI.before != null) MINI.corner = `${MINI.corner[0]}${toLeft ? "l" : "r"}`;
+      placeMini(true);
+      say(toLeft ? "Video a la izquierda, ARMY Bomb a la derecha." : "Video a la derecha, ARMY Bomb a la izquierda.");
+      return;
+    }
     const toTop = !lightsVideoTop();
     store.set(LIGHTS_VIDEO_KEY, toTop ? "top" : "bottom");
     if (MINI.before != null) MINI.corner = `${toTop ? "t" : "b"}${MINI.corner[1]}`;
@@ -3439,6 +3508,13 @@ function bindMini() {
     say(toTop ? "Video arriba, ARMY Bomb abajo." : "Video abajo, ARMY Bomb arriba.");
   };
   $("mini-back").onclick = () => $("view-video").click();
+  $("mini-dock").onclick = () => {
+    const on = !dockPref();
+    store.set(dockKey(), on ? "dock" : "float");
+    placeMini(true);
+    requestAnimationFrame(() => placeMini(false));
+    say(on ? "Video acoplado a media pantalla." : "Video en ventana flotante.");
+  };
   $("btn-mini").onclick = () => (view === "video" ? minimizeVideo() : $("view-video").click());
   const setSmall = (on) => {
     card.classList.toggle("mini-sm", on);
