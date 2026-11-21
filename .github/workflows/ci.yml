@@ -55,6 +55,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # IndexNow compara con el commit anterior para saber si cambió el catálogo
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -66,3 +68,15 @@ jobs:
           path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
+      # Avisa a Bing y demás buscadores de IndexNow (scripts/indexnow.mjs). Si cambió el catálogo, todas las páginas;
+      # si no, solo las fijas. Un fallo aquí nunca frena la publicación.
+      - name: IndexNow
+        continue-on-error: true
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE" 2>/dev/null             && git diff --name-only "$BEFORE" HEAD | grep -qE '^(src/catalog\.js|scripts/build-site\.mjs|sitemap\.xml)$'; then
+            node scripts/indexnow.mjs --all
+          else
+            node scripts/indexnow.mjs
+          fi

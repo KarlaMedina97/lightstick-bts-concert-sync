@@ -12,6 +12,7 @@ export const PUBLIC = [
   "src", "vendor", "fonts", "icons", "assets",
   "styles.css", "tour.css", "landing.css", "sw.js", "manifest.webmanifest", "_headers", "LICENSE",
   "robots.txt", "sitemap.xml", "favicon.ico", "llms.txt", "404.html", "terms", "ai", "guide", ".well-known", ".nojekyll",
+  "6048336c2690cd90fb1fc59476b66e85.txt", // clave de IndexNow (pública por diseño; ver scripts/indexnow.mjs)
 ];
 // Nunca, aunque aparezcan dentro de una carpeta pública.
 const BLOCK = /(^|\/)(\.env|\.git|.*\.(md|map|log|pem|key)|node_modules|test|tests)(\/|$)/i;
