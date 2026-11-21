@@ -46,6 +46,7 @@ export default {
   "Mostrar controles": "Tampilkan kontrol",
   "No te escucho: sube el volumen": "Tidak terdengar: besarkan volume",
   "Toca la pantalla para seguir escuchando": "Ketuk layar untuk terus mendengarkan",
+  "Micrófono apagado al salir de Luces.": "Mikrofon dimatikan saat keluar dari Lampu.",
   "Escuchando": "Mendengarkan",
   "No te escucho: sube el volumen o acerca el teléfono": "Tidak terdengar: besarkan volume atau dekatkan ponsel",
   "Micrófono bloqueado": "Mikrofon diblokir",

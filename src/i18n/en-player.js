@@ -46,6 +46,7 @@ export default {
   "Mostrar controles": "Show controls",
   "No te escucho: sube el volumen": "I can't hear you: turn up the volume",
   "Toca la pantalla para seguir escuchando": "Tap the screen to keep listening",
+  "Micrófono apagado al salir de Luces.": "Microphone turned off when leaving Lights.",
   "Escuchando": "Listening",
   "No te escucho: sube el volumen o acerca el teléfono": "I can't hear you: turn up the volume or bring the phone closer",
   "Micrófono bloqueado": "Microphone blocked",

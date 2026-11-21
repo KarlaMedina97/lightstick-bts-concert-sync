@@ -296,6 +296,13 @@ function bindTabs(tabIds, onSelect) {
 let page = "home"; // dentro de Explorar: "home" (inicio), "likes" (Me gusta) o "videos" (Mis videos)
 function setView(v) {
   view = v;
+  // Por seguridad, el micrófono solo escucha en Luces: al ir a Explorar o Video se apaga (hay que volver a activarlo).
+  if (v !== "lights" && mic) {
+    mic.stop();
+    mic = null;
+    syncMicButtons();
+    toast("Micrófono apagado al salir de Luces.");
+  }
   const exploring = v === "explore";
   $("lights-view").hidden = v !== "lights";
   stick3d?.setActive(v === "lights" && settings.lightsModel === "stick");

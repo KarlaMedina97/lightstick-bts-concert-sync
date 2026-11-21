@@ -46,6 +46,7 @@ export default {
   "Mostrar controles": "Mostrar controles",
   "No te escucho: sube el volumen": "Não estou ouvindo: aumente o volume",
   "Toca la pantalla para seguir escuchando": "Toque na tela para continuar ouvindo",
+  "Micrófono apagado al salir de Luces.": "Microfone desligado ao sair de Luzes.",
   "Escuchando": "Ouvindo",
   "No te escucho: sube el volumen o acerca el teléfono": "Não estou ouvindo: aumente o volume ou aproxime o celular",
   "Micrófono bloqueado": "Microfone bloqueado",
