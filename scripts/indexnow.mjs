@@ -29,6 +29,12 @@ async function main() {
   if (!urlList.length) { console.log("IndexNow: no hay direcciones para avisar."); return; }
   const body = { host: HOST, key: KEY, keyLocation: `https://${HOST}/${KEY}.txt`, urlList };
   if (args.has("--dry")) { console.log(`IndexNow (prueba): ${urlList.length} direcciones`, urlList.slice(0, 10)); return; }
+  // Justo después de desplegar, la clave puede no estar publicada todavía (respondía 403): se espera hasta 2 min.
+  for (let i = 0; i < 12; i++) {
+    const t = await fetch(`${body.keyLocation}?v=${Date.now()}`).then((r) => (r.ok ? r.text() : ""), () => "");
+    if (t.trim() === KEY) break;
+    await new Promise((r) => setTimeout(r, 10_000));
+  }
   const res = await fetch("https://api.indexnow.org/indexnow", {
     method: "POST",
     headers: { "content-type": "application/json; charset=utf-8" },
