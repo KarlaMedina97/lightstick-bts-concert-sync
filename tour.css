@@ -87,3 +87,6 @@
   }
   .cam-reticle { border-color: CanvasText; }
 }
+/* Con el dedo (tablets y celulares), las pastillas de filtro llegan a 44 px: esta hoja carga después de styles.css
+   y su 34 px pisaba el área táctil (QA 2026-11-21). */
+@media (pointer: coarse) { .filter-chip { min-height: var(--tap, 44px); } }

@@ -2637,17 +2637,23 @@ function bindVersionMenu() {
     const card = $("video-view");
     const vTop = $("main").getBoundingClientRect().top + (parseFloat(card.style.getPropertyValue("--my")) || 0);
     const vBottom = vTop + card.offsetHeight;
-    const videoAbove = app.classList.contains("mini-mode") && !miniOff() && card.offsetHeight && vBottom <= r.top;
+    // Solo cuenta si el video está encima Y en la misma columna: con el video flotando a un costado (tablet horizontal,
+    // escritorio) la lista se abría hacia abajo contra el dock y quedaba de 30 px.
+    const cr = card.getBoundingClientRect(), lw = Math.max(list.offsetWidth, r.width);
+    const sameCol = cr.left < r.left + r.width / 2 + lw / 2 && cr.right > r.left + r.width / 2 - lw / 2;
+    const videoAbove = app.classList.contains("mini-mode") && !miniOff() && card.offsetHeight && vBottom <= r.top && sameCol;
     list.style.maxHeight = "none";
     // Todas las opciones + relleno + borde, sumadas una a una (no scrollHeight: en Safari del iPad venía inflado).
     const cs = getComputedStyle(list);
     const opts = [...list.children];
     const full = opts.reduce((n, o) => n + o.offsetHeight, 0) + Math.max(0, opts.length - 1) * (parseFloat(cs.rowGap) || 0)
       + (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0) + list.offsetHeight - list.clientHeight;
-    const up = Math.min(full, r.top - 8, videoAbove ? r.top - vBottom - 12 : Infinity);
+    const upSpace = Math.min(r.top - 8, videoAbove ? r.top - vBottom - 12 : Infinity);
     const dockT = $("dock")?.getBoundingClientRect().top ?? innerHeight;
-    const down = up < 96;
-    list.style.maxHeight = `${Math.round(down ? Math.min(full, dockT - r.bottom - 12) : up)}px`;
+    const downSpace = dockT - r.bottom - 12;
+    // Hacia arriba salvo que no quepan ni dos opciones y abajo haya más lugar.
+    const down = upSpace < Math.min(full, 96) && downSpace > upSpace;
+    list.style.maxHeight = `${Math.round(Math.max(44, Math.min(full, down ? downSpace : upSpace)))}px`;
     const w = list.offsetWidth, h = list.offsetHeight;
     list.style.left = `${Math.round(Math.min(innerWidth - w - 12, Math.max(12, r.left + r.width / 2 - w / 2)))}px`;
     list.style.top = `${Math.round(down ? r.bottom + 6 : Math.max(8, r.top - 6 - h))}px`;
@@ -3298,6 +3304,9 @@ function menuAvoidVideo(menu, from) {
     if (!overlaps(m, c, 0)) return;
     if (c.left - gap - m.width >= 12) menu.style.left = `${c.left - gap - m.width}px`;
     else if (c.right + gap + m.width <= innerWidth - 12) menu.style.left = `${c.right + gap}px`;
+    // Sin lugar al costado (tablet vertical, video acoplado a todo el ancho): el menú del dock se acorta hasta el
+    // borde del video y se desplaza por dentro, en vez de taparlo (QA 2026-11-21).
+    else if (from === "bottom" && c.bottom < m.bottom) menu.style.maxHeight = `${Math.max(160, m.bottom - c.bottom - gap)}px`;
     return;
   }
   if (mini) {

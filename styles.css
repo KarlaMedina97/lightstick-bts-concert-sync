@@ -2905,3 +2905,9 @@ html {
 /* Celular bajo con la ventana del video: la aclaración «Sin ARMY Bomb…» cede su lugar a las luces. */
 @media (max-height: 700px) { .app.mini-mode .lights-view #lv-hint { display: none; } }
 @media (max-height: 500px) { .lights-view.model .lv-note { display: none; } .lights-view.model .lv-stage { min-height: 96px; } .lights-view.model { gap: var(--s-2); } }
+/* Áreas táctiles de 44 px con el dedo (QA 2026-11-21): inicio, arrastre de la Cola y deslizadores de Ajustes. */
+@media (pointer: coarse) {
+  .home-link { min-width: var(--tap); height: var(--tap); }
+  .cq-handle { width: var(--tap); }
+  input[type="range"] { min-height: var(--tap); }
+}
