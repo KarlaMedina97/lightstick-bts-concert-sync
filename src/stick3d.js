@@ -4,7 +4,7 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { createMaterials, contactShadow, glowTexture } from "./models/shared.js";
-import { sideAngle, createTiltFilter, pushFromAccel } from "./motion.js";
+import { sideAngle, createTiltFilter, pushFromAccel, screenAccelX } from "./motion.js";
 
 export const VERSIONS = [
   ["v4", "Ver. 4"], ["se", "SE"], ["v3", "Ver. 3"], ["v2", "Ver. 2"], ["v1", "Ver. 1"],
@@ -110,7 +110,8 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
   function onMotion(e) {
     const a = e.acceleration ?? e.accelerationIncludingGravity;
     if (!a || a.x == null) return;
-    const ax = e.acceleration ? a.x : 0; // sin gravedad: solo el movimiento
+    // Sin gravedad: solo el movimiento, de lado a lado según cómo está la pantalla.
+    const ax = e.acceleration ? screenAccelX(screen.orientation?.angle ?? globalThis.orientation, a.x, a.y) : 0;
     const push = pushFromAccel(ax);
     if (!dragging && push) motion.ax = push; // empuja la mano como un sacudón (el ruido de un equipo quieto no)
     const mag = Math.hypot(e.acceleration?.x ?? 0, e.acceleration?.y ?? 0, e.acceleration?.z ?? 0);
@@ -242,13 +243,15 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
       hold.vx += ((hold.tx - hold.x) * K - hold.vx * D + motion.ax) * STEP;
       hold.vy += ((hold.ty - hold.y) * K - hold.vy * D) * STEP;
       hold.x += hold.vx * STEP; hold.y += hold.vy * STEP;
+      // Un sacudón fuerte del equipo no saca al ARMY Bomb del cuadro.
+      if (Math.abs(hold.x) > 1.7) { hold.x = Math.sign(hold.x) * 1.7; hold.vx *= -0.3; }
       // Péndulo: se inclina contra la velocidad de la mano (y con la inclinación del teléfono) y se asienta con un vaivén.
       leanV += ((-hold.vx * 0.09 + motion.tilt - lean) * 60 - leanV * 7) * STEP;
       lean += leanV * STEP;
       pitchV += ((hold.vy * 0.05 - pitch) * 60 - pitchV * 7) * STEP;
       pitch += pitchV * STEP;
     }
-    motion.ax *= Math.exp(-dt * 12);
+    motion.ax *= Math.exp(-dt * 8);
     // Si el sensor deja de avisar (algunos equipos quietos no mandan eventos), la inclinación se apaga sola.
     if (motion.tilt && now - motion.at > 300) motion.tilt *= Math.exp(-dt * 2);
     // Sacudida de concierto: unas oscilaciones rápidas que se apagan.

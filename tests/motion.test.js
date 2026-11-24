@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { sideAngle, createTiltFilter, pushFromAccel } from "../src/motion.js";
+import { sideAngle, createTiltFilter, pushFromAccel, screenAccelX } from "../src/motion.js";
 
 // Simula el sensor a 60 eventos por segundo durante `ms` con el ángulo que da `angleAt(t)`; devuelve la última salida.
 function run(filter, ms, angleAt, t0 = 0) {
@@ -14,7 +14,7 @@ test("giroscopio: tablet quieta y torcida 30° → el ARMY Bomb vuelve a quedar 
   run(f, 500, () => 0);
   const right = run(f, 80, () => 30, 500); // la inclina de golpe
   assert.ok(Math.abs(right) > 0.15, `reacciona al inclinarla (${right})`);
-  const still = run(f, 5000, () => 30, 600); // y la deja quieta así
+  const still = run(f, 8000, () => 30, 600); // y la deja quieta así
   assert.equal(still, 0);
 });
 
@@ -36,10 +36,17 @@ test("giroscopio: celular que se mueve sin parar sigue respondiendo (vaivén de 
   assert.ok(peak > 0.2, `sigue el movimiento (${peak})`);
 });
 
-test("giroscopio: la salida nunca pasa de ±0,5 rad", () => {
+test("giroscopio: sensible a un vaivén suave de la tablet (10° en un instante se nota)", () => {
+  const f = createTiltFilter();
+  run(f, 500, () => 0);
+  const out = run(f, 100, () => 10, 500);
+  assert.ok(Math.abs(out) > 0.12, `se inclina lo suficiente (${out})`);
+});
+
+test("giroscopio: la salida nunca pasa de ±0,6 rad", () => {
   const f = createTiltFilter();
   run(f, 200, () => 0);
-  assert.equal(run(f, 30, () => 180, 200), -0.5);
+  assert.equal(run(f, 30, () => 180, 200), -0.6);
 });
 
 test("giroscopio: después de girar la pantalla (reset) no queda torcido", () => {
@@ -58,11 +65,20 @@ test("giroscopio: cada orientación de pantalla usa su eje y su signo", () => {
   assert.equal(sideAngle(undefined, 20, 5), 5);
 });
 
-test("acelerómetro: un equipo quieto (ruido < 0,35 m/s²) no empuja; una sacudida sí", () => {
+test("acelerómetro: un equipo quieto (ruido ≤ 0,3 m/s²) no empuja; una sacudida sí", () => {
   assert.equal(pushFromAccel(0), 0);
   assert.equal(pushFromAccel(0.2), 0);
   assert.equal(pushFromAccel(-0.3), 0);
   assert.ok(pushFromAccel(3) < -10);
   assert.ok(pushFromAccel(-3) > 10);
-  assert.equal(pushFromAccel(50), -60);
+  assert.equal(pushFromAccel(50), -110);
+  assert.ok(Math.abs(pushFromAccel(3)) > 40, "un lado a lado normal (3 m/s²) mueve la mano con claridad");
+});
+
+test("acelerómetro: el lado a lado se mide en el eje de la pantalla, también en horizontal", () => {
+  assert.equal(screenAccelX(0, 2, 5), 2);
+  assert.equal(screenAccelX(180, 2, 5), -2);
+  assert.equal(screenAccelX(90, 2, 5), -5);
+  assert.equal(screenAccelX(270, 2, 5), 5);
+  assert.equal(screenAccelX(-90, 2, 5), 5); // iOS viejo (window.orientation)
 });

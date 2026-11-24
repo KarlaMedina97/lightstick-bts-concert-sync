@@ -14,9 +14,10 @@ export function sideAngle(screenAngle, beta, gamma) {
 /**
  * Filtro de inclinación: solo cuenta el cambio. La base sigue al ángulo con una constante de `tau` segundos, así una
  * inclinación sostenida se desvanece; `dead` grados de margen para el pulso de la mano y el ruido del sensor.
- * Devuelve la inclinación del ARMY Bomb en radianes (±0,5).
+ * Devuelve la inclinación del ARMY Bomb en radianes (±0,6). Sensibilidad subida tras probar en iPad (2026-11-23):
+ * con 0,7 y tau 1,5 s un vaivén normal de la tablet casi no se notaba.
  */
-export function createTiltFilter({ tau = 1.5, dead = 2 } = {}) {
+export function createTiltFilter({ tau = 2, dead = 1.5, gain = 1.6 } = {}) {
   let base = null, last = 0;
   return {
     update(angle, now) {
@@ -25,14 +26,26 @@ export function createTiltFilter({ tau = 1.5, dead = 2 } = {}) {
       last = now;
       const d = angle - base;
       const rel = Math.abs(d) < dead ? 0 : d - Math.sign(d) * dead;
-      return rel === 0 ? 0 : Math.max(-0.5, Math.min(0.5, (-rel / 90) * 0.7));
+      return rel === 0 ? 0 : Math.max(-0.6, Math.min(0.6, (-rel / 90) * gain));
     },
     reset() { base = null; },
   };
 }
 
-/** Empujón lateral de la mano a partir de la aceleración sin gravedad (m/s²); el ruido de un equipo quieto no cuenta. */
-export function pushFromAccel(ax, dead = 0.35) {
-  if (!ax || Math.abs(ax) < dead) return 0;
-  return Math.max(-60, Math.min(60, -(ax - Math.sign(ax) * dead) * 6));
+/**
+ * Aceleración (sin gravedad, m/s²) hacia la derecha de la pantalla tal como está: en horizontal, el lado a lado de
+ * la persona es el eje y del equipo, no el x (antes en una tablet acostada no se notaba el vaivén).
+ */
+export function screenAccelX(screenAngle, x, y) {
+  const a = ((Number(screenAngle) || 0) % 360 + 360) % 360;
+  if (a === 90) return -(y ?? 0);
+  if (a === 270) return y ?? 0;
+  if (a === 180) return -(x ?? 0);
+  return x ?? 0;
+}
+
+/** Empujón lateral de la mano a partir de la aceleración (m/s²); el ruido de un equipo quieto no cuenta. */
+export function pushFromAccel(ax, dead = 0.3, gain = 18) {
+  if (!ax || Math.abs(ax) <= dead) return 0;
+  return Math.max(-110, Math.min(110, -(ax - Math.sign(ax) * dead) * gain));
 }
