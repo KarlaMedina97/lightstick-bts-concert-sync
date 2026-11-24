@@ -4113,10 +4113,15 @@ async function init() {
   if (params.has("text") || params.has("url")) setTimeout(() => handleShared(params), 600);
   // La dirección de entrada arma la pantalla (/player/luces, /player/album-wings, /player/dynamite…).
   let startSlug = legacy && /^[a-z0-9-]{1,90}$/.test(legacy) ? legacy : slugFromPath();
-  // Volver a la app: si la dirección es la de la última canción que sonó (o Luces) y hay una cola guardada, se abre
-  // Explorar con esa canción en el mini reproductor, en pausa (restoreQueue). Un enlace a otra canción sí la abre.
+  // Volver a la app: si la dirección es la de la última canción que sonó y hay una cola guardada, se abre Explorar
+  // con esa canción en el mini reproductor, en pausa (restoreQueue). Un enlace a otra canción sí la abre.
+  // /player/lights siempre abre Luces (con la cola restaurada en el mini reproductor).
   const savedNow = store.get(QUEUE_KEY, null)?.nowPlaying;
-  const returning = !legacy && !!savedNow && (startSlug === savedNow || startSlug === "lights");
+  const returning = !legacy && !!savedNow && startSlug === savedNow;
+  // Recargar (o atrás/adelante sin la página en memoria) no es «volver»: se queda en el video de esa canción, en
+  // pausa en el mismo punto, en vez de mandar a Explorar.
+  const navType = performance.getEntriesByType?.("navigation")?.[0]?.type;
+  const reopen = returning && (navType === "reload" || navType === "back_forward") ? startSlug : "";
   if (returning) startSlug = "";
   if (startSlug && isSongSlug(startSlug)) setTimeout(() => { routeReady = true; applyRoute(startSlug); }, 800); // espera al reproductor
   else { if (startSlug) applyRoute(startSlug); routeReady = true; if (returning || location.search || location.hash) try { history.replaceState({ r: currentSlug() }, "", playerBase() + currentSlug()); } catch {} }
@@ -4159,6 +4164,7 @@ async function init() {
   await player.init();
   // Retoma la cola guardada (en pausa) si no se pidió una canción por enlace.
   if (!isSongSlug(startSlug)) restoreQueue();
+  if (reopen && queue[current]?.song.id === reopen) applyRoute(reopen); // recargó el video: vuelve a él
 
   if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("../sw.js", { scope: "../" }).catch(() => {});
   // Mientras publicamos una versión nueva (y cuando ya está), aviso con «Recargar»: en ese rato pueden mezclarse
