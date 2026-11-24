@@ -871,90 +871,108 @@ section[id], #contenido { scroll-margin-top: 76px; }
 /* ---------- 04 · Qué puedes hacer (rediseño 2026-11-24) ----------
    Ambiente de concierto (fondo oscuro, violetas y celeste) con jerarquía clara: rótulo → título → tarjetas →
    cifras. Todo se mide contra el ancho de la columna (container queries), no contra la pantalla: en iPad vertical
-   la sección ocupa media pantalla y antes partía las tarjetas en dos columnas de 207 px. */
-#funciones .copy { container-type: inline-size; gap: clamp(1rem, 4cqi, 1.75rem); }
-@media (min-width: 720px) { #funciones .copy { padding-block: 8svh; } }
-/* Velo: oscurece lo que queda justo detrás del texto y deja ver las luces alrededor */
-#funciones .copy::before {
-  inset: -3% -5%;
-  background: radial-gradient(80% 62% at 50% 46%, rgba(6, 8, 24, .86), rgba(6, 8, 24, .55) 58%, transparent 86%);
-}
-#funciones .head { gap: .75rem; }
-#funciones .kicker { color: #ead9ff; font-size: .78rem; }
-#funciones .title {
-  font-size: clamp(1.85rem, 1rem + 6.2cqi, 3.4rem); line-height: 1.05; letter-spacing: -.035em;
-  text-wrap: balance; overflow-wrap: break-word; hyphens: manual; max-width: 16ch; margin-bottom: .15rem;
-}
+   la sección ocupa media pantalla y antes partía las tarjetas en dos columnas de 207 px.
+   Solo en tablet y escritorio. En el celular se mantiene la versión compacta (abajo): ahí las tarjetas altas
+   tapaban el ARMY Bomb 3D y no se veía cómo reacciona al usar las demos (pedido 2026-11-24). */
+@media (min-width: 720px) {
+  #funciones .copy { container-type: inline-size; gap: clamp(1rem, 4cqi, 1.75rem); }
+  @media (min-width: 720px) { #funciones .copy { padding-block: 8svh; } }
+  /* Velo: oscurece lo que queda justo detrás del texto y deja ver las luces alrededor */
+  #funciones .copy::before {
+    inset: -3% -5%;
+    background: radial-gradient(80% 62% at 50% 46%, rgba(6, 8, 24, .86), rgba(6, 8, 24, .55) 58%, transparent 86%);
+  }
+  #funciones .head { gap: .75rem; }
+  #funciones .kicker { color: #ead9ff; font-size: .78rem; }
+  #funciones .title {
+    font-size: clamp(1.85rem, 1rem + 6.2cqi, 3.4rem); line-height: 1.05; letter-spacing: -.035em;
+    text-wrap: balance; overflow-wrap: break-word; hyphens: manual; max-width: 16ch; margin-bottom: .15rem;
+  }
 
-/* Tarjetas: dos columnas solo si cada una tiene >= 260 px; si no, una a todo el ancho */
-#funciones .feats {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
-  gap: clamp(10px, 2.2cqi, 16px); align-items: stretch;
-}
-#funciones .feat {
-  display: grid; grid-template-rows: auto auto 1fr; align-content: start; gap: .45rem;
-  padding: clamp(12px, 2.6cqi, 18px); border-radius: 18px;
-  background: linear-gradient(180deg, rgba(28, 22, 56, .95), rgba(14, 12, 30, .95));
-  border: 1px solid rgba(226, 201, 255, .16); box-shadow: 0 10px 28px rgba(0, 0, 0, .32);
-  transition: border-color .25s ease, box-shadow .25s ease;
-}
-#funciones .feat:hover, #funciones .feat:focus-within {
-  border-color: rgba(226, 201, 255, .36); box-shadow: 0 12px 34px rgba(0, 0, 0, .4), 0 0 0 1px rgba(92, 202, 248, .14);
-}
-#funciones .feat h3 { margin: 0; font-size: 1.02rem; letter-spacing: -.02em; padding-right: 52px; }
-#funciones .feat p { margin: 0; color: #d9d2ea; font-size: .86rem; line-height: 1.45; padding-right: 52px; }
-#funciones .feat .feat-status { color: var(--a2) !important; font-weight: 600; }
-/* Demo de cada tarjeta: a todo el ancho; sus controles pasan a otra línea si no caben */
-#funciones .feat .mock {
-  margin: 0 0 .35rem; min-height: 64px; padding: 10px 12px; gap: 10px 12px; flex-wrap: wrap;
-  background: rgba(8, 7, 20, .88); border: 1px solid rgba(255, 255, 255, .12); border-radius: 14px;
-}
-/* Abrir en la app: abajo a la derecha, fuera de la demo */
-#funciones .feat-link {
-  top: auto; bottom: 10px; right: 10px; width: 44px; height: 44px; font-size: 1rem;
-  border-color: rgba(226, 201, 255, .32); background: rgba(11, 10, 24, .9); color: var(--a1);
-}
+  /* Tarjetas: dos columnas solo si cada una tiene >= 260 px; si no, una a todo el ancho */
+  #funciones .feats {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: clamp(10px, 2.2cqi, 16px); align-items: stretch;
+  }
+  #funciones .feat {
+    display: grid; grid-template-rows: auto auto 1fr; align-content: start; gap: .45rem;
+    padding: clamp(12px, 2.6cqi, 18px); border-radius: 18px;
+    background: linear-gradient(180deg, rgba(28, 22, 56, .95), rgba(14, 12, 30, .95));
+    border: 1px solid rgba(226, 201, 255, .16); box-shadow: 0 10px 28px rgba(0, 0, 0, .32);
+    transition: border-color .25s ease, box-shadow .25s ease;
+  }
+  #funciones .feat:hover, #funciones .feat:focus-within {
+    border-color: rgba(226, 201, 255, .36); box-shadow: 0 12px 34px rgba(0, 0, 0, .4), 0 0 0 1px rgba(92, 202, 248, .14);
+  }
+  #funciones .feat h3 { margin: 0; font-size: 1.02rem; letter-spacing: -.02em; padding-right: 52px; }
+  #funciones .feat p { margin: 0; color: #d9d2ea; font-size: .86rem; line-height: 1.45; padding-right: 52px; }
+  #funciones .feat .feat-status { color: var(--a2) !important; font-weight: 600; }
+  /* Demo de cada tarjeta: a todo el ancho; sus controles pasan a otra línea si no caben */
+  #funciones .feat .mock {
+    margin: 0 0 .35rem; min-height: 64px; padding: 10px 12px; gap: 10px 12px; flex-wrap: wrap;
+    background: rgba(8, 7, 20, .88); border: 1px solid rgba(255, 255, 255, .12); border-radius: 14px;
+  }
+  /* Abrir en la app: abajo a la derecha, fuera de la demo */
+  #funciones .feat-link {
+    top: auto; bottom: 10px; right: 10px; width: 44px; height: 44px; font-size: 1rem;
+    border-color: rgba(226, 201, 255, .32); background: rgba(11, 10, 24, .9); color: var(--a1);
+  }
 
-/* Video + luces */
-#funciones .mock-video { flex-wrap: nowrap; }
-#funciones .mv-bar { height: 44px; min-width: 0; }
-#funciones .mv-time { color: #d9d2ea; font-size: .78rem; }
-/* Micrófono */
-#funciones .mock-mic .eq { flex: 1 1 110px; height: 44px; }
-#funciones .mock-mic .mock-btn { flex: 0 1 auto; }
-/* Fanchant: los nombres arriba y, abajo, el botón y «Con voz» en la misma fila (o una debajo de otra) */
-#funciones .fc-controls { flex-wrap: wrap; justify-content: space-between; gap: 8px 12px; }
-#funciones .fc-hint, #funciones .fc-now small { color: #d9d2ea; }
-#funciones .fc-voice { color: #e6dff3; font-size: .84rem; cursor: pointer; }
-#funciones .fc-voice input { width: 18px; height: 18px; margin: 0; accent-color: var(--a2); }
-/* Modo seguro: interruptor y texto juntos; zona táctil de 44 px sin agrandar el dibujo */
-#funciones .mock-safe { flex-wrap: nowrap; color: #e6dff3; }
-#funciones #safe-label { flex: 1 1 0; min-width: 0; line-height: 1.35; }
-#funciones .ms-toggle { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .28); }
-#funciones .ms-toggle::after { content: ""; position: absolute; inset: -7px -4px; }
+  /* Video + luces */
+  #funciones .mock-video { flex-wrap: nowrap; }
+  #funciones .mv-bar { height: 44px; min-width: 0; }
+  #funciones .mv-time { color: #d9d2ea; font-size: .78rem; }
+  /* Micrófono */
+  #funciones .mock-mic .eq { flex: 1 1 110px; height: 44px; }
+  #funciones .mock-mic .mock-btn { flex: 0 1 auto; }
+  /* Fanchant: los nombres arriba y, abajo, el botón y «Con voz» en la misma fila (o una debajo de otra) */
+  #funciones .fc-controls { flex-wrap: wrap; justify-content: space-between; gap: 8px 12px; }
+  #funciones .fc-hint, #funciones .fc-now small { color: #d9d2ea; }
+  #funciones .fc-voice { color: #e6dff3; font-size: .84rem; cursor: pointer; }
+  #funciones .fc-voice input { width: 18px; height: 18px; margin: 0; accent-color: var(--a2); }
+  /* Modo seguro: interruptor y texto juntos; zona táctil de 44 px sin agrandar el dibujo */
+  #funciones .mock-safe { flex-wrap: nowrap; color: #e6dff3; }
+  #funciones #safe-label { flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  #funciones .ms-toggle { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .28); }
+  #funciones .ms-toggle::after { content: ""; position: absolute; inset: -7px -4px; }
 
-/* Botones de las demos: activo con color y no solo con forma */
-#funciones .mock-btn { border-color: rgba(226, 201, 255, .3); background: rgba(255, 255, 255, .08); color: var(--text); }
-#funciones .mock-btn:hover { background: rgba(255, 255, 255, .16); }
-#funciones .mock-btn[aria-pressed="true"] { background: var(--a1); border-color: var(--a1); color: #140b26; }
-/* Foco de teclado visible en todo lo que se puede tocar */
-#funciones :is(button, a, input, [role="slider"]):focus-visible { outline: 2px solid var(--a2); outline-offset: 3px; }
-#funciones .ms-toggle:focus-visible { outline-offset: 4px; }
+  /* Botones de las demos: activo con color y no solo con forma */
+  #funciones .mock-btn { border-color: rgba(226, 201, 255, .3); background: rgba(255, 255, 255, .08); color: var(--text); }
+  #funciones .mock-btn:hover { background: rgba(255, 255, 255, .16); }
+  #funciones .mock-btn[aria-pressed="true"] { background: var(--a1); border-color: var(--a1); color: #140b26; }
+  /* Foco de teclado visible en todo lo que se puede tocar */
+  #funciones :is(button, a, input, [role="slider"]):focus-visible { outline: 2px solid var(--a2); outline-offset: 3px; }
+  #funciones .ms-toggle:focus-visible { outline-offset: 4px; }
 
-/* Cifras: cuatro en fila si caben; en columnas angostas, 2×2 */
-#funciones .stats {
-  grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 0; background: none; border: 0; border-radius: 0; overflow: visible;
-}
-#funciones .stats div {
-  padding: 12px 14px; border-radius: 14px; background: rgba(14, 12, 30, .9); border: 1px solid rgba(226, 201, 255, .14);
-}
-#funciones .stats dt { font-size: .75rem; color: #d9d2ea; letter-spacing: .1em; line-height: 1.3; overflow-wrap: anywhere; }
-#funciones .stats dd { margin-top: .35rem; font-size: clamp(1.35rem, .9rem + 3cqi, 2rem); }
-@container (max-width: 559px) { #funciones .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  /* Cifras: cuatro en fila si caben; en columnas angostas, 2×2 */
+  #funciones .stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 0; background: none; border: 0; border-radius: 0; overflow: visible;
+  }
+  #funciones .stats div {
+    padding: 12px 14px; border-radius: 14px; background: rgba(14, 12, 30, .9); border: 1px solid rgba(226, 201, 255, .14);
+  }
+  #funciones .stats dt { font-size: .75rem; color: #d9d2ea; letter-spacing: .1em; line-height: 1.3; overflow-wrap: anywhere; }
+  #funciones .stats dd { margin-top: .35rem; font-size: clamp(1.35rem, .9rem + 3cqi, 2rem); }
+  @container (max-width: 559px) { #funciones .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
-@media (prefers-reduced-motion: reduce) {
-  #funciones .feat, #funciones .mock-btn, #funciones .feat-link, #funciones .ms-toggle, #funciones .ms-toggle b { transition: none; }
+  @media (prefers-reduced-motion: reduce) {
+    #funciones .feat, #funciones .mock-btn, #funciones .feat-link, #funciones .ms-toggle, #funciones .ms-toggle b { transition: none; }
+  }
 }
+/* Celular: la versión compacta de antes (tarjetas bajas en una columna, cifras en 2×2) */
+@media (max-width: 719px) {
+  #funciones .copy { gap: 1rem; }
+  #funciones .feats { grid-template-columns: 1fr; gap: 8px; }
+  #funciones .feat { gap: .3rem; padding: 12px; border-radius: 16px; }
+  #funciones .feat h3 { margin: 0; font-size: .95rem; }
+  #funciones .feat p { font-size: .78rem; line-height: 1.35; }
+  #funciones .feat .mock { margin-right: 44px; min-height: 0; padding-block: 6px; }
+  #funciones .feat-link { top: 8px; right: 8px; width: 36px; height: 36px; font-size: .95rem; }
+  #funciones .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; padding: 10px 12px; }
+  #funciones .stats dt { font-size: .75rem; }
+  #funciones .stats dd { font-size: clamp(1.1rem, 2.4vw, 1.6rem); }
+}
+@media (max-width: 719px) and (pointer: coarse) { #funciones .feat-link { top: 4px; right: 4px; width: 44px; height: 44px; } }
 
 /* Aviso de privacidad / consentimiento (src/consent.js): abajo, sin tapar el video, hasta que la persona elige */
 .consent { position: fixed; z-index: 60; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); margin: 0 auto; max-width: 560px; display: grid; gap: 10px; padding: 14px 16px; border-radius: 16px; background: rgba(22, 12, 38, 0.94); color: #f3ecff; border: 1px solid rgba(179, 136, 255, 0.35); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45); font-size: 0.9rem; line-height: 1.45; backdrop-filter: blur(10px); }
