@@ -315,7 +315,12 @@ function whenUserActs(fn) {
 function goLite(why) {
   liteWhy = why;
   const root = document.documentElement;
+  // Si pasa a ligera a mitad de la página (cuadros lentos), en el celular los huecos del 3D se cierran y todo sube:
+  // lo que se estaba leyendo se queda en el mismo lugar de la pantalla (QA 2026-11-24).
+  const anchor = scrollY > 0 ? [...document.querySelectorAll("main .copy > *")].find((e) => { const r = e.getBoundingClientRect(); return r.height && r.bottom > navBottom(); }) : null;
+  const before = anchor?.getBoundingClientRect().top ?? 0;
   root.classList.add("lite");
+  if (anchor) scrollBy({ top: anchor.getBoundingClientRect().top - before, behavior: "instant" });
   root.classList.remove("gl-ready"); // vuelve la silueta (si la escena estaba dibujada y se pausó)
   spacingTween?.kill();
   document.querySelector(".lite-note")?.remove();
@@ -881,6 +886,9 @@ async function buildScene() {
     const maxH = (h - nav - 20) / ppu;
     if ((top - bot) * s > maxH) s = maxH / (top - bot);
     const topLim = camera.position.y + (h / 2 - nav - 8) / ppu, botLim = camera.position.y - (h / 2 - 10) / ppu;
+    // En el celular el ARMY Bomb acompaña a su hueco (slotPose lo encoge al salir): si se lo fijara bajo la barra,
+    // quedaba ahí congelado y el texto le pasaba por encima (QA 2026-11-24).
+    if (mobileQ()) return [x, y, s];
     const yt = y + top * s, yb = y + bot * s;
     if (yt > topLim) y -= yt - topLim;
     else if (yb < botLim) y += botLim - yb;
@@ -894,13 +902,19 @@ async function buildScene() {
     // Margen para los gestos (que nunca se salga del encuadre) y para la fila de versiones.
     const reach = S.gesture === "demo" ? 1.6 : S.gesture === "none" ? 1 : 1.3;
     const across = S.lineup ? 4.8 : 1;
-    const fitH = (Math.max(rect.height * 0.55, rect.bottom - Math.max(rect.top, NAV_H() + 6)) * 0.88) / (tall * ppu);
-    const fitW = (rect.width * 0.94) / (R * 2.3 * reach * across * ppu);
-    const s = Math.max(0.2, Math.min(mobileQ() ? 0.52 : 0.8, fitH, fitW));
+    const mobile = mobileQ();
     // La parte del slot tapada por la barra fija no cuenta (así la gema nunca queda bajo la barra).
     const top = Math.max(rect.top, NAV_H() + 6);
-    const effH = Math.max(rect.height * 0.55, rect.bottom - top);
-    const cx = rect.left + rect.width / 2, cy = rect.bottom - effH / 2;
+    // Celular: solo la parte del hueco que se ve. El ARMY Bomb va en su centro y, cuando el hueco sale de la
+    // pantalla, se encoge hasta desaparecer con él (antes quedaba encogido bajo la barra y lo tapaba el texto).
+    const visH = mobile ? Math.max(0, Math.min(rect.bottom, h) - top) : 0;
+    const frac = mobile ? clamp01(visH / Math.max(1, Math.min(rect.height, h - NAV_H()))) : 1;
+    const fade = mobile ? (t => t * t * (3 - 2 * t))(clamp01((frac - 0.15) / 0.4)) : 1;
+    const effH = mobile ? Math.max(1, visH) : Math.max(rect.height * 0.55, rect.bottom - top);
+    const fitH = ((mobile ? effH : Math.max(rect.height * 0.55, rect.bottom - Math.max(rect.top, NAV_H() + 6))) * 0.88) / (tall * ppu);
+    const fitW = (rect.width * 0.94) / (R * 2.3 * reach * across * ppu);
+    const s = Math.max(mobile ? 0 : 0.2, Math.min(mobile ? 0.52 : 0.8, mobile ? Math.max(fitH, 0.2) : fitH, fitW)) * fade;
+    const cx = rect.left + rect.width / 2, cy = mobile ? top + visH / 2 : rect.bottom - effH / 2;
     const cOff = CENTER.assembled + (CENTER.exploded - CENTER.assembled) * e;
     return {
       x: (cx - w / 2) / ppu, y: camera.position.y - (cy - h / 2) / ppu - cOff * s,
@@ -920,7 +934,7 @@ async function buildScene() {
       poses.push([S, r, vis]);
       if (vis > best) { best = vis; activeSlot = S; }
     }
-    if (!poses.length) return;
+    if (!poses.length) { if (mobileQ()) target.s = 0.001; return; } // celular: sin hueco a la vista, no queda congelado
     for (const [S, r, vis] of poses) {
       if (reduceMotion && S !== activeSlot) continue;
       const wgt = reduceMotion ? 1 : vis ** 3;
@@ -1843,7 +1857,8 @@ async function buildScene() {
     const [fx0, fy0, fs0] = frameFit(view.x, view.y, view.s, view.explode, view.gest);
     const ringK = ring.mainIn;
     pivot.position.set(fx0, fy0 + breathe * fs0, 0);
-    pivot.scale.setScalar(fs0);
+    pivot.scale.setScalar(Math.max(0.001, fs0));
+    pivot.visible = fs0 > 0.004; // celular: el hueco salió de la pantalla y el ARMY Bomb se encogió hasta desaparecer
 
     // Giro: libre en la portada, si no vuelve a la orientación de la pose. Inclinación con resorte.
     if (!dragging) spinVel += (0.004 * view.spin - spinVel) * Math.min(1, dt * 1.6);

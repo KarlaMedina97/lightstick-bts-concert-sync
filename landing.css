@@ -979,7 +979,9 @@ main > .chapter:not(.hero)::before {
   #funciones .mv-bar { height: 44px; min-width: 0; }
   #funciones .mv-time { color: #d9d2ea; font-size: .78rem; }
   /* Micrófono */
-  #funciones .mock-mic .eq { flex: 1 1 110px; height: 44px; }
+  /* Micrófono: el ecualizador y «Probar micrófono» juntos y centrados en la demo */
+  #funciones .mock-mic { justify-content: center; }
+  #funciones .mock-mic .eq { flex: 0 0 auto; height: 44px; }
   #funciones .mock-mic .mock-btn { flex: 0 1 auto; }
   /* Fanchant: los nombres arriba y, abajo, el botón y «Con voz» en la misma fila (o una debajo de otra) */
   #funciones .fc-controls { flex-wrap: wrap; justify-content: center; gap: 8px 14px; }
@@ -1029,6 +1031,23 @@ main > .chapter:not(.hero)::before {
   #funciones .stats dd { font-size: clamp(1.1rem, 2.4vw, 1.6rem); }
 }
 @media (max-width: 719px) and (pointer: coarse) { #funciones .feat-link { top: 4px; right: 4px; width: 44px; height: 44px; } }
+/* Celular con 3D: carril lateral. Las tarjetas a la izquierda y el hueco del ARMY Bomb pegajoso a la derecha, así
+   se ve cómo reacciona mientras se usan las demos (QA 2026-11-24: antes quedaba tapado o fuera de la pantalla).
+   En la versión ligera no hay 3D: una sola columna como antes. */
+@media (max-width: 719px) {
+  html:not(.lite) #funciones { display: grid; grid-template-columns: minmax(0, 1fr) 30%; column-gap: 8px; align-items: start; }
+  html:not(.lite) #funciones > .slot {
+    grid-column: 2; grid-row: 1; position: sticky; top: var(--nav-h, 80px); height: min(62svh, 440px); align-self: start;
+  }
+  html:not(.lite) #funciones > .copy { grid-column: 1; grid-row: 1; min-width: 0; padding-top: 4px; }
+  html:not(.lite) #funciones .title { font-size: clamp(1.45rem, 7.4vw, 1.9rem); }
+  /* Tarjetas angostas: la demo usa todo el ancho y la flecha baja a la esquina */
+  html:not(.lite) #funciones .feat .mock { margin-right: 0; flex-wrap: wrap; }
+  html:not(.lite) #funciones .feat h3, html:not(.lite) #funciones .feat p { padding-right: 46px; }
+  html:not(.lite) #funciones .feat-link { top: auto; bottom: 6px; right: 6px; }
+  html:not(.lite) #funciones .mock-mic .eq { flex: 1 1 100%; }
+  html:not(.lite) #funciones .stats dd { font-size: 1.15rem; }
+}
 
 /* Aviso de privacidad / consentimiento (src/consent.js): abajo, sin tapar el video, hasta que la persona elige */
 .consent { position: fixed; z-index: 60; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); margin: 0 auto; max-width: 560px; display: grid; gap: 10px; padding: 14px 16px; border-radius: 16px; background: rgba(22, 12, 38, 0.94); color: #f3ecff; border: 1px solid rgba(179, 136, 255, 0.35); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45); font-size: 0.9rem; line-height: 1.45; backdrop-filter: blur(10px); }
