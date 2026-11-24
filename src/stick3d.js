@@ -63,15 +63,17 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
   let yaw = -0.5, spinVel = 0, lean = 0, leanV = 0, pitch = 0, pitchV = 0;
   let dragging = false, lastX = 0, lastY = 0, lastT = 0, moved = 0, shakeT = -10, shakeAmp = 0, lastFlick = 0, beat = 0;
   const worldPerPx = () => (2 * camera.position.z * Math.tan((camera.fov * Math.PI) / 360)) / Math.max(1, h);
+  let pointerId = null;
   canvas.addEventListener("pointerdown", (e) => {
-    dragging = true; moved = 0;
+    if (dragging) return; // un segundo dedo no toma el control
+    dragging = true; moved = 0; pointerId = e.pointerId;
     lastX = hold.ox = e.clientX; lastY = hold.oy = e.clientY; lastT = performance.now();
     hold.tx = hold.x; hold.ty = hold.y;
     try { canvas.setPointerCapture(e.pointerId); } catch {} // algunos punteros (o eventos sintéticos) no se pueden capturar
     wake();
   });
   canvas.addEventListener("pointermove", (e) => {
-    if (!dragging) return;
+    if (!dragging || e.pointerId !== pointerId) return;
     const now = performance.now(), ddt = Math.max(1, now - lastT);
     const dx = e.clientX - lastX, dy = e.clientY - lastY;
     lastX = e.clientX; lastY = e.clientY; lastT = now;
@@ -84,15 +86,20 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
     // Movimiento rápido: el globo destella (sin la sacudida automática, que peleaba con el arrastre y daba tirones).
     if (!reduceMotion && Math.hypot(dx, dy) / ddt > 2.2 && now - lastFlick > 450) { lastFlick = now; beat = 1; }
   });
-  const up = () => {
-    if (!dragging) return;
-    dragging = false;
+  const up = (e) => {
+    if (!dragging || (e?.pointerId != null && e.pointerId !== pointerId)) return;
+    dragging = false; pointerId = null;
     tryMotion(); // iPhone: el permiso del giroscopio se pide con un toque
     hold.tx = hold.ty = 0;
     if (moved < 6) shake(0.5); // toque: late
   };
   canvas.addEventListener("pointerup", up);
   canvas.addEventListener("pointercancel", up);
+  // iPad/iPhone: si el sistema se queda con el toque (gesto de borde, cambio de app, alerta) a veces no llega
+  // pointerup ni pointercancel y el ARMY Bomb quedaba agarrado y torcido. Al perder el dedo, se suelta.
+  canvas.addEventListener("lostpointercapture", up);
+  addEventListener("blur", () => up());
+  document.addEventListener("visibilitychange", () => document.hidden && up());
   canvas.addEventListener("dblclick", () => { yaw = -0.5; spinVel = 0; });
   // Giroscopio / acelerómetro del teléfono: inclinarlo lo inclina; sacudirlo lo agita y destella.
   const STEP = 1 / 240;
@@ -110,16 +117,23 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
   }
   // Al girar la pantalla (tablet o celular con rotación automática) el giro del propio equipo no es una
   // inclinación: durante el cambio se ignora y el ARMY Bomb vuelve a quedar derecho.
-  let rotatedAt = 0;
-  const onRotate = () => { rotatedAt = performance.now(); motion.tilt = 0; };
+  let rotatedAt = 0, base = null, baseT = 0;
+  const onRotate = () => { rotatedAt = performance.now(); motion.tilt = 0; base = null; };
   function onOrient(e) {
     if (e.gamma == null) return;
-    if (performance.now() - rotatedAt < 900) { motion.tilt = 0; return; }
+    const now = performance.now();
+    if (now - rotatedAt < 900) { motion.tilt = 0; base = null; return; }
     // Inclinación hacia los lados según cómo está la pantalla: cada orientación mira otro eje del equipo y con otro
     // signo (antes, en horizontal de un lado, el ARMY Bomb se iba para el lado contrario y quedaba torcido).
     const a = ((screen.orientation?.angle ?? Number(globalThis.orientation) ?? 0) % 360 + 360) % 360;
     const angle = a === 90 ? (e.beta ?? 0) : a === 270 ? -(e.beta ?? 0) : a === 180 ? -e.gamma : e.gamma;
-    motion.tilt = reduceMotion ? 0 : Math.max(-0.5, Math.min(0.5, (-angle / 90) * 0.7));
+    // Solo cuenta el cambio de inclinación: si el teléfono o la tablet se sostiene torcido (o apoyado en un atril),
+    // en un par de segundos el ARMY Bomb vuelve a quedar derecho en vez de quedarse inclinado para siempre.
+    if (base == null) base = angle;
+    base += (angle - base) * (1 - Math.exp(-Math.min(0.2, (now - baseT) / 1000) / 1.5));
+    baseT = now;
+    const d = angle - base, rel = Math.abs(d) < 2 ? 0 : d - Math.sign(d) * 2; // margen para el pulso de la mano
+    motion.tilt = reduceMotion ? 0 : Math.max(-0.5, Math.min(0.5, (-rel / 90) * 0.7));
   }
   function startMotion() {
     if (motion.on || !motionOn) return;
@@ -131,7 +145,7 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
   }
   function stopMotion() {
     motion.on = false;
-    motion.tilt = motion.ax = 0;
+    motion.tilt = motion.ax = 0; base = null;
     removeEventListener("devicemotion", onMotion);
     removeEventListener("deviceorientation", onOrient);
     screen.orientation?.removeEventListener?.("change", onRotate);
