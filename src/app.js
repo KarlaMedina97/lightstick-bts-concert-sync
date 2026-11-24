@@ -111,15 +111,30 @@ function videoRect() {
   return r.width > 0 && r.height > 0 ? r : null;
 }
 const overlaps = (a, b, m = 10) => a.left < b.right + m && b.left < a.right + m && a.top < b.bottom + m && b.top < a.bottom + m;
-/** Si el aviso tapa el video, prueba otra franja: arriba (sobre la cabecera) o abajo (sobre el pie de página). */
+/**
+ * Lugar del aviso: nunca sobre el video. En Luces además prueba encima del dock, arriba y abajo, y se queda con el que
+ * menos tapa los controles a la vista (cambio de vista, versión, chip del micrófono, cabecera y dock). QA 2026-11-23:
+ * el consejo de rotación tapaba el video en iPad vertical y el aviso del micrófono, las pestañas.
+ */
 function dodgeVideo(el) {
   delete el.dataset.at;
   const v = videoRect();
-  if (!v) return;
-  for (const at of ["top", "bottom"]) {
-    if (!overlaps(el.getBoundingClientRect(), v)) return;
-    el.dataset.at = at;
+  const lights = view === "lights";
+  if (!v && !lights) return;
+  // Peso de cada control: los de Luces pesan el doble (la cabecera o el dock tapados un momento molestan menos).
+  const keep = !lights ? [] : [["lv-switch", 2], ["lv-ver-btn", 2], ["mic-chip", 2]].map(([id, k]) => [$(id), k])
+    .concat([[document.querySelector(".hud-top"), 1], [$("dock"), 1]])
+    .filter(([e]) => e && !e.hidden && e.offsetWidth).map(([e, k]) => [e.getBoundingClientRect(), k]);
+  const area = (a, b) => Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+  let best = "", bestScore = Infinity;
+  for (const at of lights ? ["", "dock", "top", "bottom"] : ["", "top", "bottom"]) {
+    if (at) el.dataset.at = at; else delete el.dataset.at;
+    const r = el.getBoundingClientRect();
+    const score = (v && overlaps(r, v) ? 1e9 : 0) + keep.reduce((n, [k, w]) => n + area(r, k) * w, 0);
+    if (score < bestScore || (score >= 1e9 && !lights)) { best = at; bestScore = score; }
+    if (score === 0) break;
   }
+  if (best) el.dataset.at = best; else delete el.dataset.at;
 }
 /** Aparecer / desvanecerse de verdad: [hidden] es display:none, así que primero se apaga la opacidad y luego se oculta. */
 function fadeIn(el) {
@@ -306,7 +321,6 @@ function setView(v) {
   const exploring = v === "explore";
   $("lights-view").hidden = v !== "lights";
   stick3d?.setActive(v === "lights" && settings.lightsModel === "stick");
-  if (v === "lights" && settings.lightsModel === "stick") motionTip();
   // En Explorar el video sigue sonando en un mini reproductor; sin canción, Video y Explorar muestran el inicio.
   // En Luces también, si hay canción: YouTube no permite que suene un video oculto (sin canción, .app.home lo deja invisible).
   $("video-view").hidden = v === "lights" && current < 0;
@@ -323,7 +337,11 @@ function setView(v) {
   syncVideoTab();
   syncRoute();
   placeMini(false); // ya, sin esperar al cuadro siguiente: el mini nunca aparece donde tape algo
-  requestAnimationFrame(() => placeMini(false));
+  requestAnimationFrame(() => {
+    placeMini(false);
+    // El consejo de rotación, con el video ya en su lugar (antes esquivaba el video donde estaba y lo tapaba).
+    if (view === "lights" && settings.lightsModel === "stick") motionTip();
+  });
 }
 /** Botón del pie de página junto a pantalla completa: Minimizar (en Video) o Expandir (con el video en la ventanita). */
 /** Video sin canción no tiene nada que mostrar: la pestaña (y su opción del menú del teléfono) queda deshabilitada. */
@@ -2580,7 +2598,7 @@ async function setLightsModel(mode, { save = true } = {}) {
   }
   if (model) { stick3d.setVersion(stickVersion()); syncVersionButtons(); }
   stick3d?.setActive(model && view === "lights");
-  if (model && view === "lights") motionTip();
+  if (model && view === "lights") requestAnimationFrame(() => motionTip());
 }
 /**
  * Tablet en Luces con el movimiento encendido: si la pantalla gira sola al moverla, el ARMY Bomb se tuerce. Una vez
@@ -2629,6 +2647,7 @@ function bindVersionMenu() {
   };
   const place = () => {
     const r = btn.getBoundingClientRect();
+    list.classList.remove("row");
     list.style.minWidth = `${r.width}px`;
     // Hacia arriba, sin llegar al video si está encima (Luces a todo el ancho con el video arriba); si no cabe ni
     // para dos opciones, se abre hacia abajo hasta el pie.
@@ -2653,6 +2672,17 @@ function bindVersionMenu() {
     const downSpace = dockT - r.bottom - 12;
     // Hacia arriba salvo que no quepan ni dos opciones y abajo haya más lugar.
     const down = upSpace < Math.min(full, 96) && downSpace > upSpace;
+    // Celular bajo (360x640): la columna no cabe ni arriba ni abajo; las versiones van en una fila de chips justo
+    // encima del botón, sin tapar el video ni pasar bajo el dock (QA 2026-11-23).
+    if (full > Math.max(upSpace, downSpace) && upSpace >= 56) {
+      list.classList.add("row");
+      list.style.minWidth = "";
+      list.style.maxHeight = "";
+      const w = list.offsetWidth, h = list.offsetHeight;
+      list.style.left = `${Math.round(Math.min(innerWidth - w - 12, Math.max(12, r.left + r.width / 2 - w / 2)))}px`;
+      list.style.top = `${Math.round(r.top - 6 - h)}px`;
+      return;
+    }
     list.style.maxHeight = `${Math.round(Math.max(44, Math.min(full, down ? downSpace : upSpace)))}px`;
     const w = list.offsetWidth, h = list.offsetHeight;
     list.style.left = `${Math.round(Math.min(innerWidth - w - 12, Math.max(12, r.left + r.width / 2 - w / 2)))}px`;
@@ -2690,7 +2720,7 @@ function bindVersionMenu() {
   list.addEventListener("pointermove", (e) => { const i = opts().indexOf(e.target.closest("[role=option]")); if (i >= 0 && i !== active) setActive(i); });
   list.addEventListener("keydown", (e) => {
     const k = e.key;
-    if (k === "ArrowDown" || k === "ArrowUp") { e.preventDefault(); setActive(active + (k === "ArrowDown" ? 1 : -1)); }
+    if (k === "ArrowDown" || k === "ArrowUp" || k === "ArrowRight" || k === "ArrowLeft") { e.preventDefault(); setActive(active + (k === "ArrowDown" || k === "ArrowRight" ? 1 : -1)); }
     else if (k === "Home" || k === "End") { e.preventDefault(); setActive(k === "Home" ? 0 : opts().length - 1); }
     else if (k === "Enter" || k === " ") { e.preventDefault(); choose(opts()[active]); }
     else if (k === "Escape") { e.preventDefault(); e.stopPropagation(); close(); }
@@ -3565,6 +3595,8 @@ function bindMini() {
     say(toTop ? "Video arriba, ARMY Bomb abajo." : "Video abajo, ARMY Bomb arriba.");
   };
   $("mini-back").onclick = () => $("view-video").click();
+  // Si el video cambia de lugar con un aviso a la vista, el aviso vuelve a buscar dónde no tapar nada.
+  addEventListener("pws:layout", () => { const t = $("toast"); if (!t.hidden && !t.classList.contains("leaving")) dodgeVideo(t); });
   $("mini-dock").onclick = () => {
     const on = !dockPref();
     store.set(dockKey(), on ? "dock" : "float");

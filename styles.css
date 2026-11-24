@@ -302,6 +302,11 @@ kbd {
 .seg button:hover, .tabs button:hover { color: var(--text); }
 .seg [aria-selected="true"], .tabs [aria-selected="true"], .seg [aria-selected="true"]:hover, .tabs [aria-selected="true"]:hover { color: var(--text-ink); }
 .view-tabs button { min-width: 84px; }
+/* iPad mini vertical, Split View: «Biblioteca» quedaba debajo de «Explorar». El inicio no se encoge; las pestañas ceden. */
+@media (min-width: 641px) and (max-width: 819px) {
+  .hud-start { flex: none; }
+  .view-tabs button { min-width: 0; padding-inline: var(--s-3); }
+}
 .tabs { background: var(--surface-field); border: 1px solid var(--border); }
 
 /* Botón de conexión y redondos */
@@ -543,6 +548,11 @@ kbd {
 .lv-ver-list:not(:popover-open)[popover] { display: none; }
 .lv-ver-list[hidden] { display: none; }
 .lv-ver-list:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+/* Celular bajo: las versiones en una fila de chips (ver place() en bindVersionMenu) */
+.lv-ver-list.row { grid-auto-flow: column; grid-auto-columns: max-content; max-height: none; overflow-x: auto; overflow-y: hidden; }
+.lv-ver-list.row { gap: 0; }
+.lv-ver-list.row [role="option"] { padding: 0 10px; }
+.lv-ver-list.row [role="option"][aria-selected="true"]::after { display: none; }
 .lv-ver-list [role="option"] {
   position: relative; display: flex; align-items: center; min-height: 44px; height: 44px; padding: 0 var(--s-6, 32px) 0 var(--s-4);
   border-radius: var(--r-pill); font-size: var(--fs-14); font-weight: 700; cursor: pointer; white-space: nowrap;
@@ -1588,7 +1598,7 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 .dbtn-icon span, .dbtn-sr span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @container dock (max-width: 799px) {
   .dock-actions { gap: 2px; }
-  .dbtn { flex-direction: column; gap: 2px; min-width: 56px; min-height: 52px; padding: var(--s-1) var(--s-1); border-radius: var(--r-md); font-size: 0.6875rem; letter-spacing: 0.01em; }
+  .dbtn { flex-direction: column; gap: 2px; min-width: 56px; min-height: 52px; padding: var(--s-1) var(--s-1); border-radius: var(--r-md); font-size: 0.75rem; letter-spacing: 0; }
   .dbtn-icon { width: auto; }
   .dbtn-icon span { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
   .transport { gap: var(--s-1); }
@@ -1644,6 +1654,7 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 .mi:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 .mi-text { display: grid; gap: 2px; min-width: 0; flex: 1; }
 .mi small { font-size: var(--fs-12); font-weight: 500; color: var(--muted); }
+.app.lights-short .menu-pop .mi small { display: none; } /* 360x640: las 4 opciones del modo concierto sin scroll */
 .mi[aria-pressed]::after { /* interruptor que muestra el estado */
   content: ""; flex: none; width: 36px; height: 22px; border-radius: var(--r-pill);
   background: rgba(255, 255, 255, 0.2) radial-gradient(circle, #fff 0 7px, transparent 7.5px) 0 50% / 22px 22px no-repeat;
@@ -2321,6 +2332,8 @@ button.support-pill { font-size: var(--fs-14); font-weight: 700; }
 /* Si el aviso taparía el video (dodgeVideo en src/app.js), sube sobre la cabecera o baja sobre el pie de página. */
 .toast[data-at="top"] { top: calc(var(--pad) + var(--safe-t)); bottom: auto; }
 .toast[data-at="bottom"] { top: auto; bottom: calc(var(--pad) + var(--safe-b)); }
+/* Luces: encima del dock (zona del pulgar), si ahí no tapa los controles de la vista */
+.toast[data-at="dock"] { top: auto; bottom: calc(var(--pad) + var(--dock-real, var(--dock-h)) + var(--s-3) + var(--safe-b)); }
 :root[data-theme="light"] .home-view { background: linear-gradient(to bottom, rgba(244, 240, 251, 0.86), rgba(244, 240, 251, 0.72)); }
 :root[data-theme="light"] .sg-play { background: rgba(255, 255, 255, 0.92); }
 /* UI-07 / UI-01 · en los paneles, cada fila mide lo que su contenido (las filas con scroll horizontal,
@@ -2744,27 +2757,39 @@ html {
 .app.lights-short .lights-view #lv-hint, .app.lights-short .lights-view #lv-note { display: none; }
 .app.lights-short .lights-view { gap: var(--s-1); }
 .app.mini-mode.lights-short .lights-view.model .lv-stage { min-height: 0; } /* el ARMY Bomb toma el alto que queda */
+/* …y el cambio de vista y la versión comparten una fila debajo (QA 2026-11-23: en 360x640 el ARMY Bomb medía 62 px) */
+.app.lights-short .lights-view.model {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto;
+  align-content: stretch; column-gap: var(--s-2); row-gap: var(--s-1);
+}
+.app.lights-short .lights-view.model > * { grid-column: 1 / -1; }
+.app.lights-short .lights-view.model > .lv-stage { grid-row: 1; height: 100%; }
+.app.lights-short .lights-view.model > .lv-switch { grid-row: 2; grid-column: 1; justify-self: end; max-width: 100%; }
+.app.lights-short .lights-view.model > .lv-vers { grid-row: 2; grid-column: 2; justify-self: start; max-width: 100%; }
+.app.lights-short .lights-view.model .lv-switch, .app.lights-short .lights-view.model .lv-ver-btn {
+  font-size: var(--fs-12); line-height: 1.2; text-align: left; white-space: normal; padding-left: var(--s-3);
+}
 /* Fanchant en el hueco bajo (172 px): sin la etiqueta, y «Saltar» más cerca, para no pasar bajo la cabecera ni el video */
 .app.lights-short .chant .chant-label { display: none; }
 .app.lights-short .chant .btn { margin-top: var(--s-1); }
 /* Aviso «no oficial» corto sobre el pie del 3D cuando #lv-note no cabe (celular): nunca sobre el video */
 .lv-tag {
   display: none; align-self: end; justify-self: center; z-index: 1; margin: 0 0 2px; padding: 2px var(--s-2);
-  border-radius: var(--r-pill); background: var(--surface-1); color: var(--text-2); font-size: 11px; line-height: 1.3;
+  border-radius: var(--r-pill); background: var(--surface-1); color: var(--text); font-size: var(--fs-12); line-height: 1.3;
   pointer-events: none; white-space: nowrap;
 }
 .lv-tag[hidden] { display: none !important; }
 /* Modo micrófono: «Escuchando» con un medidor de 5 barras (sin destellos: solo crecen o se apagan las barras) */
 .mic-chip {
-  align-self: start; justify-self: center; z-index: 1; display: inline-flex; align-items: center; gap: var(--s-2);
-  margin: 4px 0 0; padding: 4px var(--s-3); border-radius: var(--r-pill); background: var(--surface-1);
+  align-self: start; justify-self: end; z-index: 1; display: inline-flex; align-items: center; gap: var(--s-2);
+  margin: 4px var(--s-2) 0 0; padding: 4px var(--s-3); border-radius: var(--r-pill); background: var(--surface-1);
   border: 1px solid var(--border); color: var(--text); font-size: var(--fs-12); font-weight: 700; line-height: 1.3;
   pointer-events: none; max-width: calc(100% - 16px);
 }
 .mic-chip[hidden] { display: none; }
 /* Celular bajo (ARMY Bomb de ~68 px): a la izquierda y, mientras escucha, solo ícono y barras (el texto sigue para
    el lector de pantalla) */
-.app.lights-short .mic-chip { justify-self: start; margin-left: var(--s-2); padding: 3px var(--s-2); }
+.app.lights-short .mic-chip { padding: 3px var(--s-2); }
 .app.lights-short .mic-chip[data-state="on"] #mic-chip-txt {
   position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
@@ -2835,11 +2860,11 @@ html {
 
 /* Cola en la barra de abajo: con su contador (cuántas canciones vienen) */
 #btn-cola { position: relative; }
-#btn-cola .cola-n { position: absolute; top: 2px; right: 2px; min-width: 18px; padding: 0 5px; border-radius: var(--r-pill); background: var(--accent); color: var(--accent-ink); font-size: 0.625rem; font-weight: 800; line-height: 16px; text-align: center; }
+#btn-cola .cola-n { position: absolute; top: 2px; right: 2px; min-width: 18px; padding: 0 5px; border-radius: var(--r-pill); background: var(--accent); color: var(--accent-ink); font-size: 0.6875rem; font-weight: 800; line-height: 16px; text-align: center; }
 #btn-cola .cola-n:empty, #btn-cola .cola-n.zero { display: none; }
 
 /* Aclaración bajo las versiones del ARMY Bomb 3D: discreta, una línea */
-.lv-note { margin: calc(-1 * var(--s-2)) 0 0; max-width: 42ch; font-size: var(--fs-12); line-height: 1.35; color: var(--text-2); opacity: 0.85; text-align: center; }
+.lv-note { margin: 0; max-width: 42ch; padding: 2px var(--s-3); border-radius: var(--r-pill); background: var(--surface-1); font-size: var(--fs-12); line-height: 1.35; color: var(--text); text-align: center; }
 
 /* Biblioteca compacta por defecto; al pasar el mouse (o con el teclado) se amplía encima del contenido, sin
    empujarlo: el escenario conserva el margen de la barra angosta. */
