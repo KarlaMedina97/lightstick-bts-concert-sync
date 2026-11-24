@@ -11,7 +11,19 @@ export const MEMBERS = [
   { ko: "김태형", roman: "Kim Taehyung" },
   { ko: "전정국", roman: "Jeon Jungkook" },
 ];
-const FINAL = { ko: "방탄소년단!", roman: "BTS!" };
+// El grito final se ve en hangul, pero la voz siempre dice «BTS» en inglés (bi-ti-es): así lo corea el público en
+// todo el mundo y es parte de la identidad del grupo (pedido 2026-11-24). Nunca leído en coreano ni en español.
+export const FINAL = { ko: "방탄소년단!", roman: "BTS!", say: "BTS!", sayLang: "en-US" };
+/** Qué dice la voz para un nombre: el hangul con voz coreana, salvo el final («BTS», con voz en inglés). */
+export function chantVoiceFor(item, voices = globalThis.speechSynthesis?.getVoices?.() ?? []) {
+  const lang = item.sayLang ?? "ko-KR";
+  const voice = voices.find((v) => v.lang?.toLowerCase().replace("_", "-") === lang.toLowerCase())
+    ?? voices.find((v) => v.lang?.slice(0, 2).toLowerCase() === lang.slice(0, 2)) ?? null;
+  // Sin voz coreana instalada, la romanización (la del sistema leería mal el hangul o se quedaría callada). Si el
+  // navegador aún no cargó su lista de voces (vacía al principio en Chrome), el hangul: él elige la voz por idioma.
+  const text = item.say ?? (voice || !voices.length ? item.ko : item.roman);
+  return { text, lang: voice?.lang ?? lang, voice };
+}
 // Ritmo real del público: cada nombre ocupa 2 tiempos de la canción (unos 0,9–1 s). Referencia: guía oficial de
 // fanchant de DNA (fancafe de BTS, vía US BTS ARMY): la ronda de 7 nombres + «BTS!» empieza en 0:02 y se repite
 // dos veces antes de la primera estrofa, ≈ 1 s por grito a 130 BPM. Sin BPM, 1 s.
@@ -123,8 +135,10 @@ export class Fanchant {
             this.timer = setTimeout(rest, Math.max(180, minMs - (performance.now() - t0)));
           };
           speechSynthesis.cancel(); // sin cola: si quedó algo pendiente, no se acumula
-          const u = new SpeechSynthesisUtterance(it.ko);
-          u.lang = "ko-KR";
+          const v = chantVoiceFor(it);
+          const u = new SpeechSynthesisUtterance(v.text);
+          u.lang = v.lang;
+          if (v.voice) u.voice = v.voice;
           u.rate = speed > 1 ? 1.15 : 0.95; // tres sílabas por nombre, marcadas; más ágil si se eligió rápido
           u.volume = 0.9;
           u.onend = next;

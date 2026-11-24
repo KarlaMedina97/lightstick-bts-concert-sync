@@ -2145,16 +2145,14 @@ let chantBeat = null;
     btn.setAttribute("aria-pressed", "false");
     if ("speechSynthesis" in window) speechSynthesis.cancel();
   };
-  const koVoice = () => ("speechSynthesis" in window ? speechSynthesis.getVoices().find((v) => /^ko/i.test(v.lang)) : null);
   async function start() {
     const me = ++run;
     btn.textContent = "Detener";
     btn.setAttribute("aria-pressed", "true");
-    const { MEMBERS: names, chantStepMs: stepOf } = await import("./fanchant.js");
+    const { MEMBERS: names, FINAL, chantVoiceFor, chantStepMs: stepOf } = await import("./fanchant.js");
     if (me !== run) return;
-    const seq = [...names, { ko: "방탄소년단!", roman: "BTS!" }];
+    const seq = [...names, FINAL];
     const voice = $("fc-voice")?.checked && "speechSynthesis" in window;
-    const ko = voice ? koVoice() : null;
     // Más ágil que en el reproductor (2,5 s por nombre): una muestra de ~12 s en vez de ~22 s.
     const stepMs = stepOf(FEATURED.bpm, 1.5);
     const now = document.createElement("span");
@@ -2174,8 +2172,11 @@ let chantBeat = null;
       if (!reduceMotion) now.animate([{ transform: "translateY(10px) scale(.9)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 380, easing: "cubic-bezier(.34,1.56,.64,1)" });
       chantBeat?.();
       if (voice) {
-        const u = new SpeechSynthesisUtterance(ko ? m.ko : m.roman);
-        if (ko) { u.voice = ko; u.lang = ko.lang; }
+        // «BTS» siempre en inglés (bi-ti-es); los nombres en coreano, o romanizados si no hay voz coreana.
+        const v = chantVoiceFor(m);
+        const u = new SpeechSynthesisUtterance(v.text);
+        u.lang = v.lang;
+        if (v.voice) u.voice = v.voice;
         speechSynthesis.cancel();
         speechSynthesis.speak(u);
       }
