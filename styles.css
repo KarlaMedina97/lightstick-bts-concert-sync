@@ -1214,6 +1214,18 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 .dock-handle:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; border-radius: var(--r-pill); }
 @keyframes handle-nudge { 50% { transform: translateY(-4px); } }
 @media (prefers-reduced-motion: reduce) { .app.idle .dock-handle { animation: none; } }
+/* Luces con el menú oculto (pantalla completa, sonando): la cabecera y el pie dejan de reservar su lugar y el
+   escenario toma toda la pantalla; los botones de la vista también se van y el ARMY Bomb crece. El aviso «no
+   oficial» corto se queda siempre. Al tocar o deslizar, todo vuelve. Pedido 2026-11-24 (Android, foto). */
+.app.idle[data-view="lights"] > .hud-top, .app.idle[data-view="lights"] > .dock { position: absolute; left: 0; right: 0; }
+.app.idle[data-view="lights"] > .hud-top { top: calc(var(--pad) + var(--safe-t)); }
+.app.idle[data-view="lights"] > .dock { bottom: calc(var(--pad) + var(--safe-b)); }
+.app.idle[data-view="lights"] > .stage { grid-row: 1 / -1; }
+.app.idle[data-view="lights"] .lights-view > .lv-switch, .app.idle[data-view="lights"] .lights-view > .lv-vers,
+.app.idle[data-view="lights"] .lights-view > .lv-note, .app.idle[data-view="lights"] .lights-view > #lv-hint { display: none; }
+.app.idle[data-view="lights"] .lights-view.model .lv-tag { display: block; }
+/* La pestaña para mostrar el menú (44 px abajo) no pisa el aviso «no oficial» */
+.app.idle[data-view="lights"] .lights-view { padding-bottom: calc(44px + var(--safe-b)); }
 .app.fs .video-card { width: min(100cqw, calc((100cqh - 24px) * 16 / 9)); }
 .app.fs .style-chip { display: none; } /* a pantalla completa no queda hueco sobre el video */
 
