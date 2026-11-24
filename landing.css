@@ -304,7 +304,7 @@ main { position: relative; z-index: 2; overflow-x: clip; }
 .fc-dots { display: flex; gap: 5px; }
 .fc-dots i { width: 6px; height: 6px; border-radius: 50%; background: color-mix(in srgb, var(--muted) 45%, transparent); }
 .fc-dots i.on { background: var(--live); }
-.fc-controls { display: flex; gap: 10px; align-items: center; }
+.fc-controls { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; justify-content: center; } /* centrados bajo la caja de los nombres */
 .fc-voice { font-size: .8rem; color: var(--muted); display: inline-flex; gap: .35rem; align-items: center; min-height: 44px; }
 .mock-rhythm { gap: 12px; }
 .rt-pad { position: relative; flex: none; width: 112px; height: 72px; border-radius: 16px; border: 1px solid var(--line); background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--live) 45%, #1a1530), #120f24); color: var(--text); font: 700 .8rem/1.2 var(--display); cursor: pointer; transition: transform .1s; }
@@ -891,6 +891,8 @@ main > .chapter:not(.hero)::before {
 #versiones .vc-note { grid-area: note; font-size: .72rem; color: var(--muted); }
 #versiones .ver-card:hover, #versiones .ver-card:focus-visible, #versiones .ver-card.is-hot { transform: translateY(-2px); }
 #versiones .caption { margin: 0; font-size: .78rem; }
+/* Celular: el botón «Conectar mi ARMY Bomb» con aire debajo, antes de la franja siguiente */
+@media (max-width: 719px) { #versiones .copy { padding-bottom: max(10svh, 80px); } #versiones .caption { color: #d9d2ea; } }
 
 /* Ventana flotante del inicio: la caja mide lo que el video (16:9, 200 px de alto como mínimo, regla de YouTube),
    sin franjas vacías. La barra toma el mismo ancho que el video cuando está abierto. */
@@ -980,7 +982,7 @@ main > .chapter:not(.hero)::before {
   #funciones .mock-mic .eq { flex: 1 1 110px; height: 44px; }
   #funciones .mock-mic .mock-btn { flex: 0 1 auto; }
   /* Fanchant: los nombres arriba y, abajo, el botón y «Con voz» en la misma fila (o una debajo de otra) */
-  #funciones .fc-controls { flex-wrap: wrap; justify-content: space-between; gap: 8px 12px; }
+  #funciones .fc-controls { flex-wrap: wrap; justify-content: center; gap: 8px 14px; }
   #funciones .fc-hint, #funciones .fc-now small { color: #d9d2ea; }
   #funciones .fc-voice { color: #e6dff3; font-size: .84rem; cursor: pointer; }
   #funciones .fc-voice input { width: 18px; height: 18px; margin: 0; accent-color: var(--a2); }

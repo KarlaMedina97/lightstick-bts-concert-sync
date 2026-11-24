@@ -172,6 +172,9 @@ if (navEl && "ResizeObserver" in window) new ResizeObserver(() => document.docum
   let restY = scrollY;
   function settle() {
     if (touching || reduceMotion || document.documentElement.classList.contains("dragging")) return;
+    // En el celular el scroll es libre: el acomodo hacia la sección siguiente peleaba con el dedo y hacía difícil
+    // leer secciones largas como Versiones (revisión 2026-11-24).
+    if (mobileQ()) { restY = scrollY; return; }
     if (snapping || glide) return; // es nuestro propio acomodo
     const y = scrollY, vh = innerHeight, moved = y - restY;
     const maxY = document.documentElement.scrollHeight - vh;
@@ -869,7 +872,7 @@ async function buildScene() {
     const open = clamp01((p - 0.04) / 0.26);
     return 0.5 - 0.5 * Math.cos(Math.PI * open);
   }
-  const NAV_H = () => (mobileQ() ? 56 : 68);
+  const NAV_H = () => navBottom() - 12; // alto real del menú fijo (antes 56 / 68 px fijos)
   // Ajusta posición/escala para que el lightstick entero (gema a tapa + margen de gestos) quede a la vista.
   function frameFit(x, y, s, e, gest) {
     const ppu = ppuNow(), h = VH(), nav = NAV_H();
@@ -1238,6 +1241,7 @@ async function buildScene() {
     part.localToWorld(_v).project(camera);
     return [(_v.x + 1) / 2 * innerWidth, (1 - _v.y) / 2 * VH(), _v.z < 1];
   };
+  const anatEl = document.getElementById("anatomia");
   function updateMarkers() {
     const e = view.explode, mobile = mobileQ();
     const anatOn = e > 0.45;
@@ -1256,8 +1260,14 @@ async function buildScene() {
       L.dot.setAttribute("cx", ax.toFixed(1));
       L.dot.setAttribute("cy", ay.toFixed(1));
     });
+    // Fuera de la anatomía no queda ningún número de pieza sobre el ARMY Bomb: antes, tocar «06 · Dos botones» (o el
+    // paso 3 de «Cómo conectar») dejaba el «06» pegado al bajar a la sección siguiente (revisión 2026-11-24).
+    // La anatomía cubre el centro de la pantalla (se mide en vivo: en el celular el «slot activo» no siempre es el suyo).
+    const ar = anatEl?.getBoundingClientRect();
+    const inAnat = Boolean(ar) && ar.top < innerHeight * 0.6 && ar.bottom > innerHeight * 0.35;
+    if (!inAnat && hotFromUI && cards.some((c) => c.dataset.part === hotPart && c.classList.contains("is-hot"))) { hotFromUI = false; setHot(null); }
     for (const M of markers) {
-      const on = (anatOn && mobile) || (M.key === hotPart && hotPart && !(anatOn && !mobile));
+      const on = inAnat && ((anatOn && mobile) || (M.key === hotPart && hotPart && !(anatOn && !mobile)));
       if (on !== M.shown) { M.shown = on; M.el.classList.toggle("shown", on); }
       if (!on) continue;
       // Al costado de su pieza, no encima: se aleja del eje del ARMY Bomb (los del mango quedaban pegados a él).
@@ -1415,6 +1425,11 @@ async function buildScene() {
     _rp.project(camera);
     tags.push({ el: mainTag, x: (_rp.x + 1) / 2 * innerWidth, y: (1 - _rp.y) / 2 * VH(), z: zMain, show: ring.mainIn > 0.7, hot: ring.hot === "v4" });
     tags.sort((p, q) => q.z - p.z); // primero las de adelante
+    // Texto de la sección (título, tarjetas, aclaración y botón): ninguna etiqueta encima. Antes, si el modelo
+    // subía detrás del menú, la etiqueta se quedaba pegada debajo de él, lejos de su ARMY Bomb (sobre todo
+    // «Ver. 4» en el celular). Ahora, sin lugar junto a su modelo, la etiqueta se oculta (revisión 2026-11-24).
+    const avoid = [...document.querySelectorAll("#versiones .copy .head, #versiones .vers, #versiones .caption, #versiones .ctas")]
+      .map((e) => e.getBoundingClientRect()).filter((r) => r.height && r.bottom > 0 && r.top < innerHeight);
     const placed = [];
     for (const T of tags) {
       const w = (T.el.offsetWidth || 70) + 10, h = 30;
@@ -1424,10 +1439,13 @@ async function buildScene() {
         if (!hit) break;
         y = hit.y - h - 4;
       }
-      y = Math.max(NAV_H() + 24, y);
-      placed.push({ x: T.x, y, w });
+      // La caja de la etiqueta queda encima del punto (translate -50% -100%).
+      const box = { l: T.x - w / 2, r: T.x + w / 2, t: y - h, b: y };
+      const fits = box.t > NAV_H() + 8 && box.b < VH() - 8 && box.l > 0 && box.r < innerWidth
+        && !avoid.some((r) => box.l < r.right && r.left < box.r && box.t < r.bottom && r.top < box.b);
+      if (fits) placed.push({ x: T.x, y, w });
       T.el.style.transform = `translate(${T.x.toFixed(1)}px, ${y.toFixed(1)}px)`;
-      T.el.classList.toggle("shown", T.show);
+      T.el.classList.toggle("shown", T.show && fits);
       T.el.classList.toggle("hot", T.hot);
     }
     // Posición del principal en la ronda (índice 0): entra y sale en espiral, y baila con los demás.
