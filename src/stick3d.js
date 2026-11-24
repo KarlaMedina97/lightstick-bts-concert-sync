@@ -4,6 +4,7 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { createMaterials, contactShadow, glowTexture } from "./models/shared.js";
+import { sideAngle, createTiltFilter, pushFromAccel } from "./motion.js";
 
 export const VERSIONS = [
   ["v4", "Ver. 4"], ["se", "SE"], ["v3", "Ver. 3"], ["v2", "Ver. 2"], ["v1", "Ver. 1"],
@@ -104,12 +105,14 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
   // Giroscopio / acelerómetro del teléfono: inclinarlo lo inclina; sacudirlo lo agita y destella.
   const STEP = 1 / 240;
   let acc = 0;
-  const motion = { tilt: 0, ax: 0, lastShake: 0, on: false };
+  const motion = { tilt: 0, ax: 0, lastShake: 0, on: false, at: 0 };
+  const tiltFilter = createTiltFilter();
   function onMotion(e) {
     const a = e.acceleration ?? e.accelerationIncludingGravity;
     if (!a || a.x == null) return;
     const ax = e.acceleration ? a.x : 0; // sin gravedad: solo el movimiento
-    if (!dragging && ax) motion.ax = Math.max(-60, Math.min(60, -ax * 6)); // empuja la mano como un sacudón
+    const push = pushFromAccel(ax);
+    if (!dragging && push) motion.ax = push; // empuja la mano como un sacudón (el ruido de un equipo quieto no)
     const mag = Math.hypot(e.acceleration?.x ?? 0, e.acceleration?.y ?? 0, e.acceleration?.z ?? 0);
     const now = performance.now();
     if (mag > 14 && now - motion.lastShake > 350) { motion.lastShake = now; beat = 1; }
@@ -117,23 +120,16 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
   }
   // Al girar la pantalla (tablet o celular con rotación automática) el giro del propio equipo no es una
   // inclinación: durante el cambio se ignora y el ARMY Bomb vuelve a quedar derecho.
-  let rotatedAt = 0, base = null, baseT = 0;
-  const onRotate = () => { rotatedAt = performance.now(); motion.tilt = 0; base = null; };
+  let rotatedAt = 0;
+  const onRotate = () => { rotatedAt = performance.now(); motion.tilt = 0; tiltFilter.reset(); };
   function onOrient(e) {
     if (e.gamma == null) return;
     const now = performance.now();
-    if (now - rotatedAt < 900) { motion.tilt = 0; base = null; return; }
-    // Inclinación hacia los lados según cómo está la pantalla: cada orientación mira otro eje del equipo y con otro
-    // signo (antes, en horizontal de un lado, el ARMY Bomb se iba para el lado contrario y quedaba torcido).
-    const a = ((screen.orientation?.angle ?? Number(globalThis.orientation) ?? 0) % 360 + 360) % 360;
-    const angle = a === 90 ? (e.beta ?? 0) : a === 270 ? -(e.beta ?? 0) : a === 180 ? -e.gamma : e.gamma;
-    // Solo cuenta el cambio de inclinación: si el teléfono o la tablet se sostiene torcido (o apoyado en un atril),
-    // en un par de segundos el ARMY Bomb vuelve a quedar derecho en vez de quedarse inclinado para siempre.
-    if (base == null) base = angle;
-    base += (angle - base) * (1 - Math.exp(-Math.min(0.2, (now - baseT) / 1000) / 1.5));
-    baseT = now;
-    const d = angle - base, rel = Math.abs(d) < 2 ? 0 : d - Math.sign(d) * 2; // margen para el pulso de la mano
-    motion.tilt = reduceMotion ? 0 : Math.max(-0.5, Math.min(0.5, (-rel / 90) * 0.7));
+    motion.at = now;
+    if (now - rotatedAt < 900) { motion.tilt = 0; tiltFilter.reset(); return; }
+    // Solo cuenta el cambio de inclinación (src/motion.js): quieto, aunque esté torcido, vuelve a quedar derecho.
+    const tilt = tiltFilter.update(sideAngle(screen.orientation?.angle ?? globalThis.orientation, e.beta, e.gamma), now);
+    motion.tilt = reduceMotion ? 0 : tilt;
   }
   function startMotion() {
     if (motion.on || !motionOn) return;
@@ -145,7 +141,7 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
   }
   function stopMotion() {
     motion.on = false;
-    motion.tilt = motion.ax = 0; base = null;
+    motion.tilt = motion.ax = 0; tiltFilter.reset();
     removeEventListener("devicemotion", onMotion);
     removeEventListener("deviceorientation", onOrient);
     screen.orientation?.removeEventListener?.("change", onRotate);
@@ -253,6 +249,8 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
       pitch += pitchV * STEP;
     }
     motion.ax *= Math.exp(-dt * 12);
+    // Si el sensor deja de avisar (algunos equipos quietos no mandan eventos), la inclinación se apaga sola.
+    if (motion.tilt && now - motion.at > 300) motion.tilt *= Math.exp(-dt * 2);
     // Sacudida de concierto: unas oscilaciones rápidas que se apagan.
     const st = now / 1000 - shakeT;
     const sh = st < 1.2 ? Math.sin(st * 38) * Math.exp(-st * 5) * 0.32 * shakeAmp : 0;

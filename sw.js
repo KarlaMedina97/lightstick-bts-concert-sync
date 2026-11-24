@@ -45,6 +45,7 @@ const SHELL = [
   "src/i18n/ko-player.js",
   "src/i18n/ko-app.js",
   "src/stick3d.js",
+  "src/motion.js",
   "src/models/shared.js",
   "src/models/armybomb-v4.js",
   "src/models/armybomb-v3.js",
