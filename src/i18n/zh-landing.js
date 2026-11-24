@@ -226,6 +226,7 @@ export default {
   "Abrir el modo micrófono en el reproductor": "在播放器中打开麦克风模式",
   "Toca para corear": "点一下跟着应援",
   "Ver fanchant": "查看应援口号",
+  "Detener": "停止",
   "Con voz": "带语音",
   "Los nombres a tiempo, en hangul y romanizados.": "按节拍喊出成员名字，附韩文和罗马音。",
   "Abrir el fanchant en el reproductor": "在播放器中打开应援口号",

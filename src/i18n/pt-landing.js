@@ -226,6 +226,7 @@ export default {
   "Abrir el modo micrófono en el reproductor": "Abrir o modo microfone no player",
   "Toca para corear": "Toque para cantar junto",
   "Ver fanchant": "Ver fanchant",
+  "Detener": "Parar",
   "Con voz": "Com voz",
   "Los nombres a tiempo, en hangul y romanizados.": "Os nomes na hora certa, em hangul e romanizados.",
   "Abrir el fanchant en el reproductor": "Abrir o fanchant no player",

@@ -13,7 +13,14 @@ import { showConsent } from "./consent.js";
 import { liteReason, slowFrames, measureFrames, LITE_TEXT } from "./lite.js";
 pageview();
 // Aviso de privacidad cuando la portada ya se pintó (no compite con la primera carga).
-addEventListener("load", () => setTimeout(showConsent, 1200), { once: true });
+// En el celular, al primer scroll (o a los 12 s): antes tapaba el titular y «Empezar» en la primera visita.
+addEventListener("load", () => {
+  if (innerWidth >= 720) return void setTimeout(showConsent, 1200);
+  let shown = false;
+  const go = () => { if (shown) return; shown = true; removeEventListener("scroll", go); showConsent(); };
+  addEventListener("scroll", go, { passive: true, once: true });
+  setTimeout(go, 12000);
+}, { once: true });
 // three.js y el modelo se importan aparte, cuando la portada ya se pintó (ver buildScene): así no compiten con el
 // HTML, el CSS y las fuentes. index.html los pide desde el principio con prioridad baja (modulepreload).
 let THREE, EffectComposer, RenderPass, UnrealBloomPass, mergeGeometries, RoomEnvironment;
@@ -322,6 +329,54 @@ function goLite(why) {
   note.append(text, " ", btn);
   (document.querySelector("#inicio .hero-ctas") ?? document.querySelector("#inicio .copy"))?.after(note);
 }
+/*
+ * Demos que dependen de la escena (colores y momentos, intro con la canción, mini reproductor, micrófono, modo
+ * seguro): sus controles se conectan dentro de buildScene. Antes de eso (versión ligera, o mientras se descarga
+ * three.js) un toque no hacía nada. Ahora el toque pide la escena, el control queda «cargando» (aria-busy) y, al
+ * estar lista, se repite el toque. QA 2026-11-24.
+ */
+const DEMO_CONTROLS = ".demo .chip, .js-intro, #mini-play, #fv-play, #fm-btn, #safe-switch, #rt-pad";
+let sceneBound = false, pendingDemo = null;
+/**
+ * Al pasar a 3D vuelven los huecos del modelo y la escena acomoda sus secciones: la página se alarga varias veces.
+ * Mientras tanto (hasta 3 s sin cambios de alto) el control tocado se mantiene en el mismo lugar de la pantalla.
+ */
+function keepInView(el) {
+  const top = el.getBoundingClientRect().top;
+  const fix = () => { const d = el.getBoundingClientRect().top - top; if (Math.abs(d) > 1) scrollBy({ top: d, behavior: "instant" }); };
+  const ro = new ResizeObserver(fix);
+  ro.observe(document.body);
+  let quiet = setTimeout(stop, 3000);
+  function stop() { ro.disconnect(); fix(); removeEventListener("wheel", stop); removeEventListener("touchmove", stop); }
+  ro.observe(document.documentElement);
+  // Si la persona se pone a desplazarse, manda ella.
+  addEventListener("wheel", stop, { once: true, passive: true });
+  addEventListener("touchmove", stop, { once: true, passive: true });
+  return () => { clearTimeout(quiet); quiet = setTimeout(stop, 1500); };
+}
+let keepAlive = null;
+document.addEventListener("click", (e) => {
+  if (sceneBound) return;
+  const el = e.target.closest?.(DEMO_CONTROLS);
+  if (!el) return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  pendingDemo?.removeAttribute("aria-busy");
+  pendingDemo = el;
+  el.setAttribute("aria-busy", "true");
+  keepAlive = keepInView(el);
+  if (liteWhy) document.querySelector(".lite-3d")?.click(); // la persona pidió la demo: se carga el 3D
+  else { forceFull = true; buildScene(); }
+}, true);
+function sceneDone() {
+  sceneBound = true;
+  const el = pendingDemo;
+  pendingDemo = null;
+  el?.removeAttribute("aria-busy");
+  if (!el || !document.contains(el)) return;
+  keepAlive?.(); // la escena terminó: 1,5 s más cuidando la posición mientras se acomoda
+  el.click();
+}
 if (SHOT !== null) setTimeout(buildScene, 0);
 else if (liteWhy) goLite(liteWhy);
 else whenPaintedAndIdle(() => (softwareGL() ? whenUserActs(() => whenPaintedAndIdle(startScene)) : startScene()));
@@ -332,8 +387,11 @@ async function startScene() {
   buildScene();
 }
 
+let buildStarted = false;
 async function buildScene() {
-  try { await loadScene(); } catch { canvas.remove(); document.documentElement.classList.add("gl-ready"); return; } // sin red no hay 3D: fuera la silueta
+  if (buildStarted) return; // una sola escena aunque la pidan la carga, una demo y «Ver en 3D» a la vez
+  buildStarted = true;
+  try { await loadScene(); } catch { canvas.remove(); document.documentElement.classList.add("gl-ready"); sceneDone(); return; } // sin red no hay 3D: fuera la silueta
   PALETTE = PALETTE_HEX.map((c) => new THREE.Color(c));
   color = PALETTE[0].clone();
   demo = { active: false, color: new THREE.Color("#8a2be2"), energy: 0.55, gesture: "sway", until: 0 };
@@ -342,6 +400,7 @@ async function buildScene() {
   } catch {
     canvas.remove();
     document.documentElement.classList.add("gl-ready"); // sin WebGL no habrá ARMY Bomb 3D: fuera la silueta de carga
+    sceneDone();
     return;
   }
   // WebGL por software (sin GPU: SwiftShader, llvmpipe…): cada cuadro lo dibuja el procesador y traba la página.
@@ -1608,34 +1667,8 @@ async function buildScene() {
     }
     glow.intensity = 1 + mic.flash * (safeMode ? 0.4 : 0.9);
   }
-  // Fanchant visual: nombres en hangul + romanización uno por uno; el lightstick bombea en cada nombre.
-  const fcBtn = $("fc-btn"), fcStage = $("fc-stage");
-  let chanting = false;
-  fcBtn?.addEventListener("click", async () => {
-    if (chanting) return;
-    chanting = true;
-    fcBtn.disabled = true;
-    fcStage.textContent = "";
-    const voice = $("fc-voice")?.checked && "speechSynthesis" in window;
-    const seq = [...MEMBERS, { ko: "방탄소년단!", roman: "BTS!" }];
-    for (const [i, m] of seq.entries()) {
-      const el = document.createElement("span");
-      el.className = "fc-name" + (i === seq.length - 1 ? " final" : "");
-      const b = document.createElement("b"); b.textContent = m.ko;
-      const s = document.createElement("small"); s.textContent = m.roman;
-      el.append(b, s);
-      fcStage.append(el);
-      if (gsap && !reduceMotion) gsap.from(el, { y: 14, opacity: 0, scale: 0.8, duration: 0.45, ease: "back.out(2)" });
-      pulse(0.7);
-      gw.pump = Math.max(gw.pump, 0.8);
-      if (voice) { const u = new SpeechSynthesisUtterance(m.ko); u.lang = "ko-KR"; u.rate = 1; speechSynthesis.speak(u); }
-      // Mismo ritmo que en el reproductor: 2,5 s por nombre; «BTS!» dura el doble.
-      const stepMs = chantStepMs(FEATURED.bpm);
-      await new Promise((r) => setTimeout(r, i === seq.length - 1 ? stepMs * 2 : stepMs));
-    }
-    chanting = false;
-    fcBtn.disabled = false;
-  });
+  // Fanchant: la muestra vive fuera de la escena (bindFanchantDemo); aquí solo el lightstick bombea en cada nombre.
+  chantBeat = () => { pulse(0.7); gw.pump = Math.max(gw.pump, 0.8); };
   // Reto de ritmo mini: compás de la intro (o metrónomo) con Perfecto/Genial y puntos.
   const rtPad = $("rt-pad"), rtJudge = $("rt-judge"), rtScore = $("rt-score");
   let rtPoints = 0, rtCombo = 0;
@@ -2092,7 +2125,70 @@ async function buildScene() {
   loop();
   // La escena llega después de las animaciones de la página: recalcula dónde empieza cada una.
   if (!SHOT) ScrollTrigger?.refresh();
+  sceneDone(); // controles conectados: se repite el toque que esperaba la escena
 }
+
+// ---------- Muestra del fanchant ----------
+// Antes vivía dentro de la escena 3D: en la versión ligera (o mientras cargaba three.js) «Ver fanchant» no hacía
+// nada. Ahora funciona siempre; si la escena está, el lightstick bombea con cada nombre (chantBeat).
+// Un solo lugar para el nombre (sin que la tarjeta crezca), puntos de avance, Detener y la voz en coreano si el
+// equipo la tiene (si no, la romanización con la voz del sistema). Revisión UX/QA 2026-11-24.
+let chantBeat = null;
+(function bindFanchantDemo() {
+  const btn = $("fc-btn"), stage = $("fc-stage");
+  if (!btn || !stage) return;
+  let run = 0; // cada ronda tiene su número: Detener o una ronda nueva invalidan la anterior
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const idle = () => {
+    run++;
+    btn.textContent = "Ver fanchant";
+    btn.setAttribute("aria-pressed", "false");
+    if ("speechSynthesis" in window) speechSynthesis.cancel();
+  };
+  const koVoice = () => ("speechSynthesis" in window ? speechSynthesis.getVoices().find((v) => /^ko/i.test(v.lang)) : null);
+  async function start() {
+    const me = ++run;
+    btn.textContent = "Detener";
+    btn.setAttribute("aria-pressed", "true");
+    const { MEMBERS: names, chantStepMs: stepOf } = await import("./fanchant.js");
+    if (me !== run) return;
+    const seq = [...names, { ko: "방탄소년단!", roman: "BTS!" }];
+    const voice = $("fc-voice")?.checked && "speechSynthesis" in window;
+    const ko = voice ? koVoice() : null;
+    // Más ágil que en el reproductor (2,5 s por nombre): una muestra de ~12 s en vez de ~22 s.
+    const stepMs = stepOf(FEATURED.bpm, 1.5);
+    const now = document.createElement("span");
+    now.className = "fc-now";
+    const dots = document.createElement("span");
+    dots.className = "fc-dots";
+    dots.setAttribute("aria-hidden", "true");
+    dots.append(...seq.map(() => document.createElement("i")));
+    stage.replaceChildren(now, dots);
+    for (const [i, m] of seq.entries()) {
+      if (me !== run) return;
+      const b = document.createElement("b"); b.textContent = m.ko;
+      const sm = document.createElement("small"); sm.textContent = m.roman;
+      now.replaceChildren(b, sm);
+      now.classList.toggle("final", i === seq.length - 1);
+      dots.children[i].classList.add("on");
+      if (!reduceMotion) now.animate([{ transform: "translateY(10px) scale(.9)", opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 380, easing: "cubic-bezier(.34,1.56,.64,1)" });
+      chantBeat?.();
+      if (voice) {
+        const u = new SpeechSynthesisUtterance(ko ? m.ko : m.roman);
+        if (ko) { u.voice = ko; u.lang = ko.lang; }
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      }
+      await sleep(i === seq.length - 1 ? stepMs * 2 : stepMs);
+    }
+    if (me === run) idle();
+  }
+  btn.addEventListener("click", () => (btn.getAttribute("aria-pressed") === "true" ? idle() : start()));
+  // «Toca para corear»: la zona de los nombres también la inicia.
+  stage.addEventListener("click", () => { if (btn.getAttribute("aria-pressed") !== "true") start(); });
+  addEventListener("pagehide", idle);
+  document.addEventListener("visibilitychange", () => { if (document.hidden && btn.getAttribute("aria-pressed") === "true") idle(); });
+})();
 
 // ---------- Tipografía cinética ----------
 // Los títulos se parten en palabras y letras (spans decorativos con aria-hidden) y el texto completo queda

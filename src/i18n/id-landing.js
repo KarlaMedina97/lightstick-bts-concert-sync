@@ -226,6 +226,7 @@ export default {
   "Abrir el modo micrófono en el reproductor": "Buka mode mikrofon di pemutar",
   "Toca para corear": "Ketuk untuk ikut fanchant",
   "Ver fanchant": "Lihat fanchant",
+  "Detener": "Hentikan",
   "Con voz": "Dengan suara",
   "Los nombres a tiempo, en hangul y romanizados.": "Nama-nama tepat waktu, dalam hangul dan romanisasi.",
   "Abrir el fanchant en el reproductor": "Buka fanchant di pemutar",

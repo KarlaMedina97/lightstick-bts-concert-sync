@@ -154,6 +154,8 @@ h1.display { font-size: clamp(2.2rem, 9.6vw, 5rem); line-height: .96; font-weigh
 .copy::before { content: ""; position: absolute; inset: -6% -10%; z-index: -1; pointer-events: none; background: radial-gradient(60% 55% at 40% 50%, #060818d0, transparent 75%); }
 .hero { padding-top: 64px; }
 .hero .slot { height: 46svh; }
+/* Celular: el héroe deja ver «Empezar» y «Conectar» sin scroll (QA 2026-11-24: quedaban bajo el pliegue) */
+@media (max-width: 719px) { .hero .slot { height: 38svh; } }
 .hero .copy { gap: 1rem; padding-bottom: 28px; }
 .hero-facts { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; margin: .4rem 0 0; padding: 0; color: var(--muted); font-size: .86rem; }
 @media (min-width: 720px) {
@@ -415,7 +417,7 @@ section[id], #contenido { scroll-margin-top: 76px; }
             <div class="mock mock-chant">
               <div class="fc-stage" id="fc-stage" aria-live="polite"><span class="fc-hint">Toca para corear</span></div>
               <div class="fc-controls">
-                <button type="button" class="mock-btn" id="fc-btn">Ver fanchant</button>
+                <button type="button" class="mock-btn" id="fc-btn" aria-pressed="false">Ver fanchant</button>
                 <label class="fc-voice"><input type="checkbox" id="fc-voice"> Con voz</label>
               </div>
             </div>

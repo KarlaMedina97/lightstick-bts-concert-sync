@@ -223,6 +223,8 @@ main { position: relative; z-index: 2; overflow-x: clip; }
 .head { display: grid; gap: .8rem; }
 .hero { padding-top: 64px; }
 .hero .slot { height: 46svh; }
+/* Celular: el héroe deja ver «Empezar» y «Conectar» sin scroll (QA 2026-11-24: quedaban bajo el pliegue) */
+@media (max-width: 719px) { .hero .slot { height: 38svh; } }
 .hero .copy { gap: 1rem; padding-bottom: 28px; }
 .hero-facts { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; margin: .4rem 0 0; padding: 0; color: var(--muted); font-size: .86rem; }
 .hero-facts b { font-family: var(--display); color: var(--text); font-weight: 600; margin-right: .25rem; }
@@ -256,7 +258,7 @@ main { position: relative; z-index: 2; overflow-x: clip; }
 /* Demo */
 .demo { display: grid; gap: 1rem; padding: 18px; border-radius: 22px; background: var(--card); border: 1px solid var(--line); }
 .chips { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-.chips legend { width: 100%; padding: 0 0 .5rem; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.chips legend { width: 100%; padding: 0 0 .5rem; font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
 .chip { font: inherit; font-weight: 600; font-size: .88rem; cursor: pointer; display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; padding: 0 1rem;
   border-radius: 999px; border: 1px solid var(--line); background: #ffffff0d; color: var(--text); transition: border-color .3s, background .3s, transform .3s var(--ease); }
 .chip i { width: 16px; height: 16px; border-radius: 50%; background: var(--c); box-shadow: 0 0 12px var(--c); }
@@ -291,12 +293,17 @@ main { position: relative; z-index: 2; overflow-x: clip; }
 .eq { display: flex; align-items: center; gap: 4px; height: 48px; flex: 1; justify-content: center; }
 .eq i { width: 6px; border-radius: 3px; background: linear-gradient(var(--a1), var(--a2)); height: calc(12% + var(--h, 0) * 88%); transition: height .08s linear; }
 .mock-chant { flex-direction: column; align-items: stretch; }
-.fc-stage { min-height: 46px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.fc-stage { height: 72px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; cursor: pointer; text-align: center; }
 .fc-hint { color: var(--muted); font-size: .8rem; }
-.fc-name { display: inline-grid; padding: .3rem .6rem; border-radius: 10px; background: color-mix(in srgb, var(--a2) 28%, transparent); line-height: 1.1; }
-.fc-name b { font-family: var(--ko); font-size: .95rem; }
-.fc-name small { font-size: .66rem; color: var(--muted); }
-.fc-name.final { background: var(--live); color: #120a24; }
+/* Un solo nombre a la vez (la tarjeta no cambia de alto) y 8 puntos de avance */
+.fc-now { display: inline-grid; justify-items: center; padding: .3rem .9rem; border-radius: 12px; background: color-mix(in srgb, var(--a2) 28%, transparent); line-height: 1.15; }
+.fc-now b { font-family: var(--ko); font-size: 1.15rem; }
+.fc-now small { font-size: .75rem; color: var(--muted); }
+.fc-now.final { background: var(--live); color: #120a24; }
+.fc-now.final small { color: #120a24; }
+.fc-dots { display: flex; gap: 5px; }
+.fc-dots i { width: 6px; height: 6px; border-radius: 50%; background: color-mix(in srgb, var(--muted) 45%, transparent); }
+.fc-dots i.on { background: var(--live); }
 .fc-controls { display: flex; gap: 10px; align-items: center; }
 .fc-voice { font-size: .8rem; color: var(--muted); display: inline-flex; gap: .35rem; align-items: center; min-height: 44px; }
 .mock-rhythm { gap: 12px; }
@@ -773,7 +780,10 @@ section[id], #contenido { scroll-margin-top: 76px; }
 .car-dot:focus-visible, .car-pause:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 999px; }
 .car-pause { min-width: 32px; height: 28px; padding: 0 8px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255, 255, 255, .06); color: var(--muted); font-size: .7rem; cursor: pointer; }
 .car-pause:hover { color: #fff; }
-@media (pointer: coarse) { .car-dot { width: 32px; height: 44px; } .car-pause { min-width: 44px; height: 44px; } }
+@media (pointer: coarse) { .car-dot { width: 44px; height: 44px; } .car-pause { min-width: 44px; height: 44px; } }
+@media (pointer: coarse) {
+  .foot-langs a, .foot-links a { display: inline-flex; align-items: center; min-height: 44px; }
+}
 @media (prefers-reduced-motion: reduce) { .steps { scroll-behavior: auto; } }
 
 /* Versiones sin Bluetooth: misma tarjeta, con la nota en tono apagado */
@@ -821,7 +831,7 @@ section[id], #contenido { scroll-margin-top: 76px; }
 #versiones .ver-card b { grid-area: name; font-size: .98rem; }
 #versiones .vc-dot { grid-area: dot; width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff 0 18%, #c9a8ff 45%, #7b3fe4 100%); box-shadow: 0 0 14px -2px #b388ff; }
 #versiones .ver-card.no-bt .vc-dot { background: radial-gradient(circle at 35% 30%, #fff 0 18%, #ffd6ec 45%, #ff6fb5 100%); box-shadow: 0 0 14px -2px #ff8fc8; }
-#versiones .vc-tag { grid-area: tag; justify-self: start; padding: 2px 8px; border-radius: 999px; font-size: .7rem; font-weight: 700; font-style: normal; letter-spacing: .01em; color: #e6d9ff; background: rgba(150, 110, 255, .22); border: 1px solid rgba(180, 150, 255, .35); }
+#versiones .vc-tag { grid-area: tag; justify-self: start; padding: 2px 8px; border-radius: 999px; font-size: .75rem; font-weight: 700; font-style: normal; letter-spacing: .01em; color: #e6d9ff; background: rgba(150, 110, 255, .22); border: 1px solid rgba(180, 150, 255, .35); }
 #versiones .ver-card.no-bt .vc-tag { color: #ffe1f0; background: rgba(255, 111, 181, .18); border-color: rgba(255, 150, 200, .35); }
 #versiones .ver-new .ver-card { grid-template-areas: "dot name note" "dot tag note"; grid-template-columns: auto minmax(0, 1fr) auto; background: linear-gradient(110deg, rgba(123, 63, 228, .35), rgba(255, 111, 181, .18)), var(--card); }
 #versiones .vc-note { grid-area: note; font-size: .72rem; color: var(--muted); }
@@ -867,8 +877,9 @@ section[id], #contenido { scroll-margin-top: 76px; }
 #funciones .feat p { font-size: .78rem; line-height: 1.35; }
 #funciones .feat .mock { margin-right: 44px; min-height: 0; padding-block: 6px; }
 #funciones .feat-link { top: 8px; right: 8px; width: 36px; height: 36px; font-size: .95rem; }
+@media (pointer: coarse) { #funciones .feat-link { top: 4px; right: 4px; width: 44px; height: 44px; } }
 #funciones .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 10px 12px; }
-#funciones .stats dt { font-size: .66rem; }
+#funciones .stats dt { font-size: .75rem; }
 #funciones .stats dd { font-size: clamp(1.1rem, 2.4vw, 1.6rem); }
 @media (max-width: 719px) { #funciones .feats { grid-template-columns: 1fr; } #funciones .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
@@ -892,6 +903,16 @@ section[id], #contenido { scroll-margin-top: 76px; }
 .lite .landing .nav.scrolled { background: rgba(6, 8, 24, .94); }
 .lite .grab-hint.in, .lite .gh-dot { animation: none; }
 .lite .kt .c { filter: none !important; }
+/* Celular en versión ligera: sin 3D, los huecos del modelo (2,5–3 pantallas negras) se cierran; queda la silueta
+   del inicio. */
+@media (max-width: 719px) {
+  .lite .slot { height: 0; }
+  .lite .hero .slot { height: 38svh; }
+}
+/* Demo esperando la escena (src/landing.js, DEMO_CONTROLS) */
+.landing [aria-busy="true"] { cursor: progress; opacity: .65; animation: busy-pulse 1s ease-in-out infinite alternate; }
+@keyframes busy-pulse { to { opacity: .95; } }
+@media (prefers-reduced-motion: reduce) { .landing [aria-busy="true"] { animation: none; } }
 .lite-note {
   display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .8rem; margin: 1rem 0 0; max-width: 34rem;
   padding: .55rem .6rem .55rem 1rem; border-radius: 999px; border: 1px solid var(--line); background: var(--glass);

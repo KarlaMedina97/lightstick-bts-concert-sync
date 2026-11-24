@@ -226,6 +226,7 @@ export default {
   "Abrir el modo micrófono en el reproductor": "플레이어에서 마이크 모드 열기",
   "Toca para corear": "눌러서 응원법 따라 하기",
   "Ver fanchant": "응원법 보기",
+  "Detener": "멈추기",
   "Con voz": "음성 포함",
   "Los nombres a tiempo, en hangul y romanizados.": "타이밍에 맞춘 이름 콜, 한글과 로마자로.",
   "Abrir el fanchant en el reproductor": "플레이어에서 응원법 열기",
