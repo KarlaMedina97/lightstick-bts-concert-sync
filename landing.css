@@ -901,7 +901,12 @@ main > .chapter:not(.hero)::before {
 #versiones .vers li:not(.ver-new) .vc-tag { justify-self: start; }
 /* Muy angosto: si aun así no cabe, el texto pasa a dos líneas junto al ícono (nunca se corta) */
 @media (max-width: 359px) { #versiones .vc-tag { white-space: normal; text-align: left; } }
-#versiones .ver-new .ver-card { grid-template-areas: "dot name note" "dot tag note"; grid-template-columns: auto minmax(0, 1fr) auto; background: linear-gradient(110deg, rgba(123, 63, 228, .35), rgba(255, 111, 181, .18)), var(--card); }
+/* Ver. 4: la compatibilidad a la derecha y «La más nueva» bajo el nombre (pedido 2026-11-24) */
+#versiones .ver-new .vc-tag { align-self: center; justify-self: end; }
+#versiones .ver-new .vc-note { justify-self: start; align-self: start; }
+/* Special Edition: nombre más compacto, para que su tarjeta mida como la de Ver. 3 */
+#versiones .ver-card[data-model="se"] b { font-size: .8rem; line-height: 1.15; letter-spacing: -.01em; }
+#versiones .ver-new .ver-card { grid-template-areas: "dot name tag" "dot note tag"; row-gap: 2px; grid-template-columns: auto minmax(0, 1fr) auto; background: linear-gradient(110deg, rgba(123, 63, 228, .35), rgba(255, 111, 181, .18)), var(--card); }
 #versiones .vc-note { grid-area: note; font-size: .72rem; color: var(--muted); }
 #versiones .ver-card:hover, #versiones .ver-card:focus-visible, #versiones .ver-card.is-hot { transform: translateY(-2px); }
 #versiones .caption { margin: 0; font-size: .78rem; }
