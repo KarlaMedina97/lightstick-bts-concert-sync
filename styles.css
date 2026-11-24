@@ -2358,11 +2358,11 @@ button.support-pill { font-size: var(--fs-14); font-weight: 700; }
    ===================================================================== */
 /* ⋯ junto al nombre de la canción (no encima de la miniatura) */
 .sg-item .more-btn {
-  top: auto; bottom: 0; right: -6px; width: 36px; height: 44px; border-radius: var(--r-md);
+  top: auto; bottom: 2px; right: 2px; width: 36px; height: 44px; border-radius: var(--r-md); /* dentro de la tarjeta: el sombreado al elegirlo ya no se sale del borde */
   color: var(--text-2); background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; transform: none; opacity: 1;
 }
 .sg-item .more-btn:hover, .sg-item .more-btn[aria-expanded="true"] { background: var(--surface-hover); color: var(--text); }
-.sg-item:has(> .more-btn) .sg-title, .sg-item:has(> .more-btn) .sg-meta { padding-right: 30px; }
+.sg-item:has(> .more-btn) .sg-title, .sg-item:has(> .more-btn) .sg-meta { padding-right: 40px; }
 .sg-item > .more-btn { opacity: 1; }
 /* ♡ más visible sobre la miniatura */
 .sg-item > .like-btn.sg-like { background: rgba(8, 6, 20, 0.68); color: #fff; font-size: 22px; line-height: 1; opacity: 1;
@@ -2472,8 +2472,8 @@ html {
 /* ---------- §2.13 · áreas táctiles de 44 px con el dedo ---------- */
 @media (pointer: coarse) {
   .more-btn, .like-btn, .sg-item .more-btn, .sg-item > .like-btn.sg-like { min-width: var(--tap); min-height: var(--tap); }
-  .sg-item .more-btn { width: var(--tap); height: var(--tap); right: -8px; }
-  .sg-item:has(> .more-btn) .sg-title, .sg-item:has(> .more-btn) .sg-meta { padding-right: 38px; }
+  .sg-item .more-btn { width: var(--tap); height: var(--tap); right: 2px; bottom: 2px; }
+  .sg-item:has(> .more-btn) .sg-title, .sg-item:has(> .more-btn) .sg-meta { padding-right: 48px; }
   .sg-item > .like-btn.sg-like { transform: none; }
   .lb-opt { min-height: var(--tap); min-width: var(--tap); }
   .nps-album { min-height: var(--tap); }
