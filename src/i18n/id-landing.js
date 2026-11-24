@@ -14,6 +14,8 @@ export default {
   "▶ Escuchar la canción del momento": "▶ Dengarkan lagu yang sedang hits",
   "🔊 Sonando la canción del momento": "🔊 Memutar lagu yang sedang hits",
   "Special Edition (SE)": "Special Edition (SE)",
+  "Special Edition": "Special Edition",
+  "(SE)": "(SE)",
   "Por Bluetooth": "Lewat Bluetooth",
   "Con tu pantalla": "Dengan layarmu",
   "La más nueva": "Paling baru",

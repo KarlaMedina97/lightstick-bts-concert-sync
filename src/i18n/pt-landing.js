@@ -14,6 +14,8 @@ export default {
   "▶ Escuchar la canción del momento": "▶ Ouvir a música do momento",
   "🔊 Sonando la canción del momento": "🔊 Tocando a música do momento",
   "Special Edition (SE)": "Special Edition (SE)",
+  "Special Edition": "Special Edition",
+  "(SE)": "(SE)",
   "Por Bluetooth": "Por Bluetooth",
   "Con tu pantalla": "Com sua tela",
   "La más nueva": "A mais nova",

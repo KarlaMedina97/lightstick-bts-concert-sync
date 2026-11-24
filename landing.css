@@ -904,14 +904,27 @@ main > .chapter:not(.hero)::before {
 /* Ver. 4: la compatibilidad a la derecha y «La más nueva» bajo el nombre (pedido 2026-11-24) */
 #versiones .ver-new .vc-tag { align-self: center; justify-self: end; }
 #versiones .ver-new .vc-note { justify-self: start; align-self: start; }
-/* Special Edition: nombre más compacto, para que su tarjeta mida como la de Ver. 3 */
-#versiones .ver-card[data-model="se"] b { font-size: .8rem; line-height: 1.15; letter-spacing: -.01em; }
+/* Special Edition: dos líneas cómodas y bien cortadas (no una letra diminuta) */
+#versiones .ver-card[data-model="se"] b { font-size: .875rem; line-height: 1.2; letter-spacing: -.015em; text-wrap: balance; }
+/* Cuadrícula pareja: cada tarjeta ocupa el alto de su fila y la compatibilidad queda abajo, a la misma altura que
+   en su vecina; Ver. 4 a todo el ancho y destacada (revisión 2026-11-24). */
+#versiones .vers li { display: grid; }
+#versiones .vers li:not(.ver-new) .ver-card { height: 100%; grid-template-rows: 1fr auto; align-items: center; }
+#versiones .vers li:not(.ver-new) .vc-tag { align-self: end; }
+/* Texto aclaratorio: más legible y separado de las tarjetas y del botón */
+#versiones .caption + .ctas { margin-top: .35rem; }
+/* Tarjetas de dos columnas: el nombre gana ancho (esfera y márgenes algo menores), así «Special
+   Edition (SE)» entra en dos líneas cómodas */
+#versiones .vers li:not(.ver-new) .ver-card { padding: 10px; column-gap: 8px; }
+#versiones .vers li:not(.ver-new) .vc-dot { width: 22px; height: 22px; }
+/* «(SE)» un poco más chico: «Edition (SE)» entra en la segunda línea aun en tarjetas angostas */
+#versiones .vc-abbr { font-size: .8em; white-space: nowrap; }
 #versiones .ver-new .ver-card { grid-template-areas: "dot name tag" "dot note tag"; row-gap: 2px; grid-template-columns: auto minmax(0, 1fr) auto; background: linear-gradient(110deg, rgba(123, 63, 228, .35), rgba(255, 111, 181, .18)), var(--card); }
 #versiones .vc-note { grid-area: note; font-size: .72rem; color: var(--muted); }
 #versiones .ver-card:hover, #versiones .ver-card:focus-visible, #versiones .ver-card.is-hot { transform: translateY(-2px); }
-#versiones .caption { margin: 0; font-size: .78rem; }
+#versiones .caption { margin: .35rem 0 0; font-size: .84rem; line-height: 1.55; color: #ddd6ee; }
 /* Celular: el botón «Conectar mi ARMY Bomb» con aire debajo, antes de la franja siguiente */
-@media (max-width: 719px) { #versiones .copy { padding-bottom: max(10svh, 80px); } #versiones .caption { color: #d9d2ea; } }
+@media (max-width: 719px) { #versiones .copy { padding-bottom: max(10svh, 80px); } }
 
 /* Ventana flotante del inicio: la caja mide lo que el video (16:9, 200 px de alto como mínimo, regla de YouTube),
    sin franjas vacías. La barra toma el mismo ancho que el video cuando está abierto. */

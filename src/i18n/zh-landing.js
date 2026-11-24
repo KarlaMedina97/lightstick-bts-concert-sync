@@ -14,6 +14,8 @@ export default {
   "▶ Escuchar la canción del momento": "▶ 听当下最热的歌",
   "🔊 Sonando la canción del momento": "🔊 正在播放当下最热的歌",
   "Special Edition (SE)": "特别版 (SE)",
+  "Special Edition": "特别版",
+  "(SE)": "(SE)",
   "Por Bluetooth": "通过 Bluetooth",
   "Con tu pantalla": "用你的屏幕",
   "La más nueva": "最新款",
