@@ -871,14 +871,21 @@ section[id], #contenido { scroll-margin-top: 76px; }
 /* 04 · Qué puedes hacer: compacta (tarjetas bajas en 2×2, textos de una línea, cifras en una fila chica) */
 #funciones .copy { gap: 1rem; }
 @media (min-width: 720px) { #funciones .copy { padding-block: 7svh; } }
-#funciones .feats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+/* Revisión UX en iPad (2026-11-24): en media pantalla las tarjetas medían 207 px y su demo 137 px (se cortaban
+   «Probar micrófono», «Con voz», el modo seguro y las cifras). Ahora: dos columnas solo si cada tarjeta tiene
+   ≥ 260 px, la flecha abajo a la derecha (la demo usa todo el ancho) y las cifras en 2×2 si no caben 4. */
+#funciones .copy { container-type: inline-size; }
+#funciones .feats { grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px; }
 #funciones .feat { gap: .3rem; padding: 12px; border-radius: 16px; }
 #funciones .feat h3 { margin: 0; font-size: .95rem; }
-#funciones .feat p { font-size: .78rem; line-height: 1.35; }
-#funciones .feat .mock { margin-right: 44px; min-height: 0; padding-block: 6px; }
-#funciones .feat-link { top: 8px; right: 8px; width: 36px; height: 36px; font-size: .95rem; }
-@media (pointer: coarse) { #funciones .feat-link { top: 4px; right: 4px; width: 44px; height: 44px; } }
+#funciones .feat p, #funciones .feat h3 { padding-right: 48px; }
+#funciones .feat p { font-size: .82rem; line-height: 1.4; }
+#funciones .feat .mock { margin-right: 0; min-height: 0; padding-block: 8px; flex-wrap: wrap; }
+#funciones .feat-link { top: auto; bottom: 10px; right: 10px; width: 40px; height: 40px; font-size: .95rem; }
+@media (pointer: coarse) { #funciones .feat-link { bottom: 8px; right: 8px; width: 44px; height: 44px; } }
 #funciones .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 10px 12px; }
+@container (max-width: 559px) { #funciones .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+#funciones .stats dt { overflow-wrap: anywhere; }
 #funciones .stats dt { font-size: .75rem; }
 #funciones .stats dd { font-size: clamp(1.1rem, 2.4vw, 1.6rem); }
 @media (max-width: 719px) { #funciones .feats { grid-template-columns: 1fr; } #funciones .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
