@@ -902,7 +902,9 @@ async function buildScene() {
     // Margen para los gestos (que nunca se salga del encuadre) y para la fila de versiones.
     const reach = S.gesture === "demo" ? 1.6 : S.gesture === "none" ? 1 : 1.3;
     const across = S.lineup ? 4.8 : 1;
-    const mobile = mobileQ();
+    // La ronda de versiones conserva su tamaño grande de siempre en el celular (se ve más detallada): no se encoge
+    // con la parte visible de su hueco, como el resto (pedido 2026-11-24).
+    const mobile = mobileQ() && !S.lineup;
     // La parte del slot tapada por la barra fija no cuenta (así la gema nunca queda bajo la barra).
     const top = Math.max(rect.top, NAV_H() + 6);
     // Celular: solo la parte del hueco que se ve. El ARMY Bomb va en su centro y, cuando el hueco sale de la
@@ -1348,6 +1350,61 @@ async function buildScene() {
     c.addEventListener("click", () => { on(); pulse(0.6); triggerShake(0.5); });
   }
   const _rp = new THREE.Vector3(), _hc = new THREE.Color();
+  /**
+   * Etiquetas de la ronda, ya con el ARMY Bomb principal en su lugar de este cuadro. «Ver. 4» va siempre pegada a
+   * la cabeza de su ARMY Bomb mientras gira (antes se calculaba un paso antes de moverlo y, si chocaba, subía y
+   * quedaba flotando): las demás se apartan de ella. Ninguna sobre el texto de la sección ni bajo el menú; sin
+   * lugar junto a su modelo, se ocultan (revisión 2026-11-24).
+   */
+  function placeRingTags() {
+    if (!ring.pendingTags) return;
+    ring.pendingTags = false;
+    pivot.updateWorldMatrix(true, true);
+    ring.group.updateWorldMatrix(true, true);
+    const others = ring.members.map((M) => {
+      _rp.set(0, M.top + 0.5, 0);
+      M.obj.localToWorld(_rp);
+      const z = _rp.z;
+      _rp.project(camera);
+      return { el: M.tag, x: (_rp.x + 1) / 2 * innerWidth, y: (1 - _rp.y) / 2 * VH(), z, show: ring.othersIn > 0.6, hot: ring.hot === M.key };
+    });
+    _rp.set(0, v4.metrics.top + 0.5, 0);
+    stick.localToWorld(_rp);
+    const zMain = _rp.z;
+    _rp.project(camera);
+    const main = { el: mainTag, x: (_rp.x + 1) / 2 * innerWidth, y: (1 - _rp.y) / 2 * VH(), z: zMain, show: ring.mainIn > 0.7, hot: ring.hot === "v4", fixed: true };
+    const tags = [main, ...others.sort((p, q) => q.z - p.z)]; // el principal primero; luego, las de adelante
+    const avoid = [...document.querySelectorAll("#versiones .copy .head, #versiones .vers, #versiones .caption, #versiones .ctas")]
+      .map((e) => e.getBoundingClientRect()).filter((r) => r.height && r.bottom > 0 && r.top < innerHeight);
+    const placed = [];
+    for (const T of tags) {
+      const w = (T.el.offsetWidth || 70) + 10, h = 30;
+      let y = T.y;
+      if (!T.fixed) {
+        for (let tries = 0; tries < 4; tries++) {
+          const hit = placed.find((P) => Math.abs(P.x - T.x) < (P.w + w) / 2 && Math.abs(P.y - y) < h);
+          if (!hit) break;
+          y = hit.y - h - 4;
+        }
+      }
+      // La caja de la etiqueta queda encima del punto (translate -50% -100%). Si ahí no cabe (cabeza pegada al menú,
+      // en el celular), se prueba al costado del globo, a la derecha y luego a la izquierda: siempre junto a su cabeza.
+      const ok = (x, yy) => {
+        const box = { l: x - w / 2, r: x + w / 2, t: yy - h, b: yy };
+        return box.t > NAV_H() + 8 && box.b < VH() - 8 && box.l > 0 && box.r < innerWidth
+          && !avoid.some((r) => box.l < r.right && r.left < box.r && box.t < r.bottom && r.top < box.b)
+          && !placed.some((P) => Math.abs(P.x - x) < (P.w + w) / 2 && Math.abs(P.y - yy) < h);
+      };
+      const side = w / 2 + 34;
+      const spot = [[T.x, y], [T.x + side, T.y + h + 18], [T.x - side, T.y + h + 18]].find(([x, yy]) => ok(x, yy));
+      const fits = Boolean(spot);
+      const [x, yy] = spot ?? [T.x, y];
+      if (fits && T.show) placed.push({ x, y: yy, w });
+      T.el.style.transform = `translate(${x.toFixed(1)}px, ${yy.toFixed(1)}px)`;
+      T.el.classList.toggle("shown", T.show && fits);
+      T.el.classList.toggle("hot", T.hot);
+    }
+  }
   /** Ronda: centro y escala del slot, giro con inercia, ola que levanta uno tras otro y entradas en espiral. */
   /**
    * Baile de la ronda, al compás de la canción (b = tiempo de la música en pulsos). Frase de 8 tiempos: 4 saltos al
@@ -1380,7 +1437,7 @@ async function buildScene() {
     }
     const on = ring.othersIn > 0.01 || ring.mainIn > 0.01;
     ring.group.visible = on && ring.members.length > 0;
-    if (!on) { for (const M of ring.members) M.tag.classList.remove("shown"); mainTag.classList.remove("shown"); return null; }
+    if (!on) { ring.pendingTags = false; for (const M of ring.members) M.tag.classList.remove("shown"); mainTag.classList.remove("shown"); return null; }
     // Ronda en el espacio: todas las versiones (también la principal) giran juntas alrededor del centro del
     // círculo (eje Y), repartidas a 120°. Al arrastrarla gira más rápido o al revés y luego vuelve a su ritmo.
     if (!reduceMotion && !ring.dragging) ring.spin += dt * 0.3; // ritmo de carrusel (nunca se detiene)
@@ -1424,44 +1481,8 @@ async function buildScene() {
       _hc.copy(color).offsetHSL(Math.sin(t * 1.4 - M.k * 1.05) * 0.06, 0, 0);
       for (const sp of M.sprites) { sp.material.color.copy(_hc); sp.material.opacity = (0.04 + 0.08 * Math.max(0, Math.sin(t * 2 - M.k * 1.05))) * ease; }
     }
-    // Etiqueta clara sobre cada versión, sin choques: si dos se tocan, la de atrás sube.
-    const tags = [];
-    for (const M of ring.members) {
-      _rp.set(0, M.top + 0.5, 0);
-      M.obj.localToWorld(_rp);
-      const z = _rp.z;
-      _rp.project(camera);
-      tags.push({ el: M.tag, x: (_rp.x + 1) / 2 * innerWidth, y: (1 - _rp.y) / 2 * VH(), z, show: ring.othersIn > 0.6, hot: ring.hot === M.key });
-    }
-    _rp.set(0, v4.metrics.top + 0.5, 0);
-    stick.localToWorld(_rp);
-    const zMain = _rp.z;
-    _rp.project(camera);
-    tags.push({ el: mainTag, x: (_rp.x + 1) / 2 * innerWidth, y: (1 - _rp.y) / 2 * VH(), z: zMain, show: ring.mainIn > 0.7, hot: ring.hot === "v4" });
-    tags.sort((p, q) => q.z - p.z); // primero las de adelante
-    // Texto de la sección (título, tarjetas, aclaración y botón): ninguna etiqueta encima. Antes, si el modelo
-    // subía detrás del menú, la etiqueta se quedaba pegada debajo de él, lejos de su ARMY Bomb (sobre todo
-    // «Ver. 4» en el celular). Ahora, sin lugar junto a su modelo, la etiqueta se oculta (revisión 2026-11-24).
-    const avoid = [...document.querySelectorAll("#versiones .copy .head, #versiones .vers, #versiones .caption, #versiones .ctas")]
-      .map((e) => e.getBoundingClientRect()).filter((r) => r.height && r.bottom > 0 && r.top < innerHeight);
-    const placed = [];
-    for (const T of tags) {
-      const w = (T.el.offsetWidth || 70) + 10, h = 30;
-      let y = T.y;
-      for (let tries = 0; tries < 4; tries++) {
-        const hit = placed.find((P) => Math.abs(P.x - T.x) < (P.w + w) / 2 && Math.abs(P.y - y) < h);
-        if (!hit) break;
-        y = hit.y - h - 4;
-      }
-      // La caja de la etiqueta queda encima del punto (translate -50% -100%).
-      const box = { l: T.x - w / 2, r: T.x + w / 2, t: y - h, b: y };
-      const fits = box.t > NAV_H() + 8 && box.b < VH() - 8 && box.l > 0 && box.r < innerWidth
-        && !avoid.some((r) => box.l < r.right && r.left < box.r && box.t < r.bottom && r.top < box.b);
-      if (fits) placed.push({ x: T.x, y, w });
-      T.el.style.transform = `translate(${T.x.toFixed(1)}px, ${y.toFixed(1)}px)`;
-      T.el.classList.toggle("shown", T.show && fits);
-      T.el.classList.toggle("hot", T.hot);
-    }
+    // Etiquetas: se ubican al final del cuadro, con todos en su lugar (placeRingTags).
+    ring.pendingTags = true;
     // Posición del principal en la ronda (índice 0): entra y sale en espiral, y baila con los demás.
     const theta0 = ring.angle;
     const D0 = reduceMotion ? null : danceAt(b, 0, ring.members.length + 1);
@@ -1955,6 +1976,7 @@ async function buildScene() {
       }
     }
     stick.updateMatrixWorld();
+    placeRingTags();
     updateMarkers();
 
     // Materiales encendidos y luces.
