@@ -90,6 +90,8 @@ export default {
   "Elegir paso": "Escolher passo",
   "Pausar carrusel": "Pausar carrossel",
   "Reanudar carrusel": "Retomar carrossel",
+  "Paso anterior": "Passo anterior",
+  "Paso siguiente": "Próximo passo",
   "Enlace de esta página": "Link desta página",
   "Cuatro pasos para conectar (desliza para ver todos)": "Quatro passos para conectar (deslize para ver todos)",
   "Estás en el navegador de una app: aquí no se puede conectar el ARMY Bomb (los videos y tu pantalla sí funcionan).": "Você está no navegador de um app: aqui não dá para conectar o ARMY Bomb (os vídeos e a sua tela funcionam).",

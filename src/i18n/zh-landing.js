@@ -90,6 +90,8 @@ export default {
   "Elegir paso": "选择步骤",
   "Pausar carrusel": "暂停轮播",
   "Reanudar carrusel": "继续轮播",
+  "Paso anterior": "上一步",
+  "Paso siguiente": "下一步",
   "Enlace de esta página": "本页链接",
   "Cuatro pasos para conectar (desliza para ver todos)": "四步完成连接（滑动查看全部）",
   "Estás en el navegador de una app: aquí no se puede conectar el ARMY Bomb (los videos y tu pantalla sí funcionan).": "你正在某个应用的内置浏览器中：这里无法连接 ARMY Bomb（视频和屏幕灯光仍可使用）。",

@@ -199,7 +199,7 @@ main, main section, .anat-stage, .marquee { pointer-events: none; }
 .copy, .anat-head, .parts, .marquee * { pointer-events: auto; }
 .landing .nav { transition: background .3s, border-color .3s; border-bottom: 1px solid transparent; }
 .landing .nav .brand, .landing .nav nav a:not(.nav-cta) { color: #f4f1fa; text-shadow: 0 1px 8px rgba(6, 8, 24, .9); }
-section[id], #contenido { scroll-margin-top: 76px; }
+section[id], #contenido { scroll-margin-top: var(--nav-h, 76px); }
 .lead, .sub, .copy p, .caption, .orb-micro, .hero-facts { text-shadow: 0 1px 2px #000, 0 0 18px rgba(6, 8, 24, .9); }
 .chapter .grad, .anat-head .grad { filter: drop-shadow(0 2px 12px rgba(6, 8, 24, .85)); }
 .copy::before { background: radial-gradient(70% 65% at 45% 50%, rgba(6, 8, 24, .82), transparent 78%); }

@@ -90,6 +90,8 @@ export default {
   "Elegir paso": "단계 선택",
   "Pausar carrusel": "슬라이드 일시정지",
   "Reanudar carrusel": "슬라이드 다시 재생",
+  "Paso anterior": "이전 단계",
+  "Paso siguiente": "다음 단계",
   "Enlace de esta página": "이 페이지 링크",
   "Cuatro pasos para conectar (desliza para ver todos)": "연결하는 4단계 (밀어서 모두 보기)",
   "Estás en el navegador de una app: aquí no se puede conectar el ARMY Bomb (los videos y tu pantalla sí funcionan).": "지금 앱 안의 브라우저를 쓰고 있어요. 여기서는 ARMY Bomb을 연결할 수 없어요(영상과 화면 조명은 작동해요).",

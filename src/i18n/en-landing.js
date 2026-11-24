@@ -90,6 +90,8 @@ export default {
   "Elegir paso": "Choose step",
   "Pausar carrusel": "Pause carousel",
   "Reanudar carrusel": "Resume carousel",
+  "Paso anterior": "Previous step",
+  "Paso siguiente": "Next step",
   "Enlace de esta página": "Link to this page",
   "Cuatro pasos para conectar (desliza para ver todos)": "Four steps to connect (swipe to see them all)",
   "Estás en el navegador de una app: aquí no se puede conectar el ARMY Bomb (los videos y tu pantalla sí funcionan).": "You're in an app's browser: the ARMY Bomb can't connect here (videos and your screen still work).",

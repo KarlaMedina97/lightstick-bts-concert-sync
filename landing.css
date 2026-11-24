@@ -679,7 +679,9 @@ body.doc main, body.doc main * { pointer-events: auto; }
 .landing .nav { transition: background .3s, border-color .3s; border-bottom: 1px solid transparent; }
 .landing .nav.scrolled { background: rgba(6, 8, 24, .86); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%); border-bottom-color: rgba(255, 255, 255, .08); }
 .landing .nav .brand, .landing .nav nav a:not(.nav-cta) { color: #f4f1fa; text-shadow: 0 1px 8px rgba(6, 8, 24, .9); }
-section[id], #contenido { scroll-margin-top: 76px; }
+/* Ancla bajo el menú fijo: --nav-h es su alto real (+12 px), lo mide src/landing.js */
+section[id], #contenido { scroll-margin-top: var(--nav-h, 76px); }
+#conectar .head, #funciones .head { scroll-margin-top: var(--nav-h, 76px); }
 .lead, .sub, .copy p, .caption, .orb-micro, .hero-facts { text-shadow: 0 1px 2px #000, 0 0 18px rgba(6, 8, 24, .9); }
 .chapter .grad, .anat-head .grad { filter: drop-shadow(0 2px 12px rgba(6, 8, 24, .85)); }
 .copy::before { background: radial-gradient(70% 65% at 45% 50%, rgba(6, 8, 24, .82), transparent 78%); }
@@ -785,6 +787,58 @@ section[id], #contenido { scroll-margin-top: 76px; }
   .foot-langs a, .foot-links a { display: inline-flex; align-items: center; min-height: 44px; }
 }
 @media (prefers-reduced-motion: reduce) { .steps { scroll-behavior: auto; } }
+
+/* ---------- Separación entre secciones (revisión UX 2026-11-24) ----------
+   Un respiro vertical constante y una línea de luz sutil marcan dónde empieza cada capítulo. */
+main > .chapter:not(.hero) { margin-top: clamp(28px, 6svh, 72px); }
+main > .chapter:not(.hero)::before {
+  content: ""; position: absolute; z-index: 1; top: calc(-1 * clamp(14px, 3svh, 36px)); left: var(--gutter); right: var(--gutter);
+  height: 1px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(226, 201, 255, .28) 30%, rgba(92, 202, 248, .28) 70%, transparent);
+}
+
+/* ---------- 02 · Cómo conectar (revisión UX 2026-11-24) ---------- */
+#conectar .copy { container-type: inline-size; gap: clamp(1rem, 4cqi, 1.5rem); }
+#conectar .copy::before {
+  inset: -3% -5%;
+  background: radial-gradient(80% 62% at 50% 46%, rgba(6, 8, 24, .86), rgba(6, 8, 24, .55) 58%, transparent 86%);
+}
+#conectar .head { gap: .7rem; }
+#conectar .kicker { color: #c9fbe9; font-size: .78rem; }
+#conectar .title { font-size: clamp(1.85rem, 1rem + 6.4cqi, 3.2rem); line-height: 1.05; text-wrap: balance; overflow-wrap: break-word; }
+#conectar .sub { color: #ddd6ee; font-size: .95rem; line-height: 1.5; max-width: 38ch; margin: 0; }
+/* Tarjetas de los pasos: fondo opaco, borde sutil, mismo espaciado; la actual se marca con el acento */
+#conectar .step {
+  padding: 16px; gap: .4rem; border-radius: 18px;
+  background: linear-gradient(180deg, rgba(26, 24, 52, .96), rgba(14, 12, 30, .96));
+  border: 1px solid rgba(201, 251, 233, .16); box-shadow: 0 10px 26px rgba(0, 0, 0, .32);
+}
+#conectar .step b { font-size: 1rem; }
+#conectar .step > span:last-child { color: #ddd6ee; font-size: .86rem; line-height: 1.45; }
+#conectar .st-n { color: rgba(255, 255, 255, .3); }
+#conectar .step.is-current { border-color: var(--a1); box-shadow: 0 12px 30px -16px var(--a1), 0 10px 26px rgba(0, 0, 0, .32); }
+#conectar .step:hover { transform: none; } /* sin brinco: la tarjeta no se mueve al pasar el dedo o el mouse */
+@media (min-width: 720px) {
+  #conectar .copy { padding-block: 9svh; }
+}
+
+/* Controles del carrusel: Anterior · puntos · Siguiente · Pausa, a la mano y fáciles de tocar */
+.car-bar { gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.car-nav, .car-pause {
+  display: inline-grid; place-items: center; width: 40px; height: 40px; min-width: 0; padding: 0; border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, .22); background: rgba(14, 12, 30, .9); color: #f4f1fa; cursor: pointer;
+  transition: background .2s, border-color .2s, opacity .2s;
+}
+.car-nav:hover:not(:disabled), .car-pause:hover { background: rgba(255, 255, 255, .14); border-color: rgba(255, 255, 255, .4); }
+.car-nav:disabled { opacity: .35; cursor: default; }
+.car-pause[aria-pressed="true"] { background: var(--a1); border-color: var(--a1); color: #0c1a16; }
+.car-nav:focus-visible, .car-pause:focus-visible, .car-dot:focus-visible { outline: 2px solid var(--a2); outline-offset: 2px; border-radius: 999px; }
+.car-pause svg, .car-nav svg { display: block; }
+@media (pointer: coarse) {
+  .car-nav, .car-pause { width: 44px; height: 44px; }
+  .car-dot { width: 32px; height: 44px; } /* 4 puntos + 3 botones caben en 320 px */
+}
+@media (prefers-reduced-motion: reduce) { .car-nav, .car-pause { transition: none; } }
 
 /* Versiones sin Bluetooth: misma tarjeta, con la nota en tono apagado */
 .ver-card.no-bt span { color: var(--muted); font-style: italic; }

@@ -90,6 +90,8 @@ export default {
   "Elegir paso": "Pilih langkah",
   "Pausar carrusel": "Jeda carousel",
   "Reanudar carrusel": "Lanjutkan carousel",
+  "Paso anterior": "Langkah sebelumnya",
+  "Paso siguiente": "Langkah berikutnya",
   "Enlace de esta página": "Link halaman ini",
   "Cuatro pasos para conectar (desliza para ver todos)": "Empat langkah untuk menghubungkan (geser untuk lihat semua)",
   "Estás en el navegador de una app: aquí no se puede conectar el ARMY Bomb (los videos y tu pantalla sí funcionan).": "Kamu sedang di browser bawaan app: ARMY Bomb tidak bisa terhubung di sini (video dan layarmu tetap berfungsi).",

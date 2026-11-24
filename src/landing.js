@@ -143,6 +143,12 @@ let safeMode = true;
 try { const v = localStorage.getItem(SAFE_KEY); if (v !== null) safeMode = v === "1"; } catch {}
 if (reduceMotion) safeMode = true;
 
+// Alto real del menú fijo (+ un respiro): antes se usaban 56 / 70 px fijos y en el celular el menú medía más, así
+// que al ir a «Cómo conectar» su título quedaba debajo. También lo usa el CSS (scroll-margin-top, --nav-h).
+const navEl = document.querySelector(".landing .nav");
+const navBottom = () => Math.round((navEl?.getBoundingClientRect().bottom ?? 64) + 12);
+if (navEl && "ResizeObserver" in window) new ResizeObserver(() => document.documentElement.style.setProperty("--nav-h", `${navBottom()}px`)).observe(navEl);
+
 // ---------- Scroll que se asienta: al soltar en una zona intermedia, termina en la sección más cercana ----------
 // Solo los bordes de sección "imantan" (≤ 32 % de la pantalla). Dentro de las secciones largas animadas por el scroll
 // (anatomía, océano) se puede parar en cualquier punto. Nunca mientras se arrastra, ni con movimiento reducido.
@@ -153,7 +159,7 @@ if (reduceMotion) safeMode = true;
   addEventListener("touchstart", () => (touching = true), { passive: true });
   addEventListener("touchend", () => { touching = false; schedule(); }, { passive: true });
   function points() {
-    const bar = mobileQ() ? 56 : 70;
+    const bar = navBottom();
     return [...document.querySelectorAll("main > section, main > .chapter")].map((el) => {
       const top = el.getBoundingClientRect().top + scrollY - bar;
       // "Larga": más alta que la pantalla (contenido que hay que poder leer entero, o animación por scroll).
@@ -226,7 +232,7 @@ function focusTarget(el) {
 }
 function scrollToTarget(el, hash) {
   // En el teléfono, si la sección (3D + texto) no entra entera, se va al texto: así se ve completo (p. ej. Versiones).
-  const bar = mobileQ() ? 56 : 70;
+  const bar = navBottom();
   const copy = el?.querySelector?.(":scope > .copy");
   if (copy && mobileQ() && el.offsetHeight > innerHeight - bar && copy.offsetHeight <= innerHeight - bar) el = copy;
   const y = el ? el.getBoundingClientRect().top + scrollY - bar : 0;
