@@ -925,6 +925,24 @@ main > .chapter:not(.hero)::before {
 #versiones .caption { margin: .35rem 0 0; font-size: .84rem; line-height: 1.55; color: #ddd6ee; }
 /* Celular: el botón «Conectar mi ARMY Bomb» con aire debajo, antes de la franja siguiente */
 @media (max-width: 719px) { #versiones .copy { padding-bottom: max(10svh, 80px); } }
+/* Tablet y escritorio: contenido de ancho contenido y centrado en su columna (en pantallas anchas las tarjetas
+   llegaban casi de borde a borde), título proporcional y tarjetas compactas (revisión 2026-11-24). */
+@media (min-width: 720px) {
+  #versiones .copy { container-type: inline-size; width: 100%; max-width: 600px; justify-self: center; }
+  #versiones .title { font-size: clamp(1.9rem, 1rem + 5.2cqi, 3rem); line-height: 1.05; text-wrap: balance; }
+  #versiones .sub { max-width: 46ch; }
+  #versiones .caption { max-width: 58ch; }
+  #versiones .vers li { container-type: inline-size; }
+  #versiones .ctas .btn { min-height: 48px; padding-inline: 1.4rem; }
+}
+/* Tarjeta con lugar (>= 270 px): nombre y compatibilidad en la misma fila, como en Ver. 4 */
+@container (min-width: 270px) {
+  #versiones .vers li:not(.ver-new) .ver-card {
+    grid-template-areas: "dot name tag"; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto;
+    padding: 12px 12px 12px 14px; column-gap: 10px;
+  }
+  #versiones .vers li:not(.ver-new) .vc-tag { align-self: center; justify-self: end; }
+}
 
 /* Ventana flotante del inicio: la caja mide lo que el video (16:9, 200 px de alto como mínimo, regla de YouTube),
    sin franjas vacías. La barra toma el mismo ancho que el video cuando está abierto. */
