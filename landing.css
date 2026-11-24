@@ -802,10 +802,6 @@ main > .chapter:not(.hero)::before {
 
 /* ---------- 02 · Cómo conectar (revisión UX 2026-11-24) ---------- */
 #conectar .copy { container-type: inline-size; gap: clamp(1rem, 4cqi, 1.5rem); }
-#conectar .copy::before {
-  inset: -3% -5%;
-  background: radial-gradient(80% 62% at 50% 46%, rgba(6, 8, 24, .86), rgba(6, 8, 24, .55) 58%, transparent 86%);
-}
 #conectar .head { gap: .7rem; }
 #conectar .kicker { color: #c9fbe9; font-size: .78rem; }
 #conectar .title { font-size: clamp(1.85rem, 1rem + 6.4cqi, 3.2rem); line-height: 1.05; text-wrap: balance; overflow-wrap: break-word; }
@@ -913,6 +909,12 @@ main > .chapter:not(.hero)::before {
 #versiones .vers li:not(.ver-new) .vc-tag { align-self: end; }
 /* Texto aclaratorio: más legible y separado de las tarjetas y del botón */
 #versiones .caption + .ctas { margin-top: .35rem; }
+/* Sin sombreados oscuros detrás del texto de las secciones (pedido 2026-11-24: se ven mejor sin ellos). La lectura
+   sobre las luces la sostiene una sombra suave en las letras, no una mancha en el fondo. */
+.copy::before, .ocean .copy::before { content: none; }
+.copy .sub, .copy .lead, .copy .kicker, .copy .eyebrow, .copy .caption, .copy .demo-note, .copy .hero-facts, .copy .orb-micro {
+  text-shadow: 0 1px 2px rgba(6, 8, 24, .85), 0 0 14px rgba(6, 8, 24, .65);
+}
 /* Tarjetas de dos columnas: el nombre gana ancho (esfera y márgenes algo menores), así «Special
    Edition (SE)» entra en dos líneas cómodas */
 #versiones .vers li:not(.ver-new) .ver-card { padding: 10px; column-gap: 8px; }
@@ -983,11 +985,6 @@ main > .chapter:not(.hero)::before {
 @media (min-width: 720px) {
   #funciones .copy { container-type: inline-size; gap: clamp(1rem, 4cqi, 1.75rem); }
   @media (min-width: 720px) { #funciones .copy { padding-block: 8svh; } }
-  /* Velo: oscurece lo que queda justo detrás del texto y deja ver las luces alrededor */
-  #funciones .copy::before {
-    inset: -3% -5%;
-    background: radial-gradient(80% 62% at 50% 46%, rgba(6, 8, 24, .86), rgba(6, 8, 24, .55) 58%, transparent 86%);
-  }
   #funciones .head { gap: .75rem; }
   #funciones .kicker { color: #ead9ff; font-size: .78rem; }
   #funciones .title {
