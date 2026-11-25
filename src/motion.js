@@ -18,9 +18,13 @@ export function sideAngle(screenAngle, beta, gamma) {
  * con 0,7 y tau 1,5 s un vaivén normal de la tablet casi no se notaba.
  */
 export function createTiltFilter({ tau = 2, dead = 1.5, gain = 1.6 } = {}) {
-  let base = null, last = 0;
+  let base = null, last = 0, prev = null, off = 0;
   return {
     update(angle, now) {
+      // Sin saltos de 360° al pasar por ±180 (el ángulo de la gravedad da la vuelta completa).
+      if (prev != null) { const d = angle + off - prev; if (d > 180) off -= 360; else if (d < -180) off += 360; }
+      angle += off;
+      prev = angle;
       if (base == null) { base = angle; last = now; }
       base += (angle - base) * (1 - Math.exp(-Math.min(0.2, Math.max(0, now - last) / 1000) / tau));
       last = now;
@@ -28,7 +32,7 @@ export function createTiltFilter({ tau = 2, dead = 1.5, gain = 1.6 } = {}) {
       const rel = Math.abs(d) < dead ? 0 : d - Math.sign(d) * dead;
       return rel === 0 ? 0 : Math.max(-0.6, Math.min(0.6, (-rel / 90) * gain));
     },
-    reset() { base = null; },
+    reset() { base = null; prev = null; off = 0; },
   };
 }
 
@@ -42,6 +46,28 @@ export function screenAccelX(screenAngle, x, y) {
   if (a === 270) return y ?? 0;
   if (a === 180) return -(x ?? 0);
   return x ?? 0;
+}
+
+/** Componente vertical (hacia arriba de la pantalla tal como está) de un vector del equipo. */
+export function screenAccelY(screenAngle, x, y) {
+  const a = ((Number(screenAngle) || 0) % 360 + 360) % 360;
+  if (a === 90) return x ?? 0;
+  if (a === 270) return -(x ?? 0);
+  if (a === 180) return -(y ?? 0);
+  return y ?? 0;
+}
+
+/**
+ * Inclinación hacia los lados con el equipo en la mano y de pie (como un lightstick): el giro sobre el eje que sale
+ * de la pantalla, medido con la gravedad en el plano de la pantalla. Positivo = la parte de arriba va a la derecha.
+ * `strength` (0–1) dice cuánto de la gravedad cae en la pantalla: casi 0 con el equipo acostado sobre una mesa,
+ * donde este ángulo no sirve y se usa la inclinación del giroscopio (sideAngle).
+ * Antes se usaba solo gamma/beta: de pie, esos ángulos miden el giro hacia adelante y atrás, y el ARMY Bomb se
+ * movía al mecer el equipo perpendicular a la pantalla y no al inclinarlo de lado (2026-11-24).
+ */
+export function screenRoll(screenAngle, gx, gy) {
+  const sx = screenAccelX(screenAngle, gx, gy), sy = screenAccelY(screenAngle, gx, gy);
+  return { angle: (Math.atan2(-sx, sy) * 180) / Math.PI, strength: Math.min(1, Math.hypot(sx, sy) / 9.81) };
 }
 
 /** Empujón lateral de la mano a partir de la aceleración (m/s²); el ruido de un equipo quieto no cuenta. */

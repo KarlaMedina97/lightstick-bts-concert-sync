@@ -2615,18 +2615,25 @@ async function setLightsModel(mode, { save = true } = {}) {
   stick3d?.setActive(model && view === "lights");
   if (model && view === "lights") requestAnimationFrame(() => motionTip());
 }
+// La pantalla giró sola estando en Luces con el ARMY Bomb 3D: se vuelve a pedir bloquear la rotación.
+screen.orientation?.addEventListener?.("change", () => {
+  if (view === "lights" && settings.lightsModel === "stick") setTimeout(() => motionTip(true), 700);
+});
 /**
- * Tablet en Luces con el movimiento encendido: si la pantalla gira sola al moverla, el ARMY Bomb se tuerce. Una vez
- * se sugiere bloquear la rotación. Donde el navegador lo permite (Android en pantalla completa) se fija la actual.
+ * Teléfono o tablet en Luces con el movimiento encendido: si la pantalla gira sola al moverla, el ARMY Bomb se
+ * tuerce. Se pide bloquear la rotación automática al entrar (una vez) y otra vez si la pantalla gira estando en
+ * Luces (una vez por visita). Donde el navegador lo permite (Android en pantalla completa) se fija la actual.
  */
-const tabletLike = () => matchMedia("(pointer: coarse)").matches && Math.min(screen.width, screen.height) >= 600;
-function motionTip() {
-  if (!settings.motion || !tabletLike()) return;
+const touchDevice = () => matchMedia("(pointer: coarse)").matches;
+let rotationTipShown = false;
+function motionTip(rotated = false) {
+  if (!settings.motion || !touchDevice()) return;
   const o = screen.orientation;
   if (o?.lock && document.fullscreenElement) o.lock(o.type).catch(() => {});
-  if (store.get("pws.tip.rotation", false)) return;
-  store.set("pws.tip.rotation", true);
-  toastAction("Para agitarlo sin que la pantalla gire, bloquea la rotación de tu tablet.", "Apagar movimiento", () => {
+  if (rotationTipShown || (!rotated && store.get("pws.tip.rotation2", false))) return;
+  rotationTipShown = true;
+  store.set("pws.tip.rotation2", true);
+  toastAction("Para mover el ARMY Bomb sin que la pantalla gire, bloquea la rotación automática de tu dispositivo.", "Apagar movimiento", () => {
     settings.motion = false; saveSettings(); $("chk-motion").checked = false; stick3d?.setMotion(false);
   });
 }

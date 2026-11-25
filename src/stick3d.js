@@ -4,7 +4,7 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { createMaterials, contactShadow, glowTexture } from "./models/shared.js";
-import { sideAngle, createTiltFilter, pushFromAccel, screenAccelX } from "./motion.js";
+import { sideAngle, createTiltFilter, pushFromAccel, screenAccelX, screenRoll } from "./motion.js";
 
 export const VERSIONS = [
   ["v4", "Ver. 4"], ["se", "SE"], ["v3", "Ver. 3"], ["v2", "Ver. 2"], ["v1", "Ver. 1"],
@@ -116,18 +116,32 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
     if (!dragging && push) motion.ax = push; // empuja la mano como un sacudón (el ruido de un equipo quieto no)
     const mag = Math.hypot(e.acceleration?.x ?? 0, e.acceleration?.y ?? 0, e.acceleration?.z ?? 0);
     const now = performance.now();
+    // Equipo de pie o inclinado (no acostado): la inclinación sale de la gravedad en el plano de la pantalla.
+    const g = e.accelerationIncludingGravity;
+    if (g?.x != null && now - rotatedAt >= 900) {
+      const r = screenRoll(screen.orientation?.angle ?? globalThis.orientation, g.x, g.y);
+      if (r.strength >= 0.45) {
+        if (tiltSrc !== "g") { tiltSrc = "g"; tiltFilter.reset(); }
+        gravAt = now;
+        motion.at = now;
+        const tilt = tiltFilter.update(r.angle, now);
+        motion.tilt = reduceMotion ? 0 : tilt;
+      }
+    }
     if (mag > 14 && now - motion.lastShake > 350) { motion.lastShake = now; beat = 1; }
     wake();
   }
   // Al girar la pantalla (tablet o celular con rotación automática) el giro del propio equipo no es una
   // inclinación: durante el cambio se ignora y el ARMY Bomb vuelve a quedar derecho.
-  let rotatedAt = 0;
+  let rotatedAt = 0, gravAt = -1e9, tiltSrc = "";
   const onRotate = () => { rotatedAt = performance.now(); motion.tilt = 0; tiltFilter.reset(); };
   function onOrient(e) {
     if (e.gamma == null) return;
     const now = performance.now();
     motion.at = now;
     if (now - rotatedAt < 900) { motion.tilt = 0; tiltFilter.reset(); return; }
+    if (now - gravAt < 400) return; // de pie manda la gravedad (onMotion); esto queda para el equipo acostado
+    if (tiltSrc !== "o") { tiltSrc = "o"; tiltFilter.reset(); }
     // Solo cuenta el cambio de inclinación (src/motion.js): quieto, aunque esté torcido, vuelve a quedar derecho.
     const tilt = tiltFilter.update(sideAngle(screen.orientation?.angle ?? globalThis.orientation, e.beta, e.gamma), now);
     motion.tilt = reduceMotion ? 0 : tilt;

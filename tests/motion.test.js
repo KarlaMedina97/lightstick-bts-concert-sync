@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { sideAngle, createTiltFilter, pushFromAccel, screenAccelX } from "../src/motion.js";
+import { sideAngle, createTiltFilter, pushFromAccel, screenAccelX, screenRoll } from "../src/motion.js";
 
 // Simula el sensor a 60 eventos por segundo durante `ms` con el ángulo que da `angleAt(t)`; devuelve la última salida.
 function run(filter, ms, angleAt, t0 = 0) {
@@ -81,4 +81,45 @@ test("acelerómetro: el lado a lado se mide en el eje de la pantalla, también e
   assert.equal(screenAccelX(90, 2, 5), -5);
   assert.equal(screenAccelX(270, 2, 5), 5);
   assert.equal(screenAccelX(-90, 2, 5), 5); // iOS viejo (window.orientation)
+});
+
+// Gravedad (accelerationIncludingGravity) con el equipo de pie y girado `deg` grados hacia la derecha.
+const upright = (deg, screen = 0) => {
+  const r = (deg * Math.PI) / 180, sx = -9.81 * Math.sin(r), sy = 9.81 * Math.cos(r);
+  // del plano de la pantalla a los ejes del equipo según la orientación
+  if (screen === 90) return [sy, -sx];
+  if (screen === 270) return [-sy, sx];
+  if (screen === 180) return [-sx, -sy];
+  return [sx, sy];
+};
+
+test("de pie: inclinarlo hacia los lados da el ángulo, en las cuatro orientaciones", () => {
+  for (const s of [0, 90, 180, 270]) {
+    const [x, y] = upright(25, s);
+    const r = screenRoll(s, x, y);
+    assert.ok(Math.abs(r.angle - 25) < 0.01, `pantalla ${s}°: ${r.angle}`);
+    assert.ok(r.strength > 0.99);
+  }
+});
+
+test("de pie: mecerlo perpendicular a la pantalla no lo inclina; de lado sí", () => {
+  // Hacia adelante y atrás, la gravedad sale de la pantalla (z) y el ángulo en el plano no cambia.
+  const r = (pitch) => screenRoll(0, 0, 9.81 * Math.cos((pitch * Math.PI) / 180));
+  assert.equal(Math.abs(r(0).angle), 0);
+  assert.equal(Math.abs(r(40).angle), 0);
+  const f = createTiltFilter();
+  run(f, 500, () => 0);
+  const side = run(f, 80, () => screenRoll(0, ...upright(20)).angle, 500);
+  assert.ok(Math.abs(side) > 0.15, `reacciona de lado (${side})`);
+});
+
+test("acostado sobre la mesa: la gravedad no sirve (strength baja) y se usa el giroscopio", () => {
+  assert.ok(screenRoll(0, 0.3, 0.2).strength < 0.1);
+});
+
+test("filtro: pasar por ±180° no da un salto", () => {
+  const f = createTiltFilter();
+  run(f, 500, () => 178);
+  const out = run(f, 80, () => -178, 500); // 4° más allá, no 356° atrás
+  assert.ok(Math.abs(out) < 0.1, `sin salto (${out})`);
 });
