@@ -92,18 +92,28 @@ test("secuencias: una plantilla repetida en muchas canciones o con otra duració
   setDurations({});
 });
 
-test("métricas (PostHog): sin datos personales ni parámetros, sin cookies", async () => {
+test("métricas (PostHog): cada evento sale sin datos personales ni parámetros (salvo utm_*)", async () => {
   globalThis.location ??= { origin: "https://lumiparty.com", host: "lumiparty.com", hostname: "lumiparty.com", pathname: "/player/dynamite" };
-  globalThis.navigator ??= { userAgent: "Mozilla/5.0 (Windows NT 10.0) Chrome/130" };
   globalThis.document ??= { referrer: "https://www.google.com/search?q=lumiparty", documentElement: { lang: "es" }, title: "LumiParty" };
-  globalThis.screen ??= { width: 1440, height: 900 }; globalThis.innerWidth ??= 1440; globalThis.matchMedia ??= () => ({ matches: false });
-  const { buildCapture } = await import("../src/analytics.js");
-  const ev = buildCapture("reproducir", { cancion: "dynamite" }, "/player/dynamite");
-  assert.match(ev.api_key, /^phc_/);
-  assert.equal(ev.properties.$process_person_profile, false);
+  const { cleanEvent } = await import("../src/analytics.js");
+  const ev = cleanEvent({
+    event: "reproducir",
+    properties: {
+      cancion: "dynamite",
+      $current_url: "https://lumiparty.com/player/dynamite?song=dynamite&utm_source=instagram&utm_campaign=swim#cola",
+      $referrer: "https://www.google.com/search?q=lumiparty", $initial_referrer: "https://l.instagram.com/?u=https%3A%2F%2Flumiparty.com",
+      $referring_domain: "www.google.com", $set: { email: "x@y.z" }, $set_once: { $initial_current_url: "https://lumiparty.com/?a=1" },
+    },
+  });
+  assert.equal(ev.properties.$current_url, "https://lumiparty.com/player/dynamite?utm_source=instagram&utm_campaign=swim");
   assert.equal(ev.properties.$referrer, "https://www.google.com"); // solo el sitio de origen, sin la búsqueda
-  assert.ok(!JSON.stringify(ev).includes("?"), "sin parámetros de ninguna dirección");
-  assert.ok(!("$ip" in ev.properties) && !("$set" in ev.properties) && !("email" in ev.properties));
+  assert.equal(ev.properties.$initial_referrer, "https://l.instagram.com");
+  assert.equal(ev.properties.$process_person_profile, false);
+  assert.ok(!("$set" in ev.properties) && !("$set_once" in ev.properties), "sin perfiles de persona");
+  assert.ok(!JSON.stringify(ev).replace(/\?utm_[^"]*/, "").includes("?"), "sin otros parámetros de ninguna dirección");
+  assert.equal(ev.properties.idioma, "es");
+  // Dentro del sitio, el origen conserva la página (para ver la navegación interna), sin parámetros.
+  assert.equal(cleanEvent({ properties: { $referrer: "https://lumiparty.com/player/?guide=1" } }).properties.$referrer, "https://lumiparty.com/player/");
 });
 
 import { generateConcertPattern } from "../src/patterns.js";
