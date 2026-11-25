@@ -388,6 +388,13 @@ const dict = {
   "YouTube no deja ver este video aquí. Pasamos al siguiente.": "YouTube won't play this video here. Skipping to the next one.",
   "Modo seguro activado otra vez: tu dispositivo pide reducir el movimiento.": "Safe mode is on again: your device asks to reduce motion.",
   "Modo seguro desactivado hasta que cierres LumiParty: tu dispositivo pide reducir el movimiento.": "Safe mode is off until you close LumiParty: your device asks to reduce motion.",
+  // Aviso de privacidad (src/consent.js) y lista de Bluetooth cerrada sin elegir (src/app.js).
+  "Aviso de privacidad": "Privacy notice",
+  "LumiParty no usa cookies. Medimos el uso de forma anónima, sin datos personales, para mejorar la app. El reproductor de YouTube puede guardar sus propios datos al reproducir un video.": "LumiParty doesn't use cookies. We measure usage anonymously, without personal data, to improve the app. The YouTube player may store its own data when you play a video.",
+  "Más sobre privacidad": "More about privacy",
+  "Aceptar": "Accept",
+  "Rechazar métricas": "Reject metrics",
+  "¿No aparece tu ARMY Bomb en la lista? Ponlo en modo Bluetooth (que parpadee) y vuelve a tocar Conectar ARMY Bomb.": "Your ARMY Bomb isn't in the list? Put it in Bluetooth mode (blinking) and tap Connect ARMY Bomb again.",
 };
 export default dict;
 

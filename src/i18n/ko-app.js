@@ -386,6 +386,13 @@ const dict = {
   "YouTube no deja ver este video aquí. Pasamos al siguiente.": "YouTube에서 이 영상을 여기서 재생할 수 없게 막았어요. 다음 영상으로 넘어갈게요.",
   "Modo seguro activado otra vez: tu dispositivo pide reducir el movimiento.": "안전 모드가 다시 켜졌어요. 기기에서 동작 줄이기가 켜져 있어요.",
   "Modo seguro desactivado hasta que cierres LumiParty: tu dispositivo pide reducir el movimiento.": "LumiParty를 닫을 때까지 안전 모드가 꺼져 있어요. 기기에서 동작 줄이기가 켜져 있어요.",
+  // Aviso de privacidad (src/consent.js) y lista de Bluetooth cerrada sin elegir (src/app.js).
+  "Aviso de privacidad": "개인정보 안내",
+  "LumiParty no usa cookies. Medimos el uso de forma anónima, sin datos personales, para mejorar la app. El reproductor de YouTube puede guardar sus propios datos al reproducir un video.": "LumiParty는 쿠키를 쓰지 않아요. 앱을 개선하기 위해 개인정보 없이 익명으로 사용량을 측정해요. YouTube 플레이어는 영상을 재생할 때 자체 데이터를 저장할 수 있어요.",
+  "Más sobre privacidad": "개인정보 더 알아보기",
+  "Aceptar": "수락",
+  "Rechazar métricas": "통계 거부",
+  "¿No aparece tu ARMY Bomb en la lista? Ponlo en modo Bluetooth (que parpadee) y vuelve a tocar Conectar ARMY Bomb.": "목록에 아미밤이 보이지 않나요? 블루투스 모드로 켜고(깜빡이는 상태) ARMY Bomb 연결을 다시 눌러 주세요.",
 };
 export default dict;
 
