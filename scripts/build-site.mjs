@@ -176,7 +176,8 @@ for (const [path, file] of Object.entries(LOCALIZED)) {
 }
 
 // Clave de PostHog: nunca en el repo (src/config.js la tiene vacía). Al publicar, CI la pasa desde el secreto
-// POSTHOG_KEY y solo se escribe en la copia publicada. En CI sin el secreto, falla en vez de publicar sin métricas.
+// POSTHOG_KEY y solo se escribe en la copia publicada. En el paso de publicar (REQUIRE_POSTHOG_KEY=1 en ci.yml) sin
+// el secreto, falla en vez de publicar sin métricas; las pruebas que arman _site/ no lo necesitan.
 {
   const key = (process.env.POSTHOG_KEY ?? "").trim();
   if (key) {
@@ -186,7 +187,7 @@ for (const [path, file] of Object.entries(LOCALIZED)) {
     const out = src.replace(/(posthog: \{ key: )""/, `$1${JSON.stringify(key)}`);
     if (out === src) throw new Error("No encontré la clave vacía de PostHog en src/config.js.");
     writeFileSync(file, out);
-  } else if (process.env.GITHUB_ACTIONS) {
+  } else if (process.env.REQUIRE_POSTHOG_KEY === "1") {
     throw new Error("Falta el secreto POSTHOG_KEY (Settings › Secrets and variables › Actions): el sitio saldría sin métricas.");
   } else console.warn("Sin POSTHOG_KEY: _site/ queda sin métricas (normal en local).");
 }
