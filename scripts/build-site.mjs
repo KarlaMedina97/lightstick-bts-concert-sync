@@ -175,6 +175,22 @@ for (const [path, file] of Object.entries(LOCALIZED)) {
   writeFileSync(join(OUT, "sitemap.xml"), base.replace("</urlset>", [...extra, "</urlset>"].join("\n")));
 }
 
+// Clave de PostHog: nunca en el repo (src/config.js la tiene vacía). Al publicar, CI la pasa desde el secreto
+// POSTHOG_KEY y solo se escribe en la copia publicada. En CI sin el secreto, falla en vez de publicar sin métricas.
+{
+  const key = (process.env.POSTHOG_KEY ?? "").trim();
+  if (key) {
+    if (!/^phc_[A-Za-z0-9]{20,}$/.test(key)) throw new Error("POSTHOG_KEY no es una clave de proyecto de PostHog (phc_…).");
+    const file = join(OUT, "src/config.js");
+    const src = readFileSync(file, "utf8");
+    const out = src.replace(/(posthog: \{ key: )""/, `$1${JSON.stringify(key)}`);
+    if (out === src) throw new Error("No encontré la clave vacía de PostHog en src/config.js.");
+    writeFileSync(file, out);
+  } else if (process.env.GITHUB_ACTIONS) {
+    throw new Error("Falta el secreto POSTHOG_KEY (Settings › Secrets and variables › Actions): el sitio saldría sin métricas.");
+  } else console.warn("Sin POSTHOG_KEY: _site/ queda sin métricas (normal en local).");
+}
+
 // Verificación: ninguna ruta bloqueada se coló y todo lo que pide el service worker existe.
 const walk = (d) => readdirSync(d).flatMap((f) => { const p = join(d, f); return statSync(p).isDirectory() ? walk(p) : [p]; });
 const files = walk(OUT).map((f) => f.replaceAll("\\", "/").slice(OUT.length + 1));

@@ -63,6 +63,8 @@ jobs:
           node-version: 22
       # Solo se publica lo que el sitio necesita (scripts/build-site.mjs): sin docs, pruebas ni configuración.
       - run: node scripts/build-site.mjs
+        env:
+          POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }} # la clave de métricas no vive en el repo: se pone solo en _site/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
