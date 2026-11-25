@@ -171,9 +171,20 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
   function tryMotion() {
     if (motion.on || !motionOn || typeof DeviceMotionEvent === "undefined") return;
     if (typeof DeviceMotionEvent.requestPermission === "function") {
-      DeviceMotionEvent.requestPermission().then((r) => { if (r === "granted") startMotion(); }).catch(() => {});
+      if (asking) return;
+      asking = true;
+      // iPhone/iPad: un solo permiso cubre acelerómetro y giroscopio, pero se piden los dos por si el sistema los separa.
+      DeviceMotionEvent.requestPermission()
+        .then((r) => (r === "granted" && typeof DeviceOrientationEvent?.requestPermission === "function" ? DeviceOrientationEvent.requestPermission().then(() => r) : r))
+        .then((r) => { if (r === "granted") startMotion(); })
+        .catch(() => {})
+        .finally(() => { asking = false; });
     } else startMotion();
   }
+  let asking = false;
+  // iPhone/iPad: el permiso se pide con cualquier toque en la página mientras el ARMY Bomb 3D está a la vista (antes
+  // solo al tocar el propio ARMY Bomb, y quien no lo tocaba nunca veía el movimiento).
+  document.addEventListener("click", () => { if (wantActive) tryMotion(); }, true);
   // Android: sin permiso que pedir, se activa solo en pantallas táctiles. iPhone: con el primer toque (tryMotion).
   if (matchMedia("(pointer: coarse)").matches && typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission !== "function") startMotion();
 

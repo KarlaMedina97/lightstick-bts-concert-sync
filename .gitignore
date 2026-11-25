@@ -11,3 +11,6 @@ _site/
 *.p12
 *.pfx
 .ui-check/
+
+# Certificado propio para probar por HTTPS en la red local (npm run dev:https)
+.cert/
