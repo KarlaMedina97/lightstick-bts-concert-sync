@@ -123,3 +123,20 @@ test("filtro: pasar por ±180° no da un salto", () => {
   const out = run(f, 80, () => -178, 500); // 4° más allá, no 356° atrás
   assert.ok(Math.abs(out) < 0.1, `sin salto (${out})`);
 });
+
+test("diagonal: inclinarlo y dejarlo quieto en diagonal no lo deja trabado (vuelve en menos de 1,5 s)", () => {
+  const f = createTiltFilter();
+  run(f, 500, () => 0);
+  const moving = run(f, 300, (t) => ((t - 500) / 300) * 40, 500); // gira 40° en 0,3 s
+  assert.ok(Math.abs(moving) > 0.3, `se inclina mientras se mueve (${moving})`);
+  const still = run(f, 1500, () => 40, 820); // queda quieto en diagonal
+  assert.equal(still, 0);
+});
+
+test("vaivén continuo de lado a lado: sigue respondiendo (no se queda pegado a un lado)", () => {
+  const f = createTiltFilter();
+  const outs = [];
+  for (let t = 0; t <= 4000; t += 1000 / 60) outs.push(f.update(Math.sin(t / 250) * 25, t));
+  const late = outs.slice(-120);
+  assert.ok(Math.max(...late) > 0.1 && Math.min(...late) < -0.1, "va a ambos lados");
+});

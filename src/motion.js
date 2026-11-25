@@ -17,22 +17,27 @@ export function sideAngle(screenAngle, beta, gamma) {
  * Devuelve la inclinación del ARMY Bomb en radianes (±0,6). Sensibilidad subida tras probar en iPad (2026-11-23):
  * con 0,7 y tau 1,5 s un vaivén normal de la tablet casi no se notaba.
  */
-export function createTiltFilter({ tau = 2, dead = 1.5, gain = 1.6 } = {}) {
-  let base = null, last = 0, prev = null, off = 0;
+export function createTiltFilter({ tau = 2, dead = 1.5, gain = 1.6, stillTau = 0.35, stillRate = 12 } = {}) {
+  let base = null, last = 0, prev = null, off = 0, rate = 0;
   return {
     update(angle, now) {
       // Sin saltos de 360° al pasar por ±180 (el ángulo de la gravedad da la vuelta completa).
       if (prev != null) { const d = angle + off - prev; if (d > 180) off -= 360; else if (d < -180) off += 360; }
       angle += off;
+      const dt = Math.min(0.2, Math.max(0, now - last) / 1000);
+      // Velocidad de giro suavizada (°/s): el equipo quieto (en diagonal o como sea) se nota en ~0,2 s.
+      if (prev != null && dt > 0) rate += (Math.abs(angle - prev) / dt - rate) * (1 - Math.exp(-dt / 0.12));
       prev = angle;
-      if (base == null) { base = angle; last = now; }
-      base += (angle - base) * (1 - Math.exp(-Math.min(0.2, Math.max(0, now - last) / 1000) / tau));
+      if (base == null) { base = angle; last = now; rate = 0; }
+      // Quieto, vuelve rápido a quedar derecho (antes tardaba varios segundos y parecía trabado en diagonal).
+      const t = rate < stillRate ? stillTau : tau;
+      base += (angle - base) * (1 - Math.exp(-dt / t));
       last = now;
       const d = angle - base;
       const rel = Math.abs(d) < dead ? 0 : d - Math.sign(d) * dead;
       return rel === 0 ? 0 : Math.max(-0.6, Math.min(0.6, (-rel / 90) * gain));
     },
-    reset() { base = null; prev = null; off = 0; },
+    reset() { base = null; prev = null; off = 0; rate = 0; },
   };
 }
 

@@ -122,7 +122,8 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
     const g = e.accelerationIncludingGravity;
     if (g?.x != null && now - rotatedAt >= 900) {
       const r = screenRoll(screen.orientation?.angle ?? globalThis.orientation, g.x, g.y);
-      if (r.strength >= 0.45) {
+      // Con margen para no saltar entre fuentes cerca del límite (equipo en diagonal sobre la mesa).
+      if (r.strength >= (tiltSrc === "g" ? 0.38 : 0.52)) {
         if (tiltSrc !== "g") { tiltSrc = "g"; tiltFilter.reset(); }
         gravAt = now;
         motion.at = now;
