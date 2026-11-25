@@ -90,7 +90,6 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
   const up = (e) => {
     if (!dragging || (e?.pointerId != null && e.pointerId !== pointerId)) return;
     dragging = false; pointerId = null;
-    touchUpAt = performance.now();
     tryMotion(); // iPhone: el permiso del giroscopio se pide con un toque
     hold.tx = hold.ty = 0;
     if (moved < 6) shake(0.5); // toque: late
@@ -106,8 +105,7 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
   // Giroscopio / acelerómetro del teléfono: inclinarlo lo inclina; sacudirlo lo agita y destella.
   const STEP = 1 / 240;
   let acc = 0;
-  const motion = { tilt: 0, ax: 0, lastShake: 0, on: false, at: 0, input: -1e9 };
-  let touchUpAt = -1e9;
+  const motion = { tilt: 0, ax: 0, lastShake: 0, on: false, at: 0 };
   const tiltFilter = createTiltFilter();
   function onMotion(e) {
     const a = e.acceleration ?? e.accelerationIncludingGravity;
@@ -115,7 +113,7 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
     // Sin gravedad: solo el movimiento, de lado a lado según cómo está la pantalla.
     const ax = e.acceleration ? screenAccelX(screen.orientation?.angle ?? globalThis.orientation, a.x, a.y) : 0;
     const push = pushFromAccel(ax);
-    if (!dragging && push) { motion.ax = push; motion.input = performance.now(); } // empuja la mano como un sacudón (el ruido de un equipo quieto no)
+    if (!dragging && push) motion.ax = push; // empuja la mano como un sacudón (el ruido de un equipo quieto no)
     const mag = Math.hypot(e.acceleration?.x ?? 0, e.acceleration?.y ?? 0, e.acceleration?.z ?? 0);
     const now = performance.now();
     // Equipo de pie o inclinado (no acostado): la inclinación sale de la gravedad en el plano de la pantalla.
@@ -129,7 +127,6 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
         motion.at = now;
         const tilt = tiltFilter.update(r.angle, now);
         motion.tilt = reduceMotion ? 0 : tilt;
-        if (tilt) motion.input = now;
       }
     }
     if (mag > 14 && now - motion.lastShake > 350) { motion.lastShake = now; beat = 1; }
@@ -149,11 +146,11 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
     // Solo cuenta el cambio de inclinación (src/motion.js): quieto, aunque esté torcido, vuelve a quedar derecho.
     const tilt = tiltFilter.update(sideAngle(screen.orientation?.angle ?? globalThis.orientation, e.beta, e.gamma), now);
     motion.tilt = reduceMotion ? 0 : tilt;
-    if (tilt) motion.input = now;
   }
   function startMotion() {
     if (motion.on || !motionOn) return;
     motion.on = true;
+    dispatchEvent(new Event("pws:motion"));
     screen.orientation?.addEventListener?.("change", onRotate);
     addEventListener("orientationchange", onRotate);
     addEventListener("devicemotion", onMotion);
@@ -181,12 +178,12 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
       // iPhone/iPad: un solo permiso cubre acelerómetro y giroscopio, pero se piden los dos por si el sistema los separa.
       DeviceMotionEvent.requestPermission()
         .then((r) => (r === "granted" && typeof DeviceOrientationEvent?.requestPermission === "function" ? DeviceOrientationEvent.requestPermission().then(() => r) : r))
-        .then((r) => { if (r === "granted") startMotion(); })
+        .then((r) => { if (r === "granted") startMotion(); else { denied = true; dispatchEvent(new Event("pws:motion")); } })
         .catch(() => {})
         .finally(() => { asking = false; });
     } else startMotion();
   }
-  let asking = false;
+  let asking = false, denied = false;
   // iPhone/iPad: el permiso se pide con cualquier toque en la página mientras el ARMY Bomb 3D está a la vista (antes
   // solo al tocar el propio ARMY Bomb, y quien no lo tocaba nunca veía el movimiento).
   document.addEventListener("click", () => { if (wantActive) tryMotion(); }, true);
@@ -267,21 +264,16 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
     aura.material.opacity = Math.min(0.95, 0.35 + 0.4 * (glow + beat * 0.5));
     // Física en pasos fijos de 1/240 s: el resultado no depende de cuánto tardó el cuadro (sin tirones al agitarlo).
     acc += dt;
-    // Con el movimiento del equipo (no con el dedo) el ARMY Bomb se desplaza de lado a lado casi derecho, como en
-    // la mano: inclinar el equipo lo lleva hacia ese lado y el mango apenas se ladea (antes se inclinaba entero).
-    const byMotion = !dragging && now - motion.input < 900 && now - touchUpAt > 1200;
-    const motionX = dragging ? 0 : motion.tilt * 2.4;
-    const leanK = byMotion ? 0.03 : 0.09, tiltLean = byMotion ? motion.tilt * 0.15 : motion.tilt;
     while (acc >= STEP) {
       acc -= STEP;
       const K = dragging ? 140 : 70, D = dragging ? 18 : 9;
-      hold.vx += ((hold.tx + motionX - hold.x) * K - hold.vx * D + motion.ax) * STEP;
+      hold.vx += ((hold.tx - hold.x) * K - hold.vx * D + motion.ax) * STEP;
       hold.vy += ((hold.ty - hold.y) * K - hold.vy * D) * STEP;
       hold.x += hold.vx * STEP; hold.y += hold.vy * STEP;
       // Un sacudón fuerte del equipo no saca al ARMY Bomb del cuadro.
       if (Math.abs(hold.x) > 1.7) { hold.x = Math.sign(hold.x) * 1.7; hold.vx *= -0.3; }
       // Péndulo: se inclina contra la velocidad de la mano (y con la inclinación del teléfono) y se asienta con un vaivén.
-      leanV += ((-hold.vx * leanK + tiltLean - lean) * 60 - leanV * 7) * STEP;
+      leanV += ((-hold.vx * 0.09 + motion.tilt - lean) * 60 - leanV * 7) * STEP;
       lean += leanV * STEP;
       pitchV += ((hold.vy * 0.05 - pitch) * 60 - pitchV * 7) * STEP;
       pitch += pitchV * STEP;
@@ -318,6 +310,8 @@ export function createStick3D(mount, { reduceMotion = false, motionOn = true } =
   return {
     setVersion, setColor, setActive, setMotion,
     get version() { return wanted; },
+    /** iPhone/iPad con el movimiento encendido y sin permiso todavía: hace falta un toque para pedirlo. */
+    get needsTap() { return motionOn && !motion.on && !denied && typeof globalThis.DeviceMotionEvent?.requestPermission === "function"; },
     dispose() {
       setActive(false);
       stopMotion();

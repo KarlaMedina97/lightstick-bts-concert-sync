@@ -336,6 +336,7 @@ export default {
   "En cola": "Na fila",
   "Más de este artista": "Mais deste artista",
   "Del mismo álbum": "Do mesmo álbum",
+  "Toca para mover el ARMY Bomb con tu dispositivo": "Toque para mover o ARMY Bomb com seu aparelho",
   "Movimiento y modo seguro": "Movimento e modo seguro",
   "Toca “Marcar ritmo” en cada golpe, 4 veces o más.": "Toque em “Marcar ritmo” a cada batida, 4 vezes ou mais.",
   "Apoya el proyecto": "Apoie o projeto",

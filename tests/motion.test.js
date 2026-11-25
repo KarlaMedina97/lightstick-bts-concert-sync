@@ -140,3 +140,18 @@ test("vaivén continuo de lado a lado: sigue respondiendo (no se queda pegado a 
   const late = outs.slice(-120);
   assert.ok(Math.max(...late) > 0.1 && Math.min(...late) < -0.1, "va a ambos lados");
 });
+
+test("brusco: sacudidas violentas (saltos de ±70° y vueltas por ±180°) y luego quieto → vuelve derecho", () => {
+  const f = createTiltFilter();
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647) * 2 - 1;
+  let a = 30;
+  for (let t = 0; t <= 2000; t += 1000 / 60) {
+    a += rnd() * 70;
+    a = ((a + 540) % 360) - 180; // el sensor da la vuelta en ±180
+    const out = f.update(a, t);
+    assert.ok(Number.isFinite(out) && Math.abs(out) <= 0.6, `salida acotada (${out})`);
+  }
+  const still = run(f, 1500, () => a, 2010);
+  assert.equal(still, 0);
+});

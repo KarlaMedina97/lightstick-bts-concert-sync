@@ -2614,7 +2614,14 @@ async function setLightsModel(mode, { save = true } = {}) {
   if (model) { stick3d.setVersion(stickVersion()); syncVersionButtons(); }
   stick3d?.setActive(model && view === "lights");
   if (model && view === "lights") requestAnimationFrame(() => motionTip());
+  syncMotionTap();
 }
+/** Botón «Toca para mover…»: solo mientras el ARMY Bomb 3D está en Luces y falta el permiso de movimiento. */
+function syncMotionTap() {
+  const b = $("lv-motion");
+  if (b) b.hidden = !(stick3d?.needsTap && view === "lights" && settings.lightsModel === "stick");
+}
+addEventListener("pws:motion", syncMotionTap);
 // La pantalla giró sola estando en Luces con el ARMY Bomb 3D: se vuelve a pedir bloquear la rotación.
 screen.orientation?.addEventListener?.("change", () => {
   if (view === "lights" && settings.lightsModel === "stick") setTimeout(() => motionTip(true), 700);
@@ -3668,7 +3675,9 @@ function bindSettings() {
   });
   $("chk-safe").checked = settings.safeMode;
   $("chk-motion").checked = settings.motion;
-  $("chk-motion").onchange = (e) => { settings.motion = e.target.checked; saveSettings(); stick3d?.setMotion(settings.motion); };
+  $("chk-motion").onchange = (e) => { settings.motion = e.target.checked; saveSettings(); stick3d?.setMotion(settings.motion); syncMotionTap(); };
+  // El toque en el botón ya pide el permiso (src/stick3d.js escucha los toques en la página); aquí solo se oculta.
+  $("lv-motion").addEventListener("click", () => setTimeout(syncMotionTap, 0));
   $("safe-sys").hidden = !reduceMotion;
   if (safeForcedOn) setTimeout(() => toast("Modo seguro activado otra vez: tu dispositivo pide reducir el movimiento.", 6000), 4000);
   $("chk-wake").checked = settings.wake;

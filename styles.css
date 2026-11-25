@@ -2822,6 +2822,18 @@ html {
   pointer-events: none; max-width: calc(100% - 16px);
 }
 .mic-chip[hidden] { display: none; }
+/* Activar el movimiento (iPhone/iPad, antes del permiso): sobre el ARMY Bomb, abajo, con un latido suave */
+.lv-motion {
+  align-self: end; justify-self: center; z-index: 2; display: inline-flex; align-items: center; gap: var(--s-2);
+  min-height: 44px; margin-bottom: var(--s-2); padding: 0 var(--s-4); border-radius: var(--r-pill); cursor: pointer;
+  background: var(--accent); color: var(--accent-ink); border: 0; font: inherit; font-size: var(--fs-14); font-weight: 700;
+  box-shadow: 0 8px 24px -8px var(--accent); max-width: calc(100% - 24px); animation: lv-motion-pulse 1.6s ease-in-out infinite alternate;
+}
+.lv-motion[hidden] { display: none; }
+.lv-motion svg { flex: none; }
+.lv-motion:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+@keyframes lv-motion-pulse { to { transform: scale(1.04); } }
+@media (prefers-reduced-motion: reduce) { .lv-motion { animation: none; } }
 /* Celular bajo (ARMY Bomb de ~68 px): a la izquierda y, mientras escucha, solo ícono y barras (el texto sigue para
    el lector de pantalla) */
 .app.lights-short .mic-chip { padding: 3px var(--s-2); }

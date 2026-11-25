@@ -336,6 +336,7 @@ export default {
   "En cola": "已在队列中",
   "Más de este artista": "该艺人的更多歌曲",
   "Del mismo álbum": "同一专辑",
+  "Toca para mover el ARMY Bomb con tu dispositivo": "点一下，用你的设备移动 ARMY Bomb",
   "Movimiento y modo seguro": "动作与安全模式",
   "Toca “Marcar ritmo” en cada golpe, 4 veces o más.": "在每个节拍上点“打拍子”，4 次以上。",
   "Apoya el proyecto": "支持这个项目",

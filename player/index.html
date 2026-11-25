@@ -452,6 +452,11 @@
           <div id="stick3d" class="stick3d" hidden></div>
           <!-- Aviso corto cuando no cabe #lv-note (celular): el 3D siempre dice que es no oficial -->
           <p id="lv-tag" class="lv-tag" hidden>Ilustración no oficial</p>
+          <!-- iPhone/iPad: el movimiento necesita un toque para pedir el permiso; sin este botón nadie lo sabía -->
+          <button id="lv-motion" class="lv-motion" type="button" hidden>
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-1.5a1.5 1.5 0 0 1 3 0V11m0-1a1.5 1.5 0 0 1 3 0v4a6 6 0 0 1-6 6h-1a6 6 0 0 1-5-2.7L4.6 14a1.5 1.5 0 0 1 2.4-1.8L9 14"/></svg>
+            <span>Toca para mover el ARMY Bomb con tu dispositivo</span>
+          </button>
           <!-- Modo micrófono: dice que está escuchando y cuánto sonido llega (o por qué no) -->
           <p id="mic-chip" class="mic-chip" role="status" hidden>
             <svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>

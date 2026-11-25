@@ -32,6 +32,10 @@ export function createTiltFilter({ tau = 2, dead = 1.5, gain = 1.6, stillTau = 0
       // Quieto, vuelve rápido a quedar derecho (antes tardaba varios segundos y parecía trabado en diagonal).
       const t = rate < stillRate ? stillTau : tau;
       base += (angle - base) * (1 - Math.exp(-dt / t));
+      // Movimiento brusco: la base nunca queda más lejos de lo que ya llena la inclinación máxima (antes, tras una
+      // sacudida fuerte, quedaba cientos de grados atrás y el ARMY Bomb parecía trabado de un lado).
+      const span = dead + (0.6 * 90) / gain + 3;
+      if (angle - base > span) base = angle - span; else if (base - angle > span) base = angle + span;
       last = now;
       const d = angle - base;
       const rel = Math.abs(d) < dead ? 0 : d - Math.sign(d) * dead;

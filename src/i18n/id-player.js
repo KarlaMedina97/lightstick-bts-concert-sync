@@ -336,6 +336,7 @@ export default {
   "En cola": "Di antrean",
   "Más de este artista": "Lainnya dari artis ini",
   "Del mismo álbum": "Dari album yang sama",
+  "Toca para mover el ARMY Bomb con tu dispositivo": "Ketuk untuk menggerakkan ARMY Bomb dengan perangkatmu",
   "Movimiento y modo seguro": "Gerakan dan mode aman",
   "Toca “Marcar ritmo” en cada golpe, 4 veces o más.": "Ketuk “Ketuk tempo” di setiap ketukan, 4 kali atau lebih.",
   "Apoya el proyecto": "Dukung proyek ini",

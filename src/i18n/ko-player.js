@@ -336,6 +336,7 @@ export default {
   "En cola": "대기열에 있음",
   "Más de este artista": "이 아티스트의 다른 곡",
   "Del mismo álbum": "같은 앨범의 곡",
+  "Toca para mover el ARMY Bomb con tu dispositivo": "탭해서 기기로 아미밤을 움직여 보세요",
   "Movimiento y modo seguro": "움직임과 안전 모드",
   "Toca “Marcar ritmo” en cada golpe, 4 veces o más.": "비트마다 ‘박자 탭’을 4번 이상 누르세요.",
   "Apoya el proyecto": "프로젝트 후원하기",
