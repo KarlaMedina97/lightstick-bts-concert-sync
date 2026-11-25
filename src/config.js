@@ -4,8 +4,9 @@ export const PROJECT = {
   repo: "https://github.com/KarlaMedina97/lightstick-bts-concert-sync",
 };
 
-// Métricas de uso con PostHog (src/analytics.js), proyecto en la región de EE. UU. (us.i.posthog.com). La clave de proyecto es pública por diseño (solo
-// sirve para ENVIAR eventos). Vacía = sin métricas.
+// Métricas de uso con PostHog (src/analytics.js), proyecto en la región de EE. UU. (us.i.posthog.com).
+// Regla del proyecto: NINGUNA clave en GitHub. Aquí va vacía; al publicar, scripts/build-site.mjs la pone en _site/
+// desde el secreto POSTHOG_KEY de GitHub Actions. Vacía = sin métricas (en local tampoco se envía nada).
 export const ANALYTICS = { posthog: { key: "", host: "https://us.i.posthog.com" } };
 
 // Enlaces de donación. Deja vacío "url" para ocultar una opción.

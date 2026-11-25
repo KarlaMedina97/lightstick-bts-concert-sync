@@ -10,6 +10,8 @@ Alcance:
 
 ## Resultado
 
+> **Actualización 2026-11-24 — regla: ninguna clave en GitHub.** La clave de proyecto de PostHog (`phc_…`) estuvo en `src/config.js` del 2026-11-07 al 2026-11-24 y queda en el historial. Ya no está en el repo: CI la pone al publicar desde el secreto `POSTHOG_KEY` (`scripts/build-site.mjs`), y `tests/secrets.test.js` falla si una clave se cuela. Como la del historial sigue a la vista, **hay que cambiarla en PostHog** (Settings › Project › Project API key › Reset) y guardar la nueva solo en el secreto. Ojo: la clave sigue siendo visible en lumiparty.com (el navegador la necesita para enviar eventos); solo permite enviar, no leer datos.
+
 | Revisión | Estado | Detalle |
 | --- | --- | --- |
 | Claves o tokens en archivos actuales | ✅ Ninguno | Búsqueda de patrones de AWS, Google, GitHub, OpenAI, Slack, JWT, `service_role` y claves privadas. |

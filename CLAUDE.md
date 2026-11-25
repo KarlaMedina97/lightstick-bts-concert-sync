@@ -91,14 +91,23 @@ menú de idioma navega a la otra versión. Por eso el importmap de `index.html` 
   permitidos son el importmap y los datos estructurados JSON-LD de `index.html` (no se ejecutan); si los cambias,
   ejecuta `npm run csp`.
 - Si añades un origen externo (fetch, iframe, imagen), actualízalo en `scripts/csp.mjs` y regenera.
-- **Métricas de uso: PostHog (región EE. UU., us.i.posthog.com)** (decisión del proyecto, 2026-11-07; reemplazó a Google Analytics 4) con código
-  propio en `src/analytics.js` (sin su librería ni CDN): eventos a la API de captura, **sin cookies** ni perfiles de
-  persona (un número al azar en `sessionStorage`), solo si `ANALYTICS.posthog.key` tiene clave, y nunca con Do Not
-  Track / Global Privacy Control, con las métricas apagadas en Ajustes, en localhost ni en la red local (ahí se
-  muestra en la consola lo que se enviaría). Solo rutas sin parámetros y eventos con nombres fijos: nunca datos de la persona.
+- **Métricas de uso: PostHog (región EE. UU., us.i.posthog.com)** (decisión del proyecto, 2026-11-07; reemplazó a Google Analytics 4).
+  La clave del proyecto (`phc_…`) no está en el repo: la pone CI desde el secreto `POSTHOG_KEY` (ver arriba).
+  Desde 2026-11-24 con su **librería oficial** (`posthog-js` «slim» sin scripts externos, copiada en `vendor/posthog/`,
+  nunca su CDN), cargada por `src/analytics.js` solo cuando las métricas están permitidas: el código propio anterior
+  no daba sesiones (PostHog las exige en UUID v7) ni el navegador real (todo salía como bot). **Sin cookies** ni
+  perfiles de persona: el número al azar va en `sessionStorage`, y en `localStorage` solo si la persona tocó «Aceptar»
+  en el aviso (para contar las visitas que vuelven). Sin grabación de sesiones, encuestas, flags ni autocaptura. Solo
+  si `ANALYTICS.posthog.key` tiene clave, y nunca con Do Not Track / Global Privacy Control, con las métricas apagadas
+  en Ajustes, en localhost ni en la red local (ahí `before_send` muestra en la consola lo que se enviaría y no envía).
+  `cleanEvent` deja las direcciones sin parámetros (salvo `utm_*` en la página actual) y el origen externo solo como
+  sitio. Eventos con nombres fijos: nunca datos de la persona. Si cambias qué se guarda, actualiza `/privacy/`.
 - Muestra datos del usuario o del servidor con `textContent`, nunca `innerHTML`. Valida con `sanitizeRow`
   (`src/leaderboard.js`) o equivalentes.
-- Nunca pongas claves `service_role` ni secretos en el repo. La clave `anon` de Supabase es pública por diseño.
+- **Ninguna clave, token ni contraseña en GitHub** (regla del proyecto, 2026-11-24), aunque el servicio la llame pública.
+  Las que el sitio necesita van en los secretos de GitHub Actions y `scripts/build-site.mjs` las escribe solo en
+  `_site/` al publicar (hoy: `POSTHOG_KEY` → `src/config.js`, que en el repo la tiene vacía). `tests/secrets.test.js`
+  falla si una se cuela. Si la Supabase `anon` se activa algún día, va por el mismo camino; nunca la `service_role`.
 - Lo que se publica es solo la lista `PUBLIC` de `scripts/build-site.mjs`: un archivo nuevo del sitio va ahí (y en
   `sw.js`); documentación, pruebas y scripts nunca. Ver `docs/seguridad.md`.
 
