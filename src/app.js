@@ -58,6 +58,13 @@ if (!store.get("pws.migr.chantVoiceOff", false)) { settings.chantVoice = false; 
 // Con «reducir movimiento» en el sistema, el modo seguro vuelve a encenderse cada vez que se abre la app (aunque se
 // haya apagado antes). Se avisa en Ajustes y, si estaba apagado, al abrir: si no, parece que el interruptor no se guarda.
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+/**
+ * Teléfono o tablet (con giroscopio): pantalla táctil como puntero principal, o un iPad con teclado y trackpad (se
+ * presenta como Mac pero tiene pantalla táctil). Una PC o laptop, aunque tenga pantalla táctil, no cuenta: ahí no se
+ * muestra lo que es solo del teléfono (mover el ARMY Bomb inclinando el equipo, bloquear la rotación).
+ */
+const motionDevice = () =>
+  matchMedia("(pointer: coarse)").matches || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
 const safeForcedOn = reduceMotion && settings.safeMode === false;
 if (reduceMotion) settings.safeMode = true;
 const saveSettings = () => store.set(SETTINGS_KEY, settings);
@@ -2601,7 +2608,8 @@ async function setLightsModel(mode, { save = true } = {}) {
   $("lv-vers").hidden = !model;
   $("lv-note").hidden = !model;
   $("lv-tag").hidden = !model;
-  $("lv-hint").textContent = t(model ? "Sostenlo y agítalo · también con el teléfono" : "Sin ARMY Bomb, tu pantalla brilla. Sube el brillo.");
+  // En PC o laptop no hay giroscopio: se explica el mouse, no el teléfono.
+  $("lv-hint").textContent = t(!model ? "Sin ARMY Bomb, tu pantalla brilla. Sube el brillo." : motionDevice() ? "Sostenlo y agítalo · también con el teléfono" : "Arrástralo para agitarlo · doble clic lo endereza");
   if (model && !stick3d) {
     try {
       const { createStick3D } = await import("./stick3d.js");
@@ -2619,7 +2627,7 @@ async function setLightsModel(mode, { save = true } = {}) {
 /** Botón «Toca para mover…»: solo mientras el ARMY Bomb 3D está en Luces y falta el permiso de movimiento. */
 function syncMotionTap() {
   const b = $("lv-motion");
-  if (b) b.hidden = !(stick3d?.needsTap && view === "lights" && settings.lightsModel === "stick");
+  if (b) b.hidden = !(motionDevice() && stick3d?.needsTap && view === "lights" && settings.lightsModel === "stick");
 }
 addEventListener("pws:motion", syncMotionTap);
 // La pantalla giró sola estando en Luces con el ARMY Bomb 3D: se vuelve a pedir bloquear la rotación.
@@ -2631,7 +2639,7 @@ screen.orientation?.addEventListener?.("change", () => {
  * tuerce. Se pide bloquear la rotación automática al entrar (una vez) y otra vez si la pantalla gira estando en
  * Luces (una vez por visita). Donde el navegador lo permite (Android en pantalla completa) se fija la actual.
  */
-const touchDevice = () => matchMedia("(pointer: coarse)").matches;
+const touchDevice = () => motionDevice();
 let rotationTipShown = false;
 function motionTip(rotated = false) {
   if (!settings.motion || !touchDevice()) return;
@@ -3673,6 +3681,11 @@ function bindSettings() {
     for (const o of groups) if (o !== d && o.open) o.open = false;
     requestAnimationFrame(() => d.scrollIntoView({ block: "nearest", behavior: reduceMotion ? "instant" : "smooth" }));
   });
+  // PC o laptop: sin giroscopio, el interruptor de movimiento sobra y la categoría queda solo como «Modo seguro».
+  if (!motionDevice()) {
+    $("chk-motion").closest("label").hidden = true;
+    $("sg-motion").textContent = t("Modo seguro");
+  }
   $("chk-safe").checked = settings.safeMode;
   $("chk-motion").checked = settings.motion;
   $("chk-motion").onchange = (e) => { settings.motion = e.target.checked; saveSettings(); stick3d?.setMotion(settings.motion); syncMotionTap(); };

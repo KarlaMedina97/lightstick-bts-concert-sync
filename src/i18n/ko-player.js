@@ -27,6 +27,7 @@ export default {
   "Modo concierto: estadio, TV o micrófono": "콘서트 모드: 공연장, TV 또는 마이크",
   "Con micrófono": "마이크 사용",
   "Busca canción, álbum o integrante": "곡, 앨범, 멤버 검색",
+  "Arrástralo para agitarlo · doble clic lo endereza": "드래그해서 흔들기 · 더블클릭하면 똑바로 서요",
   "Sostenlo y agítalo · doble toque lo endereza": "잡고 흔들어 보세요 · 두 번 탭하면 원위치",
   "Elige una canción para ver su video.": "영상을 보려면 곡을 골라 주세요.",
   "Cambiar a luces en pantalla": "화면 불빛으로 바꾸기",

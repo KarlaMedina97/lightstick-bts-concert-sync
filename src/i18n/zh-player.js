@@ -27,6 +27,7 @@ export default {
   "Modo concierto: estadio, TV o micrófono": "演唱会模式：体育场、电视或麦克风",
   "Con micrófono": "用麦克风",
   "Busca canción, álbum o integrante": "搜索歌曲、专辑或成员",
+  "Arrástralo para agitarlo · doble clic lo endereza": "拖动来摇晃 · 双击即可摆正",
   "Sostenlo y agítalo · doble toque lo endereza": "按住摇一摇 · 双击复位",
   "Elige una canción para ver su video.": "选一首歌来看视频。",
   "Cambiar a luces en pantalla": "切换到屏幕灯光",

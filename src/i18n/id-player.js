@@ -27,6 +27,7 @@ export default {
   "Modo concierto: estadio, TV o micrófono": "Mode konser: stadion, TV, atau mikrofon",
   "Con micrófono": "Dengan mikrofon",
   "Busca canción, álbum o integrante": "Cari lagu, album, atau member",
+  "Arrástralo para agitarlo · doble clic lo endereza": "Seret untuk mengguncangnya · klik dua kali untuk meluruskan",
   "Sostenlo y agítalo · doble toque lo endereza": "Pegang dan goyangkan · ketuk dua kali untuk meluruskan",
   "Elige una canción para ver su video.": "Pilih lagu untuk menonton videonya.",
   "Cambiar a luces en pantalla": "Ganti ke lampu di layar",

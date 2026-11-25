@@ -27,6 +27,7 @@ export default {
   "Modo concierto: estadio, TV o micrófono": "Concert mode: stadium, TV or microphone",
   "Con micrófono": "With microphone",
   "Busca canción, álbum o integrante": "Search song, album or member",
+  "Arrástralo para agitarlo · doble clic lo endereza": "Drag it to shake it · double-click to reset",
   "Sostenlo y agítalo · doble toque lo endereza": "Hold it and shake it · double-tap to reset",
   "Elige una canción para ver su video.": "Pick a song to watch its video.",
   "Cambiar a luces en pantalla": "Change to on-screen lights",

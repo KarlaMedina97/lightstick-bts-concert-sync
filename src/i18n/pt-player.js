@@ -27,6 +27,7 @@ export default {
   "Modo concierto: estadio, TV o micrófono": "Modo show: estádio, TV ou microfone",
   "Con micrófono": "Com microfone",
   "Busca canción, álbum o integrante": "Busque música, álbum ou integrante",
+  "Arrástralo para agitarlo · doble clic lo endereza": "Arraste para agitar · clique duas vezes para endireitar",
   "Sostenlo y agítalo · doble toque lo endereza": "Segure e agite · toque duas vezes para endireitar",
   "Elige una canción para ver su video.": "Escolha uma música para ver o vídeo.",
   "Cambiar a luces en pantalla": "Mudar para luzes na tela",
