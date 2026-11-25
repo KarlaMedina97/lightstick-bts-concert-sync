@@ -1,7 +1,8 @@
 // Aviso de privacidad / consentimiento (landing y reproductor). LumiParty no usa cookies propias: las métricas
 // (src/analytics.js, PostHog) son anónimas y sin cookies; el reproductor de YouTube puede guardar sus propios datos al
-// reproducir. Se muestra una vez hasta que la persona elige: «Aceptar» o «Rechazar métricas» (las apaga, igual que
-// Ajustes › Métricas de uso). La elección queda en este dispositivo.
+// reproducir. Se muestra una vez hasta que la persona elige: «Aceptar» (el número al azar de las métricas se guarda en
+// este dispositivo para contar las visitas que vuelven) o «Rechazar métricas» (las apaga, igual que Ajustes › Métricas
+// de uso). La elección queda en este dispositivo. Guarda la elección ANTES de llamar a setAnalyticsOff (la lee).
 import { setAnalyticsOff } from "./analytics.js";
 import { t } from "./i18n.js";
 

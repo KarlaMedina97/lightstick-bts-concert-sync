@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 
 const YT = "https://www.youtube.com https://s.ytimg.com";
-// Google Analytics 4 sin cookies (src/analytics.js): el script de gtag y el envío de métricas.
+// Métricas de uso (src/analytics.js): la librería de PostHog se sirve desde vendor/ (script-src self) y solo envía a su API.
 const GA_CONNECT = "https://us.i.posthog.com"; // métricas de uso (src/analytics.js, PostHog EE. UU.)
 const base = {
   "default-src": "'self'",

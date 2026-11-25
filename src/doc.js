@@ -1,5 +1,10 @@
 // Páginas de texto (privacidad, términos, IA, 404): tema guardado, índice «En esta página» y sección actual.
 // En escritorio el índice queda abierto y pegajoso; en teléfono es un <details> que se cierra al elegir una sección.
+import { pageview } from "./analytics.js";
+
+// Visita a la página (guía de conexión, privacidad, términos, 404…), con las mismas reglas que el resto del sitio:
+// sin parámetros, nunca con «No rastrear» ni con las métricas apagadas (src/analytics.js).
+pageview();
 
 // Tema: el mismo que elegiste en el reproductor (pws.theme); si no hay, manda el del sistema (CSS).
 try {
