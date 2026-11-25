@@ -65,6 +65,7 @@ jobs:
       - run: node scripts/build-site.mjs
         env:
           POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }} # la clave de métricas no vive en el repo: se pone solo en _site/
+          REQUIRE_POSTHOG_KEY: "1" # sin el secreto, este paso falla en vez de publicar el sitio sin métricas
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
