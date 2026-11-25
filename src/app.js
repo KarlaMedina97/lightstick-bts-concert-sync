@@ -99,6 +99,7 @@ function toast(msg, ms = 4500, { assertive = false } = {}) {
   el.textContent = msg;
   fadeIn(el);
   dodgeVideo(el);
+  dodgeConsent(el);
   say(msg, { assertive });
   clearTimeout(toast.timer);
   toast.timer = setTimeout(() => fadeOut(el), ms);
@@ -116,6 +117,13 @@ const overlaps = (a, b, m = 10) => a.left < b.right + m && b.left < a.right + m 
  * menos tapa los controles a la vista (cambio de vista, versión, chip del micrófono, cabecera y dock). QA 2026-11-23:
  * el consejo de rotación tapaba el video en iPad vertical y el aviso del micrófono, las pestañas.
  */
+/** Mientras el aviso de privacidad sigue abajo (va por encima de todo), un aviso que quede debajo de él sube arriba. */
+function dodgeConsent(el) {
+  const c = $("consent");
+  if (!c) return;
+  const a = el.getBoundingClientRect(), b = c.getBoundingClientRect();
+  if (a.bottom > b.top && a.top < b.bottom) el.dataset.at = "top";
+}
 function dodgeVideo(el) {
   delete el.dataset.at;
   const v = videoRect();
@@ -624,7 +632,14 @@ async function onConnect() {
     // prepararlo) y el navegador (Chrome, Edge, Samsung…): nada de la persona.
     track("conectar_fallo", { motivo: kind, fase: e?.phase ?? "lista", navegador: browserInfo().name.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24) });
     console.warn("[LumiParty] Bluetooth:", lastBtError.detail);
-    if (kind === "cancelled") say("Lista cerrada sin elegir un dispositivo.");
+    if (kind === "cancelled") {
+      say("Lista cerrada sin elegir un dispositivo.");
+      // Es casi todo lo que falla (16 de 18 fallos en PostHog, nov. 2026): abren la lista y la cierran porque su ARMY
+      // Bomb no aparece. Si la guía no está a la vista, un aviso visible lleva a ella (antes solo lo oía un lector de pantalla).
+      if (guideRef?.isMinimized || $("guide")?.hidden !== false) {
+        toastAction("¿No aparece tu ARMY Bomb en la lista? Ponlo en modo Bluetooth (que parpadee) y vuelve a tocar Conectar ARMY Bomb.", "Ver la guía", () => (guideRef?.isMinimized ? guideRef.restore() : guideRef?.open()), 9000);
+      }
+    }
     else if (kind === "disabled") { showBtWarning(isBrave() ? "brave" : "disabled"); showPanel("panel-bt"); earcon("error"); }
     else if (kind === "no-chooser") { showBtWarning("no-chooser"); if (openPanel !== "panel-bt") showPanel("panel-bt"); earcon("error"); }
     else if (kind === "adapter-off") { toast("El Bluetooth de tu dispositivo está apagado. Actívalo y vuelve a tocar Conectar.", 7000, { assertive: true }); earcon("error"); watchBtOn(); }
@@ -2945,6 +2960,7 @@ function toastAction(msg, label, fn, ms = 6000) {
   el.append(b);
   fadeIn(el);
   dodgeVideo(el);
+  dodgeConsent(el);
   say(msg);
   const hide = () => { if (!el.matches(":hover, :focus-within")) fadeOut(el); else toast.timer = setTimeout(hide, 1500); };
   clearTimeout(toast.timer);

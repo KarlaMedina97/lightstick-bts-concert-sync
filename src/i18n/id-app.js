@@ -386,6 +386,13 @@ const dict = {
   "YouTube no deja ver este video aquí. Pasamos al siguiente.": "YouTube tidak mengizinkan video ini diputar di sini. Lanjut ke berikutnya.",
   "Modo seguro activado otra vez: tu dispositivo pide reducir el movimiento.": "Mode aman aktif lagi: perangkatmu meminta gerakan dikurangi.",
   "Modo seguro desactivado hasta que cierres LumiParty: tu dispositivo pide reducir el movimiento.": "Mode aman nonaktif sampai kamu menutup LumiParty: perangkatmu meminta gerakan dikurangi.",
+  // Aviso de privacidad (src/consent.js) y lista de Bluetooth cerrada sin elegir (src/app.js).
+  "Aviso de privacidad": "Pemberitahuan privasi",
+  "LumiParty no usa cookies. Medimos el uso de forma anónima, sin datos personales, para mejorar la app. El reproductor de YouTube puede guardar sus propios datos al reproducir un video.": "LumiParty tidak memakai cookie. Kami mengukur penggunaan secara anonim, tanpa data pribadi, untuk memperbaiki aplikasi. Pemutar YouTube bisa menyimpan datanya sendiri saat memutar video.",
+  "Más sobre privacidad": "Selengkapnya tentang privasi",
+  "Aceptar": "Terima",
+  "Rechazar métricas": "Tolak metrik",
+  "¿No aparece tu ARMY Bomb en la lista? Ponlo en modo Bluetooth (que parpadee) y vuelve a tocar Conectar ARMY Bomb.": "ARMY Bomb-mu tidak muncul di daftar? Nyalakan mode Bluetooth (berkedip) lalu ketuk Hubungkan ARMY Bomb lagi.",
 };
 export default dict;
 

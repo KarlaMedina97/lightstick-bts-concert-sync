@@ -454,6 +454,13 @@ const dict = {
   "No se pudo copiar": "复制失败",
   "Únete a mi party de LumiParty: tus luces siguen la canción.": "来加入我的 LumiParty 派对吧：你的灯光会跟着歌曲变化。",
   "Tu party sigue activa con el mismo código.": "你的派对仍在进行，代码不变。",
+  // Aviso de privacidad (src/consent.js) y lista de Bluetooth cerrada sin elegir (src/app.js).
+  "Aviso de privacidad": "隐私提示",
+  "LumiParty no usa cookies. Medimos el uso de forma anónima, sin datos personales, para mejorar la app. El reproductor de YouTube puede guardar sus propios datos al reproducir un video.": "LumiParty 不使用 Cookie。我们以匿名方式统计使用情况，不收集个人数据，用于改进应用。YouTube 播放器在播放视频时可能会保存自己的数据。",
+  "Más sobre privacidad": "了解更多隐私信息",
+  "Aceptar": "接受",
+  "Rechazar métricas": "拒绝统计",
+  "¿No aparece tu ARMY Bomb en la lista? Ponlo en modo Bluetooth (que parpadee) y vuelve a tocar Conectar ARMY Bomb.": "列表里没有你的 ARMY Bomb？把它切换到蓝牙模式（闪烁），再点一次 连接 ARMY Bomb。",
 };
 export default dict;
 
