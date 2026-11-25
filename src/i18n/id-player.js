@@ -336,6 +336,8 @@ export default {
   "En cola": "Di antrean",
   "Más de este artista": "Lainnya dari artis ini",
   "Del mismo álbum": "Dari album yang sama",
+  "Movimiento y modo seguro": "Gerakan dan mode aman",
+  "Toca “Marcar ritmo” en cada golpe, 4 veces o más.": "Ketuk “Ketuk tempo” di setiap ketukan, 4 kali atau lebih.",
   "Apoya el proyecto": "Dukung proyek ini",
   "Las donaciones cubren solo el dominio y el tiempo de desarrollo del código. No dan acceso a ningún contenido: todo es gratis. LumiParty no vende ni cobra por videos, música ni marcas de terceros.": "Donasi hanya menutup biaya domain dan waktu pengembangan kode. Donasi tidak memberi akses ke konten apa pun: semuanya gratis. LumiParty tidak menjual atau memungut biaya untuk video, musik, maupun merek dagang pihak ketiga.",
   "Cerrar aviso": "Tutup pemberitahuan",

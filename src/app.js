@@ -3636,6 +3636,13 @@ function bindSettings() {
   bright.value = settings.brightness;
   lat.value = settings.latencyMs;
   style.value = settings.style;
+  // Categorías de Ajustes: una abierta a la vez (también donde <details name> no existe) y la abierta, a la vista.
+  const groups = [...document.querySelectorAll("#panel-settings details.group")];
+  for (const d of groups) d.addEventListener("toggle", () => {
+    if (!d.open) return;
+    for (const o of groups) if (o !== d && o.open) o.open = false;
+    requestAnimationFrame(() => d.scrollIntoView({ block: "nearest", behavior: reduceMotion ? "instant" : "smooth" }));
+  });
   $("chk-safe").checked = settings.safeMode;
   $("chk-motion").checked = settings.motion;
   $("chk-motion").onchange = (e) => { settings.motion = e.target.checked; saveSettings(); stick3d?.setMotion(settings.motion); };

@@ -336,6 +336,8 @@ export default {
   "En cola": "In queue",
   "Más de este artista": "More from this artist",
   "Del mismo álbum": "From the same album",
+  "Movimiento y modo seguro": "Motion and safe mode",
+  "Toca “Marcar ritmo” en cada golpe, 4 veces o más.": "Tap “Tap tempo” on each beat, 4 or more times.",
   "Apoya el proyecto": "Support the project",
   "Las donaciones cubren solo el dominio y el tiempo de desarrollo del código. No dan acceso a ningún contenido: todo es gratis. LumiParty no vende ni cobra por videos, música ni marcas de terceros.": "Donations only cover the domain and the time spent developing the code. They don't give access to any content: everything is free. LumiParty doesn't sell or charge for third-party videos, music or trademarks.",
   "Cerrar aviso": "Close notice",

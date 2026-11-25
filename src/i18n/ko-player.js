@@ -336,6 +336,8 @@ export default {
   "En cola": "대기열에 있음",
   "Más de este artista": "이 아티스트의 다른 곡",
   "Del mismo álbum": "같은 앨범의 곡",
+  "Movimiento y modo seguro": "움직임과 안전 모드",
+  "Toca “Marcar ritmo” en cada golpe, 4 veces o más.": "비트마다 ‘박자 탭’을 4번 이상 누르세요.",
   "Apoya el proyecto": "프로젝트 후원하기",
   "Las donaciones cubren solo el dominio y el tiempo de desarrollo del código. No dan acceso a ningún contenido: todo es gratis. LumiParty no vende ni cobra por videos, música ni marcas de terceros.": "후원금은 도메인 비용과 코드 개발 시간에만 쓰여요. 어떤 콘텐츠의 이용 권한도 주지 않아요. 모든 것은 무료예요. LumiParty는 제3자의 영상, 음악, 상표를 판매하거나 요금을 받지 않아요.",
   "Cerrar aviso": "알림 닫기",

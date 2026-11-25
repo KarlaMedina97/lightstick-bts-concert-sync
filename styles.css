@@ -800,6 +800,28 @@ kbd {
 .group { display: grid; gap: var(--s-3); padding: var(--s-4); border-radius: var(--r-lg); background: var(--surface-field); border: 1px solid var(--border); }
 .group-title { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-12); font-weight: 700; letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--muted); }
 .group-title svg { width: 16px; height: 16px; color: var(--accent); }
+/* Ajustes como lista de categorías desplegables (2026-11-24): una abierta a la vez (details name="ajustes" y, en
+   navegadores sin soporte, src/app.js); el título y Cerrar quedan fijos y lo abierto se recorre dentro del panel. */
+.settings .panel-body { gap: var(--s-2); }
+.settings details.group { display: block; padding: 0; overflow: clip; }
+.settings .group > summary.group-title {
+  list-style: none; cursor: pointer; min-height: 52px; padding: 0 var(--s-3) 0 var(--s-4); border-radius: inherit;
+  font-size: var(--fs-14); font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--text);
+  gap: var(--s-3); user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.settings .group > summary.group-title::-webkit-details-marker { display: none; }
+.settings .group > summary.group-title span { flex: 1; min-width: 0; }
+.settings .group > summary:hover { background: var(--surface-hover); }
+.settings .group > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.settings .group > summary .gt-chev { width: 18px; height: 18px; color: var(--muted); transform: rotate(90deg); transition: transform var(--dur-2) var(--ease-out); }
+.settings .group[open] > summary .gt-chev { transform: rotate(-90deg); }
+.settings .group[open] > summary { border-bottom: 1px solid var(--border); border-radius: var(--r-lg) var(--r-lg) 0 0; }
+.settings .group-body { display: grid; gap: var(--s-4); padding: var(--s-4); }
+.settings .group-body > .btn { justify-self: start; }
+.settings .group[open] { border-color: var(--border-strong); }
+@media (prefers-reduced-motion: reduce) { .settings .group > summary .gt-chev { transition: none; } }
+/* Mover el video: con el video a un lado las flechas apuntan a izquierda y derecha */
+.mini-side #mini-swap svg { transform: rotate(90deg); }
 .legal { padding: 0 var(--s-1); }
 .shortcuts { line-height: 2; }
 
@@ -1979,6 +2001,7 @@ body.chanting .toast, body.chanting .support-nudge, body.chanting .fb-nudge, bod
 .hero-cta { gap: var(--s-3); }
 .panel-body { gap: var(--s-4); padding: var(--s-2) var(--s-4) var(--s-5); }
 .group { gap: var(--s-4); padding: var(--s-4); }
+.settings details.group { padding: 0; }
 .field { gap: var(--s-2); }
 .panel-head { padding: var(--s-4) var(--s-3) var(--s-3) var(--s-4); }
 .filters { gap: var(--s-2); }

@@ -336,6 +336,8 @@ export default {
   "En cola": "已在队列中",
   "Más de este artista": "该艺人的更多歌曲",
   "Del mismo álbum": "同一专辑",
+  "Movimiento y modo seguro": "动作与安全模式",
+  "Toca “Marcar ritmo” en cada golpe, 4 veces o más.": "在每个节拍上点“打拍子”，4 次以上。",
   "Apoya el proyecto": "支持这个项目",
   "Las donaciones cubren solo el dominio y el tiempo de desarrollo del código. No dan acceso a ningún contenido: todo es gratis. LumiParty no vende ni cobra por videos, música ni marcas de terceros.": "捐助只用于域名费用和代码开发时间，不会解锁任何内容：一切都是免费的。LumiParty 不出售第三方的视频、音乐或商标，也不为此收费。",
   "Cerrar aviso": "关闭提示",

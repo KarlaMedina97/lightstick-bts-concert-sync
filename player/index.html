@@ -656,14 +656,15 @@
     </section>
 
     <!-- Panel: ajustes -->
-    <section id="panel-settings" class="panel" role="dialog" aria-labelledby="ps-title" hidden>
+    <section id="panel-settings" class="panel settings" role="dialog" aria-labelledby="ps-title" hidden>
       <div class="panel-head">
         <div class="ph-title"><span class="ph-icon" aria-hidden="true"><svg><use href="#i-sliders"/></svg></span><h2 id="ps-title">Ajustes</h2></div>
         <button class="ibtn sm close" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
       </div>
       <div class="panel-body">
-        <section class="group" aria-labelledby="sg-lights">
-          <h3 id="sg-lights" class="group-title"><svg aria-hidden="true"><use href="#i-stick"/></svg>Luces</h3>
+        <details class="group" name="ajustes">
+          <summary class="group-title"><svg aria-hidden="true"><use href="#i-stick"/></svg><span id="sg-lights">Luces</span><svg class="gt-chev" aria-hidden="true"><use href="#i-chevron"/></svg></summary>
+          <div class="group-body">
           <div class="field">
             <label for="rng-bright">Brillo <output id="out-bright">100%</output></label>
             <input id="rng-bright" type="range" min="10" max="100" value="100">
@@ -684,15 +685,23 @@
               <input id="num-bpm" type="number" min="40" max="220" step="1" inputmode="numeric">
               <button id="btn-tap-tempo" class="btn secondary" type="button">Marcar ritmo</button>
             </div>
-            <p class="hint">Con la canción sonando, toca “Marcar ritmo” 4 veces o más en cada golpe: las luces se alinean al ritmo.</p>
+            <p class="hint">Toca “Marcar ritmo” en cada golpe, 4 veces o más.</p>
           </div>
+          </div>
+        </details>
+
+        <details class="group" name="ajustes">
+          <summary class="group-title"><svg aria-hidden="true"><use href="#i-live"/></svg><span id="sg-motion">Movimiento y modo seguro</span><svg class="gt-chev" aria-hidden="true"><use href="#i-chevron"/></svg></summary>
+          <div class="group-body">
           <label class="check switch"><input id="chk-motion" type="checkbox" checked><span>Mover con el teléfono o la tablet<small>Inclinarlo y agitarlo mueve el ARMY Bomb 3D. Apágalo si la pantalla gira sola</small></span></label>
           <label class="check switch"><input id="chk-safe" type="checkbox" checked aria-describedby="safe-sys"><span>Modo seguro<small>Máximo 3 destellos por segundo</small></span></label>
           <p id="safe-sys" class="hint small" hidden>Tu dispositivo pide reducir el movimiento: el modo seguro se vuelve a activar cada vez que abres LumiParty.</p>
-        </section>
+          </div>
+        </details>
 
-        <section class="group" aria-labelledby="sg-play">
-          <h3 id="sg-play" class="group-title"><svg aria-hidden="true"><use href="#i-play"/></svg>Reproducción</h3>
+        <details class="group" name="ajustes">
+          <summary class="group-title"><svg aria-hidden="true"><use href="#i-play"/></svg><span id="sg-play">Reproducción</span><svg class="gt-chev" aria-hidden="true"><use href="#i-chevron"/></svg></summary>
+          <div class="group-body">
           <div class="field">
             <label for="sel-album-end">Al terminar el álbum</label>
             <select id="sel-album-end">
@@ -715,34 +724,41 @@
             <p id="chant-speed-hint" class="hint">Activa el fanchant para elegirla.</p>
           </div>
           <label class="check switch"><input id="chk-wake" type="checkbox" checked><span>Mantener la pantalla encendida</span></label>
-        </section>
+          </div>
+        </details>
 
-        <section class="group" aria-labelledby="sg-access">
-          <h3 id="sg-access" class="group-title"><svg aria-hidden="true"><use href="#i-info"/></svg>Accesibilidad</h3>
+        <details class="group" name="ajustes">
+          <summary class="group-title"><svg aria-hidden="true"><use href="#i-info"/></svg><span id="sg-access">Accesibilidad</span><svg class="gt-chev" aria-hidden="true"><use href="#i-chevron"/></svg></summary>
+          <div class="group-body">
           <label class="check switch"><input id="chk-sounds" type="checkbox" checked><span>Sonidos de la app<small>Avisos cortos al conectar, desconectar y en el reto</small></span></label>
           <label class="check switch"><input id="chk-describe" type="checkbox"><span>Describir las luces<small>Dice el color y la parte al cambiar de sección</small></span></label>
           <label class="check switch"><input id="chk-keys" type="checkbox" checked><span>Atajos de una tecla<small>Apágalos si usas lector de pantalla o control por voz</small></span></label>
           <label class="check switch"><input id="chk-calm" type="checkbox"><span>Interfaz tranquila<small>Menos brillo y movimiento en pantalla</small></span></label>
           <label class="check switch"><input id="chk-metrics" type="checkbox" checked><span>Métricas de uso<small>Nos ayudan a saber qué mejorar. Sin publicidad</small></span></label>
           <p class="hint">Con lector de pantalla también puedes usar las teclas multimedia o los auriculares para pausar y cambiar de canción.</p>
-        </section>
+          </div>
+        </details>
 
-        <section class="group" aria-labelledby="sg-privacy">
-          <h3 id="sg-privacy" class="group-title"><svg aria-hidden="true"><use href="#i-shield"/></svg>Privacidad</h3>
+        <details class="group" name="ajustes">
+          <summary class="group-title"><svg aria-hidden="true"><use href="#i-shield"/></svg><span id="sg-privacy">Privacidad</span><svg class="gt-chev" aria-hidden="true"><use href="#i-chevron"/></svg></summary>
+          <div class="group-body">
           <p class="hint">Todo se queda en este dispositivo. <a href="../privacy/">Privacidad</a></p>
           <button id="btn-tour" class="btn secondary" type="button">Repetir el recorrido</button>
           <button id="btn-feedback-2" class="btn secondary" type="button" aria-haspopup="dialog" aria-controls="panel-feedback"><svg aria-hidden="true"><use href="#i-chat"/></svg>Dar mi opinión</button>
           <button id="btn-clear-data" class="btn danger" type="button">Borrar mis datos</button>
-        </section>
+          </div>
+        </details>
 
-        <section class="group" aria-labelledby="sg-support">
-          <h3 id="sg-support" class="group-title"><svg aria-hidden="true"><use href="#i-heart"/></svg>Apoya el proyecto</h3>
+        <details class="group" name="ajustes">
+          <summary class="group-title"><svg aria-hidden="true"><use href="#i-heart"/></svg><span id="sg-support">Apoya el proyecto</span><svg class="gt-chev" aria-hidden="true"><use href="#i-chevron"/></svg></summary>
+          <div class="group-body">
           <p class="hint">Gratis, de código abierto y hecho por ARMY.</p>
           <div id="donations" class="row wrap"></div>
           <p class="hint">Las donaciones cubren solo el dominio y el tiempo de desarrollo del código. No dan acceso a ningún contenido: todo es gratis. LumiParty no vende ni cobra por videos, música ni marcas de terceros.</p>
           <p class="hint"><a id="repo-link" href="#" target="_blank" rel="noopener noreferrer">Código en GitHub</a></p>
           <p class="hint shortcuts">Atajos: <kbd>Espacio</kbd> reproduce o pausa · <kbd>N</kbd> siguiente · <kbd>P</kbd> anterior · <kbd>B</kbd> reto · <kbd>F</kbd> pantalla completa · <kbd>L</kbd> describir las luces · <kbd>/</kbd> buscar</p>
-        </section>
+          </div>
+        </details>
         <p class="hint small legal">Proyecto de fans no oficial, sin afiliación con HYBE, BIGHIT MUSIC ni BTS.
           Videos desde YouTube; luces creadas en tu navegador.</p>
       </div>

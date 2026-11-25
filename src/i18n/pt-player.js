@@ -336,6 +336,8 @@ export default {
   "En cola": "Na fila",
   "Más de este artista": "Mais deste artista",
   "Del mismo álbum": "Do mesmo álbum",
+  "Movimiento y modo seguro": "Movimento e modo seguro",
+  "Toca “Marcar ritmo” en cada golpe, 4 veces o más.": "Toque em “Marcar ritmo” a cada batida, 4 vezes ou mais.",
   "Apoya el proyecto": "Apoie o projeto",
   "Las donaciones cubren solo el dominio y el tiempo de desarrollo del código. No dan acceso a ningún contenido: todo es gratis. LumiParty no vende ni cobra por videos, música ni marcas de terceros.": "As doações cobrem só o domínio e o tempo de desenvolvimento do código. Não dão acesso a nenhum conteúdo: tudo é grátis. O LumiParty não vende nem cobra por vídeos, músicas nem marcas de terceiros.",
   "Cerrar aviso": "Fechar aviso",
